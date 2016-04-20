@@ -38,6 +38,7 @@ c
       use wallData
       use fncorpmod
       use bc3lhs_m
+c      use mesh_motion_m
 
         include "common.h"
         include "mpif.h"
@@ -321,7 +322,8 @@ c============ Start the loop of time steps============================c
         deltaInlInv=one/(0.125*0.0254)
         do 2000 istp = 1, nstp
 c
-c            call temp_mesh_motion(x,umesh,time,delt(1),istp,numnp,nsd)
+c      umesh = zero
+c            call temp_mesh_motion(x,umesh,time,delt(1),istp,numnp,nsd,myrank)
 c
 
          
@@ -391,7 +393,6 @@ c
 c.... -----------------------> predictor phase <-----------------------
 c
             call itrPredict(   yold,    acold,    y,   ac )
-            call itrBC (y,  ac,  iBC,  BC,  iper, ilwork)
 c
 c...-------------> HARDCODED <-----------------------
 c
@@ -499,7 +500,7 @@ c                        write(*,*) 'lhs=',lhs
      &                       solinc,        rerr,          umesh)
                     endif
                       else if (mod(impl(1),100)/10 .eq. 2) then ! mfg solve
-c'     
+c     
 c.... preconditioned matrix-free GMRES solver
 c     
                         lhs=0
@@ -594,7 +595,7 @@ c
      &                    iper,          ilwork,
      &                    shp,           shgl,
      &                    shpb,          shglb, solinc(1,isclr+5))
-c'    
+c    
                   endif  ! endif usingPETSc for scalar
 c
                   else if(isolve.eq.10) then ! this is a mesh-elastic solve
@@ -610,7 +611,7 @@ c
                      call itrBCElas(umesh,  disp,  iBC, 
      &                              BC(:,ndof+2:ndof+5),
      &                              iper,   ilwork         )
-c                         
+c
 c.... call to SolGMRElas ... For mesh-elastic solve
 c
                      call SolGMRElas (x,        disp,      iBC,    BC,
@@ -883,6 +884,9 @@ c         tcorewc2 = secs(0.0)
          endif
         
 c     call wtime
+
+      call destroyWallData
+      call destroyfncorp
 
  3000 continue !end of NTSEQ loop
 c     
