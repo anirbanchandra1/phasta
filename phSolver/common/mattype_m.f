@@ -1,4 +1,6 @@
       module mattype_m
+
+       use mpi_def_m
 c
         implicit none
 c
@@ -33,6 +35,7 @@ c
 c
           total_count = sum(neltp_mattype)
           if (total_count /= neltp) then
+            write(*,'(a,i4,a)') '[',myrank,'] ERROR (count_elem_mattype)!'
             call error ('genblk  ', 'Could not count material type correctly', total_count)
           endif
 c

@@ -75,42 +75,8 @@ c
 c
 c.... assemble the local residual arrays
 c
-       i0 = ienif0(38,1)
-       i1 = ienif1(38,1)
-c
-      do iel = 1,npro
-        do n = 1,nshl0
-c          write(*,200) myrank,iel,n,res(ienif0(iel,n),:)
-        enddo
-      enddo
-c
-      do iel = 1,npro
-        do n = 1,nshl0
-          if (ienif0(iel,n) .eq. i0) then
-c            write(*,200) myrank,iel,n,rl0(iel,n,:)
-          endif
-        enddo
-      enddo
-c
         call local (res, rl0, ienif0, nflow, 'scatter ', nshg,nshl0,npro,ipord,sbytes_,flops_)
-c      write(*,100) myrank,i0,res(i0,:)
-c      write(*,*)
-c      write(*,100) myrank,i1,res(i1,:)
-      do iel = 1,npro
-        do n = 1,nshl1
-          if (ienif1(iel,n) .eq. i1) then
-c            write(*,200) myrank,iel,n,rl1(iel,n,:)
-          endif
-        enddo
-      enddo
         call local (res, rl1, ienif1, nflow, 'scatter ', nshg,nshl1,npro,ipord,sbytes_,flops_)
-c      write(*,100) myrank,i1,res(i1,:)
-c
-      do iel = 1,npro
-        do n = 1,nshl0
-c          write(*,200) myrank,iel,n,res(ienif0(iel,n),:)
-        enddo
-      enddo
 c
         call local (sum_vi_area, sum_vi_area_l0, ienif0, nsd+1, 'scatter ', nshg, nshl0,npro,ipord,sbytes_,flops_)
         call local (sum_vi_area, sum_vi_area_l1, ienif1, nsd+1, 'scatter ', nshg, nshl1,npro,ipord,sbytes_,flops_)

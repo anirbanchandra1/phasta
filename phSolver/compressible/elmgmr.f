@@ -540,12 +540,13 @@ c
 !endif //DEBUG
 c
 !      write(*,998) '[',myrank,'] in elmgmr AFTER INTERIOR.'
-!      do i = 1,nshg
-!        if (x(i,1) < 0.1001 .and. x(i,1) > 0.0999 .and. 
-!     &      x(i,2) < 0.0501 .and. x(i,2) > 0.0499 .and.
-!     &      x(i,3) < 0.0001 .and. x(i,3) > -0.0001)
-!     &   write(*,999) '[',myrank,'] :',i,x(i,:),res(i,:)
-!      enddo
+      do i = 1,nshg
+        if (x(i,1) < 0.1001 .and. x(i,1) > 0.0999 .and. 
+     &      x(i,2) < 0.0001 .and. x(i,2) > -0.0001 .and.
+     &      x(i,3) < 0.0001 .and. x(i,3) > -0.0001) then
+!     &    write(*,999) '[',myrank,'] :',i,x(i,:),res(i,:)
+        endif
+      enddo
 c
 c.... -------------------->   boundary elements   <--------------------
 c
@@ -610,12 +611,13 @@ c
 !endif //DEBUG
 c
 !      write(*,998) '[',myrank,'] in elmgmr AFTER BOUNDARY.'
-!      do i = 1,nshg
-!        if (x(i,1) < 0.1001 .and. x(i,1) > 0.0999 .and. 
-!     &      x(i,2) < 0.0501 .and. x(i,2) > 0.0499 .and.
-!     &      x(i,3) < 0.0001 .and. x(i,3) > -0.0001)
-!     &   write(*,999) '[',myrank,'] :',i,x(i,:),res(i,:)
-!      enddo
+      do i = 1,nshg
+        if (x(i,1) < 0.1001 .and. x(i,1) > 0.0999 .and. 
+     &      x(i,2) < 0.0001 .and. x(i,2) > -0.0001 .and.
+     &      x(i,3) < 0.0001 .and. x(i,3) > -0.0001) then
+!     &    write(*,999) '[',myrank,'] :',i,x(i,:),res(i,:)
+        endif
+      enddo
 c
       ttim(80) = ttim(80) + secs(0.0)
 c
@@ -704,6 +706,14 @@ c
 c
         enddo if_blocks
 c
+!      write(*,998) '[',myrank,'] in elmgmr BEFORE commu.'
+      do i = 1,nshg
+        if (x(i,1) < 0.1001 .and. x(i,1) > 0.0999 .and. 
+     &      x(i,2) < 0.0001 .and. x(i,2) > -0.0001 .and.
+     &      x(i,3) < 0.0001 .and. x(i,3) > -0.0001) then
+!     &   write(*,999) '[',myrank,'] :',i,x(i,:),res(i,:)
+        endif 
+      enddo
 c
 c before the commu we need to rotate the residual vector for axisymmetric
 c boundary conditions (so that off processor periodicity is a dof add instead
@@ -739,12 +749,13 @@ c
 c------> BEGIN DEBUG <---------
 c
 !      write(*,998) '[',myrank,'] in elmgmr AFTER commu.'
-!      do i = 1,nshg
-!        if (x(i,1) < 0.1001 .and. x(i,1) > 0.0999 .and. 
-!     &      x(i,2) < 0.0501 .and. x(i,2) > 0.0499 .and.
-!     &      x(i,3) < 0.0001 .and. x(i,3) > -0.0001)
-!     &   write(*,999) '[',myrank,'] :',i,x(i,:),res(i,:)
-!      enddo
+      do i = 1,nshg
+        if (x(i,1) < 0.1001 .and. x(i,1) > 0.0999 .and. 
+     &      x(i,2) < 0.0001 .and. x(i,2) > -0.0001 .and.
+     &      x(i,3) < 0.0001 .and. x(i,3) > -0.0001) then
+!    &    write(*,999) '[',myrank,'] :',i,x(i,:),res(i,:)
+        end if
+      enddo
 c
       do irank = 0,numpe-1
         call MPI_Barrier (MPI_COMM_WORLD,ierr)

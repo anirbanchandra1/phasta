@@ -604,29 +604,16 @@ c
                       iprec=lhs
                       ndofelas = nshl * nelas
 c 
-      do inode = 1,nshg
-c        write(*,10) myrank,inode,x(inode,:),ibits(ibc(inode),14,3)
-      enddo
-10    format('[',i2,'] ',i6,3f7.3,x,i4)
-c
                      call set_if_velocity (BC(:,ndof+2:ndof+4),    iBC,  
      &                                umesh,    x,     ilwork,
      &                                lcblkif,  nshg,  ndofBC,
      &                                nsd,   nelblif,  MAXBLK, nlwork )
 c 
-      do inode = 1,nshg
-c        write(*,100) 'BEFORE: ',myrank, inode, x(inode,:), disp(inode,:)
-      enddo
                      call itrBCElas(umesh,  disp,  iBC, 
      &                              BC(:,ndof+2:ndof+5),
      &                              iper,   ilwork         )
 c
 c.... call to SolGMRElas ... For mesh-elastic solve
-c
-      do inode = 1,nshg
-c        write(*,100) 'AFTER: ',myrank, inode, x(inode,:), disp(inode,:)
-      enddo
-100   format(a,'[',i2,'] ',i6,3f7.3,x,7e24.16)
 c
                      call SolGMRElas (x,        disp,      iBC,    BC,
      &                                colm,     rowp,      meshq,  

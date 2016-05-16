@@ -44,7 +44,7 @@ c
           real*8, parameter :: s = 1.0d0
      &,                        e = 1.0d0
      &,                        h = 1.d-2
-     &,                        mu = 1.d-5
+     &,                        mu = 1.d0
 c
 c
 c... properties

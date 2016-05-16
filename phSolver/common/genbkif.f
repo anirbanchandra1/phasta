@@ -112,6 +112,7 @@ c
      &      c_loc(ientp), iientpsiz, dataInt, iotype)
 c
           if (nummat <= 1) then
+            write(*,'(a,i4,a)') '[',myrank,'] ERROR (genbkif): Number of materials is <= 1'
             call error ('genbkif  ', 'Number of Materials', nummat)
           endif
 c
