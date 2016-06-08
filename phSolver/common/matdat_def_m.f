@@ -16,8 +16,9 @@ c
         common /matdat/ datmat,   matflg, mat_tag, mat_eos,
      &                  mat_prop, nummat, mexist,  datelas
         integer, parameter :: ieos_ideal_gas = 1
-     &,                       ieos_liquid_1  = 2
-     &,                       ieos_solid_1   = 3
+     &,                       ieos_ideal_gas_2 = 2
+     &,                       ieos_liquid_1  = 3
+     &,                       ieos_solid_1   = 4
 c
         integer, parameter :: iprop_ideal_gas_mw    = 1  ! molecular weight
      &,                       iprop_ideal_gas_gamma = 2

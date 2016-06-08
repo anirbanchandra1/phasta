@@ -238,6 +238,8 @@ c
      &    egmass,
      &    nflow,nshg,nnz,nnz_tot)
 c
+        use mpi_def_m
+c
         implicit none
 c
         real*8, intent(inout) :: lhsK(nflow*nflow,nnz_tot)
@@ -253,6 +255,10 @@ c
         npro = size(ienif0,1)
         nshl0 = size(ienif0,2)
         nshl1 = size(ienif1,2)
+c
+      if (any(col(:)<0)) then
+       write(*,'(a,i2,a)') '[',myrank,'] ERROR: FILLSPARSE_IF'
+      endif
 c
         do e = 1,npro
           do a = 1,nshl0

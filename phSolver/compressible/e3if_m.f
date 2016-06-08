@@ -80,10 +80,6 @@ c
 c
             call e3if_flux
 c
-c... calculate the contribution of the interface velocity V_i
-c
-c            call e3if_vi
-c
             call calc_cmtrx
             call kinematic_condition
 c
@@ -91,10 +87,10 @@ c...LHS calculations...
 c
             call set_lhs_matrices
 c
-c            call calc_egmass(egmass00,AiNa0,KijNaj0,KijNaj0,KijNajC0,shp0,shp0,nv0,nv0,WdetJif0,nshl0,nshl0)
-c            call calc_egmass(egmass01,AiNa1,KijNaj0,KijNaj1,KijNajC0,shp0,shp1,nv0,nv1,WdetJif0,nshl0,nshl1)
-c            call calc_egmass(egmass10,AiNa0,KijNaj1,KijNaj0,KijNajC1,shp1,shp0,nv1,nv0,WdetJif1,nshl1,nshl0)
-c            call calc_egmass(egmass11,AiNa1,KijNaj1,KijNaj1,KijNajC1,shp1,shp1,nv1,nv1,WdetJif1,nshl1,nshl1)
+            call calc_egmass(egmass00,AiNa0,KijNaj0,KijNaj0,KijNajC0,shp0,shp0,nv0,nv0,WdetJif0,nshl0,nshl0)
+            call calc_egmass(egmass01,AiNa1,KijNaj0,KijNaj1,KijNajC0,shp0,shp1,nv0,nv1,WdetJif0,nshl0,nshl1)
+            call calc_egmass(egmass10,AiNa0,KijNaj1,KijNaj0,KijNajC1,shp1,shp0,nv1,nv0,WdetJif1,nshl1,nshl0)
+            call calc_egmass(egmass11,AiNa1,KijNaj1,KijNaj1,KijNajC1,shp1,shp1,nv1,nv1,WdetJif1,nshl1,nshl1)
 c
             call e3if_wmlt(rl0, ri0, shp0, shg0, WdetJif0, nshl0)
             call e3if_wmlt(rl1, ri1, shp1, shg1, WdetJif1, nshl1)
@@ -112,8 +108,8 @@ c      do iel = 1,npro
 c        write(*,'(a,i4,a,i4,3f12.4)') '[',myrank,'] iel: ',iel,vi(iel,:)
 c      enddo
 c
-            call calc_vi_area_node(sum_vi_area_l0,shp0,nshl0)
-            call calc_vi_area_node(sum_vi_area_l1,shp1,nshl1)
+            call calc_vi_area_node(sum_vi_area_l0,shp0,WdetJif0,nshl0)
+            call calc_vi_area_node(sum_vi_area_l1,shp1,WdetJif1,nshl1)
 c
           enddo  ! end of integeration points loop 
 c
@@ -321,26 +317,25 @@ c
 c
             call calc_diff_flux(fdiff0,var0(iel),prop0(iel))
             call calc_diff_flux(fdiff1,var1(iel),prop1(iel))
-      if (iel == 38) then
-c        write(*,500) myrank,iel,fconv0(:,1)
+c        write(*,500) myrank,iel,fconv0(1,:)
+c        write(*,500) myrank,iel,fconv1(1,:)
+c        write(*,500) myrank,iel,fdiff0(1,:)
+c        write(*,500) myrank,iel,fdiff1(1,:)
 c        write(*,500) myrank,iel,fdiff0(:,5)-fdiff1(:,5)
 c        write(*,500) myrank,iel,var0(iel)%grad_y(:,5)-var1(iel)%grad_y(:,5)
-      endif
-500   format('[',i2,'] ',i3,x,3e24.16)
 c
 c... calculate flux in normal direction...
 c
             do iflow = 1,nflow
-c
               f0(:,iflow) = fconv0(:,iflow) - fdiff0(:,iflow)
               f1(:,iflow) = fconv1(:,iflow) - fdiff1(:,iflow)
-c
               f0n0(iflow) = dot_product(f0(:,iflow),nv0(iel,:))
               f0n1(iflow) = dot_product(f0(:,iflow),nv1(iel,:))
               f1n0(iflow) = dot_product(f1(:,iflow),nv0(iel,:))
               f1n1(iflow) = dot_product(f1(:,iflow),nv1(iel,:))
-c
             enddo
+c        write(*,500) myrank,iel,f0n0(:)
+c
 c
 c      if (iel == 1) then
 c        write(*,10) 'rho0, u0, p0, T0, ei0:', rho0(iel), u0(iel,1), pres0(iel), ei0(iel)
@@ -368,47 +363,15 @@ c
 c      ri0(iel,16:20) = ri0(iel,16:20) + f0n0(1:5)
 c      ri1(iel,16:20) = ri1(iel,16:20) + f0n1(1:5)
 c
+c       write(*,500) myrank,iel,ri0(iel,16:20)
+c        write(*,500) myrank,iel,ri1(iel,16:20)
           enddo
 c
 10    format(a,5e24.16)
 20    format(a,1e24.16)
+500   format('[',i2,'] ',i3,x,5e24.16)
 c
         end subroutine e3if_flux
-c
-        subroutine     e3if_vi
-c
-c... HARDCODED
-c    interface progression velocity
-c
-          real*8, dimension(3), parameter :: vi = (/-1.0e-3,0.,0./)
-          real*8 :: vini0,vini1
-          real*8 :: etot0,etot1
-c
-          integer :: iel
-c
-          do iel = 1,npro
-c
-            vini0 = dot_product(vi,nv0(iel,:))
-            vini1 = dot_product(vi,nv1(iel,:))
-c
-c...mass
-            ri0(iel,1) = ri0(iel,1) + 0.5*(rho0(iel)-rho1(iel))*vini0
-            ri1(iel,1) = ri1(iel,1) + 0.5*(rho1(iel)-rho0(iel))*vini1
-c
-c...momentum
-            ri0(iel,2:4) = ri0(iel,2:4) + 0.5*(rho0(iel)*u0(iel,1:3)-rho1(iel)*u1(iel,1:3))*vini0
-            ri1(iel,2:4) = ri1(iel,2:4) + 0.5*(rho1(iel)*u1(iel,1:3)-rho0(iel)*u0(iel,1:3))*vini1
-c
-c...energy
-            etot0 = ei0(iel) + 0.5*dot_product(u0(iel,:),u0(iel,:))
-            etot1 = ei1(iel) + 0.5*dot_product(u1(iel,:),u1(iel,:))
-c
-            ri0(iel,5) = ri0(iel,5) + 0.5*(rho0(iel)*etot0-rho1(iel)*etot1)*vini0
-            ri1(iel,5) = ri1(iel,5) + 0.5*(rho1(iel)*etot1-rho0(iel)*etot0)*vini1
-c
-          enddo
-c
-        end subroutine e3if_vi
 c
         subroutine kinematic_condition
 c
@@ -493,6 +456,8 @@ c
           integer :: p,q,r
 c
           cmtrx = zero
+c
+c          cmtrx(:,1,1) = one
 c
           cmtrx(:,2,2) = one - nv0(:,1)*nv0(:,1)
           cmtrx(:,2,3) =     - nv0(:,1)*nv0(:,2)

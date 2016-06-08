@@ -14,7 +14,7 @@ c -----> BEGIN HARDCODE <-----------
 c HARDCODED until the proper indexing system is implemented
 c
         select case (mat_eos(mater,1))
-        case (ieos_ideal_gas)
+        case (ieos_ideal_gas,ieos_ideal_gas_2)
           ivisc = 3
           icon = 4
         case (ieos_liquid_1)

@@ -76,27 +76,24 @@ c
 c
         tol = 1.e-10
 c
-        do iel = 1,npro
-          do i = 1,3
-            shpq0(iel,i) = shp0(i,intp)
-            do isd = 1,nsd
-              shgq0(iel,isd,i) = shg0(isd,i,intp)
-            enddo
-            do j = 1,3
-              d = sqrt(sum((xl0(iel,i,:)-xl1(iel,j,:))**2))
-              if (d <= tol) then
-                shpq1(iel,i) = shp1(j,intp)
-                do jsd = 1,nsd
-                  shgq1(iel,jsd,i) = shg1(jsd,j,intp)
-                enddo
-              endif
-            enddo
+        do i = 1,nenl
+          shpq0(:,i) = shp0(i,intp)
+          do isd = 1,nsd
+            shgq0(:,isd,i) = shg0(isd,i,intp)
           enddo
-          shpq0(iel,4) = shp0(4,intp)
-          shpq1(iel,4) = shp1(4,intp)
-          shgq0(iel,:,4) = shg0(:,4,intp)
-          shgq1(iel,:,4) = shg1(:,4,intp)
         enddo
+
+      shpq1(:,1) = shp1(1,intp)
+      shpq1(:,2) = shp1(3,intp)
+      shpq1(:,3) = shp1(2,intp)
+      shpq1(:,4) = shp1(4,intp)
+c
+      do isd = 1,nsd
+        shgq1(:,isd,1) = shg1(isd,1,intp)
+        shgq1(:,isd,2) = shg1(isd,3,intp)
+        shgq1(:,isd,3) = shg1(isd,2,intp)
+        shgq1(:,isd,4) = shg1(isd,4,intp)
+      enddo
 c
       end subroutine getshp_if
 c

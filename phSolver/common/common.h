@@ -157,7 +157,8 @@ c
 
         common /conpar/ numnp,    numel,  numelb, numelif,
      &                  numpbc,   nen,    nfaces,
-     &                  numflx,   ndof,   iALE,   icoord, navier,
+     &                  numflx,   ndof,   iALE,   iMsIpSc,iMsCsNb,
+     &                  icoord,   navier,
      &                  irs,      iexec,  necho,  ichem,  iRK,    nedof,
      &                  ndofelas, nshg,   nnz,    istop,  nflow,  nelas, 
      &                  nnz_tot,  idtn,
@@ -201,6 +202,9 @@ c...........................................................................
 c...........................................................................
 
 c
+        common /alevar/ raleF,   raleA,   raleX,   raleY,   raleLx,
+     &                  raleLy, raleRx,   raleRy,  ialeD,   ialeT
+c
         common /levlset/ epsilon_ls, epsilon_lsd, dtlset, iLSet, 
      &                   ivconstraint, iExpLSSclr1, iExpLSSclr2
 
@@ -236,7 +240,7 @@ c
         integer :: svLSType, svLSFlag
         common /inpdat/ epstol(6),  Delt(MAXTS),    CFLfl(MAXTS),
      &                  CFLsl(MAXTS),   nstep(MAXTS),   niter(MAXTS),
-     &                  impl(MAXTS),    rhoinf(MAXTS),
+     &                  impl(MAXTS),    rhoinf(MAXTS),  rhoinfS(MAXTS),
      &                  LHSupd(6),  loctim(MAXTS),  deltol(MAXTS,2), 
      &                  leslib,     svLSFlag,   svLSType
 c

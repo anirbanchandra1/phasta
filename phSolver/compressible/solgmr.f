@@ -495,7 +495,6 @@ c
 c.... Pre-precondition the LHS mass matrix and set up the sparse 
 c     preconditioners
 c
-
       if(lhs.eq.1) call Spsi3pre (BDiag, lhsK, nflow, col, row)
 c     
 c.... copy res in uBrg(1)

@@ -220,6 +220,7 @@ c.... call the semi-discrete predictor multi-corrector iterative driver
 c
         call itrdrv (y,              ac,             
      &               uold,           point2x,
+     &               umesh,          xn,           
      &               iBC,            BC,
      &               point2iper,     point2ilwork,   shp,
      &               shgl,           shpb,           shglb,
@@ -260,11 +261,15 @@ CAD        write(6,*) 'Life: ', second(0) - ttim(100)
         deallocate(point2iper)
         if(numpe.gt.1) then
           call Dctypes(point2ilwork(1))
-          deallocate(point2ilwork)
+c          deallocate(point2ilwork)
         endif
         deallocate(point2x)
         deallocate(point2nsons)
         deallocate(point2ifath)
+        deallocate(point2ilwork)
+        deallocate(xn)
+c        deallocate(xdotold)
+        deallocate(umesh)
         deallocate(uold)
         deallocate(wnrm)
         deallocate(otwn)

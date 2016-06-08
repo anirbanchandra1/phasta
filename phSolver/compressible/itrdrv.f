@@ -1,4 +1,5 @@
-              subroutine itrdrv (y,         ac,   uold, x,         
+              subroutine itrdrv (y,         ac,   uold, x, 
+     &                   umesh,     xn,       
      &                   iBC,       BC,         
      &                   iper,      ilwork,     shp,       
      &                   shgl,      shpb,       shglb,
@@ -46,6 +47,7 @@ c
 c
         dimension y(nshg,ndof),            ac(nshg,ndof),  
      &            yold(nshg,ndof),         acold(nshg,ndof),           
+     &            xn(numnp,nsd),           xdot(numnp,nsd),
      &            x(numnp,nsd),            iBC(nshg),
      &            BC(nshg,ndofBC),         ilwork(nlwork),
      &            iper(nshg),              uold(nshg,nsd)
@@ -193,10 +195,11 @@ c
 
 c
 c ... allocate mesh-elastic solve related arrays only if mesh-elastic solve flag/option is ON
-c
-        if (impl(2) .eq. 1) then 
+c.... we may not need this anymore, since we have them in readnblk. 
+        if ( iALE .gt. 0 ) then 
           meshq = one
-          umesh = zero
+          x     = xn
+c          umesh = zero
         endif
         call init_sum_vi_area(nshg,nsd)
 c
@@ -322,11 +325,10 @@ c============ Start the loop of time steps============================c
         deltaInlInv=one/(0.125*0.0254)
         do 2000 istp = 1, nstp
 c
-      umesh = zero
-c            call temp_mesh_motion(x,umesh,time,delt(1),istp,numnp,nsd,myrank)
+          umesh = zero
+          if ( iMsIpSc .eq. 1 )
+     &      call tempMeshMo( x, umesh, iBC, BC(:,ndof+2:ndof+5) )
 c
-
-         
         if(iramp.eq.1) 
      &        call BCprofileScale(vbc_prof,BC,yold)
 
@@ -395,10 +397,11 @@ c
             call itrPredict(   yold,    acold,    y,   ac )
 c
 c...-------------> HARDCODED <-----------------------
-c
-c            call itrBC (y,  ac,  iBC,  BC,  iper, ilwork)
-      call tempitrBC (y,ac, iBC, BC, iper, ilwork, x, umesh)
-c
+            if (iMsIpSc .eq. 2) then
+              call itrBC (y,  ac,  iBC,  BC,  iper, ilwork)
+            else
+              call tempitrBC (y,ac, iBC, BC, iper, ilwork, umesh)
+            endif
 c----------------> END HARDCODE <--------------------
 c
             isclr = zero
@@ -408,7 +411,7 @@ c
             enddo
             endif
 c
-            if(impl(2).gt.0) then
+            if(iALE .eq. 2) then
 c
 c....   need itrPredict equivalent for 'disp'
 c
@@ -595,7 +598,7 @@ c
      &                    iper,          ilwork,
      &                    shp,           shgl,
      &                    shpb,          shglb, solinc(1,isclr+5))
-c    
+c'    
                   endif  ! endif usingPETSc for scalar
 c
                   else if(isolve.eq.10) then ! this is a mesh-elastic solve
@@ -604,10 +607,12 @@ c
                       iprec=lhs
                       ndofelas = nshl * nelas
 c 
-                     call set_if_velocity (BC(:,ndof+2:ndof+4),    iBC,  
+                     if ( iMsIpSc .eq. 2 ) then 
+                       call set_if_velocity (BC(:,ndof+2:ndof+4),  iBC, 
      &                                umesh,    x,     ilwork,
      &                                lcblkif,  nshg,  ndofBC,
      &                                nsd,   nelblif,  MAXBLK, nlwork )
+                     endif
 c 
                      call itrBCElas(umesh,  disp,  iBC, 
      &                              BC(:,ndof+2:ndof+5),
@@ -633,10 +638,11 @@ c
                      call itrCorrect ( y, ac, yold, acold, solinc)
 c
 c...-------------> HARDCODED <-----------------------
-c
-c            call itrBC (y,  ac,  iBC,  BC,  iper, ilwork)
-      call tempitrBC (y,ac, iBC, BC, iper, ilwork, x, umesh)
-c
+            if (iMsIpSc .eq. 2) then
+              call itrBC (y,  ac,  iBC,  BC,  iper, ilwork)
+            else
+              call tempitrBC (y,ac, iBC, BC, iper, ilwork, umesh)
+            endif
 c----------------> END HARDCODE <--------------------
 c
                      call tnanq(y, 5, 'y_updbc')
@@ -709,10 +715,11 @@ c
             endif          
             call itrUpdate( yold,  acold,   y,    ac)
 c...-------------> HARDCODED <-----------------------
-c
-c            call itrBC (y,  ac,  iBC,  BC,  iper, ilwork)
-      call tempitrBC (y,ac, iBC, BC, iper, ilwork, x, umesh)
-c
+            if (iMsIpSc .eq. 2) then
+              call itrBC (y,  ac,  iBC,  BC,  iper, ilwork)
+            else 
+              call tempitrBC (y,ac, iBC, BC, iper, ilwork, umesh)
+            endif
 c----------------> END HARDCODE <--------------------
 c
 c Elaine-SPEBC      
@@ -824,19 +831,48 @@ c.. writing ybar field if requested in each restart file
 !    &              shglb,         nodflx,    ilwork)
                   
                call timer ('Output  ')      !set up the timer
-
+c... DEBUGGING       
+               if (output_mode .eq. -1) then 
+                 output_mode = 0 
+c... write solution and fields
+                 call restar ('out ',  yold, acold)  
+                 if (iALE .gt. 0) then 
+                   call write_field(
+     &                  myrank,'a'//char(0),'motion_coords'//char(0),13,
+     &                  x,     'd'//char(0), numnp, nsd, lstep)
+                   call write_field(
+     &                  myrank,'a'//char(0),'mesh_vel'//char(0),  8,
+     &                  umesh, 'd'//char(0), numnp, nsd, lstep)
+c                   call write_field(
+c     &                  myrank,'a'//char(0),'xdot'//char(0), 4,
+c     &                  xdot,  'd'//char(0), numnp, nsd, lstep)
+c                   call write_field(
+c     &                  myrank,'a'//char(0),'meshQ'//char(0), 5, 
+c     &                  meshq, 'd'//char(0), numel, 1,   lstep)
+                 endif
+c... end writing
+                 output_mode = -1
+               endif
+c... END DEBUGGING
+ 
                !write the solution and time derivative 
                call restar ('out ',  yold, acold)  
 c
 c.... print out the updated mesh and mesh quality for mesh-elastic solve
 c
-               if (impl(2) .eq. 1) then 
-                   call write_field(
-     &                       myrank,'a'//char(0),'coord'//char(0),5,
-     &                       x,     'd'//char(0), numnp, nsd, lstep)
-                   call write_field(
-     &                       myrank,'a'//char(0),'meshQ'//char(0), 5, 
-     &                       meshq, 'd'//char(0), numel, 1,   lstep)
+               if (iALE .gt. 0) then 
+                 call write_field(
+     &                myrank,'a'//char(0),'motion_coords'//char(0),13,
+     &                x,     'd'//char(0), numnp, nsd, lstep)
+                 call write_field(
+     &                myrank,'a'//char(0),'mesh_vel'//char(0),  8,
+     &                umesh, 'd'//char(0), numnp, nsd, lstep)
+c                 call write_field(
+c     &                myrank,'a'//char(0),'xdot'//char(0), 4,
+c     &                xdot,  'd'//char(0), numnp, nsd, lstep)
+c                 call write_field(
+c     &                myrank,'a'//char(0),'meshQ'//char(0), 5, 
+c     &                meshq, 'd'//char(0), numel, 1,   lstep)
                endif
  
                !Write the distance to wall field in each restart

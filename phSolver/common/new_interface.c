@@ -227,7 +227,8 @@ void countfieldstowriterestart()
     nfields++; /*dwal*/
   }
 
-  if (inpdat.impl[1] == 1) {
+  if (conpar.iALE == 2) {
+//HARDCODED BY FAN, it should be + 3, including meshQ
     nfields = nfields + 2; 
   }
 

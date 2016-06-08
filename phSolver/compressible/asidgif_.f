@@ -23,7 +23,7 @@ c
             integer, intent(in) :: nflow_, npro_, ndof_, nsd_, ipord_, numnp_, nqpt_
             integer, intent(inout) :: gbytes_, sbytes_, flops_
             real*8, dimension(nshg_,nflow_), intent(inout) :: res
-            real*8, dimension(:,:,:), pointer, intent(out) :: egmassif00,egmassif01,egmassif10,egmassif11
+            real*8, dimension(:,:,:), pointer, intent(inout) :: egmassif00,egmassif01,egmassif10,egmassif11
             real*8, dimension(nshg_,ndof_),  intent(in)    :: y
             real*8, dimension(nshg_,nsd_),   intent(in)    :: x
             real*8, dimension(numnp_, nsd_), intent(inout) :: umesh
@@ -75,15 +75,37 @@ c
 c
 c.... assemble the local residual arrays
 c
+c      write(*,*) 'CHECK IN ASIDGIF BEFORE LOCAL:'
+      do iel = 1,npro
+        do n = 1,nshl0
+          i0 = ienif0(iel,n)
+c          write(*,100) myrank,0,iel,n,i0,rl0(iel,n,:)
+c          write(*,100) myrank,0,iel,n,i0,res(i0,:)
+        enddo
+        do n = 1,nshl1
+          i1 = ienif1(iel,n)
+c          write(*,100) myrank,1,iel,n,i1,rl1(iel,n,:)
+c          write(*,100) myrank,1,iel,n,i1,res(i1,:)
+        enddo
+      enddo
         call local (res, rl0, ienif0, nflow, 'scatter ', nshg,nshl0,npro,ipord,sbytes_,flops_)
         call local (res, rl1, ienif1, nflow, 'scatter ', nshg,nshl1,npro,ipord,sbytes_,flops_)
+c      write(*,*) 'CHECK IN ASIDGIF AFTER LOCAL:'
+      do iel = 1,npro
+        do n = 1,nshl0
+          i0 = ienif0(iel,n)
+c          write(*,100) myrank,0,iel,n,i0,res(i0,:)
+        enddo
+        do n = 1,nshl1
+          i1 = ienif1(iel,n)
+c          write(*,100) myrank,1,iel,n,i1,res(i1,:)
+        enddo
+      enddo
+100   format('[',i2,'] iel,n,ienif',i1,': ',i4,i2,i6,5e24.16)
 c
         call local (sum_vi_area, sum_vi_area_l0, ienif0, nsd+1, 'scatter ', nshg, nshl0,npro,ipord,sbytes_,flops_)
         call local (sum_vi_area, sum_vi_area_l1, ienif1, nsd+1, 'scatter ', nshg, nshl1,npro,ipord,sbytes_,flops_)
 c
         call free_e3if
-c
-100   format('[',i2,'] res: ',i5,x,5e24.16)
-200   format('[',i2,'] rl0: ',i3,x,i1,x,5e24.16)
 c
       end subroutine asidgif_

@@ -1,6 +1,6 @@
         subroutine AsBMFG (y,       x,       shpb,    shglb,
      &                     ienb,    materb,  iBCB,    BCB,
-     &                     res,     rmes,    EGmass)
+     &                     res,     rmes,    EGmass,  umesh)
 c
 c----------------------------------------------------------------------
 c
@@ -23,7 +23,9 @@ c
      &            rl(npro,nshl,nflow),
      &            rml(npro,nshl,nflow),
      &            EGmass(npro, nshl, nshl) 
-c        
+c       
+        dimension umesh(numnp, nsd),     uml(npro,nshl,nsd)
+c 
         dimension sgn(npro,nshl)
         integer, intent(in) :: materb
 c
@@ -39,6 +41,18 @@ c
 
         call localy(y,      ycl,     ienb,   ndofl,  'gather  ')
         call localx(x,      xlb,    ienb,   nsd,    'gather  ')
+        call local (umesh,  uml,    ienb,   nsd,    'gather  ')
+c
+c      do iel = 1,npro
+c        do n = 1,nshlb
+c          i = ienb(iel,n)
+c          rad = sqrt(x(i,2)**2+x(i,3)**2)
+c          if (abs(rad-5.e-2)<1.e-4 .and. x(i,1)>=0.1 .and. x(i,1)<=0.15) then
+c            write(*,100) i,x(i,:),rad
+c          endif
+c        enddo
+c      enddo
+100   format(i4,x,4f7.3)
 c
 
         !get the boundary element residuals
@@ -47,14 +61,15 @@ c
         rml = zero
 c
 !  pass the memory location of ycl to both yl and ycl in e3b.  This may
- !  seem dangerous since yl in e3b is :,nflow and ycl is :,ndof but they
- !  do not write to yl (out of bounds at least), only use the data there 
- !  so both will access data
- !  properly from this location.
+!  seem dangerous since yl in e3b is :,nflow and ycl is :,ndof but they
+!  do not write to yl (out of bounds at least), only use the data there 
+!  so both will access data
+!  properly from this location.
 c
         call e3b  (ycl,     ycl,     iBCB,    BCB,     shpb,    shglb,
-     &             xlb,     rl,      rml,     sgn,     EGmass,  materb)
-
+     &             xlb,     rl,      rml,     sgn,     EGmass,  materb,
+     &             uml)
+c
         !assemble the residual and the modified residual
         call local(res,    rl,     ienb,   nflow,  'scatter ')
         if (Navier .eq. 1 .and. ires.ne.1 )
@@ -63,8 +78,6 @@ c
         !end
         return
         end
-c
-c
 c
         subroutine AsBMFGSclr (y,       x,       shpb,    shglb,
      &                         ienb,    materb,  iBCB, 

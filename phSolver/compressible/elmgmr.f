@@ -327,7 +327,7 @@ c
             integer, intent(in) :: nflow_, npro_, ndof_, nsd_, ipord_, numnp_, nqpt_
             integer, intent(inout) :: gbytes_, sbytes_, flops_
             real*8, dimension(nshg_,nflow_), intent(inout) :: res
-            real*8, dimension(:,:,:), pointer, intent(out) :: egmassif00,egmassif01,egmassif10,egmassif11
+            real*8, dimension(:,:,:), pointer, intent(inout) :: egmassif00,egmassif01,egmassif10,egmassif11
             real*8, dimension(nshg_,ndof_),  intent(in)    :: y
             real*8, dimension(nshg_,nsd_),   intent(in)    :: x
             real*8, dimension(nshl0_,nqpt_),intent(in)   :: shpif0
@@ -539,14 +539,13 @@ c
 !     &                           'd'//char(0), nshg, ndof, lstep)
 !endif //DEBUG
 c
-!      write(*,998) '[',myrank,'] in elmgmr AFTER INTERIOR.'
-      do i = 1,nshg
-        if (x(i,1) < 0.1001 .and. x(i,1) > 0.0999 .and. 
-     &      x(i,2) < 0.0001 .and. x(i,2) > -0.0001 .and.
-     &      x(i,3) < 0.0001 .and. x(i,3) > -0.0001) then
-!     &    write(*,999) '[',myrank,'] :',i,x(i,:),res(i,:)
-        endif
-      enddo
+c      write(*,998) '[',myrank,'] in elmgmr AFTER INTERIOR.'
+c      do i = 1,nshg
+c        rad = sqrt(x(i,2)**2+x(i,3)**2)
+c        if (abs(rad-5.e-3)<1.e-4 .and. x(i,1)<=0.15 .and. x(i,1)>=0.1) then
+c          write(*,999) myrank,i,x(i,:),res(i,:)
+c        endif
+c      enddo
 c
 c.... -------------------->   boundary elements   <--------------------
 c
@@ -592,7 +591,7 @@ c
      &                 mienb(iblk)%p,           mattyp,
      &                 miBCB(iblk)%p,           mBCB(iblk)%p,
      &                 res,                     rmes, 
-     &                 EGmass)
+     &                 EGmass,                  umesh)
           if(lhs == 1 .and. iLHScond > 0) then
             call fillSparseC_BC(mienb(iblk)%p, EGmass, 
      &                   lhsk, row, col)
@@ -602,22 +601,14 @@ c
           deallocate (tmpshpb)
           deallocate (tmpshglb)
         enddo   !end of boundary element loop
-    
-!ifdef DEBUG !Nicholas Mati
-!        call write_debug(myrank, 'res-afterAsBMFG'//char(0),
-!     &                           'res'//char(0), res, 
-!     &                           'd'//char(0), nshg, nflow, lstep)
-!        call MPI_ABORT(MPI_COMM_WORLD) 
-!endif //DEBUG
 c
-!      write(*,998) '[',myrank,'] in elmgmr AFTER BOUNDARY.'
-      do i = 1,nshg
-        if (x(i,1) < 0.1001 .and. x(i,1) > 0.0999 .and. 
-     &      x(i,2) < 0.0001 .and. x(i,2) > -0.0001 .and.
-     &      x(i,3) < 0.0001 .and. x(i,3) > -0.0001) then
-!     &    write(*,999) '[',myrank,'] :',i,x(i,:),res(i,:)
-        endif
-      enddo
+c      write(*,998) '[',myrank,'] in elmgmr AFTER BOUNDARY.'
+c      do i = 1,nshg
+c        rad = sqrt(x(i,2)**2+x(i,3)**2)
+c        if (abs(rad-5.e-3)<1.e-4 .and. x(i,1)<=0.15 .and. x(i,1)>=0.1) then
+c          write(*,999) myrank,i,x(i,:),res(i,:)
+c        endif
+c      enddo
 c
       ttim(80) = ttim(80) + secs(0.0)
 c
@@ -667,6 +658,9 @@ c
             allocate (egmassif11(1,1,1))
           endif
 
+      if (iblk == nelblif) then
+c        write(*,'(a,i2,a,2i4)')'[',myrank,']', iblk, nelblif
+      endif
       call asidgif_
      & (
      &   nshg, nshl0, nshl1, nenl0, nenl1, lcsyst0, lcsyst1,
@@ -690,13 +684,13 @@ c
 c
 c.... Fill-up the global sparse LHS mass matrix
 c
-c            call fillsparse_if( lhsk,mienif0(iblk)%p,mienif0(iblk)%p,col,row,egmassif00,nflow,nshg,nnz,nnz_tot)
-c            call fillsparse_if( lhsk,mienif0(iblk)%p,mienif1(iblk)%p,col,row,egmassif01,nflow,nshg,nnz,nnz_tot)
-c            call fillsparse_if( lhsk,mienif1(iblk)%p,mienif0(iblk)%p,col,row,egmassif10,nflow,nshg,nnz,nnz_tot)
-c            call fillsparse_if( lhsk,mienif1(iblk)%p,mienif1(iblk)%p,col,row,egmassif11,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if( lhsk,mienif0(iblk)%p,mienif0(iblk)%p,col,row,egmassif00,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if( lhsk,mienif0(iblk)%p,mienif1(iblk)%p,col,row,egmassif01,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if( lhsk,mienif1(iblk)%p,mienif0(iblk)%p,col,row,egmassif10,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if( lhsk,mienif1(iblk)%p,mienif1(iblk)%p,col,row,egmassif11,nflow,nshg,nnz,nnz_tot)
 c
           endif
-
+c
           deallocate (egmassif00)
           deallocate (egmassif01)
           deallocate (egmassif10)
@@ -706,14 +700,13 @@ c
 c
         enddo if_blocks
 c
-!      write(*,998) '[',myrank,'] in elmgmr BEFORE commu.'
-      do i = 1,nshg
-        if (x(i,1) < 0.1001 .and. x(i,1) > 0.0999 .and. 
-     &      x(i,2) < 0.0001 .and. x(i,2) > -0.0001 .and.
-     &      x(i,3) < 0.0001 .and. x(i,3) > -0.0001) then
-!     &   write(*,999) '[',myrank,'] :',i,x(i,:),res(i,:)
-        endif 
-      enddo
+c        write(*,998) '[',myrank,'] in elmgmr BEFORE commu.'
+c      do i = 1,nshg
+c        if (abs(x(i,1)-x1)<tol .and. abs(x(i,2)-x2)<tol .and. abs(x(i,3)-x3)<tol) then
+c          write(*,997) myrank,i,x(i,:),y(i,:)
+c          write(*,999) myrank,i,x(i,:),res(i,:)
+c        endif 
+c      enddo
 c
 c before the commu we need to rotate the residual vector for axisymmetric
 c boundary conditions (so that off processor periodicity is a dof add instead
@@ -748,48 +741,49 @@ c
 c
 c------> BEGIN DEBUG <---------
 c
-!      write(*,998) '[',myrank,'] in elmgmr AFTER commu.'
-      do i = 1,nshg
-        if (x(i,1) < 0.1001 .and. x(i,1) > 0.0999 .and. 
-     &      x(i,2) < 0.0001 .and. x(i,2) > -0.0001 .and.
-     &      x(i,3) < 0.0001 .and. x(i,3) > -0.0001) then
-!    &    write(*,999) '[',myrank,'] :',i,x(i,:),res(i,:)
-        end if
-      enddo
+c      write(*,998) '[',myrank,'] in elmgmr AFTER commu.'
+c      do i = 1,nshg
+c        if (abs(x(i,1)-x1)<tol .and. abs(x(i,2)-x2)<tol .and. abs(x(i,3)-x3)<tol) then
+c        if (any(abs(res(i,:))>1.e-6)) then
+c          write(*,997) myrank,i,x(i,:),y(i,:)
+c          write(*,999) myrank,i,x(i,:),res(i,:)
+c        end if
+c      enddo
 c
-      do irank = 0,numpe-1
-        call MPI_Barrier (MPI_COMM_WORLD,ierr)
-        if (irank == myrank) then
-          numtask = ilwork(1)
-          itkbeg = 1
-          m = 0
-!          write(*,990) myrank,numtask
-          do itask = 1, numtask
-            m = m + 1
-            iother = ilwork (itkbeg + 3)
-            numseg = ilwork (itkbeg + 4)
-!            write(*,991) myrank,ilwork(itkbeg+1:itkbeg+5)
-!      if (myrank == 0 .and. iother == 1 .or.
-!     &    myrank == 1 .and. iother == 0) then
-        do is = 1,numseg
-          isgbeg = ilwork(itkbeg + 3 + 2*is)
-          lenseg = ilwork(itkbeg + 4 + 2*is)
-          isgend = isgbeg + lenseg - 1
-          do isg = isgbeg,isgend
-!            write(*,801) myrank,is,isg,lenseg,x(isg,:)!,res(isg,:)
-          enddo
-        enddo
-!      endif
-            itkbeg = itkbeg + 4 + 2*numseg
-          enddo
-        endif
-      enddo
+c      do irank = 0,numpe-1
+c        call MPI_Barrier (MPI_COMM_WORLD,ierr)
+c        if (irank == myrank) then
+c          numtask = ilwork(1)
+c          itkbeg = 1
+c          m = 0
+c!          write(*,990) myrank,numtask
+c          do itask = 1, numtask
+c            m = m + 1
+c            iother = ilwork (itkbeg + 3)
+c            numseg = ilwork (itkbeg + 4)
+c!            write(*,991) myrank,ilwork(itkbeg+1:itkbeg+5)
+c!      if (myrank == 0 .and. iother == 1 .or.
+c!     &    myrank == 1 .and. iother == 0) then
+c        do is = 1,numseg
+c          isgbeg = ilwork(itkbeg + 3 + 2*is)
+c          lenseg = ilwork(itkbeg + 4 + 2*is)
+c          isgend = isgbeg + lenseg - 1
+c          do isg = isgbeg,isgend
+c!            write(*,801) myrank,is,isg,lenseg,x(isg,:)!,res(isg,:)
+c          enddo
+c        enddo
+c!      endif
+c            itkbeg = itkbeg + 4 + 2*numseg
+c          enddo
+c        endif
+c      enddo
 c
 801   format('[',i2,'] is,isgbeg,lenseg,isg,x:'3i4,x,3f8.3,x,5e24.16)
 990   format('[',i2,'] numtask:',i3)
 991   format('[',i2,'] itag, iacc, iother, numseg, isgbeg:',5i6)
+997   format('[',i2,'] i,x,y:  ',i6,3f7.3,5e24.16)
 998   format(a,i2,a)
-999   format(a,i2,a,i6,3f7.3,5e24.16)
+999   format('[',i2,'] i,x,res:',i6,3f7.3,5e24.16)
 c
 c--------> END DEBUG <--------------
 c

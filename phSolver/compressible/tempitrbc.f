@@ -1,4 +1,4 @@
-        subroutine tempitrBC (y,ac, iBC, BC, iper, ilwork, x, umesh)
+        subroutine tempitrBC (y,ac, iBC, BC, iper, ilwork, umesh)
 c
 c----------------------------------------------------------------------
 c
@@ -14,7 +14,6 @@ c                         (3,:) upper bound
 c output:
 c  y      (nshg,nflow)   : Adjusted V value(s) corresponding to a 
 c                           constraint d.o.f.
-c  x      (numnp,nsd)    : nodal coordinate. FOR ALE
 c  umesh  (numnp,nsd)    : mesh velocity. FOR ALE 
 c
 c Farzin Shakib, Winter 1987.
@@ -28,7 +27,7 @@ c
 
         dimension ilwork(nlwork),           iper(nshg)
      
-        dimension x(numnp,nsd),             umesh(numnp,nsd)    !FOR ALE   
+        dimension umesh(numnp,nsd)    !FOR ALE   
         integer   istp
 
         real*8 tmp(nshg), y1(nshg),q1(nshg)
@@ -114,10 +113,12 @@ c
 c
 c.... x1-velocity, x2-velocity and x3-velocity, 3D
 c       
+c.... ALE change takes place here
+c------> HARDCODED BC <---------
           where (ibits(iBC,3,3) .eq. 7)
-            y(:,1) =  BC(:,3)
-            y(:,2) =  BC(:,4)
-            y(:,3) =  BC(:,5)
+            y(:,1) =  BC(:,3) + umesh(:,1)
+            y(:,2) =  BC(:,4) + umesh(:,2)
+            y(:,3) =  BC(:,5) + umesh(:,3)
           endwhere
 c
 c       endif

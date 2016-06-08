@@ -48,25 +48,25 @@ c
 c
         Ai(:,1,1,1) = drdp * (u1 - um1)
         Ai(:,1,1,2) = rho
-c       Ai(:,1,1,3) = zero
-c       Ai(:,1,1,4) = zero
+        Ai(:,1,1,3) = zero
+        Ai(:,1,1,4) = zero
         Ai(:,1,1,5) = drdT * (u1 - um1)
 c
         Ai(:,1,2,1) = drdp * (u1 - um1) * u1 + 1
         Ai(:,1,2,2) = rho  * (u1 - um1) + rho * u1
-c       Ai(:,1,2,3) = zero
-c       Ai(:,1,2,4) = zero
+        Ai(:,1,2,3) = zero
+        Ai(:,1,2,4) = zero
         Ai(:,1,2,5) = drdT * (u1 - um1) * u1
 c
         Ai(:,1,3,1) = drdp * (u1 - um1) * u2 
         Ai(:,1,3,2) = rho  * u2
         Ai(:,1,3,3) = rho  * (u1 - um1)
-c       Ai(:,1,3,4) = zero
+        Ai(:,1,3,4) = zero
         Ai(:,1,3,5) = drdT * (u1 - um1) * u2
 c
         Ai(:,1,4,1) = drdp * (u1 - um1) * u3 
         Ai(:,1,4,2) = rho  * u3
-c       Ai(:,1,4,3) = zero
+        Ai(:,1,4,3) = zero
         Ai(:,1,4,4) = rho  * (u1 - um1)
         Ai(:,1,4,5) = drdT * (u1 - um1) * u3
 c
@@ -77,25 +77,25 @@ c
         Ai(:,1,5,5) = (u1 - um1) * e4p
 c
         Ai(:,2,1,1) = drdp * (u2 - um2)
-c       Ai(:,2,1,2) = zero
+        Ai(:,2,1,2) = zero
         Ai(:,2,1,3) = rho
-c       Ai(:,2,1,4) = zero
+        Ai(:,2,1,4) = zero
         Ai(:,2,1,5) = drdT * (u2 - um2)
 c
         Ai(:,2,2,1) = drdp * u1 * (u2 - um2)
         Ai(:,2,2,2) = rho  * (u2 - um2)
         Ai(:,2,2,3) = rho  * u1
-c       Ai(:,2,2,4) = zero
+        Ai(:,2,2,4) = zero
         Ai(:,2,2,5) = drdT * u1 * (u2 - um2)
 c
         Ai(:,2,3,1) = drdp * (u2 - um2) * u2 + 1
-c       Ai(:,2,3,2) = zero
+        Ai(:,2,3,2) = zero
         Ai(:,2,3,3) = rho  * (u2 - um2) + rho * u2
-c       Ai(:,2,3,4) = zero
+        Ai(:,2,3,4) = zero
         Ai(:,2,3,5) = drdT * (u2 - um2) * u2
 c
         Ai(:,2,4,1) = drdp * (u2 - um2) * u3 
-c       Ai(:,2,4,2) = zero
+        Ai(:,2,4,2) = zero
         Ai(:,2,4,3) = rho  * u3
         Ai(:,2,4,4) = rho  * (u2 - um2)
         Ai(:,2,4,5) = drdT * (u2 - um2) * u3
@@ -107,26 +107,26 @@ c
         Ai(:,2,5,5) = (u2 - um2) * e4p
 c
         Ai(:,3,1,1) = drdp * (u3 - um3)
-c       Ai(:,3,1,2) = zero
-c       Ai(:,3,1,3) = zero
+        Ai(:,3,1,2) = zero
+        Ai(:,3,1,3) = zero
         Ai(:,3,1,4) = rho
         Ai(:,3,1,5) = drdT * (u3 - um3)
 c
         Ai(:,3,2,1) = drdp * u1 * (u3 - um3) 
         Ai(:,3,2,2) = rho  * (u3 - um3)
-c       Ai(:,3,2,3) = zero
+        Ai(:,3,2,3) = zero
         Ai(:,3,2,4) = rho  * u1
         Ai(:,3,2,5) = drdT * u1 * (u3 - um3)
 c
         Ai(:,3,3,1) = drdp * (u3 - um3) * u2 
-c       Ai(:,3,3,2) = zero
+        Ai(:,3,3,2) = zero
         Ai(:,3,3,3) = rho  * (u3 - um3)
         Ai(:,3,3,4) = rho  * u2
         Ai(:,3,3,5) = drdT * (u3 - um3) * u2
 c
         Ai(:,3,4,1) = drdp * (u3 - um3) * u3 + 1
-c       Ai(:,3,4,2) = zero
-c       Ai(:,3,4,3) = zero
+        Ai(:,3,4,2) = zero
+        Ai(:,3,4,3) = zero
         Ai(:,3,4,4) = rho  * u3 + rho * (u3 - um3)
         Ai(:,3,4,5) = drdT * (u3 - um3) * u3
 c
