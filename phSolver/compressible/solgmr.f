@@ -515,7 +515,10 @@ c
 c
 c.... if we are down to machine precision, don't bother solving
 c
-      if (unorm .lt. 100.*epsM**2) goto 3000 
+      if (unorm .lt. 100.*epsM**2) then 
+!        echeck = 0.1*epsnrm
+        goto 3000 
+      endif
 c
 c.... set up tolerance of the Hessenberg's problem
 c

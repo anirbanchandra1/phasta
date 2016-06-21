@@ -316,7 +316,7 @@ c
      &   qwtif0,   qwtif1,
      &   ienif0,   ienif1,
      &   mattypeif0, mattypeif1,
-     &   time,
+     &   time_,
      &   sum_vi_area
      & )
          use hierarchic_m
@@ -338,7 +338,7 @@ c
             real*8, dimension(numnp_, nsd_), intent(inout) :: umesh
             integer, dimension(:,:), pointer, intent(in)   :: ienif0, ienif1
             integer, intent(in)   :: mattypeif0, mattypeif1
-            real*8, intent(in) :: time
+            real*8, intent(in) :: time_
             real*8, pointer, intent(inout) :: sum_vi_area(:,:)
           end subroutine asidgif_
           subroutine fillsparse_if

@@ -41,7 +41,10 @@ c
         real*8, dimension(:), pointer :: rk0, h0, cp0, alfaP0, betaT0
         real*8, dimension(:), pointer :: rk1, h1, cp1, alfaP1, betaT1
 c
-          real*8, parameter :: s = 1.0d-1
+        integer :: istep
+        real*8 :: time,deltat
+c
+          real*8, parameter :: s = 1.0d0
      &,                        e = 1.0d0
      &,                        h = 1.d-2
      &,                        mu = 1.d0
@@ -81,13 +84,15 @@ c
      &    nshg_,nshl0_,nshl1_,nenl0_,nenl1_,lcsyst0_,lcsyst1_,
      &    npro_,ndof_,nsd_,nflow_,ipord_,nqpt_,
      &    egmassif00,egmassif01,egmassif10,egmassif11,
-     &    materif0, materif1
+     &    materif0, materif1,
+     &    time_
      &  )
 c
           integer, intent(in) :: nshg_,nshl0_,nshl1_,nenl0_,nenl1_,lcsyst0_,lcsyst1_
           integer, intent(in) :: npro_,ndof_,nsd_,nflow_,ipord_,nqpt_
           real*8, dimension(:,:,:), pointer, intent(in) :: egmassif00,egmassif01,egmassif10,egmassif11
           integer, intent(in) :: materif0, materif1
+          real*8, intent(in) :: time_
 c
           nshg  = nshg_
           nshl0 = nshl0_
@@ -102,6 +107,8 @@ c
           nflow = nflow_
           ipord = ipord_
           nqpt  = nqpt_
+c
+          time  = time_
 c
           mater0 = materif0
           mater1 = materif1

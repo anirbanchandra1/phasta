@@ -14,14 +14,19 @@ c
         real*8, parameter :: beta  = 1.d-6
 c
         integer :: isd
-        integer :: vmag
+        real*8 :: vmag,t1,c1
+c
+        t1   = 1.0d-4
+        vmag = 10.0d0
+c
+c        if (time < t1) then
+c          c1 = time/t1
+c        else
+          c1 = one
+c        endif
 c
         do isd = 1,nsd
-c
-c          vmag = beta * p**alpha
-          vmag = 0.0d0
-          vi(:,isd) = vmag*n(:,isd)
-c
+          vi(:,isd) = c1*vmag*n(:,isd)
         enddo
 c
       end subroutine calc_vi

@@ -10,7 +10,7 @@
      &   qwtif0,   qwtif1,
      &   ienif0,   ienif1,
      &   materif0, materif1,
-     &   time,
+     &   time_,
      &   sum_vi_area
      & )  
          use hierarchic_m
@@ -34,7 +34,7 @@ c
             real*8, dimension(nqpt_), intent(in) :: qwtif0, qwtif1
             integer, dimension(:,:), pointer, intent(in)   :: ienif0, ienif1
             integer, intent(in)   :: materif0, materif1
-            real*8, intent(in) :: time
+            real*8, intent(in) :: time_
             real*8, intent(inout) :: sum_vi_area(:,:)
 c
       integer :: i, iel, i0,i1,n
@@ -47,7 +47,8 @@ c
      &        nshg_,nshl0_,nshl1_,nenl0_,nenl1_,lcsyst0_,lcsyst1_,
      &        npro_,ndof_,nsd_,nflow_,ipord_,nqpt_,
      &        egmassif00,egmassif01,egmassif10,egmassif11,
-     &        materif0, materif1
+     &        materif0, materif1,
+     &        time_
      &      )
 c
           call malloc_e3if
@@ -75,19 +76,30 @@ c
 c
 c.... assemble the local residual arrays
 c
+c      do iel = 1,npro
+c        do n = 1,nshl0
+c          i0 = ienif0(iel,n)
+c          write(*,200) myrank,0,iel,n,i0,x(i0,:)
+c        enddo
+c        do n = 1,nshl1
+c          i1 = ienif1(iel,n)
+c          write(*,200) myrank,1,iel,n,i1,x(i1,:)
+c        enddo
+c      enddo
+c
 c      write(*,*) 'CHECK IN ASIDGIF BEFORE LOCAL:'
-      do iel = 1,npro
-        do n = 1,nshl0
-          i0 = ienif0(iel,n)
+c      do iel = 1,npro
+c        do n = 1,nshl0
+c          i0 = ienif0(iel,n)
 c          write(*,100) myrank,0,iel,n,i0,rl0(iel,n,:)
 c          write(*,100) myrank,0,iel,n,i0,res(i0,:)
-        enddo
-        do n = 1,nshl1
-          i1 = ienif1(iel,n)
+c        enddo
+c        do n = 1,nshl1
+c          i1 = ienif1(iel,n)
 c          write(*,100) myrank,1,iel,n,i1,rl1(iel,n,:)
 c          write(*,100) myrank,1,iel,n,i1,res(i1,:)
-        enddo
-      enddo
+c        enddo
+c      enddo
         call local (res, rl0, ienif0, nflow, 'scatter ', nshg,nshl0,npro,ipord,sbytes_,flops_)
         call local (res, rl1, ienif1, nflow, 'scatter ', nshg,nshl1,npro,ipord,sbytes_,flops_)
 c      write(*,*) 'CHECK IN ASIDGIF AFTER LOCAL:'
@@ -102,6 +114,7 @@ c          write(*,100) myrank,1,iel,n,i1,res(i1,:)
         enddo
       enddo
 100   format('[',i2,'] iel,n,ienif',i1,': ',i4,i2,i6,5e24.16)
+200   format('[',i2,'] iel,n,ienif',i1,': ',i4,i2,i6,3e24.16)
 c
         call local (sum_vi_area, sum_vi_area_l0, ienif0, nsd+1, 'scatter ', nshg, nshl0,npro,ipord,sbytes_,flops_)
         call local (sum_vi_area, sum_vi_area_l1, ienif1, nsd+1, 'scatter ', nshg, nshl1,npro,ipord,sbytes_,flops_)

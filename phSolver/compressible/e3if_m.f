@@ -126,6 +126,21 @@ c
           integer :: iel,ivar,isd,jsd,n
           real*8 :: grad_y(npro)
 c
+          do ivar = 1,nflow
+            var(:)%y(ivar) = zero
+            var(:)%grad_y(1,ivar) = zero
+            var(:)%grad_y(2,ivar) = zero
+            var(:)%grad_y(3,ivar) = zero
+            do n = 1,nshl
+              var(:)%y(ivar) = var(:)%y(ivar) + y(:,n,ivar)*shp(:,n)
+              var(:)%grad_y(1,ivar) = var(:)%grad_y(1,ivar) + y(:,n,ivar)*shg(:,n,1)
+              var(:)%grad_y(2,ivar) = var(:)%grad_y(2,ivar) + y(:,n,ivar)*shg(:,n,2)
+              var(:)%grad_y(3,ivar) = var(:)%grad_y(3,ivar) + y(:,n,ivar)*shg(:,n,3)
+            enddo
+          enddo
+
+      return
+
           do iel = 1,npro
             do ivar = 1,nflow
               var(iel)%y(ivar) = sum_qpt(nshl,y(iel,:,ivar),shp(iel,:))
@@ -549,7 +564,7 @@ c
 c
           do isd = 1,nsd
             do iflow = 1,nflow
-              do n = 1, nshl
+              do n = 1, nshl-1
                 rl(:,n,iflow) = rl(:,n,iflow) +
      &            WdetJ * shg(:,n,isd) * ri(:,nflow*(isd-1)+iflow)
               enddo
@@ -557,7 +572,7 @@ c
           enddo
 c
           do iflow = 1,nflow
-            do n = 1,nshl
+            do n = 1,nshl-1
               rl(:,n,iflow) = rl(:,n,iflow) + shp(:,n)*WdetJ(:) * ri(:,3*nflow+iflow)
             enddo
           enddo

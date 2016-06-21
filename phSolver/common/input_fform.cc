@@ -235,20 +235,6 @@ int input_fform(phSolver::Input& inp)
       exit(1);
     }
 
-    if ((string)inp.GetValue("Mesh Input Source") == "GUI" ) {
-      conpar.iMsIpSc = 0; 
-    } else if ((string)inp.GetValue("Mesh Input Source") == "Hardcoded" ) {
-      conpar.iMsIpSc = 1;
-    } else if ((string)inp.GetValue("Mesh Input Source") == "Flow-driven" ) {
-      conpar.iMsIpSc = 2;
-    } else {
-      cout << " Mesh Input Souce: Only Legal Values ( GUI, Hardcoded, Flow-driven )";
-      cout << endl;
-      exit(1);
-    }
-
-    conpar.iMsCsNb = inp.GetValue("Mesh Hardcoded Case Number");
- 
     if ((string)inp.GetValue("Turbulence Model") == "No-Model" ) {
       turbvari.irans = 0;
       turbvari.iles  = 0;

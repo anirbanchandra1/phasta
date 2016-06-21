@@ -325,10 +325,6 @@ c============ Start the loop of time steps============================c
         deltaInlInv=one/(0.125*0.0254)
         do 2000 istp = 1, nstp
 c
-          umesh = zero
-          if ( iMsIpSc .eq. 1 )
-     &      call tempMeshMo( x, umesh, iBC, BC(:,ndof+2:ndof+5) )
-c
         if(iramp.eq.1) 
      &        call BCprofileScale(vbc_prof,BC,yold)
 
@@ -396,13 +392,8 @@ c.... -----------------------> predictor phase <-----------------------
 c
             call itrPredict(   yold,    acold,    y,   ac )
 c
-c...-------------> HARDCODED <-----------------------
-            if (iMsIpSc .eq. 2) then
-              call itrBC (y,  ac,  iBC,  BC,  iper, ilwork)
-            else
+c              call itrBC (y,  ac,  iBC,  BC,  iper, ilwork)
               call tempitrBC (y,ac, iBC, BC, iper, ilwork, umesh)
-            endif
-c----------------> END HARDCODE <--------------------
 c
             isclr = zero
             if (nsclr.gt.zero) then
@@ -607,12 +598,10 @@ c
                       iprec=lhs
                       ndofelas = nshl * nelas
 c 
-                     if ( iMsIpSc .eq. 2 ) then 
                        call set_if_velocity (BC(:,ndof+2:ndof+4),  iBC, 
      &                                umesh,    x,     ilwork,
      &                                lcblkif,  nshg,  ndofBC,
      &                                nsd,   nelblif,  MAXBLK, nlwork )
-                     endif
 c 
                      call itrBCElas(umesh,  disp,  iBC, 
      &                              BC(:,ndof+2:ndof+5),
@@ -637,13 +626,8 @@ c
                   if(iupdate.eq.0) then !update flow  
                      call itrCorrect ( y, ac, yold, acold, solinc)
 c
-c...-------------> HARDCODED <-----------------------
-            if (iMsIpSc .eq. 2) then
-              call itrBC (y,  ac,  iBC,  BC,  iper, ilwork)
-            else
+c              call itrBC (y,  ac,  iBC,  BC,  iper, ilwork)
               call tempitrBC (y,ac, iBC, BC, iper, ilwork, umesh)
-            endif
-c----------------> END HARDCODE <--------------------
 c
                      call tnanq(y, 5, 'y_updbc')
 c Elaine-SPEBC
@@ -713,14 +697,11 @@ c
                gami =gamit
                almi =almit  
             endif          
+c
             call itrUpdate( yold,  acold,   y,    ac)
-c...-------------> HARDCODED <-----------------------
-            if (iMsIpSc .eq. 2) then
-              call itrBC (y,  ac,  iBC,  BC,  iper, ilwork)
-            else 
+c
+c              call itrBC (y,  ac,  iBC,  BC,  iper, ilwork)
               call tempitrBC (y,ac, iBC, BC, iper, ilwork, umesh)
-            endif
-c----------------> END HARDCODE <--------------------
 c
 c Elaine-SPEBC      
             if((irscale.ge.0).and.(myrank.eq.master)) then

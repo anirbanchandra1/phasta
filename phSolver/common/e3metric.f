@@ -14,7 +14,7 @@ c-----------------------------------------------------------------------
      &           dxidx(npro,nsd,nsd),  shg(npro,nshl,nsd), 
      &           WdetJ(npro)
 
-      real*8     dxdxi(npro,nsd,nsd),  tmp(npro)
+      real*8     dxdxi(npro,nsd,nsd),  tmp(npro), det(npro), invdet(npro)
 
 c
 c.... compute the deformation gradient
@@ -33,10 +33,17 @@ c
           dxdxi(:,3,3) = dxdxi(:,3,3) + xl(:,n,3) * shgl(:,3,n)
        enddo
 c
+      invdet = one /( dxdxi(:,1,1)*dxdxi(:,2,2)*dxdxi(:,3,3) 
+     &    + dxdxi(:,2,1)*dxdxi(:,3,2)*dxdxi(:,1,3)
+     &    + dxdxi(:,3,1)*dxdxi(:,1,2)*dxdxi(:,2,3)
+     &    - dxdxi(:,1,1)*dxdxi(:,3,2)*dxdxi(:,2,3)
+     &    - dxdxi(:,3,1)*dxdxi(:,2,2)*dxdxi(:,1,3)
+     &    - dxdxi(:,2,1)*dxdxi(:,1,2)*dxdxi(:,3,3))
+c
 c.... compute the inverse of deformation gradient
 c
-       dxidx(:,1,1) =   dxdxi(:,2,2) * dxdxi(:,3,3) 
-     &                - dxdxi(:,3,2) * dxdxi(:,2,3)
+       dxidx(:,1,1) =   ( dxdxi(:,2,2) * dxdxi(:,3,3) 
+     &                - dxdxi(:,3,2) * dxdxi(:,2,3))
        dxidx(:,1,2) =   dxdxi(:,3,2) * dxdxi(:,1,3) 
      &                - dxdxi(:,1,2) * dxdxi(:,3,3)
        dxidx(:,1,3) =  dxdxi(:,1,2) * dxdxi(:,2,3) 
