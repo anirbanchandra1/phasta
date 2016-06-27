@@ -256,10 +256,6 @@ c
         nshl0 = size(ienif0,2)
         nshl1 = size(ienif1,2)
 c
-      if (any(col(:)<0)) then
-       write(*,'(a,i2,a)') '[',myrank,'] ERROR: FILLSPARSE_IF'
-      endif
-c
         do e = 1,npro
           do a = 1,nshl0
             i = ienif0(e,a)

@@ -26,6 +26,8 @@ c
         real*8,  dimension(:,:,:), pointer :: dxdxi0, dxdxi1  ! element deformation tensor
         real*8,  dimension(:),     pointer :: WdetJif0, WdetJif1
 c
+        real*8, dimension(:,:), pointer :: y0,y1
+        real*8, dimension(:,:,:), pointer :: y_jump
         real*8,  dimension(:,:,:), pointer :: rl0, rl1      ! residual over the element
         real*8,  dimension(:,:),   pointer :: ri0, ri1      ! residual at the integration point
 c
@@ -45,9 +47,9 @@ c
         real*8 :: time,deltat
 c
           real*8, parameter :: s = 1.0d0
-     &,                        e = 1.0d0
+     &,                        e = 1.0d-3
      &,                        h = 1.d-2
-     &,                        mu = 1.d0
+     &,                        mu = 1.d1
 c
 c
 c... properties
@@ -156,6 +158,8 @@ c
           allocate(rl0(npro,nshl0,nflow))
           allocate(rl1(npro,nshl1,nflow))
 c
+          allocate(y0(npro,nflow),y1(npro,nflow))
+          allocate(y_jump(npro,nflow,nsd))
           allocate(ri0(npro,nflow*(nsd+1)))
           allocate(ri1(npro,nflow*(nsd+1)))
           allocate(rho0(npro),u0(npro,nsd),pres0(npro),T0(npro),ei0(npro),um0(npro,nsd))
@@ -210,6 +214,8 @@ c
           deallocate(shg0,shg1)
           deallocate(dxdxi0,dxdxi1)
           deallocate(WdetJif0,WdetJif1)
+          deallocate(y0,y1)
+          deallocate(y_jump)
           deallocate(rl0,rl1)
           deallocate(ri0,ri1)
           deallocate(rho0,u0,pres0,T0,ei0,um0)

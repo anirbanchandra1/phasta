@@ -511,7 +511,7 @@ c
 c.... check if GMRES iterations are required
 c
       iKs    = 0
-      lGMRESs = 0
+      lGMRES = 0
 c
 c.... if we are down to machine precision, don't bother solving
 c
@@ -529,7 +529,7 @@ c
 c.... loop through GMRES cycles
 c
       do 2000 mGMRES = 1, nGMRES
-         lGMRESs = mGMRES - 1
+         lGMRES = mGMRES - 1
 c
          if (lGMRES .gt. 0) then
 c
@@ -672,7 +672,9 @@ c.... check for convergence
 c     
             ntotGM = ntotGM + 1
             echeck=abs(eBrg(iKs+1))
+c      write(*,*) iKs, echeck, epsnrm
             if (echeck .le. epsnrm.and. iKs .ge. minIters) exit
+
 c     
 c.... end of GMRES iteration loop
 c     
@@ -705,8 +707,8 @@ c.... check for convergence
 c     
         echeck=abs(eBrg(iKs+1))
         if (echeck .le. epsnrm) exit
-!        if(myrank.eq.master) write(*,*)'solver tolerance %satisfaction',
-!     &  (one-echeck*etol/epsnrm)/(one-etol)*100
+        if(myrank.eq.master) write(*,*)'solver tolerance %satisfaction',
+     &  (one-echeck*etol/epsnrm)/(one-etol)*100
 
 c     
 c.... end of mGMRES loop

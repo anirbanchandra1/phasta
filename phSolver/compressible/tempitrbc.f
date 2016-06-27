@@ -116,9 +116,9 @@ c
 c.... ALE change takes place here
 c------> HARDCODED BC <---------
           where (ibits(iBC,3,3) .eq. 7)
-            y(:,1) =  BC(:,3) + umesh(:,1)
-            y(:,2) =  BC(:,4) + umesh(:,2)
-            y(:,3) =  BC(:,5) + umesh(:,3)
+            y(:,1) =  BC(:,3) !+ umesh(:,1)
+            y(:,2) =  BC(:,4) !+ umesh(:,2)
+            y(:,3) =  BC(:,5) !+ umesh(:,3)
           endwhere
 c
 c       endif
