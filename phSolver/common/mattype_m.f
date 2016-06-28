@@ -5,9 +5,8 @@ c
         implicit none
 c
         integer, pointer :: neltp_mattype(:)
-        integer, pointer :: mattype(:), mattypeif(:,:)
-     &,                     ientmp(:,:), ienif0tmp(:,:), ienif1tmp(:,:)
-     &,                     ibcbtmp(:,:)
+        integer, target, allocatable :: mattype(:)
+        integer, pointer :: mattypeif(:,:), ientmp(:,:), ienif0tmp(:,:), ienif1tmp(:,:), ibcbtmp(:,:)
         real*8,  pointer :: bcbtmp(:,:)
 c
       contains
