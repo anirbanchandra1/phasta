@@ -17,13 +17,13 @@ c
         real*8 :: vmag,t1,c1
 c
         t1   = 1.0d-3
-        vmag = 2.5d0
+        vmag = 10.0d0
 c
-        if (time < t1) then
-          c1 = time/t1
-        else
+c        if (time < t1) then
+c          c1 = time/t1
+c        else
           c1 = one
-        endif
+c        endif
 c
         do isd = 1,nsd
           vi(:,isd) = c1*vmag*n(:,isd)
