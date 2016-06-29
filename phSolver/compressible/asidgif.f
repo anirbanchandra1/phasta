@@ -1,4 +1,4 @@
-      subroutine asidgif_
+      subroutine asidgif
      & (
      &   nshg_, nshl0_, nshl1_, nenl0_, nenl1_, lcsyst0_, lcsyst1_,
      &   nflow_, npro_, ndof_, nsd_, ipord_, numnp_, nqpt_,
@@ -39,8 +39,6 @@ c
 c
       integer :: i, iel, i0,i1,n
       real*8 :: r0,r1,n0(3),n1(3),t_ramp,c2
-      real*8, parameter :: rmin = 0.01d0, rmax = 0.9d0,
-     &                     vint = -1.0d0
 c#define DEBUG_DG
 c
             call setparam_e3if
@@ -77,59 +75,59 @@ c
 c
 c.... assemble the local residual arrays
 c
-#ifdef DEBUG_DG
-      do iel = 1,4
+c#ifdef DEBUG_DG
+c      do iel = 1,4
 c        do n = 1,nshl0
 c          i0 = ienif0(iel,n)
 c          write(*,200) myrank,0,iel,n,i0,x(i0,:)
 c          write(*,100) myrank,0,iel,n,i0,res(i0,:)
 c        enddo
-        do n = 1,nshl1
-          i1 = ienif1(iel,n)
-          write(*,200) myrank,1,iel,n,i1,x(i1,:)
-        enddo
-      enddo
+c        do n = 1,nshl1
+c          i1 = ienif1(iel,n)
+c          write(*,200) myrank,1,iel,n,i1,x(i1,:)
+c        enddo
+c      enddo
 c
-      do iel = 1,4
+c      do iel = 1,4
 c        do n = 1,nshl0
 c          i0 = ienif0(iel,n)
 c          write(*,200) myrank,0,iel,n,i0,x(i0,:)
 c          write(*,100) myrank,0,iel,n,i0,res(i0,:)
 c        enddo
-        do n = 1,nshl1
-          i1 = ienif1(iel,n)
-          write(*,100) myrank,1,iel,n,i1,res(i1,:)
-        enddo
-      enddo
-      write(*,*) 'RL: '
-      do iel = 1,4
+c        do n = 1,nshl1
+c          i1 = ienif1(iel,n)
+c          write(*,100) myrank,1,iel,n,i1,res(i1,:)
+c        enddo
+c      enddo
+c     write(*,*) 'RL: '
+c     do iel = 1,4
 c        do n = 1,nshl0
 c          i0 = ienif0(iel,n)
 c          write(*,100) myrank,0,iel,n,i0,rl0(iel,n,:)
 c        enddo
-        do n = 1,nshl1
-          i1 = ienif1(iel,n)
-          write(*,100) myrank,1,iel,n,i1,rl1(iel,n,:)
-        enddo
-      enddo
-#endif
+c        do n = 1,nshl1
+c          i1 = ienif1(iel,n)
+c          write(*,100) myrank,1,iel,n,i1,rl1(iel,n,:)
+c        enddo
+c      enddo
+c#endif
 c
         call local (res, rl0, ienif0, nflow, 'scatter ', nshg,nshl0,npro,ipord,sbytes_,flops_)
         call local (res, rl1, ienif1, nflow, 'scatter ', nshg,nshl1,npro,ipord,sbytes_,flops_)
 c
-#ifdef DEBUG_DG
-      write(*,*) 'CHECK IN ASIDGIF AFTER LOCAL:'
-      do iel = 1,4
+c#ifdef DEBUG_DG
+c      write(*,*) 'CHECK IN ASIDGIF AFTER LOCAL:'
+c      do iel = 1,4
 c        do n = 1,nshl0
 c          i0 = ienif0(iel,n)
 c          write(*,100) myrank,0,iel,n,i0,res(i0,:)
 c        enddo
-        do n = 1,nshl1
-          i1 = ienif1(iel,n)
-          write(*,100) myrank,1,iel,n,i1,res(i1,:)
-        enddo
-      enddo
-#endif
+c        do n = 1,nshl1
+c          i1 = ienif1(iel,n)
+c          write(*,100) myrank,1,iel,n,i1,res(i1,:)
+c        enddo
+c      enddo
+c#endif
 100   format('[',i2,'] iel,n,ienif',i1,': ',i4,i2,i6,5e24.16)
 200   format('[',i2,'] iel,n,ienif',i1,': ',i4,i2,i6,3e24.16)
 300   format('[',i2,'] RES:',i6,5e24.16)
@@ -139,4 +137,4 @@ c
 c
         call free_e3if
 c
-      end subroutine asidgif_
+      end subroutine asidgif

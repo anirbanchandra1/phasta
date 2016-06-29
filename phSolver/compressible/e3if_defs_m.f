@@ -37,8 +37,9 @@ c
 c
 c... evaluated parameters at the integration point
 c
-        real*8, pointer :: rho0(:), u0(:,:), pres0(:), T0(:), ei0(:), um0(:,:)  ! density, velocity, pressure, temperature, on elment 0
-        real*8, pointer :: rho1(:), u1(:,:), pres1(:), T1(:), ei1(:), um1(:,:)  ! density, velocity, pressure, temperature, on elment 1
+        real*8, pointer :: rho0(:), pres0(:), T0(:), ei0(:)  ! density, velocity, pressure, temperature, on elment 0
+        real*8, pointer :: rho1(:), pres1(:), T1(:), ei1(:)  ! density, velocity, pressure, temperature, on elment 1
+        real*8, dimension(:,:), pointer :: u0, u1, um0, um1
 c
         real*8, dimension(:), pointer :: rk0, h0, cp0, alfaP0, betaT0
         real*8, dimension(:), pointer :: rk1, h1, cp1, alfaP1, betaT1

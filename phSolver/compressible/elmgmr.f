@@ -304,7 +304,7 @@ c
 c#define DEBUG
 c
         interface 
-          subroutine asidgif_
+          subroutine asidgif
      & (
      &   nshg_, nshl0_, nshl1_, nenl0_, nenl1_,lcsyst0_,lcsyst1_,
      &   nflow_, npro_, ndof_, nsd_, ipord_, numnp_, nqpt_,
@@ -340,7 +340,7 @@ c
             integer, intent(in)   :: mattypeif0, mattypeif1
             real*8, intent(in) :: time_
             real*8, pointer, intent(inout) :: sum_vi_area(:,:)
-          end subroutine asidgif_
+          end subroutine asidgif
           subroutine fillsparse_if
      &    ( lhsk,
      &      ienif0,ienif1,
@@ -661,7 +661,7 @@ c
       if (iblk == nelblif) then
 c        write(*,'(a,i2,a,2i4)')'[',myrank,']', iblk, nelblif
       endif
-      call asidgif_
+      call asidgif
      & (
      &   nshg, nshl0, nshl1, nenl0, nenl1, lcsyst0, lcsyst1,
      &   nflow, npro, ndof, nsd, iorder, numnp, ngaussif,

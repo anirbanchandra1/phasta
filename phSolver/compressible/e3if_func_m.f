@@ -22,8 +22,8 @@ c
         call getdiff(rmu0, rlm0, rlm2mu0, con0, npro, mater0)
         call getdiff(rmu1, rlm1, rlm2mu1, con1, npro, mater1)
 c
-        call set_Kij(Kij0,rmu0,rlm0,rlm2mu0,con0,u0(:,1),u0(:,2),u0(:,3))
-        call set_Kij(Kij1,rmu1,rlm1,rlm2mu1,con1,u1(:,1),u1(:,2),u1(:,3))
+        call set_Kij(Kij0,rmu0,rlm0,rlm2mu0,con0,u0)
+        call set_Kij(Kij1,rmu1,rlm1,rlm2mu1,con1,u1)
 c
         deallocate(rmu0,rlm0,rlm2mu0,con0)
         deallocate(rmu1,rlm1,rlm2mu1,con1)
@@ -138,10 +138,17 @@ c
 c
       end subroutine set_Ai
 c
-      subroutine set_Kij(Kij,rmu,rlm,rlm2mu,con,u1,u2,u3)
+      subroutine set_Kij(Kij,rmu,rlm,rlm2mu,con,u)
 c
         real*8, dimension(:,:,:,:,:), pointer, intent(out) :: Kij
-        real*8, dimension(:), pointer, intent(in) :: rmu,rlm,rlm2mu,con,u1,u2,u3
+        real*8, dimension(:), pointer, intent(in) :: rmu,rlm,rlm2mu,con
+        real*8, dimension(:,:), pointer, intent(in) :: u
+c
+        real*8, pointer :: u1(:), u2(:), u3(:)
+c
+        u1 => u(:,1)
+        u2 => u(:,2)
+        u3 => u(:,3)
 c
         Kij = zero
 c
