@@ -107,8 +107,8 @@ c...LHS calculations...
 c
             call set_lhs_matrices
 c
-c            call calc_egmass(egmass00,egmass01,AiNa0,AiNa1,KijNaj0,KijNaj1,shp0,nv0,WdetJif0,nshl0,nshl1)
-c            call calc_egmass(egmass11,egmass10,AiNa1,AiNa0,KijNaj1,KijNaj0,shp1,nv1,WdetJif1,nshl1,nshl0)
+            call calc_egmass(egmass00,egmass01,AiNa0,AiNa1,KijNaj0,KijNaj1,shp0,nv0,WdetJif0,nshl0,nshl1)
+            call calc_egmass(egmass11,egmass10,AiNa1,AiNa0,KijNaj1,KijNaj0,shp1,nv1,WdetJif1,nshl1,nshl0)
 c      call calc_egmass_(egmass00,AiNa0,KijNaj0,KijNaj0,KijNajC0,shp0,shp1,nv0,nv1,WdetJif0,nshl0,nshl1)
 c      call calc_egmass_(egmass01,AiNa1,KijNaj0,KijNaj1,KijNajC1,shp0,shp1,nv0,nv1,WdetJif0,nshl0,nshl1)
 c      call calc_egmass_(egmass10,AiNa0,KijNaj1,KijNaj0,KijNajC0,shp1,shp0,nv1,nv0,WdetJif1,nshl1,nshl0)
@@ -120,9 +120,9 @@ c
 c ... Interface velocity calculations...
 c
             if     (mat_eos(mater0,1) == ieos_ideal_gas) then
-              call calc_vi(pres0,nv0)
+              call calc_vi(pres0,nv0,u1)
             elseif (mat_eos(mater1,1) == ieos_ideal_gas) then
-              call calc_vi(pres1,nv1)
+              call calc_vi(pres1,nv1,u0)
             else
               call error ('wrong mater: ', 'calc vi', 0)
             endif
@@ -451,7 +451,15 @@ c
                  this_sum = this_sum + ctc(:,iflow,jflow)*(y0(:,jflow)-y1(:,jflow))
                enddo
 c
-               ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*mu/h * this_sum
+!------>BEGIN HARDCODE<-------------
+c               ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*mu/h * this_sum
+               select case(iflow)
+               case(2:4)
+                 ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*1.0d0/h * this_sum  ! for mu=1.
+               case(5)
+                 ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*4.0d-2/h * this_sum  ! for k=0.04
+               end select
+!------>END HARDCODE<-------------
 c
              enddo
            enddo
@@ -691,7 +699,7 @@ c
 c
           do isd = 1,nsd
             do iflow = 1,nflow
-              do n = 1, nshl-1
+              do n = 1, nshl
                 rl(:,n,iflow) = rl(:,n,iflow) +
      &            WdetJ * shg(:,n,isd) * ri(:,nflow*(isd-1)+iflow)
               enddo

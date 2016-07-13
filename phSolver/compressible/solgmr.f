@@ -516,7 +516,6 @@ c
 c.... if we are down to machine precision, don't bother solving
 c
       if (unorm .lt. 100.*epsM**2) then 
-!        echeck = 0.1*epsnrm
         goto 3000 
       endif
 c
@@ -672,7 +671,8 @@ c.... check for convergence
 c     
             ntotGM = ntotGM + 1
             echeck=abs(eBrg(iKs+1))
-c      write(*,*) iKs, echeck, epsnrm
+c      if (MOD(iks,10) == 0 .AND. myrank == 0) 
+c     & write(*,'(a,i2,a,i4,2(x,e24.16))')'[',myrank,']', iKs, echeck, epsnrm
             if (echeck .le. epsnrm.and. iKs .ge. minIters) exit
 
 c     
