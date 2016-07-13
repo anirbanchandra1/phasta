@@ -658,9 +658,6 @@ c
             allocate (egmassif11(1,1,1))
           endif
 
-      if (iblk == nelblif) then
-c        write(*,'(a,i2,a,2i4)')'[',myrank,']', iblk, nelblif
-      endif
       call asidgif
      & (
      &   nshg, nshl0, nshl1, nenl0, nenl1, lcsyst0, lcsyst1,
@@ -699,14 +696,6 @@ c
 
 c
         enddo if_blocks
-c
-c        write(*,998) '[',myrank,'] in elmgmr BEFORE commu.'
-c      do i = 1,nshg
-c        if (abs(x(i,1)-x1)<tol .and. abs(x(i,2)-x2)<tol .and. abs(x(i,3)-x3)<tol) then
-c          write(*,997) myrank,i,x(i,:),y(i,:)
-c          write(*,999) myrank,i,x(i,:),res(i,:)
-c        endif 
-c      enddo
 c
 c before the commu we need to rotate the residual vector for axisymmetric
 c boundary conditions (so that off processor periodicity is a dof add instead
