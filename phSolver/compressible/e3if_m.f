@@ -99,8 +99,8 @@ c
             call stability_term(ri0,Kij0)
             call stability_term(ri1,Kij1)
 c
-            call kinematic_conditions(ri0,y0,y1)
-            call kinematic_conditions(ri1,y1,y0)
+            call kinematic_conditions(ri0,y0,y1,prop0)
+            call kinematic_conditions(ri1,y1,y0,prop1)
 c            call kinematic_condition
 c
 c...LHS calculations...
@@ -434,10 +434,11 @@ c
 c
         end subroutine stability_term
 c
-        subroutine kinematic_conditions(ri,y0,y1)
+        subroutine kinematic_conditions(ri,y0,y1,prop)
 c
            real*8, dimension(:,:), intent(inout) :: ri
            real*8, dimension(:,:), intent(in) :: y0,y1
+           type(prop_t), dimension(:), pointer, intent(inout) :: prop
 c
            integer :: iflow,jflow,isd
            real*8 :: this_sum(npro)
@@ -451,15 +452,13 @@ c
                  this_sum = this_sum + ctc(:,iflow,jflow)*(y0(:,jflow)-y1(:,jflow))
                enddo
 c
-!------>BEGIN HARDCODE<-------------
 c               ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*mu/h * this_sum
                select case(iflow)
                case(2:4)
-                 ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*1.0d0/h * this_sum  ! for mu=1.
+                 ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*prop%stiff(3,3)/h * this_sum  ! for mu
                case(5)
-                 ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*4.0d-2/h * this_sum  ! for k=0.04
+                 ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*prop%stiff(5,5)/h * this_sum  ! for kappa
                end select
-!------>END HARDCODE<-------------
 c
              enddo
            enddo
