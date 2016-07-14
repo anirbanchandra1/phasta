@@ -85,7 +85,7 @@ c
                 jl = j0 + jflow
 c
                 do isd = 1,nsd
-                  egmass_self_self(:,il,jl) = egmass_self_self(:,il,jl) + (
+                  egmass_self_self(:,il,jl) = egmass_self_self(:,il,jl) - (
      &              pt50 * shp(:,i) * ( AiNa_self(:,isd,iflow,jflow) 
      &                                - KijNaj_self(:,isd,iflow,jflow) ) * n(:,isd) 
      &              ) * WdetJ
@@ -106,7 +106,7 @@ c
                 jl = j0 + jflow
 c
                 do isd = 1,nsd
-                  egmass_self_nbr(:,il,jl) = egmass_self_nbr(:,il,jl) + (
+                  egmass_self_nbr(:,il,jl) = egmass_self_nbr(:,il,jl) - (
      &              pt50 * shp(:,i) * ( AiNa_nbr(:,isd,iflow,jflow) 
      &                                - KijNaj_nbr(:,isd,iflow,jflow) ) * n(:,isd) 
      &              ) * WdetJ

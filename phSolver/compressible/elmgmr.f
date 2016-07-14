@@ -673,7 +673,7 @@ c
      &         qwtif0(lcsyst0,:), qwtif1(lcsyst1,:),
      &         mienif0(iblk)%p, mienif1(iblk)%p,
      &         mattyp0, mattyp1,
-     &         time,
+     &         real(lstep+1,8)*delt(1), ! total simulation time
      &         sum_vi_area
      & )
 c
@@ -681,10 +681,10 @@ c
 c
 c.... Fill-up the global sparse LHS mass matrix
 c
-c            call fillsparse_if( lhsk,mienif0(iblk)%p,mienif0(iblk)%p,col,row,egmassif00,nflow,nshg,nnz,nnz_tot)
-c            call fillsparse_if( lhsk,mienif1(iblk)%p,mienif0(iblk)%p,col,row,egmassif10,nflow,nshg,nnz,nnz_tot)
-c            call fillsparse_if( lhsk,mienif0(iblk)%p,mienif1(iblk)%p,col,row,egmassif01,nflow,nshg,nnz,nnz_tot)
-c            call fillsparse_if( lhsk,mienif1(iblk)%p,mienif1(iblk)%p,col,row,egmassif11,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if( lhsk,mienif0(iblk)%p,mienif0(iblk)%p,col,row,egmassif00,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if( lhsk,mienif1(iblk)%p,mienif0(iblk)%p,col,row,egmassif10,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if( lhsk,mienif0(iblk)%p,mienif1(iblk)%p,col,row,egmassif01,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if( lhsk,mienif1(iblk)%p,mienif1(iblk)%p,col,row,egmassif11,nflow,nshg,nnz,nnz_tot)
 c
           endif
 c
