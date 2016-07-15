@@ -35,7 +35,7 @@ c
             integer, dimension(:,:), pointer, intent(in)   :: ienif0, ienif1
             integer, intent(in)   :: materif0, materif1
             real*8, intent(in) :: time_
-            real*8, intent(inout) :: sum_vi_area(:,:)
+            real*8, pointer, intent(inout) :: sum_vi_area(:,:)
 c
       integer :: i, iel, i0,i1,n
       real*8 :: r0,r1,n0(3),n1(3),t_ramp,c2

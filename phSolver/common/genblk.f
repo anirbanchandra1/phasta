@@ -78,7 +78,7 @@ c
         ndofl = ndof
         nsymdl = nsymdf
 
-        do iblk = 1, itpblktot
+        iblk_loop: do iblk = 1, itpblktot
            writeLock=0;
            if(input_mode.ge.1) then
              write (fname2,"('connectivity interior',i1)") iblk
@@ -98,15 +98,17 @@ c
            ijunk  =intfromfile(5)
            ijunk  =intfromfile(6)
            lcsyst =intfromfile(7)
+
+           if (neltp==0) then
+              writeLock=1;
+      cycle iblk_loop
+           endif
+
            allocate (ientp(neltp,nshl))
            allocate (ientmp(ibksz,nshl))
            allocate (mattype(intfromfile(1)))
            allocate (neltp_mattype(nummat))
            iientpsiz=neltp*nshl
-
-           if (neltp==0) then
-              writeLock=1;
-           endif
 
            call phio_readdatablock(fhandle,fname2 // char(0),
      &      c_loc(ientp), iientpsiz, dataInt, iotype)
@@ -186,7 +188,7 @@ c     &                       mmat(nelblk)%p)
            endif
            deallocate(ientp,ientmp)
            deallocate(mattype,neltp_mattype)
-        enddo
+        enddo iblk_loop
 
         lcblk(1,nelblk+1) = iel
         return

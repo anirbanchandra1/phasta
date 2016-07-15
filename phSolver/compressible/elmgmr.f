@@ -501,6 +501,7 @@ c
           tmpshp(1:nshl,:) = shp(lcsyst,1:nshl,:)
           tmpshgl(:,1:nshl,:) = shgl(lcsyst,:,1:nshl,:)
 
+
           call AsIGMR (y,                   ac,
      &                 x,                   mxmudmi(iblk)%p,
      &                 tmpshp,
@@ -509,6 +510,7 @@ c
      &                 rmes,                BDiag,
      &                 qres,                EGmass,
      &                 rerr,                umesh )
+c
           if(lhs.eq.1) then
 c
 c.... satisfy the BC's on the implicit LHS
@@ -617,6 +619,7 @@ c
 c... loop over the interface element blocks
 c
         sum_vi_area = zero
+
 c
         if_blocks: do iblk = 1, nelblif
 c
@@ -767,7 +770,7 @@ c          enddo
 c        endif
 c      enddo
 c
-801   format('[',i2,'] is,isgbeg,lenseg,isg,x:'3i4,x,3f8.3,x,5e24.16)
+801   format('[',i2,'] is,isgbeg,lenseg,isg,x:',3i4,x,3f8.3,x,5e24.16)
 990   format('[',i2,'] numtask:',i3)
 991   format('[',i2,'] itag, iacc, iother, numseg, isgbeg:',5i6)
 997   format('[',i2,'] i,x,y:  ',i6,3f7.3,5e24.16)

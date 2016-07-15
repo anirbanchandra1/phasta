@@ -16,18 +16,18 @@ c
         integer :: isd
         real*8 :: vmag,t1,c1
 c
-        t1   = 1.0d-3
-        vmag = 2.0d0
+        t1   = 2.0d-6
+        vmag = 1.0d0
 !-------------------------------
 ! single phase propellant cases
 !       vmag = 10.0d0
 !-------------------------------
 c
-c        if (time < t1) then
-c          c1 = time/t1
-c        else
+        if (time < t1) then
+          c1 = time/t1
+        else
           c1 = one
-c        endif
+        endif
 c
         do isd = 1,nsd
           vi(:,isd) = c1*vmag*n(:,isd) + u(:,isd)

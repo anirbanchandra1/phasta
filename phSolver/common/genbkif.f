@@ -75,7 +75,7 @@ c
         ndofl  = ndof
         nsymdl = nsymdf      ! ????
 c
-        do iblk = 1, itpblk
+        iblk_loop: do iblk = 1, itpblk
 c
            writeLock=0;
            if(input_mode.ge.1) then
@@ -102,6 +102,7 @@ c
 
            if (neltp==0) then
               writeLock=1;
+      cycle iblk_loop
            endif
 c
 c... reads all the connectivity data in one array
@@ -219,7 +220,7 @@ c
           deallocate(mattypeif)
           deallocate(ienif0tmp,ienif1tmp)
 c
-        enddo
+        enddo iblk_loop
 c
         lcblkif(1,nelblif+1) = iel
 c

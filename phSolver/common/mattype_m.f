@@ -23,18 +23,22 @@ c
 c count the number of elements with same material type
 c
           neltp_mattype = 0
+          total_count = 0
 c
           do iel = 1, neltp
             do imat = 1,nummat
               if (mattype(iel) == mat_tag(imat)) then
                 neltp_mattype(imat) = neltp_mattype(imat) + 1
+                total_count = total_count + 1
               endif
             enddo
           enddo
 c
-          total_count = sum(neltp_mattype)
           if (total_count /= neltp) then
-            write(*,'(a,i4,a)') '[',myrank,'] ERROR (count_elem_mattype)!'
+            write(*,'(a,i4,a,4i6)') '[',myrank,'] ERROR: count_elem_mattypex. total_count, neltp, neltp_mattype(1:2):',
+     &       total_count,neltp,neltp_mattype
+            write(*,*) '[',myrank,'] mat_tag:',mat_tag
+            write(*,*) '[',myrank,'] mattype:',mattype
             call error ('genblk  ', 'Could not count material type correctly', total_count)
           endif
 c
