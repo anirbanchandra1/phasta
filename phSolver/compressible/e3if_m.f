@@ -438,7 +438,7 @@ c
 c
            real*8, dimension(:,:), intent(inout) :: ri
            real*8, dimension(:,:), intent(in) :: y0,y1
-           type(prop_t), dimension(:), pointer, intent(inout) :: prop
+           type(prop_t), dimension(:), pointer, intent(in) :: prop
 c
            integer :: iflow,jflow,isd
            real*8 :: this_sum(npro)
