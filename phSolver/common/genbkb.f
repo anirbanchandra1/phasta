@@ -43,7 +43,7 @@ c
 
         ! Get the total number of different interior topologies in the whole domain. 
         ! Try to read from a field. If the field does not exist, scan the geombc file.
-!        itpblktot=1  ! hardwired to monotopology for now
+        itpblktot=1  ! hardwired to monotopology for now
         call phio_readheader(fhandle,
      &   c_char_'total number of boundary tpblocks' // char(0),
      &   c_loc(itpblktot), ione, dataInt, iotype)

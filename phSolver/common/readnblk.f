@@ -254,33 +254,6 @@ c
      & c_char_'co-ordinates' // char(0),
      & c_loc(xread),ixsiz, dataDbl, iotype)
       point2x = xread
-
-c..............................for Duct
-      if(istretchOutlet.eq.1)then
-         
-c...geometry6
-        if(iDuctgeometryType .eq. 6) then
-          xmaxn = 1.276
-          xmaxo = 0.848
-          xmin  = 0.42
-c...geometry8
-        elseif(iDuctgeometryType .eq. 8)then
-          xmaxn=1.6*4.5*0.0254+0.85*1.5
-          xmaxo=1.6*4.5*0.0254+0.85*1.0
-          xmin =1.6*4.5*0.0254+0.85*0.5
-        endif
-c...
-        alpha=(xmaxn-xmaxo)/(xmaxo-xmin)**2
-        where (point2x(:,1) .ge. xmin)
-c..... N=# of current elements from .42 to exit(~40)
-c..... (x_mx-x_mn)/N=.025
-c..... alpha=3    3*.025=.075
-           point2x(:,1)=point2x(:,1)+
-     &     alpha*(point2x(:,1)-xmin)**2
-c..... ftn to stretch x at exit
-        endwhere
-      endif
-
 c
 c.... read in and block out the connectivity
 c
@@ -313,18 +286,12 @@ c
       if ( numpbc > 0 ) then
         allocate( iBCtmp(numpbc) )
         allocate( iBCtmpread(numpbc) )
-      else
-        allocate( iBCtmp(1) )
-        allocate( iBCtmpread(1) )
-      endif
-      call phio_readdatablock(fhandle,
-     & c_char_'bc codes array' // char(0),
-     & c_loc(iBCtmpread), numpbc, dataInt, iotype)
-
-      if ( numpbc > 0 ) then
+        call phio_readdatablock(fhandle,
+     &   c_char_'bc codes array' // char(0),
+     &   c_loc(iBCtmpread), numpbc, dataInt, iotype)
          iBCtmp=iBCtmpread
       else  ! sometimes a partition has no BC's
-         deallocate( iBCtmpread)
+         allocate( iBCtmp(1) )
          iBCtmp=0
       endif
 c
@@ -336,25 +303,23 @@ c
      & c_loc(intfromfile),ione, dataDbl, iotype)
 
       if ( numpbc > 0 ) then
-         allocate( BCinp(numpbc,24) )
+         if(intfromfile(1).ne.(ndof+7)*numpbc) then
+           warning='WARNING more data in BCinp than needed: keeping 1st'
+           write(*,*) warning, ndof+7
+         endif
+         allocate( BCinp(numpbc,ndof+7) )
          nsecondrank=intfromfile(1)/numpbc
          allocate( BCinpread(numpbc,nsecondrank) )
          iBCinpsiz=intfromfile(1)
-      else
-         allocate( BCinp(1,24) )
+         call phio_readdatablock(fhandle,
+     &    c_char_'boundary condition array' // char(0),
+     &    c_loc(BCinpread), iBCinpsiz, dataDbl, iotype)
+         BCinp(:,1:(ndof+7))=BCinpread(:,1:(ndof+7))
+      else  ! sometimes a partition has no BC's
+         allocate( BCinp(1,ndof+7) )
+         BCinp=0
          allocate( BCinpread(0,0) ) !dummy
          iBCinpsiz=intfromfile(1)
-      endif
-
-      call phio_readdatablock(fhandle,
-     & c_char_'boundary condition array' // char(0),
-     & c_loc(BCinpread), iBCinpsiz, dataDbl, iotype)
-
-      if ( numpbc > 0 ) then
-         BCinp(:,1:(24))=BCinpread(:,1:(24))
-      else  ! sometimes a partition has no BC's
-         deallocate(BCinpread)
-         BCinp=0
       endif
 c
 c.... read periodic boundary conditions

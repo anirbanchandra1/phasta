@@ -107,8 +107,10 @@ c...LHS calculations...
 c
             call set_lhs_matrices
 c
-            call calc_egmass(egmass00,egmass01,AiNa0,AiNa1,KijNaj0,KijNaj1,shp0,nv0,WdetJif0,nshl0,nshl1)
-            call calc_egmass(egmass11,egmass10,AiNa1,AiNa0,KijNaj1,KijNaj0,shp1,nv1,WdetJif1,nshl1,nshl0)
+            call calc_egmass(egmass00,egmass01,AiNa0,AiNa1,KijNaj0,KijNaj1,KijNajC0,KijNajC1,
+     &       shp0,nv0,nv1,WdetJif0,prop0,nshl0,nshl1)
+            call calc_egmass(egmass11,egmass10,AiNa1,AiNa0,KijNaj1,KijNaj0,KijNajC1,KijNajC0,
+     &       shp1,nv1,nv0,WdetJif1,prop1,nshl1,nshl0)
 c      call calc_egmass_(egmass00,AiNa0,KijNaj0,KijNaj0,KijNajC0,shp0,shp1,nv0,nv1,WdetJif0,nshl0,nshl1)
 c      call calc_egmass_(egmass01,AiNa1,KijNaj0,KijNaj1,KijNajC1,shp0,shp1,nv0,nv1,WdetJif0,nshl0,nshl1)
 c      call calc_egmass_(egmass10,AiNa0,KijNaj1,KijNaj0,KijNajC0,shp1,shp0,nv1,nv0,WdetJif1,nshl1,nshl0)
@@ -379,18 +381,6 @@ c
 c
         end subroutine e3if_flux
 c
-        subroutine calc_y_jump
-c
-          integer :: iflow,isd
-c
-          do iflow = 1,nflow
-            do isd = 1,nsd
-              y_jump(:,iflow,isd) = y0(:,iflow)*nv0(:,isd) + y1(:,iflow)*nv1(:,isd)
-            enddo
-          enddo
-c
-        end subroutine calc_y_jump
-c
         subroutine stability_term(ri,Kij)
 c
            real*8, dimension(:,:), intent(inout) :: ri
@@ -400,20 +390,7 @@ c
            real*8 :: this_sum(npro)
            real*8, dimension(npro,nflow,nflow,nsd,nsd) :: CKij
 c
-           ! calculate C*Kij:
-           do isd = 1,nsd
-             do jsd = 1,nsd
-               do iflow = 1,nflow
-                 do jflow = 1,nflow
-                   CKij(:,iflow,jflow,isd,jsd) = zero
-                   do kflow = 1,nflow
-                     CKij(:,iflow,jflow,isd,jsd) = CKij(:,iflow,jflow,isd,jsd) + 
-     &                   cmtrx(:,iflow,kflow)*Kij(:,isd,jsd,kflow,jflow)
-                   enddo
-                 enddo
-               enddo
-             enddo
-           enddo
+           call calc_CKij(CKij,Kij)
 c
            do iflow = 1,nflow
              do isd = 1,nsd
@@ -706,7 +683,7 @@ c
           enddo
 c
           do iflow = 1,nflow
-            do n = 1,nshl-1
+            do n = 1,nshl
               rl(:,n,iflow) = rl(:,n,iflow) + shp(:,n)*WdetJ(:) * ri(:,3*nflow+iflow)
             enddo
           enddo

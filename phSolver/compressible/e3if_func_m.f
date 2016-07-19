@@ -226,4 +226,42 @@ c
 c
       end subroutine set_Kij
 c
+        subroutine calc_y_jump
+c
+          integer :: iflow,isd
+c
+          do iflow = 1,nflow
+            do isd = 1,nsd
+              y_jump(:,iflow,isd) = y0(:,iflow)*nv0(:,isd) + y1(:,iflow)*nv1(:,isd)
+            enddo
+          enddo
+c
+        end subroutine calc_y_jump
+c
+        subroutine calc_CKij(CKij,Kij)
+c
+c          Multiply the two matrixes...
+c
+           real*8, dimension(:,:,:,:,:), intent(out) :: CKij
+           real*8, dimension(:,:,:,:,:), intent(in) :: Kij
+c
+           integer :: iflow,jflow,kflow,isd,jsd
+c
+           ! calculate C*Kij:
+           do isd = 1,nsd
+             do jsd = 1,nsd
+               do iflow = 1,nflow
+                 do jflow = 1,nflow
+                   CKij(:,iflow,jflow,isd,jsd) = zero
+                   do kflow = 1,nflow
+                     CKij(:,iflow,jflow,isd,jsd) = CKij(:,iflow,jflow,isd,jsd) + 
+     &                   cmtrx(:,iflow,kflow)*Kij(:,isd,jsd,kflow,jflow)
+                   enddo
+                 enddo
+               enddo
+             enddo
+           enddo
+c
+        end subroutine calc_CKij
+c
       end module e3if_func_m

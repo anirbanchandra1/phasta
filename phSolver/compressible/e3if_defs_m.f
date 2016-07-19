@@ -48,7 +48,7 @@ c
         real*8 :: time,deltat
 c
 !          real*8, parameter :: s = 1.0d0, e = 1.0d-3, h = 1.d-2, mu = 1.d1 ! single phase cases
-          real*8, parameter :: s = 1.0d0, e = 1.0d-3, h = 1.d-2, mu = 1.d0
+          real*8, parameter :: s = 1.0d0, e = 1.0d-1, h = 1.d-2, mu = 1.d0
 c
 c
 c... properties

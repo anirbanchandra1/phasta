@@ -1,6 +1,7 @@
       module e3if_lhs_m
 c
         use e3if_defs_m
+        use e3if_func_m
 c
         implicit none
 c
@@ -58,24 +59,39 @@ c
 c
       end subroutine set_lhs_matrices
 c
-      subroutine calc_egmass( egmass_self_self,    egmass_self_nbr,
-     &                         AiNa_self, AiNa_nbr, KijNaj_self, KijNaj_nbr,
-     &                         shp, n, WdetJ,
-     &                         nshl_self, nshl_nbr)
+      subroutine calc_egmass( egmass00, egmass01,
+     &                         AiNa0, AiNa1, KijNaj0, KijNaj1,
+     &                         KijNajC0, KijNajC1,
+     &                         shp0, n0, n1, WdetJ0,
+     &                         prop,
+     &                         nshl0, nshl1)
 c        
-        real*8, dimension(:,:,:), intent(inout) :: egmass_self_self, egmass_self_nbr
-        real*8, dimension(:,:,:,:), intent(in)  :: AiNa_self, AiNa_nbr, KijNaj_self, KijNaj_nbr
-        real*8, dimension(:,:), intent(in) :: shp, n
-        real*8, dimension(:), intent(in) :: WdetJ
-        integer, intent(in) :: nshl_self,nshl_nbr
+        real*8, dimension(:,:,:), intent(inout) :: egmass00, egmass01
+        real*8, dimension(:,:,:,:), intent(in)  :: AiNa0, AiNa1, KijNaj0, KijNaj1, KijNajC0, KijNajC1
+        real*8, dimension(:,:), intent(in) :: shp0,n0, n1
+        real*8, dimension(:), intent(in) :: WdetJ0
+        type(prop_t), dimension(:), pointer, intent(in) :: prop
+        integer, intent(in) :: nshl0,nshl1
 c
         integer :: i,j,p,q,inode0,inode1,isd
         integer :: i0,j0,il,jl,iflow,jflow
+        real*8 :: this_mu(npro,nflow,nflow)
 c
-        do i = 1,nshl_self
+c---------> ATTENTION <--------
+c  This still needs to be confirmed...
+c
+      this_mu = zero
+      this_mu(:,2,2) = prop%stiff(3,3) ! mu
+      this_mu(:,3,3) = prop%stiff(3,3) ! "
+      this_mu(:,4,4) = prop%stiff(3,3) ! "
+      this_mu(:,5,5) = prop%stiff(5,5) ! kappa
+c
+c---------> END ATTANETION <-----
+c
+        do i = 1,nshl0
           i0 = nflow*(i-1)
 c
-          do j = 1,nshl_self
+          do j = 1,nshl0
             j0 = nflow*(j-1)
 c
             do iflow = 1,nflow
@@ -85,10 +101,12 @@ c
                 jl = j0 + jflow
 c
                 do isd = 1,nsd
-                  egmass_self_self(:,il,jl) = egmass_self_self(:,il,jl) - (
-     &              pt50 * shp(:,i) * ( AiNa_self(:,isd,iflow,jflow) 
-     &                                - KijNaj_self(:,isd,iflow,jflow) ) * n(:,isd) 
-     &              ) * WdetJ
+                  egmass00(:,il,jl) = egmass00(:,il,jl) - (
+     &              pt50 * shp0(:,i) * ( AiNa0(:,isd,iflow,jflow) 
+     &                                - KijNaj0(:,isd,iflow,jflow) ) * n0(:,isd) 
+     &            + pt50 * s * KijNajC0(:,isd,iflow,jflow)*n0(:,isd)
+     &            + e*this_mu(:,iflow,jflow)/h * ctc(:,iflow,jflow)*shp0(:,i)
+     &              ) * WdetJ0
                 enddo
 c
               enddo
@@ -96,7 +114,7 @@ c
 c
           enddo
 c
-          do j = 1,nshl_nbr
+          do j = 1,nshl1
             j0 = nflow*(j-1)
 c
             do iflow = 1,nflow
@@ -106,10 +124,12 @@ c
                 jl = j0 + jflow
 c
                 do isd = 1,nsd
-                  egmass_self_nbr(:,il,jl) = egmass_self_nbr(:,il,jl) - (
-     &              pt50 * shp(:,i) * ( AiNa_nbr(:,isd,iflow,jflow) 
-     &                                - KijNaj_nbr(:,isd,iflow,jflow) ) * n(:,isd) 
-     &              ) * WdetJ
+                  egmass01(:,il,jl) = egmass01(:,il,jl) - (
+     &              pt50 * shp0(:,i) * ( AiNa1(:,isd,iflow,jflow) 
+     &                                - KijNaj1(:,isd,iflow,jflow) ) * n0(:,isd) 
+     &            + pt50 * s * KijNajC0(:,isd,iflow,jflow)*n1(:,isd)
+     &            - e*this_mu(:,iflow,jflow)/h * ctc(:,iflow,jflow)*shp0(:,i)
+     &              ) * WdetJ0
                 enddo
 c
               enddo

@@ -16,7 +16,7 @@ c
         integer :: isd
         real*8 :: vmag,t1,c1
 c
-        t1   = 2.0d-6
+        t1   = 1.0d-3
         vmag = 1.0d0
 !-------------------------------
 ! single phase propellant cases
