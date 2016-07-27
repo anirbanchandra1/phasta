@@ -66,6 +66,7 @@ c
       character*64 temp1
       type(c_ptr) :: handle
       character(len=1024) :: dataInt, dataDbl
+      integer, pointer :: itemp(:)
       dataInt = c_char_'integer'//c_null_char
       dataDbl = c_char_'double'//c_null_char
 c
@@ -148,6 +149,16 @@ c
       call phio_readheader(fhandle,
      & c_char_'number of shape functions' // char(0),
      & c_loc(ntopsh),ione, dataInt, iotype)
+
+      write(fname2,"('material type interior')")
+      call phio_readheader(fhandle, fname2 // char(0),
+     & c_loc(intfromfile(1)), 1, dataInt, iotype)
+      allocate(mattype_interior(intfromfile(1)))
+      allocate(itemp(intfromfile(1)))
+      call phio_readdatablock(fhandle,fname2 // char(0),
+     & c_loc(itemp), intfromfile(1), dataInt, iotype)
+      mattype_interior(:) = itemp(:)
+      deallocate(itemp)
 c
 c.... calculate the maximum number of boundary element nodes
 c     

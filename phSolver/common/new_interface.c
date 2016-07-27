@@ -229,7 +229,7 @@ void countfieldstowriterestart()
 
   if (conpar.iALE == 2) {
 //HARDCODED BY FAN, it should be + 3, including meshQ
-    nfields = nfields + 2; 
+    nfields = nfields + 3; 
   }
 
   outpar.nsynciofieldswriterestart = nfields;
@@ -404,7 +404,7 @@ Write_Field(  int *pid,
     (void)*filemode; /*silence compiler warning*/
 
     if(!strncmp(arraytype,"i",1))
-      strcpy(datatype,"int");
+      strcpy(datatype,"integer");
     else /* default is double*/
       strcpy(datatype,"double");
 

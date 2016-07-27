@@ -501,7 +501,6 @@ c
           tmpshp(1:nshl,:) = shp(lcsyst,1:nshl,:)
           tmpshgl(:,1:nshl,:) = shgl(lcsyst,:,1:nshl,:)
 
-
           call AsIGMR (y,                   ac,
      &                 x,                   mxmudmi(iblk)%p,
      &                 tmpshp,

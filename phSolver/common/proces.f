@@ -258,6 +258,9 @@ c
 c.... end of the program
 c
 CAD        write(6,*) 'Life: ', second(0) - ttim(100)
+
+        deallocate(mattype_interior)
+
         deallocate(point2iper)
         if(numpe.gt.1) then
           call Dctypes(point2ilwork(1))

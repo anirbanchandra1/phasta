@@ -14,23 +14,23 @@ c
         real*8, parameter :: beta  = 1.d-6
 c
         integer :: isd
-        real*8 :: vmag,t1,c1
+        real*8 :: v1,t1,c1
 c
-        t1   = 1.0d-3
-        vmag = 1.0d0
+        t1 = 2.5d-4
+        v1 = 2.0d0
 !-------------------------------
 ! single phase propellant cases
 !       vmag = 10.0d0
 !-------------------------------
 c
-        if (time < t1) then
-          c1 = time/t1
+        if (time <= t1) then
+          c1 = v1*time/t1
         else
-          c1 = one
+          c1 = v1
         endif
 c
         do isd = 1,nsd
-          vi(:,isd) = c1*vmag*n(:,isd) + u(:,isd)
+          vi(:,isd) = c1*n(:,isd) + u(:,isd)
         enddo
 c
       end subroutine calc_vi

@@ -830,6 +830,7 @@ c     &                  xdot,  'd'//char(0), numnp, nsd, lstep)
 c                   call write_field(
 c     &                  myrank,'a'//char(0),'meshQ'//char(0), 5, 
 c     &                  meshq, 'd'//char(0), numel, 1,   lstep)
+c
                  endif
 c... end writing
                  output_mode = -1
@@ -855,7 +856,11 @@ c                 call write_field(
 c     &                myrank,'a'//char(0),'meshQ'//char(0), 5, 
 c     &                meshq, 'd'//char(0), numel, 1,   lstep)
                endif
- 
+c
+                  call write_field(
+     &              myrank,'a'//char(0),'material_type'//char(0),13,
+     &              mattype_interior, 'd',numel, 1, lstep)   
+
                !Write the distance to wall field in each restart
                if((istep==nstp) .and. (irans < 0 )) then !d2wall is allocated
                  call write_field(myrank,'a'//char(0),'dwal'//char(0),4,

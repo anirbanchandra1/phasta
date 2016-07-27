@@ -68,8 +68,8 @@ c
         cp  = cv_
         alphaP = alpha_P
         betaT  = beta_T
-        c =  sqrt(one/(rho_ref*betaT))
-c        c =  sqrt(one/(rho*betaT))
+c        c =  sqrt(one/(rho_ref*betaT))
+        c =  sqrt(one/(rho*betaT))
         gamb = zero
 c
       end subroutine getthm_liquid_1

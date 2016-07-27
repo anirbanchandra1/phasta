@@ -30,4 +30,11 @@ c
      &,                       iprop_liquid_1_alphaP  = 5
      &,                       iprop_liquid_1_betaT   = 6
 c
+c NOTE: This should only be an integer array BUT
+c       since vtk reader does not support int yet,
+c       so, we cast the integer numbers into this 
+c       real array!!!
+c
+        real*8, pointer :: mattype_interior(:)
+c
       end module matdat_def_m
