@@ -47,9 +47,9 @@ c
         integer :: istep
         real*8 :: time,deltat
 c
-!          real*8, parameter :: s = 1.0d0, e = 1.0d-3, h = 1.d-2, mu = 1.d1 ! single phase cases
-          real*8, parameter :: s = 1.0d0, e = 1.0d-1, h = 1.d-2, mu = 1.d0
-c
+!        real*8, parameter :: s = 1.0d0, e = 1.0d-3, h = 1.d-2, mu = 1.d1 ! single phase cases
+!        real*8, parameter :: s = 1.0d0, e = 1.0d-1, h = 1.d-2, mu = 1.d0
+        real*8 :: s, e, h, mu
 c
 c... properties
 c
@@ -89,6 +89,8 @@ c
      &    time_
      &  )
 c
+          use e3if_inp_m
+c
           integer, intent(in) :: nshg_,nshl0_,nshl1_,nenl0_,nenl1_,lcsyst0_,lcsyst1_
           integer, intent(in) :: npro_,ndof_,nsd_,nflow_,ipord_,nqpt_
           real*8, dimension(:,:,:), pointer, intent(in) :: egmassif00,egmassif01,egmassif10,egmassif11
@@ -118,6 +120,10 @@ c
           egmass01 => egmassif01
           egmass10 => egmassif10
           egmass11 => egmassif11
+c
+          s = dgif_s
+          e = dgif_e
+          h = dgif_h
 c
         end subroutine setparam_e3if
 c

@@ -12,6 +12,7 @@ c
       use mpi_def_m
       use number_def_m
       use matdat_def_m
+      use e3if_inp_m
 
 	IMPLICIT REAL*8 (a-h,o-z)
 c

@@ -32,12 +32,28 @@ void populate_eos_map
   eos_map.insert(map<string,int>::value_type("liquid_1",  ieos_liquid_1));
 }
 
+void populate_dg_vi_ramp
+(map<string,int>& this_map)
+{
+  this_map.insert(map<string,int>::value_type("None", idg_no_ramp));
+  this_map.insert(map<string,int>::value_type("Linear", idg_linear_ramp));
+}
+
+void populate_dg_vi_model
+(map<string,int>& this_map)
+{
+  this_map.insert(map<string,int>::value_type("Constant", idg_const_vi));
+  this_map.insert(map<string,int>::value_type("Pressure-Based", idg_vi_model1));
+}
+
 int input_fform(phSolver::Input& inp)
 {
 
   int ierr = 0 ;
   int i,j, n_tmp;
   map<string,int> eos_map;
+  map<string,int> DG_vi_ramp;
+  map<string,int> DG_vi_model;
 
   try {
     if(workfc.myrank==workfc.master) {
@@ -502,6 +518,26 @@ int input_fform(phSolver::Input& inp)
       sclrs.scdiff[i] = vec[i];
     }
     vec.erase(vec.begin(),vec.end());
+
+    //DG interface input parameters
+    populate_dg_vi_ramp(DG_vi_ramp);
+    sbuf = (string)inp.GetValue("DG Interface Velocity Ramping");
+    e3if_dat.vi_ramping = DG_vi_ramp[sbuf];
+    if (sbuf == "Linear")
+      e3if_dat.ramp_time = (double)inp.GetValue("DG Interface Ramping Time");
+
+    populate_dg_vi_model(DG_vi_model);
+    sbuf = (string)inp.GetValue("DG Interface Velocity Model");
+    e3if_dat.vi_model = DG_vi_model[sbuf];
+    if (sbuf == "Constant")
+      e3if_dat.vi_mag = (double)inp.GetValue("DG Interface Velocity Magnitude");
+    else if (sbuf == "Pressure-Based") {
+      e3if_dat.dgif_alpha = (double)inp.GetValue("DG Interface Velocity alpha");
+      e3if_dat.dgif_beta = (double)inp.GetValue("DG Interface Velocity beta");}
+
+    e3if_dat.s = (double)inp.GetValue("DG Interface Stability Factor");
+    e3if_dat.e = (double)inp.GetValue("DG Interface Kinematic Condition epsilon");
+    e3if_dat.h = (double)inp.GetValue("DG Interface Kinematic Condition h");
 
 //for mesh-elastic--------------------------------------------
     vec = inp.GetValue("Lame Constant Lamda");

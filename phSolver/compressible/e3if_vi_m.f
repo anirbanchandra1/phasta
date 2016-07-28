@@ -1,5 +1,6 @@
       module e3if_vi_m
 c
+        use e3if_inp_m
         use e3if_defs_m
 c
         implicit none
@@ -10,24 +11,31 @@ c
 c
         real*8, pointer, intent(in) :: p(:), n(:,:), u(:,:)
 c
-        real*8, parameter :: alpha = 1.d0
-        real*8, parameter :: beta  = 1.d-6
-c
         integer :: isd
-        real*8 :: v1,t1,c1
+        real*8 :: vimag,v1,t1,c1
 c
-        t1 = 2.5d-4
-        v1 = 2.0d0
-!-------------------------------
-! single phase propellant cases
-!       vmag = 10.0d0
-!-------------------------------
+        select case (vi_model)
+        case (const_vi)
+          vimag = vi_mag
+        case default
+          call error ('ERROR in e3if_vi:',' vi_model is not supported.',vi_model)
+        end select
 c
-        if (time <= t1) then
-          c1 = v1*time/t1
-        else
-          c1 = v1
-        endif
+        select case (vi_ramping)
+        case (no_ramp)
+          c1 = vimag
+        case (linear_ramp)
+          t1 = ramp_time
+          v1 = vimag
+c
+          if (time <= t1) then
+            c1 = v1*time/t1
+          else
+            c1 = v1
+          endif
+        case default
+          call error ('ERROR in e3if_vi:',' vi_ramping is not supported,',vi_ramping)
+        end select
 c
         do isd = 1,nsd
           vi(:,isd) = c1*n(:,isd) + u(:,isd)
