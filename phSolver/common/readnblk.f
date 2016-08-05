@@ -66,7 +66,7 @@ c
       character*64 temp1
       type(c_ptr) :: handle
       character(len=1024) :: dataInt, dataDbl
-      integer, pointer :: itemp(:)
+      integer, target, allocatable :: itemp(:)
       dataInt = c_char_'integer'//c_null_char
       dataDbl = c_char_'double'//c_null_char
 c
