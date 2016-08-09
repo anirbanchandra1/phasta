@@ -311,7 +311,7 @@ c        tcorewc1 = secs(0.0)
         if(iramp.eq.1) then
                 call initBCprofileScale(vbc_prof,BC,yold,x)
 ! fix the yold values to the reset BC
-                call itrBC (yold,  ac,  iBC,  BC,  iper, ilwork)
+                call itrBC (yold,  ac,  iBC,  BC,  iper, ilwork, umesh)
                 isclr=1 ! fix scalar
                 call itrBCsclr(yold,ac,iBC,BC,iper,ilwork)
         endif   
@@ -390,10 +390,8 @@ c
 c
 c.... -----------------------> predictor phase <-----------------------
 c
-            call itrPredict(   yold,    acold,    y,   ac )
-c
-c              call itrBC (y,  ac,  iBC,  BC,  iper, ilwork)
-              call tempitrBC (y,ac, iBC, BC, iper, ilwork, umesh)
+            call itrPredict(   yold,    acold,    y,   ac , umesh, iBC, BC, iper, ilwork)
+            call itrBC (y,ac, iBC, BC, iper, ilwork, umesh)
 c
             isclr = zero
             if (nsclr.gt.zero) then
@@ -626,8 +624,7 @@ c
                   if(iupdate.eq.0) then !update flow  
                      call itrCorrect ( y, ac, yold, acold, solinc)
 c
-c              call itrBC (y,  ac,  iBC,  BC,  iper, ilwork)
-              call tempitrBC (y,ac, iBC, BC, iper, ilwork, umesh)
+                     call itrBC (y,ac, iBC, BC, iper, ilwork, umesh)
 c
                      call tnanq(y, 5, 'y_updbc')
 c Elaine-SPEBC
@@ -700,8 +697,7 @@ c
 c
             call itrUpdate( yold,  acold,   y,    ac)
 c
-c              call itrBC (y,  ac,  iBC,  BC,  iper, ilwork)
-              call tempitrBC (y,ac, iBC, BC, iper, ilwork, umesh)
+              call itrBC (y,ac, iBC, BC, iper, ilwork, umesh)
 c
 c Elaine-SPEBC      
             if((irscale.ge.0).and.(myrank.eq.master)) then

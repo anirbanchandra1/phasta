@@ -324,8 +324,8 @@ c
 
         echeck=abs(eBrg(iKs+1))
         if (echeck .le. epsnrm) exit
-        if(myrank.eq.master) write(*,*)'solver tolerance %satisfaction',
-     &  (one-echeck/unorm)/(one-etol)*100
+c        if(myrank.eq.master) write(*,*)'solver tolerance %satisfaction',
+c    &  (one-echeck/unorm)/(one-etol)*100
 c     
 c.... end of mGMRES loop
 c

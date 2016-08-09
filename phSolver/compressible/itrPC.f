@@ -53,13 +53,14 @@ c
 c    Predict solution at time n+1
 c
 c-----------------------------------------------------------------------
-      subroutine itrPredict ( yold,          acold,
-     &                        y,             ac   )
+      subroutine itrPredict ( yold,acold,y,ac,umesh,iBC,BC,iper,ilwork)
       
       include "common.h"
       
       real*8        yold(nshg,ndof),            acold(nshg,ndof),
-     &              y(nshg,ndof),               ac(nshg,ndof)
+     &              y(nshg,ndof),               ac(nshg,ndof), 
+     &              umesh(nshg,nsd)
+      dimension iBC(nshg), BC(nshg,ndofBC), iper(nshg), ilwork(nlwork)
 
 c
 c.... set the solution at t_{n+alfi) and the acceleration at t_{n+almi)
@@ -77,7 +78,7 @@ c
 c   an+1_pred=0
 c
         y  = yold+alfi/Dtgl*acold*(one-gami)
-        call itrBC (y, ac,  iBC,  BC,  iper,ilwork)
+        call itrBC (y, ac,  iBC,  BC,  iper,ilwork, umesh)
 c Elaine-SPEBC
         if((irscale.ge.0).and.(myrank.eq.master)) then
            call genscale(y, x, iBC) 
@@ -90,7 +91,7 @@ c
 c   an+1_pred=an
 c
         y  = yold+alfi/Dtgl*acold
-        call itrBC (y, ac,  iBC,  BC, iper,ilwork)
+        call itrBC (y, ac,  iBC,  BC, iper,ilwork, umesh)
 c Elaine-SPEBC
         if((irscale.ge.0).and.(myrank.eq.master)) then
            call genscale(y, x, iBC)
@@ -106,7 +107,7 @@ c
         fct2=one-almi/gami
         fct3=almi/gami/alfi*Dtgl
         y  = yold+fct1*(yold-y)
-        call itrBC (y, ac,  iBC,  BC,  iper,ilwork)
+        call itrBC (y, ac,  iBC,  BC,  iper,ilwork,umesh)
 c Elaine-SPEBC
         if((irscale.ge.0).and.(myrank.eq.master)) then
            call genscale(y, x, iBC)
