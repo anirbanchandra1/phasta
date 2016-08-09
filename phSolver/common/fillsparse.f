@@ -236,6 +236,7 @@ c
      &    ienif0,ienif1,
      &    col,row,
      &    egmass,
+     &    npro, nedof,
      &    nflow,nshg,nnz,nnz_tot)
 c
         use mpi_def_m
@@ -245,14 +246,13 @@ c
         real*8, intent(inout) :: lhsK(nflow*nflow,nnz_tot)
         integer, dimension(:,:), pointer, intent(in) :: ienif0,ienif1
         integer, intent(in) :: col(nshg+1), row(nnz*nshg)
-        real*8, dimension(:,:,:), pointer, intent(in) :: egmass
-        integer, intent(in) :: nflow,nshg,nnz,nnz_tot
+        real*8, intent(in) :: egmass(npro,nedof,nedof)
+        integer, intent(in) :: nflow,nshg,nnz,nnz_tot, npro, nedof
 c
         integer :: e,a,b,i,c,n,r,s,k,g,t,f
-        integer :: npro,nshl0,nshl1
+        integer :: nshl0,nshl1
         integer :: sparseloc
 c
-        npro = size(ienif0,1)
         nshl0 = size(ienif0,2)
         nshl1 = size(ienif1,2)
 c

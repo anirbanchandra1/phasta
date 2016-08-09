@@ -11,7 +11,8 @@
      &   ienif0,   ienif1,
      &   materif0, materif1,
      &   time_,
-     &   sum_vi_area
+     &   sum_vi_area,
+     &   lhs
      & )  
          use hierarchic_m
          use local_m
@@ -23,7 +24,7 @@ c
             integer, intent(in) :: nflow_, npro_, ndof_, nsd_, ipord_, numnp_, nqpt_
             integer, intent(inout) :: gbytes_, sbytes_, flops_
             real*8, dimension(nshg_,nflow_), intent(inout) :: res
-            real*8, dimension(:,:,:), pointer, intent(inout) :: egmassif00,egmassif01,egmassif10,egmassif11
+            real*8, dimension(:,:,:), allocatable, target, intent(inout) :: egmassif00,egmassif01,egmassif10,egmassif11
             real*8, dimension(nshg_,ndof_),  intent(in)    :: y
             real*8, dimension(nshg_,nsd_),   intent(in)    :: x
             real*8, dimension(numnp_, nsd_), intent(inout) :: umesh
@@ -36,6 +37,7 @@ c
             integer, intent(in)   :: materif0, materif1
             real*8, intent(in) :: time_
             real*8, pointer, intent(inout) :: sum_vi_area(:,:)
+            integer, intent(in) :: lhs
 c
       integer :: i, iel, i0,i1,n
       real*8 :: r0,r1,n0(3),n1(3),t_ramp,c2
@@ -46,7 +48,7 @@ c
      &        npro_,ndof_,nsd_,nflow_,ipord_,nqpt_,
      &        egmassif00,egmassif01,egmassif10,egmassif11,
      &        materif0, materif1,
-     &        time_
+     &        time_,lhs
      &      )
 c
           call malloc_e3if

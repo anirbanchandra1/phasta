@@ -51,6 +51,8 @@ c
 !        real*8, parameter :: s = 1.0d0, e = 1.0d-1, h = 1.d-2, mu = 1.d0
         real*8 :: s, e, h, mu
 c
+        integer :: lhs_dg
+c
 c... properties
 c
         type prop_t
@@ -86,16 +88,17 @@ c
      &    npro_,ndof_,nsd_,nflow_,ipord_,nqpt_,
      &    egmassif00,egmassif01,egmassif10,egmassif11,
      &    materif0, materif1,
-     &    time_
+     &    time_, lhs
      &  )
 c
           use e3if_inp_m
 c
           integer, intent(in) :: nshg_,nshl0_,nshl1_,nenl0_,nenl1_,lcsyst0_,lcsyst1_
           integer, intent(in) :: npro_,ndof_,nsd_,nflow_,ipord_,nqpt_
-          real*8, dimension(:,:,:), pointer, intent(in) :: egmassif00,egmassif01,egmassif10,egmassif11
+          real*8, dimension(:,:,:), allocatable, target, intent(in) :: egmassif00,egmassif01,egmassif10,egmassif11
           integer, intent(in) :: materif0, materif1
           real*8, intent(in) :: time_
+          integer, intent(in) :: lhs
 c
           nshg  = nshg_
           nshl0 = nshl0_
@@ -116,14 +119,23 @@ c
           mater0 = materif0
           mater1 = materif1
 c
-          egmass00 => egmassif00
-          egmass01 => egmassif01
-          egmass10 => egmassif10
-          egmass11 => egmassif11
+          if (allocated(egmassif00)) then
+            egmass00 => egmassif00
+            egmass01 => egmassif01
+            egmass10 => egmassif10
+            egmass11 => egmassif11
+          else
+            nullify(egmass00)
+            nullify(egmass01)
+            nullify(egmass10)
+            nullify(egmass11)
+          endif
 c
           s = dgif_s
           e = dgif_e
           h = dgif_h
+c
+          lhs_dg = lhs
 c
         end subroutine setparam_e3if
 c

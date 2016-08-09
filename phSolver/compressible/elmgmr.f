@@ -317,7 +317,8 @@ c
      &   ienif0,   ienif1,
      &   mattypeif0, mattypeif1,
      &   time_,
-     &   sum_vi_area
+     &   sum_vi_area,
+     &   lhs
      & )
          use hierarchic_m
          use local_m
@@ -327,7 +328,7 @@ c
             integer, intent(in) :: nflow_, npro_, ndof_, nsd_, ipord_, numnp_, nqpt_
             integer, intent(inout) :: gbytes_, sbytes_, flops_
             real*8, dimension(nshg_,nflow_), intent(inout) :: res
-            real*8, dimension(:,:,:), pointer, intent(inout) :: egmassif00,egmassif01,egmassif10,egmassif11
+            real*8, dimension(:,:,:), allocatable, target, intent(inout) :: egmassif00,egmassif01,egmassif10,egmassif11
             real*8, dimension(nshg_,ndof_),  intent(in)    :: y
             real*8, dimension(nshg_,nsd_),   intent(in)    :: x
             real*8, dimension(nshl0_,nqpt_),intent(in)   :: shpif0
@@ -340,19 +341,21 @@ c
             integer, intent(in)   :: mattypeif0, mattypeif1
             real*8, intent(in) :: time_
             real*8, pointer, intent(inout) :: sum_vi_area(:,:)
+            integer, intent(in) :: lhs
           end subroutine asidgif
           subroutine fillsparse_if
      &    ( lhsk,
      &      ienif0,ienif1,
      &      col,row,
      &      egmass,
+     &      npro, nedof,
      &      nflow,nshg,nnz,nnz_tot)
             implicit none
             real*8, intent(inout) :: lhsK(nflow*nflow,nnz_tot)
             integer, dimension(:,:), pointer, intent(in) :: ienif0,ienif1
             integer, intent(in) :: col(nshg+1), row(nnz*nshg)
-            real*8, dimension(:,:,:), pointer, intent(in) :: egmass
-            integer, intent(in) :: nflow,nshg,nnz,nnz_tot
+            real*8, intent(in) :: egmass(npro,nedof,nedof)
+            integer, intent(in) :: nflow,nshg,nnz,nnz_tot,npro,nedof
           end subroutine fillsparse_if
         end interface
 c
@@ -386,7 +389,7 @@ c
         real*8, allocatable :: tmpshpb(:,:), tmpshglb(:,:,:)
         real*8, allocatable :: EGmass(:,:,:)
 c
-        real*8, dimension(:,:,:), pointer :: egmassif00,egmassif01,egmassif10,egmassif11
+        real*8, dimension(:,:,:), allocatable :: egmassif00,egmassif01,egmassif10,egmassif11
 c
         ttim(80) = ttim(80) - secs(0.0)
 c
@@ -676,17 +679,18 @@ c
      &         mienif0(iblk)%p, mienif1(iblk)%p,
      &         mattyp0, mattyp1,
      &         real(lstep+1,8)*delt(1), ! total simulation time
-     &         sum_vi_area
+     &         sum_vi_area,
+     &         lhs
      & )
 c
           if (lhs .eq. 1) then
 c
 c.... Fill-up the global sparse LHS mass matrix
 c
-            call fillsparse_if( lhsk,mienif0(iblk)%p,mienif0(iblk)%p,col,row,egmassif00,nflow,nshg,nnz,nnz_tot)
-            call fillsparse_if( lhsk,mienif1(iblk)%p,mienif0(iblk)%p,col,row,egmassif10,nflow,nshg,nnz,nnz_tot)
-            call fillsparse_if( lhsk,mienif0(iblk)%p,mienif1(iblk)%p,col,row,egmassif01,nflow,nshg,nnz,nnz_tot)
-            call fillsparse_if( lhsk,mienif1(iblk)%p,mienif1(iblk)%p,col,row,egmassif11,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if( lhsk,mienif0(iblk)%p,mienif0(iblk)%p,col,row,egmassif00,npro,nedof,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if( lhsk,mienif1(iblk)%p,mienif0(iblk)%p,col,row,egmassif10,npro,nedof,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if( lhsk,mienif0(iblk)%p,mienif1(iblk)%p,col,row,egmassif01,npro,nedof,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if( lhsk,mienif1(iblk)%p,mienif1(iblk)%p,col,row,egmassif11,npro,nedof,nflow,nshg,nnz,nnz_tot)
 c
           endif
 c

@@ -105,16 +105,22 @@ c            call kinematic_condition
 c
 c...LHS calculations...
 c
-            call set_lhs_matrices
+            if (lhs_dg .eq. 1) then
 c
-            call calc_egmass(egmass00,egmass01,AiNa0,AiNa1,KijNaj0,KijNaj1,KijNajC0,KijNajC1,
-     &       shp0,nv0,nv1,WdetJif0,prop0,nshl0,nshl1)
-            call calc_egmass(egmass11,egmass10,AiNa1,AiNa0,KijNaj1,KijNaj0,KijNajC1,KijNajC0,
-     &       shp1,nv1,nv0,WdetJif1,prop1,nshl1,nshl0)
+              call set_lhs_matrices
+c
+             call calc_egmass(egmass00,egmass01,AiNa0,AiNa1,KijNaj0,KijNaj1,KijNajC0,KijNajC1,
+     &         shp0,nv0,nv1,WdetJif0,prop0,nshl0,nshl1)
+
+             call calc_egmass(egmass11,egmass10,AiNa1,AiNa0,KijNaj1,KijNaj0,KijNajC1,KijNajC0,
+     &         shp1,nv1,nv0,WdetJif1,prop1,nshl1,nshl0)
+
 c      call calc_egmass_(egmass00,AiNa0,KijNaj0,KijNaj0,KijNajC0,shp0,shp1,nv0,nv1,WdetJif0,nshl0,nshl1)
 c      call calc_egmass_(egmass01,AiNa1,KijNaj0,KijNaj1,KijNajC1,shp0,shp1,nv0,nv1,WdetJif0,nshl0,nshl1)
 c      call calc_egmass_(egmass10,AiNa0,KijNaj1,KijNaj0,KijNajC0,shp1,shp0,nv1,nv0,WdetJif1,nshl1,nshl0)
 c      call calc_egmass_(egmass11,AiNa1,KijNaj1,KijNaj1,KijNajC1,shp1,shp0,nv1,nv0,WdetJif1,nshl1,nshl0)
+c
+            endif
 c
             call e3if_wmlt(rl0, ri0, shp0, shg0, WdetJif0, nshl0)
             call e3if_wmlt(rl1, ri1, shp1, shg1, WdetJif1, nshl1)
