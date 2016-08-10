@@ -904,7 +904,7 @@ c         tcorewc2 = secs(0.0)
             write(6,*) 'T(core) cpu = ',tcorecp2-tcorecp1
          endif
         
-c     call wtime
+      call wtime
 
  3000 continue !end of NTSEQ loop
 c
@@ -967,7 +967,7 @@ c
         call BC_finalize
       endif
 
-      close (iecho)
+c      close (iecho)
       if(iabc==1) deallocate(acs)
 c
 c.... end

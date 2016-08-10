@@ -59,7 +59,7 @@ c
 c
 c.... **********************>>    EBE - GMRES    <<********************
 c
-      call timer ('Solver  ')
+CC      call timer ('Solver  ')
 c
 c.... ------------------------> Initialization <-----------------------
 c
@@ -307,7 +307,7 @@ c
 c.... stop the timer
 c     
  3002 continue                  ! no solve just res.
-      call timer ('Back    ')
+CC      call timer ('Back    ')
 c     
 c.... end
 c     

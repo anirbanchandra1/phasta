@@ -215,6 +215,9 @@ c$$$$$$$$$$$$$$$$$$$$
 !End modifications for Duct
 !======================================================================
 c
+c.... start CPU_timer
+c
+        call timer ('Begin   ')
 c
 c.... call the semi-discrete predictor multi-corrector iterative driver
 c
@@ -232,7 +235,7 @@ c
 c
 c.... stop CPU-timer
 c
-CAD        call timer ('End     ')
+        call timer ('End     ')
 c
 c.... close echo file
 c
