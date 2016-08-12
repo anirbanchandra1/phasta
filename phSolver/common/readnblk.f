@@ -297,12 +297,18 @@ c
       if ( numpbc > 0 ) then
         allocate( iBCtmp(numpbc) )
         allocate( iBCtmpread(numpbc) )
-        call phio_readdatablock(fhandle,
-     &   c_char_'bc codes array' // char(0),
-     &   c_loc(iBCtmpread), numpbc, dataInt, iotype)
+      else
+        allocate( iBCtmp(1) )
+        allocate( iBCtmpread(1) )
+      endif
+      call phio_readdatablock(fhandle,
+     & c_char_'bc codes array' // char(0),
+     & c_loc(iBCtmpread), numpbc, dataInt, iotype)
+
+      if ( numpbc > 0 ) then
          iBCtmp=iBCtmpread
       else  ! sometimes a partition has no BC's
-         allocate( iBCtmp(1) )
+         deallocate( iBCtmpread)
          iBCtmp=0
       endif
 c
@@ -314,23 +320,31 @@ c
      & c_loc(intfromfile),ione, dataDbl, iotype)
 
       if ( numpbc > 0 ) then
-         if(intfromfile(1).ne.(ndof+7)*numpbc) then
-           warning='WARNING more data in BCinp than needed: keeping 1st'
-           write(*,*) warning, ndof+7
-         endif
-         allocate( BCinp(numpbc,ndof+7) )
+c         if(intfromfile(1).ne.(ndof+7)*numpbc) then
+c           warning='WARNING more data in BCinp than needed: keeping 1st'
+c           write(*,*) warning, ndof+7, numpbc,intfromfile(1),(ndof+7)*numpbc
+c         endif
+c         allocate( BCinp(numpbc,ndof+7) )
+         allocate( BCinp(numpbc,ndof+20) )
          nsecondrank=intfromfile(1)/numpbc
          allocate( BCinpread(numpbc,nsecondrank) )
          iBCinpsiz=intfromfile(1)
-         call phio_readdatablock(fhandle,
-     &    c_char_'boundary condition array' // char(0),
-     &    c_loc(BCinpread), iBCinpsiz, dataDbl, iotype)
-         BCinp(:,1:(ndof+7))=BCinpread(:,1:(ndof+7))
-      else  ! sometimes a partition has no BC's
-         allocate( BCinp(1,ndof+7) )
-         BCinp=0
+      else
+         allocate( BCinp(1,ndof+20) )
          allocate( BCinpread(0,0) ) !dummy
          iBCinpsiz=intfromfile(1)
+      endif
+
+      call phio_readdatablock(fhandle,
+     & c_char_'boundary condition array' // char(0),
+     & c_loc(BCinpread), iBCinpsiz, dataDbl, iotype)
+
+      if ( numpbc > 0 ) then
+         BCinp(:,1:(ndof+20))=BCinpread(:,1:(ndof+20))
+c         BCinp(:,1:(ndof+7))=BCinpread(:,1:(ndof+7))
+      else  ! sometimes a partition has no BC's
+         deallocate(BCinpread)
+         BCinp=0
       endif
 c
 c.... read periodic boundary conditions
