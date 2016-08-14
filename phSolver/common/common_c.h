@@ -426,7 +426,8 @@ extern "C" {
     int irampViscOutlet;
     int istretchOutlet;
     int iremoveStabTimeTerm;
-	int iLHScond;
+    int iLHScond;
+    int ndofBC2;
   } genpar ;
 
   extern struct { 

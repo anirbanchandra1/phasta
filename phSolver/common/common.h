@@ -235,7 +235,8 @@ c
      &                  idiff,  lhs,    itau,   ipord,  ipred,  lstres,
      &                  iepstm, dtsfct, taucfct, ibksiz, iabc, isurf,
      &                  idflx,  Bo,     EntropyPressure, irampViscOutlet,
-     &                  istretchOutlet, iremoveStabTimeTerm, iLHScond
+     &                  istretchOutlet, iremoveStabTimeTerm, iLHScond,
+     &                  ndofBC2
 
 c
         integer :: svLSType, svLSFlag
@@ -458,6 +459,7 @@ c                 ( = 0 not used; = 1 global reconstruction )
 c itau          : type of tau to be used
 c iLHScond      : add contributiosn from the heat flux BC to the LHS 
 c                 tangency matrix. 
+c ndofBC2       : dimension size of the boundary condition array BC before constraint
 c
 c----------------------------------------------------------------------
 c

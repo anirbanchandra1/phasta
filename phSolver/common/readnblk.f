@@ -185,12 +185,14 @@ c
       ndof=ndof+nsclr           ! number of sclr transport equations to solve
 c      
       if (iALE .eq. 2) then     ! Mesh-elastic is ON
-         nelas  = nsd              ! FOR mesh-elastic 
-         ndofBC = ndof + I3nsd     ! dimension of BC array
+         nelas   = nsd              ! FOR mesh-elastic 
+         ndofBC  = ndof + I3nsd     ! dimension of BC array
      &          + nelas + I3nsd    ! add nelas for mesh-elastic solve
+         ndofBC2 = 3+2+4+7+8    ! (assuming 4 scalars to be ON) and 8 is for ec11 ec12 ec13 em1 ec21 ec22 ec23 em2 
       else
-         nelas  = 0
-         ndofBC = ndof + I3nsd     ! dimension of BC array
+         nelas   = 0
+         ndofBC  = ndof + I3nsd     ! dimension of BC array
+         ndofBC2 = ndof + 7 
       endif
 c
       ndiBCB = 2                ! dimension of iBCB array
@@ -324,13 +326,12 @@ c         if(intfromfile(1).ne.(ndof+7)*numpbc) then
 c           warning='WARNING more data in BCinp than needed: keeping 1st'
 c           write(*,*) warning, ndof+7, numpbc,intfromfile(1),(ndof+7)*numpbc
 c         endif
-c         allocate( BCinp(numpbc,ndof+7) )
-         allocate( BCinp(numpbc,ndof+20) )
+         allocate( BCinp(numpbc,ndofBC2) )
          nsecondrank=intfromfile(1)/numpbc
          allocate( BCinpread(numpbc,nsecondrank) )
          iBCinpsiz=intfromfile(1)
       else
-         allocate( BCinp(1,ndof+20) )
+         allocate( BCinp(1,ndofBC2) )
          allocate( BCinpread(0,0) ) !dummy
          iBCinpsiz=intfromfile(1)
       endif
@@ -340,8 +341,7 @@ c         allocate( BCinp(numpbc,ndof+7) )
      & c_loc(BCinpread), iBCinpsiz, dataDbl, iotype)
 
       if ( numpbc > 0 ) then
-         BCinp(:,1:(ndof+20))=BCinpread(:,1:(ndof+20))
-c         BCinp(:,1:(ndof+7))=BCinpread(:,1:(ndof+7))
+         BCinp(:,1:ndofBC2)=BCinpread(:,1:ndofBC2)
       else  ! sometimes a partition has no BC's
          deallocate(BCinpread)
          BCinp=0
