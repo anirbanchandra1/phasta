@@ -129,7 +129,7 @@ c
            else
              write( fname2,"('material type boundary')")
            endif
-           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
+C           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
            call phio_readheader(fhandle, fname2 // char(0),
      &      c_loc(intfromfile), ione, dataInt, iotype)
            call phio_readdatablock(fhandle, fname2 // char(0),
@@ -137,7 +137,7 @@ c
 c     
 c.... Read the boundary flux codes
 c
-           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
+C           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
             if(input_mode.ge.1)then
                write (fname2,"('nbc codes',i1)") iblk
             else
@@ -152,7 +152,7 @@ c
 c     
 c.... read the boundary condition data
 c     
-           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
+C           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
             if(input_mode.ge.1)then
                write (fname2,"('nbc values',i1)") iblk
             else
