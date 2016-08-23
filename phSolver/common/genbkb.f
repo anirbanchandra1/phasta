@@ -43,10 +43,12 @@ c
 
         ! Get the total number of different interior topologies in the whole domain. 
         ! Try to read from a field. If the field does not exist, scan the geombc file.
+C<--- BEGIN HARD CODE
         itpblktot=1  ! hardwired to monotopology for now
-        call phio_readheader(fhandle,
-     &   c_char_'total number of boundary tpblocks' // char(0),
-     &   c_loc(itpblktot), ione, dataInt, iotype)
+C        call phio_readheader(fhandle,
+C     &   c_char_'total number of boundary tpblocks' // char(0),
+C     &   c_loc(itpblktot), ione, dataInt, iotype)
+C<--- END HARD CODE
 
         if (itpblktot == -1) then 
           ! The field 'total number of different boundary tpblocks' was not found in the geombc file.
@@ -91,7 +93,7 @@ c
             endif
            
            ! Synchronization for performance monitoring, as some parts do not include some topologies
-           call MPI_Barrier(MPI_COMM_WORLD,ierr) 
+C           call MPI_Barrier(MPI_COMM_WORLD,ierr) 
            call phio_readheader(fhandle, fname2 // char(0),
      &      c_loc(intfromfile), ieight, dataInt, iotype)
            neltp =intfromfile(1)

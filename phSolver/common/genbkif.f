@@ -33,10 +33,12 @@ c
 c
         ! Get the total number of different interface topologies in the whole domain. 
         ! Try to read from a field. If the field does not exist, scan the geombc file.
+C<--- BEGIND HARD CODE
         itpblktot=1  ! hardwired to montopology for now
-        call phio_readheader(fhandle,
-     &   c_char_'number of interface tpblocks' // char(0),
-     &   c_loc(itpblktot), ione, dataInt, iotype) 
+C        call phio_readheader(fhandle,
+C     &   c_char_'number of interface tpblocks' // char(0),
+C     &   c_loc(itpblktot), ione, dataInt, iotype) 
+C<--- END HARD CODE
 c
         if (itpblktot == -1) then 
           ! The field 'total number of different interface tpblocks' was not found in the geombc file.
