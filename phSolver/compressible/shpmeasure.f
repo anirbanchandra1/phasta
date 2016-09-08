@@ -1,4 +1,4 @@
-      subroutine shpMeasure (x, ien, meshq, meshV)
+      subroutine shpMeasure (x, ien, meshq, tetVolm)
 c---------------------------------------------------------
 c This subroutine calculate the shape quality 
 c based on the mean ratio method. 
@@ -7,7 +7,7 @@ c---------------------------------------------------------
 c
         include "common.h"
 c
-        real*8    meshq(npro),          meshV(npro)
+        real*8    meshq(npro) 
         dimension x(numnp, nsd),        ien(npro, nshl),
      &            xl(npro, nenl, nsd)
 c
@@ -53,19 +53,16 @@ c
      &               + tetEdge(:,6,2) * tetEdge(:,6,2)
      &               + tetEdge(:,6,3) * tetEdge(:,6,3)
 c
-c.... DEBUGGING
-c
        meshq(:) = 15552.0 * tetVolm(:) * abs(tetVolm(:))
      &          / ( tetSumEdge(:) * tetSumEdge(:) * tetSumEdge(:) ) 
 c
-       meshV(:) = tetVolm(:)
        do i = 1, npro
-          if (meshq(i) .ge. 1.0 ) write(*,*) 'Meshq larger than one.'
-          if (meshq(i) .le. 0.0 ) then 
+          if (meshq(i) .gt. 1.0 ) write(*,*) 'Meshq larger than one.'
+          if (meshq(i) .lt. 0.0 ) then 
              write(*,*) 'Meshq smaller than zero.'
+             tetVolm(i) = abs (tetVolm(i))
           endif
        enddo
-c.... END DEBUGGING
 c
 c.... return
 c
