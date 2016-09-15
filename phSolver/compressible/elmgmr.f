@@ -304,44 +304,78 @@ c
 c#define DEBUG
 c
         interface 
-          subroutine asidgif
-     & (
-     &   nshg_, nshl0_, nshl1_, nenl0_, nenl1_,lcsyst0_,lcsyst1_,
-     &   nflow_, npro_, ndof_, nsd_, ipord_, numnp_, nqpt_,
-     &   gbytes_, sbytes_, flops_,
-     &   res,
-     &   egmassif00,egmassif01,egmassif10,egmassif11,
-     &   y,        x,       umesh,
-     &   shpif0,   shpif1,  shgif0,  shgif1,
-     &   qwtif0,   qwtif1,
-     &   ienif0,   ienif1,
-     &   mattypeif0, mattypeif1,
-     &   time_,
-     &   sum_vi_area,
-     &   lhs
-     & )
-         use hierarchic_m
-         use local_m
-         use e3if_m
+          subroutine e3if_setparam
+     &    (
+     &      nshg_,nshl0_,nshl1_,nenl0_,nenl1_,lcsyst0_,lcsyst1_,
+     &      npro_,ndof_,nsd_,nflow_,ipord_,nqpt_,
+     &      gbytes_,sbytes_,flops_
+     &    )
+            use e3if_defs_m
             implicit none
-            integer, intent(in) :: nshg_, nshl0_, nshl1_, nenl0_, nenl1_,lcsyst0_,lcsyst1_
-            integer, intent(in) :: nflow_, npro_, ndof_, nsd_, ipord_, numnp_, nqpt_
+            integer, intent(in) :: nshg_,nshl0_,nshl1_,nenl0_,nenl1_,lcsyst0_,lcsyst1_
+            integer, intent(in) :: npro_,ndof_,nsd_,nflow_,ipord_,nqpt_
             integer, intent(inout) :: gbytes_, sbytes_, flops_
-            real*8, dimension(nshg_,nflow_), intent(inout) :: res
-            real*8, dimension(:,:,:), allocatable, target, intent(inout) :: egmassif00,egmassif01,egmassif10,egmassif11
-            real*8, dimension(nshg_,ndof_),  intent(in)    :: y
-            real*8, dimension(nshg_,nsd_),   intent(in)    :: x
-            real*8, dimension(nshl0_,nqpt_),intent(in)   :: shpif0
-            real*8, dimension(nshl1_,nqpt_),intent(in)   :: shpif1
-            real*8, dimension(nsd_,nshl0_,nqpt_), intent(in)  :: shgif0
-            real*8, dimension(nsd_,nshl1_,nqpt_), intent(in)  :: shgif1
-            real*8, dimension(nqpt_), intent(in) :: qwtif0, qwtif1
-            real*8, dimension(numnp_, nsd_), intent(inout) :: umesh
-            integer, dimension(:,:), pointer, intent(in)   :: ienif0, ienif1
-            integer, intent(in)   :: mattypeif0, mattypeif1
+          end subroutine e3if_setparam
+          subroutine e3if_setparam2
+     &    (
+     &     egmassif00,egmassif01,egmassif10,egmassif11,
+     &     materif0, materif1,
+     &     time_, lhs
+     &    )
+            use e3if_inp_m
+            use e3if_defs_m
+            implicit none
+            real*8, dimension(:,:,:), allocatable, target, intent(in) :: egmassif00,egmassif01,egmassif10,egmassif11
+            integer, intent(in) :: materif0, materif1
             real*8, intent(in) :: time_
-            real*8, pointer, intent(inout) :: sum_vi_area(:,:)
             integer, intent(in) :: lhs
+          end subroutine e3if_setparam2
+          subroutine asidgif_geom
+     &    (
+     &     if_normal,
+     &     x,shpif0,shpif1,shgif0,shgif1,
+     &     qwtif0, qwtif1,
+     &     ienif0, ienif1
+     & )
+            use hierarchic_m
+            use local_m
+            use e3if_geom_m
+            implicit none
+            real*8, pointer, intent(inout) :: if_normal(:,:)
+            real*8, intent(in) :: x(nshg,nsd)
+            real*8, dimension(nshl0,nqpt),intent(in)   :: shpif0
+            real*8, dimension(nshl1,nqpt),intent(in)   :: shpif1
+            real*8, dimension(nsd,nshl0,nqpt), intent(in) :: shgif0
+            real*8, dimension(nsd,nshl1,nqpt), intent(in) :: shgif1
+            real*8, intent(in) :: qwtif0(nqpt), qwtif1(nqpt)
+            integer, dimension(:,:), pointer, intent(in)   :: ienif0, ienif1
+          end subroutine asidgif_geom
+          subroutine asidgif
+     &    (
+     &     res,
+     &     y,        x,       umesh,
+     &     shpif0,   shpif1,  shgif0,  shgif1,
+     &     qwtif0,   qwtif1,
+     &     ienif0,   ienif1,
+     &     sum_vi_area, if_normals
+     &    )
+            use hierarchic_m
+            use local_m
+            use e3if_m
+            use e3if_geom_m
+            implicit none
+            real*8, dimension(nshg,nflow), intent(inout) :: res
+            real*8, dimension(nshg,ndof),  intent(in)    :: y
+            real*8, dimension(nshg,nsd),   intent(in)    :: x
+            real*8, dimension(nshl0,nqpt),intent(in)   :: shpif0
+            real*8, dimension(nshl1,nqpt),intent(in)   :: shpif1
+            real*8, dimension(nsd,nshl0,nqpt), intent(in)  :: shgif0
+            real*8, dimension(nsd,nshl1,nqpt), intent(in)  :: shgif1
+            real*8, dimension(nqpt), intent(in) :: qwtif0, qwtif1
+            real*8, dimension(nshg, nsd), intent(inout) :: umesh
+            integer, dimension(:,:), pointer, intent(in)   :: ienif0, ienif1
+            real*8, pointer, intent(inout) :: sum_vi_area(:,:)
+            real*8, pointer, intent(in) :: if_normals(:,:)
           end subroutine asidgif
           subroutine fillsparse_if
      &    ( lhsk,
@@ -363,7 +397,7 @@ c
         real*8 lhsK(nflow*nflow,nnz_tot)
         
         dimension y(nshg,ndof),         ac(nshg,ndof),
-     &            x(numnp,nsd),               
+     &            x(numnp,nsd),
      &            iBC(nshg),
      &            BC(nshg,ndofBC),      
      &            res(nshg,nflow),
@@ -390,6 +424,8 @@ c
         real*8, allocatable :: EGmass(:,:,:)
 c
         real*8, dimension(:,:,:), allocatable :: egmassif00,egmassif01,egmassif10,egmassif11
+        real*8, pointer :: if_normals(:,:)
+        real*8 :: length
 c
         ttim(80) = ttim(80) - secs(0.0)
 c
@@ -619,9 +655,61 @@ c
 c.... -------------------->   interface elements   <--------------------
 c
 c... loop over the interface element blocks
+c    The first loop is for interface outward normal vector calculations on the interface
+c    The second loop is for residual calculations...
+c
+        allocate(if_normals(nshg,nsd))
+c
+        if_normals = zero
+c
+        if_blocks1: do iblk = 1, nelblif
+c
+          iel     = lcblkif(1, iblk)
+          npro    = lcblkif(1,iblk+1) - iel
+          lcsyst0 = lcblkif(3, iblk)    ! element0 type
+          lcsyst1 = lcblkif(4, iblk)    ! element1 type
+          ipord   = lcblkif(5, iblk)    ! polynomial order
+          nenl0   = lcblkif(6, iblk)    ! number of vertices per element0
+          nenl1   = lcblkif(7, iblk)    ! number of vertices per element1
+          nshl0   = lcblkif(13,iblk)
+          nshl1   = lcblkif(14,iblk)
+          ngaussif = nintif0(lcsyst0)   ! or nintif1(lcsyst1)? should be the same!
+c
+          call e3if_setparam
+     &    (
+     &     nshg,nshl0,nshl1,nenl0,nenl1,lcsyst0,lcsyst1,
+     &     npro,ndof,nsd,nflow,ipord,ngaussif,
+     &     gbytes,sbytes,flops
+     &    )
+     &   
+c
+          call asidgif_geom
+     &   (
+     &    if_normals,
+     &    x,
+     &    shpif0(lcsyst0,1:nshl0,:), 
+     &    shpif1(lcsyst1,1:nshl1,:), 
+     &    shgif0(lcsyst0,1:nsd,1:nshl0,:),
+     &    shgif1(lcsyst1,1:nsd,1:nshl1,:),
+     &    qwtif0(lcsyst0,:), qwtif1(lcsyst1,:),
+     &    mienif0(iblk)%p, mienif1(iblk)%p
+     & )
+c
+        enddo if_blocks1
+c
+        if (numpe > 1) then
+          call commu (if_normals(:,1:3), ilwork, nsd, 'in ')
+          call MPI_BARRIER (MPI_COMM_WORLD,ierr)
+        endif
+c
+        do inode = 1,nshg
+          length = sqrt(dot_product(if_normals(inode,1:nsd),if_normals(inode,1:nsd)))
+          if (length > zero) then
+            if_normals(inode,1:nsd) = if_normals(inode,1:nsd) / length
+          endif
+        enddo
 c
         sum_vi_area = zero
-
 c
         if_blocks: do iblk = 1, nelblif
 c
@@ -663,25 +751,33 @@ c
             allocate (egmassif11(1,1,1))
           endif
 
-      call asidgif
-     & (
-     &   nshg, nshl0, nshl1, nenl0, nenl1, lcsyst0, lcsyst1,
-     &   nflow, npro, ndof, nsd, iorder, numnp, ngaussif,
-     &   gbytes, sbytes, flops,
-     &         res,
-     &         egmassif00,egmassif01,egmassif10,egmassif11,
-     &         y, x, umesh,
-     &         shpif0(lcsyst0,1:nshl0,:), 
-     &         shpif1(lcsyst1,1:nshl1,:), 
-     &         shgif0(lcsyst0,1:nsd,1:nshl0,:),
-     &         shgif1(lcsyst1,1:nsd,1:nshl1,:),
-     &         qwtif0(lcsyst0,:), qwtif1(lcsyst1,:),
-     &         mienif0(iblk)%p, mienif1(iblk)%p,
-     &         mattyp0, mattyp1,
-     &         real(lstep+1,8)*delt(1), ! total simulation time
-     &         sum_vi_area,
-     &         lhs
-     & )
+          call e3if_setparam
+     &    (
+     &     nshg,nshl0,nshl1,nenl0,nenl1,lcsyst0,lcsyst1,
+     &     npro,ndof,nsd,nflow,ipord,ngaussif,
+     &     gbytes,sbytes,flops
+     &    )
+     &   
+c
+          call e3if_setparam2
+     &    (
+     &     egmassif00,egmassif01,egmassif10,egmassif11,
+     &     mattyp0, mattyp1,
+     &     real(lstep+1,8)*delt(1), lhs
+     &    )
+c
+          call asidgif
+     &    (
+     &      res,
+     &      y, x, umesh,
+     &      shpif0(lcsyst0,1:nshl0,:), 
+     &      shpif1(lcsyst1,1:nshl1,:), 
+     &      shgif0(lcsyst0,1:nsd,1:nshl0,:),
+     &      shgif1(lcsyst1,1:nsd,1:nshl1,:),
+     &      qwtif0(lcsyst0,:), qwtif1(lcsyst1,:),
+     &      mienif0(iblk)%p, mienif1(iblk)%p,
+     &      sum_vi_area, if_normals
+     &    )
 c
           if (lhs .eq. 1) then
 c
@@ -702,6 +798,8 @@ c
 
 c
         enddo if_blocks
+c
+        deallocate (if_normals)
 c
 c before the commu we need to rotate the residual vector for axisymmetric
 c boundary conditions (so that off processor periodicity is a dof add instead
