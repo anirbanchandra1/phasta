@@ -1,6 +1,6 @@
       subroutine asidgif_geom 
      & (
-     &  if_normals,
+     &  if_normals,if_kappa,
      &  x,shpif0,shpif1,shgif0,shgif1,
      &  qwtif0, qwtif1,
      &  ienif0, ienif1
@@ -12,7 +12,7 @@ c
 c
         implicit none
 c
-        real*8, pointer, intent(inout) :: if_normals(:,:)
+        real*8, pointer, intent(inout) :: if_normals(:,:), if_kappa(:,:)
         real*8, intent(in) :: x(nshg,nsd)
         real*8, dimension(nshl0,nqpt),intent(in)   :: shpif0
         real*8, dimension(nshl1,nqpt),intent(in)   :: shpif1
@@ -35,6 +35,8 @@ c
 c
         call local (if_normals, if_normal_l0, ienif0, nsd, 'scatter ', nshg, nshl0,npro,ipord,sbytes,flops)
         call local (if_normals, if_normal_l1, ienif1, nsd, 'scatter ', nshg, nshl1,npro,ipord,sbytes,flops)
+c
+        call calc_mean_curvature(if_kappa,ienif0,ienif1)
 c
         call mfree_e3if_geom
 c

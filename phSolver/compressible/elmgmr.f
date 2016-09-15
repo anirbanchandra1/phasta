@@ -332,7 +332,7 @@ c
           end subroutine e3if_setparam2
           subroutine asidgif_geom
      &    (
-     &     if_normal,
+     &     if_normal,if_kappa,
      &     x,shpif0,shpif1,shgif0,shgif1,
      &     qwtif0, qwtif1,
      &     ienif0, ienif1
@@ -341,7 +341,7 @@ c
             use local_m
             use e3if_geom_m
             implicit none
-            real*8, pointer, intent(inout) :: if_normal(:,:)
+            real*8, dimension(:,:), pointer, intent(inout) :: if_normal, if_kappa
             real*8, intent(in) :: x(nshg,nsd)
             real*8, dimension(nshl0,nqpt),intent(in)   :: shpif0
             real*8, dimension(nshl1,nqpt),intent(in)   :: shpif1
@@ -357,7 +357,7 @@ c
      &     shpif0,   shpif1,  shgif0,  shgif1,
      &     qwtif0,   qwtif1,
      &     ienif0,   ienif1,
-     &     sum_vi_area, if_normals
+     &     sum_vi_area, if_normal
      &    )
             use hierarchic_m
             use local_m
@@ -375,7 +375,7 @@ c
             real*8, dimension(nshg, nsd), intent(inout) :: umesh
             integer, dimension(:,:), pointer, intent(in)   :: ienif0, ienif1
             real*8, pointer, intent(inout) :: sum_vi_area(:,:)
-            real*8, pointer, intent(in) :: if_normals(:,:)
+            real*8, pointer, intent(in) :: if_normal(:,:)
           end subroutine asidgif
           subroutine fillsparse_if
      &    ( lhsk,
@@ -424,7 +424,7 @@ c
         real*8, allocatable :: EGmass(:,:,:)
 c
         real*8, dimension(:,:,:), allocatable :: egmassif00,egmassif01,egmassif10,egmassif11
-        real*8, pointer :: if_normals(:,:)
+        real*8, pointer :: if_normal(:,:), if_kappa(:,:)
         real*8 :: length
 c
         ttim(80) = ttim(80) - secs(0.0)
@@ -658,9 +658,11 @@ c... loop over the interface element blocks
 c    The first loop is for interface outward normal vector calculations on the interface
 c    The second loop is for residual calculations...
 c
-        allocate(if_normals(nshg,nsd))
+        allocate(if_normal(nshg,nsd))
+        allocate(if_kappa(nshg,nsd+1))
 c
-        if_normals = zero
+        if_normal = zero
+        if_kappa = zero
 c
         if_blocks1: do iblk = 1, nelblif
 c
@@ -685,7 +687,7 @@ c
 c
           call asidgif_geom
      &   (
-     &    if_normals,
+     &    if_normal,if_kappa,
      &    x,
      &    shpif0(lcsyst0,1:nshl0,:), 
      &    shpif1(lcsyst1,1:nshl1,:), 
@@ -698,14 +700,16 @@ c
         enddo if_blocks1
 c
         if (numpe > 1) then
-          call commu (if_normals(:,1:3), ilwork, nsd, 'in ')
+          call commu (if_normal(:,1:3), ilwork, nsd, 'in ')
+          call commu (if_kappa(:,1:3), ilwork, nsd, 'in ')
+          call commu (if_kappa(:,nsd+1), ilwork, 1, 'in ')
           call MPI_BARRIER (MPI_COMM_WORLD,ierr)
         endif
 c
         do inode = 1,nshg
-          length = sqrt(dot_product(if_normals(inode,1:nsd),if_normals(inode,1:nsd)))
+          length = sqrt(dot_product(if_normal(inode,1:nsd),if_normal(inode,1:nsd)))
           if (length > zero) then
-            if_normals(inode,1:nsd) = if_normals(inode,1:nsd) / length
+            if_normal(inode,1:nsd) = if_normal(inode,1:nsd) / length
           endif
         enddo
 c
@@ -776,7 +780,7 @@ c
      &      shgif1(lcsyst1,1:nsd,1:nshl1,:),
      &      qwtif0(lcsyst0,:), qwtif1(lcsyst1,:),
      &      mienif0(iblk)%p, mienif1(iblk)%p,
-     &      sum_vi_area, if_normals
+     &      sum_vi_area, if_normal
      &    )
 c
           if (lhs .eq. 1) then
@@ -799,7 +803,8 @@ c
 c
         enddo if_blocks
 c
-        deallocate (if_normals)
+        deallocate (if_normal)
+        deallocate (if_kappa)
 c
 c before the commu we need to rotate the residual vector for axisymmetric
 c boundary conditions (so that off processor periodicity is a dof add instead

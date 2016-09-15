@@ -80,9 +80,6 @@ c
             call calc_stiff(prop0, var0, mater0)
             call calc_stiff(prop1, var1, mater1)
 c
-            call calc_mean_curvature(kappa0,if_normal_l0,shg0,nshl0)
-            call calc_mean_curvature(kappa1,if_normal_l1,shg1,nshl1)
-c
       write(*,*) 'KAPPA 0: ',kappa0
       write(*,*) 'KAPPA 1: ',kappa1
 c

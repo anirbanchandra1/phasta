@@ -146,25 +146,90 @@ c
 c
         end subroutine calc_normal_vectors
 c
-        subroutine calc_mean_curvature(kappa,if_normal_l,shg,nshl)
+        subroutine calc_mean_curvature(if_kappa,ienif0,ienif1)
 c
-c... calculates mean curvature at integration point 
-c    by taking divergence of normal vectors usuing nodal values...
+          real*8, dimension(:,:), pointer, intent(inout) :: if_kappa
+          integer, dimension(:,:), pointer, intent(in) :: ienif0,ienif1
 c
-          real*8, intent(out) :: kappa(:)
-          real*8, intent(in) :: shg(:,:,:),if_normal_l(:,:,:)
-          integer, intent(in) :: nshl
+          integer,parameter :: nnode = 3 ! ONLY WORKS ON THE TRIAGLES
+          integer :: inode(3,3)
+          data inode  /1,2,3,2,3,1,3,1,2/
+          integer :: iel,i,j,k
+          real*8 :: v1(3),v2(3),v(3),area
+          real*8, dimension(nnode) :: cot0(3),cot1(3)
+          logical :: obtuse
 c
-          integer :: isd,n
+          do iel = 1,npro
 c
-          kappa = zero
-c
-          do isd = 1,nsd
-            do n = 1,nshl
-              kappa = kappa + if_normal_l(:,n,isd)*shg(:,n,isd)
+            do k = 1,nnode
+              i = inode(k,2)
+              j = inode(k,3)
+              v1 = xl0(iel,i,:) - xl0(iel,k,:)
+              v2 = xl0(iel,j,:) - xl0(iel,k,:)
+              cot0 = cotan(v1,v2)
+              v1 = xl1(iel,i,:) - xl1(iel,k,:)
+              v2 = xl1(iel,j,:) - xl1(iel,k,:)
+              cot1 = cotan(v1,v2)
             enddo
+c
+            call cross(v,v1,v2)
+            area = pt50*norm2(v)
+c
+            obtuse = any(cot0(:) < 0)
+c
+            do k = 1,nnode
+c
+              i = inode(k,2)
+              j = inode(k,3)
+c
+              if_kappa(ienif0(iel,i),1:nsd) = if_kappa(ienif0(iel,i),1:nsd) + pt5*cot0(k)*(xl0(iel,i,1:nsd)-xl0(iel,j,1:nsd))
+              if_kappa(ienif0(iel,j),1:nsd) = if_kappa(ienif0(iel,j),1:nsd) + pt5*cot0(k)*(xl0(iel,j,1:nsd)-xl0(iel,i,1:nsd))
+c
+              if_kappa(ienif1(iel,i),1:nsd) = if_kappa(ienif1(iel,i),1:nsd) + pt5*cot1(k)*(xl1(iel,i,1:nsd)-xl1(iel,j,1:nsd))
+              if_kappa(ienif1(iel,j),1:nsd) = if_kappa(ienif1(iel,j),1:nsd) + pt5*cot1(k)*(xl1(iel,j,1:nsd)-xl1(iel,i,1:nsd))
+c
+c ...NOW collect the voronoi area...
+c
+              if (.not. obtuse) then
+c
+                v = xl0(iel,i,:) - xl0(iel,j,:)
+                if_kappa(ienif0(iel,k),nsd+1) = if_kappa(ienif0(iel,k),nsd+1) + pt125*cot0(k)*norm2(v)
+c
+                v = xl1(iel,i,:) - xl1(iel,j,:)
+                if_kappa(ienif1(iel,k),nsd+1) = if_kappa(ienif1(iel,k),nsd+1) + pt125*cot1(k)*norm2(v)
+c
+              else
+c
+                if (cot0(k) < zero) then
+                  if_kappa(ienif0(iel,k),nsd+1) = if_kappa(ienif0(iel,k),nsd+1) + pt50*area
+                else
+                  if_kappa(ienif0(iel,k),nsd+1) = if_kappa(ienif0(iel,k),nsd+1) + pt25*area
+                endif
+                if (cot1(k) < zero) then
+                  if_kappa(ienif1(iel,k),nsd+1) = if_kappa(ienif1(iel,k),nsd+1) + pt50*area
+                else
+                  if_kappa(ienif1(iel,k),nsd+1) = if_kappa(ienif1(iel,k),nsd+1) + pt25*area
+                endif
+              endif
+c
+            enddo
+c
           enddo
 c
         end subroutine calc_mean_curvature
+c
+        subroutine cross(v,v1,v2)
+          real*8, dimension(nsd), intent(out) :: v
+          real*8, dimension(nsd), intent(in) :: v1,v2
+          v(1) = v1(2)*v2(3) - v1(3)*v2(2)
+          v(2) = v1(3)*v2(1) - v1(1)*v2(3)
+          v(3) = v1(1)*v2(2) - v1(2)*v2(1)
+        end subroutine cross
+c
+        real*8 function cotan(v1,v2)
+          real*8, dimension(nsd) :: v1,v2,v
+          call cross(v,v1,v2)
+          cotan = dot_product(v1,v2)/norm2(v)
+        end function cotan
 c
       end module e3if_geom_m
