@@ -175,7 +175,7 @@ c
             call cross(v,v1,v2)
             area = pt50*norm2(v)
 c
-            obtuse = any(cot0(:) < 0)
+            obtuse = any(cot0(:) < zero)
 c
             do k = 1,nnode
 c
