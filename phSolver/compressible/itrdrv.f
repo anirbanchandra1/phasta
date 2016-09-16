@@ -833,6 +833,9 @@ c     &                  xdot,  'd'//char(0), numnp, nsd, lstep)
                    call write_field(
      &                  myrank,'a'//char(0),'meshQ'//char(0), 5, 
      &                  meshq, 'd'//char(0), numel, 1,   lstep)
+                   call write_field(
+     &                  myrank,'a'//char(0),'material_type'//char(0),13,
+     &                  mattype_interior, 'd',numel, 1, lstep)   
                  endif
 c... end writing
                  output_mode = -1
