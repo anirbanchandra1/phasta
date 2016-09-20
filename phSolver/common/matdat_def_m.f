@@ -16,7 +16,9 @@ c
         common /matdat/ datmat,   matflg, mat_tag, mat_eos,
      &                  mat_prop, nummat, mexist,  datelas
         integer, parameter :: ieos_ideal_gas = 1
-     &,                       ieos_liquid_1  = 2
+     &,                       ieos_ideal_gas_2 = 2
+     &,                       ieos_liquid_1  = 3
+     &,                       ieos_solid_1   = 4
 c
         integer, parameter :: iprop_ideal_gas_mw    = 1  ! molecular weight
      &,                       iprop_ideal_gas_gamma = 2
@@ -27,5 +29,12 @@ c
      &,                       iprop_liquid_1_cv      = 4
      &,                       iprop_liquid_1_alphaP  = 5
      &,                       iprop_liquid_1_betaT   = 6
+c
+c NOTE: This should only be an integer array BUT
+c       since vtk reader does not support int yet,
+c       so, we cast the integer numbers into this 
+c       real array!!!
+c
+        real*8, pointer :: mattype_interior(:)
 c
       end module matdat_def_m

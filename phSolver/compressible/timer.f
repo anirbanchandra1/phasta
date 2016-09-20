@@ -59,7 +59,8 @@ c
           gbytes = 0
           sbytes = 0
 c
-          cpu0(icd)   = secs()
+C          cpu0(icd)   = secs()
+          cpu0(icd)   = TMRC()
           nacess(icd) = 1
           call system_clock (iclock)
           return
@@ -70,7 +71,8 @@ c
 c.... if Back, stop the clock
 c
         if (ii .eq. icd+2) then
-          cpu(icode) = cpu(icode) + secs() - cpu0(icode)
+c          cpu(icode) = cpu(icode) + secs() - cpu0(icode)
+          cpu(icode) = cpu(icode) + TMRC() - cpu0(icode)
           icode  = icode2
           icode2 = icode3
           return
@@ -84,7 +86,8 @@ c
           icode3 = icode2
           icode2 = icode
           icode  = ii
-          cpu0(icode)   = secs()
+c          cpu0(icode)   = secs()
+          cpu0(icode)   = TMRC()
           nacess(icode) = nacess(icode) + 1
           return
         endif
@@ -100,7 +103,8 @@ c
         if (iclock .le. 0) iclock = iclock + icmax
         wclock = float(iclock) / float(icrate)
 c
-        cpu(icd) = secs() - cpu0(icd)
+c        cpu(icd) = secs() - cpu0(icd)
+        cpu(icd) = TMRC() - cpu0(icd)
         ccode(icd) = 'Total   '
 c
 c.... CPU time returned by secs is in 100th of a second
@@ -156,11 +160,11 @@ c
 c
 1000    format(a80,//,
      &  ' E x e c u t i o n   T i m e   S t a t i s t i c s    ',//,
-     &  ' name        No. access       CPU-time       %_total')
+     &  ' name        No. access       CPU-time (100*secs)      %_total')
 1100    format(1x,
-     &  '---------------------------------------------------')
-1200    format(1x,a8,4x,i7,5x,f11.2,8x,f7.2)
-1300    format(1x,a8,16x,f11.2,8x,f7.2)
+     &  '--------------------------------------------------------------')
+1200    format(1x,a8,4x,i7,5x,f21.3,8x,f7.2)
+1300    format(1x,a8,16x,f21.3,8x,f7.2)
 1400    format(/,' Wall-clock time : ',f8.1,' seconds')
 2000    format(///,
      &  ' P e r f o r m a n c e   S t a t i s t i c s    ',/)

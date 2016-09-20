@@ -297,60 +297,99 @@ c----------------------------------------------------------------------
 c
         use pointer_data
         use timedataC
+        use if_velocity_m
 c
         include "common.h"
         include "mpif.h"
+c#define DEBUG
 c
         interface 
-          subroutine asidgif_
-     & (
-     &   nshg_, nshl0_, nshl1_, nenl0_, nenl1_,lcsyst0_,lcsyst1_,
-     &   nflow_, npro_, ndof_, nsd_, ipord_, numnp_, nqpt_,
-     &   gbytes_, sbytes_, flops_,
-     &   res,
-     &   egmassif00,egmassif01,egmassif10,egmassif11,
-     &   y,        x,       umesh,
-     &   shpif0,   shpif1,  shgif0,  shgif1,
-     &   qwtif0,   qwtif1,
-     &   ienif0,   ienif1,
-     &   mattypeif0, mattypeif1,
-     &   time,
-     &   sum_vi_area
-     & )
-         use hierarchic_m
-         use local_m
-         use e3if_m
+          subroutine e3if_setparam
+     &    (
+     &      nshg_,nshl0_,nshl1_,nenl0_,nenl1_,lcsyst0_,lcsyst1_,
+     &      npro_,ndof_,nsd_,nflow_,ipord_,nqpt_,
+     &      gbytes_,sbytes_,flops_
+     &    )
+            use e3if_defs_m
             implicit none
-            integer, intent(in) :: nshg_, nshl0_, nshl1_, nenl0_, nenl1_,lcsyst0_,lcsyst1_
-            integer, intent(in) :: nflow_, npro_, ndof_, nsd_, ipord_, numnp_, nqpt_
+            integer, intent(in) :: nshg_,nshl0_,nshl1_,nenl0_,nenl1_,lcsyst0_,lcsyst1_
+            integer, intent(in) :: npro_,ndof_,nsd_,nflow_,ipord_,nqpt_
             integer, intent(inout) :: gbytes_, sbytes_, flops_
-            real*8, dimension(nshg_,nflow_), intent(inout) :: res
-            real*8, dimension(:,:,:), pointer, intent(out) :: egmassif00,egmassif01,egmassif10,egmassif11
-            real*8, dimension(nshg_,ndof_),  intent(in)    :: y
-            real*8, dimension(nshg_,nsd_),   intent(in)    :: x
-            real*8, dimension(nshl0_,nqpt_),intent(in)   :: shpif0
-            real*8, dimension(nshl1_,nqpt_),intent(in)   :: shpif1
-            real*8, dimension(nsd_,nshl0_,nqpt_), intent(in)  :: shgif0
-            real*8, dimension(nsd_,nshl1_,nqpt_), intent(in)  :: shgif1
-            real*8, dimension(nqpt_), intent(in) :: qwtif0, qwtif1
-            real*8, dimension(numnp_, nsd_), intent(inout) :: umesh
+          end subroutine e3if_setparam
+          subroutine e3if_setparam2
+     &    (
+     &     egmassif00,egmassif01,egmassif10,egmassif11,
+     &     materif0, materif1,
+     &     time_, lhs
+     &    )
+            use e3if_inp_m
+            use e3if_defs_m
+            implicit none
+            real*8, dimension(:,:,:), allocatable, target, intent(in) :: egmassif00,egmassif01,egmassif10,egmassif11
+            integer, intent(in) :: materif0, materif1
+            real*8, intent(in) :: time_
+            integer, intent(in) :: lhs
+          end subroutine e3if_setparam2
+          subroutine asidgif_geom
+     &    (
+     &     if_normal,if_kappa,
+     &     x,shpif0,shpif1,shgif0,shgif1,
+     &     qwtif0, qwtif1,
+     &     ienif0, ienif1
+     & )
+            use hierarchic_m
+            use local_m
+            use e3if_geom_m
+            implicit none
+            real*8, dimension(:,:), pointer, intent(inout) :: if_normal, if_kappa
+            real*8, intent(in) :: x(nshg,nsd)
+            real*8, dimension(nshl0,nqpt),intent(in)   :: shpif0
+            real*8, dimension(nshl1,nqpt),intent(in)   :: shpif1
+            real*8, dimension(nsd,nshl0,nqpt), intent(in) :: shgif0
+            real*8, dimension(nsd,nshl1,nqpt), intent(in) :: shgif1
+            real*8, intent(in) :: qwtif0(nqpt), qwtif1(nqpt)
             integer, dimension(:,:), pointer, intent(in)   :: ienif0, ienif1
-            integer, intent(in)   :: mattypeif0, mattypeif1
-            real*8, intent(in) :: time
+          end subroutine asidgif_geom
+          subroutine asidgif
+     &    (
+     &     res,
+     &     y,        x,       umesh,
+     &     shpif0,   shpif1,  shgif0,  shgif1,
+     &     qwtif0,   qwtif1,
+     &     ienif0,   ienif1,
+     &     sum_vi_area, if_normal
+     &    )
+            use hierarchic_m
+            use local_m
+            use e3if_m
+            use e3if_geom_m
+            implicit none
+            real*8, dimension(nshg,nflow), intent(inout) :: res
+            real*8, dimension(nshg,ndof),  intent(in)    :: y
+            real*8, dimension(nshg,nsd),   intent(in)    :: x
+            real*8, dimension(nshl0,nqpt),intent(in)   :: shpif0
+            real*8, dimension(nshl1,nqpt),intent(in)   :: shpif1
+            real*8, dimension(nsd,nshl0,nqpt), intent(in)  :: shgif0
+            real*8, dimension(nsd,nshl1,nqpt), intent(in)  :: shgif1
+            real*8, dimension(nqpt), intent(in) :: qwtif0, qwtif1
+            real*8, dimension(nshg, nsd), intent(inout) :: umesh
+            integer, dimension(:,:), pointer, intent(in)   :: ienif0, ienif1
             real*8, pointer, intent(inout) :: sum_vi_area(:,:)
-          end subroutine asidgif_
+            real*8, pointer, intent(in) :: if_normal(:,:)
+          end subroutine asidgif
           subroutine fillsparse_if
      &    ( lhsk,
      &      ienif0,ienif1,
      &      col,row,
      &      egmass,
+     &      npro, nedof,
      &      nflow,nshg,nnz,nnz_tot)
             implicit none
             real*8, intent(inout) :: lhsK(nflow*nflow,nnz_tot)
             integer, dimension(:,:), pointer, intent(in) :: ienif0,ienif1
             integer, intent(in) :: col(nshg+1), row(nnz*nshg)
-            real*8, dimension(:,:,:), pointer, intent(in) :: egmass
-            integer, intent(in) :: nflow,nshg,nnz,nnz_tot
+            real*8, intent(in) :: egmass(npro,nedof,nedof)
+            integer, intent(in) :: nflow,nshg,nnz,nnz_tot,npro,nedof
           end subroutine fillsparse_if
         end interface
 c
@@ -358,7 +397,7 @@ c
         real*8 lhsK(nflow*nflow,nnz_tot)
         
         dimension y(nshg,ndof),         ac(nshg,ndof),
-     &            x(numnp,nsd),               
+     &            x(numnp,nsd),
      &            iBC(nshg),
      &            BC(nshg,ndofBC),      
      &            res(nshg,nflow),
@@ -384,8 +423,9 @@ c
         real*8, allocatable :: tmpshpb(:,:), tmpshglb(:,:,:)
         real*8, allocatable :: EGmass(:,:,:)
 c
-        real*8, dimension(:,:,:), pointer :: egmassif00,egmassif01,egmassif10,egmassif11
-        real*8, pointer :: sum_vi_area(:,:)    ! interface velocity weighted by interfacea area
+        real*8, dimension(:,:,:), allocatable :: egmassif00,egmassif01,egmassif10,egmassif11
+        real*8, pointer :: if_normal(:,:), if_kappa(:,:)
+        real*8 :: length
 c
         ttim(80) = ttim(80) - secs(0.0)
 c
@@ -508,6 +548,7 @@ c
      &                 rmes,                BDiag,
      &                 qres,                EGmass,
      &                 rerr,                umesh )
+c
           if(lhs.eq.1) then
 c
 c.... satisfy the BC's on the implicit LHS
@@ -537,6 +578,14 @@ c
 !     &                           'y'//char(0), y, 
 !     &                           'd'//char(0), nshg, ndof, lstep)
 !endif //DEBUG
+c
+c      write(*,998) '[',myrank,'] in elmgmr AFTER INTERIOR.'
+c      do i = 1,nshg
+c        rad = sqrt(x(i,2)**2+x(i,3)**2)
+c        if (abs(rad-5.e-3)<1.e-4 .and. x(i,1)<=0.15 .and. x(i,1)>=0.1) then
+c          write(*,999) myrank,i,x(i,:),res(i,:)
+c        endif
+c      enddo
 c
 c.... -------------------->   boundary elements   <--------------------
 c
@@ -582,7 +631,7 @@ c
      &                 mienb(iblk)%p,           mattyp,
      &                 miBCB(iblk)%p,           mBCB(iblk)%p,
      &                 res,                     rmes, 
-     &                 EGmass)
+     &                 EGmass,                  umesh)
           if(lhs == 1 .and. iLHScond > 0) then
             call fillSparseC_BC(mienb(iblk)%p, EGmass, 
      &                   lhsk, row, col)
@@ -592,24 +641,79 @@ c
           deallocate (tmpshpb)
           deallocate (tmpshglb)
         enddo   !end of boundary element loop
-    
-!ifdef DEBUG !Nicholas Mati
-!        call write_debug(myrank, 'res-afterAsBMFG'//char(0),
-!     &                           'res'//char(0), res, 
-!     &                           'd'//char(0), nshg, nflow, lstep)
-!        call MPI_ABORT(MPI_COMM_WORLD) 
-!endif //DEBUG
-
-
+c
+c      write(*,998) '[',myrank,'] in elmgmr AFTER BOUNDARY.'
+c      do i = 1,nshg
+c        rad = sqrt(x(i,2)**2+x(i,3)**2)
+c        if (abs(rad-5.e-3)<1.e-4 .and. x(i,1)<=0.15 .and. x(i,1)>=0.1) then
+c          write(*,999) myrank,i,x(i,:),res(i,:)
+c        endif
+c      enddo
 c
       ttim(80) = ttim(80) + secs(0.0)
 c
 c.... -------------------->   interface elements   <--------------------
 c
 c... loop over the interface element blocks
+c    The first loop is for interface outward normal vector calculations on the interface
+c    The second loop is for residual calculations...
 c
-      allocate (sum_vi_area(nshg,nsd+1))
-      sum_vi_area = zero
+        allocate(if_normal(nshg,nsd))
+        allocate(if_kappa(nshg,nsd+1))
+c
+        if_normal = zero
+        if_kappa = zero
+c
+        if_blocks1: do iblk = 1, nelblif
+c
+          iel     = lcblkif(1, iblk)
+          npro    = lcblkif(1,iblk+1) - iel
+          lcsyst0 = lcblkif(3, iblk)    ! element0 type
+          lcsyst1 = lcblkif(4, iblk)    ! element1 type
+          ipord   = lcblkif(5, iblk)    ! polynomial order
+          nenl0   = lcblkif(6, iblk)    ! number of vertices per element0
+          nenl1   = lcblkif(7, iblk)    ! number of vertices per element1
+          nshl0   = lcblkif(13,iblk)
+          nshl1   = lcblkif(14,iblk)
+          ngaussif = nintif0(lcsyst0)   ! or nintif1(lcsyst1)? should be the same!
+c
+          call e3if_setparam
+     &    (
+     &     nshg,nshl0,nshl1,nenl0,nenl1,lcsyst0,lcsyst1,
+     &     npro,ndof,nsd,nflow,ipord,ngaussif,
+     &     gbytes,sbytes,flops
+     &    )
+     &   
+c
+          call asidgif_geom
+     &   (
+     &    if_normal,if_kappa,
+     &    x,
+     &    shpif0(lcsyst0,1:nshl0,:), 
+     &    shpif1(lcsyst1,1:nshl1,:), 
+     &    shgif0(lcsyst0,1:nsd,1:nshl0,:),
+     &    shgif1(lcsyst1,1:nsd,1:nshl1,:),
+     &    qwtif0(lcsyst0,:), qwtif1(lcsyst1,:),
+     &    mienif0(iblk)%p, mienif1(iblk)%p
+     & )
+c
+        enddo if_blocks1
+c
+        if (numpe > 1) then
+          call commu (if_normal(:,1:3), ilwork, nsd, 'in ')
+          call commu (if_kappa(:,1:3), ilwork, nsd, 'in ')
+          call commu (if_kappa(:,nsd+1), ilwork, 1, 'in ')
+          call MPI_BARRIER (MPI_COMM_WORLD,ierr)
+        endif
+c
+        do inode = 1,nshg
+          length = sqrt(dot_product(if_normal(inode,1:nsd),if_normal(inode,1:nsd)))
+          if (length > zero) then
+            if_normal(inode,1:nsd) = if_normal(inode,1:nsd) / length
+          endif
+        enddo
+c
+        sum_vi_area = zero
 c
         if_blocks: do iblk = 1, nelblif
 c
@@ -651,36 +755,45 @@ c
             allocate (egmassif11(1,1,1))
           endif
 
-      call asidgif_
-     & (
-     &   nshg, nshl0, nshl1, nenl0, nenl1, lcsyst0, lcsyst1,
-     &   nflow, npro, ndof, nsd, iorder, numnp, ngaussif,
-     &   gbytes, sbytes, flops,
-     &         res,
-     &         egmassif00,egmassif01,egmassif10,egmassif11,
-     &         y, x, umesh,
-     &         shpif0(lcsyst0,1:nshl0,:), 
-     &         shpif1(lcsyst1,1:nshl1,:), 
-     &         shgif0(lcsyst0,1:nsd,1:nshl0,:),
-     &         shgif1(lcsyst1,1:nsd,1:nshl1,:),
-     &         qwtif0(lcsyst0,:), qwtif1(lcsyst1,:),
-     &         mienif0(iblk)%p, mienif1(iblk)%p,
-     &         mattyp0, mattyp1,
-     &         time,
-     &         sum_vi_area
-     & )
+          call e3if_setparam
+     &    (
+     &     nshg,nshl0,nshl1,nenl0,nenl1,lcsyst0,lcsyst1,
+     &     npro,ndof,nsd,nflow,ipord,ngaussif,
+     &     gbytes,sbytes,flops
+     &    )
+     &   
+c
+          call e3if_setparam2
+     &    (
+     &     egmassif00,egmassif01,egmassif10,egmassif11,
+     &     mattyp0, mattyp1,
+     &     real(lstep+1,8)*delt(1), lhs
+     &    )
+c
+          call asidgif
+     &    (
+     &      res,
+     &      y, x, umesh,
+     &      shpif0(lcsyst0,1:nshl0,:), 
+     &      shpif1(lcsyst1,1:nshl1,:), 
+     &      shgif0(lcsyst0,1:nsd,1:nshl0,:),
+     &      shgif1(lcsyst1,1:nsd,1:nshl1,:),
+     &      qwtif0(lcsyst0,:), qwtif1(lcsyst1,:),
+     &      mienif0(iblk)%p, mienif1(iblk)%p,
+     &      sum_vi_area, if_normal
+     &    )
 c
           if (lhs .eq. 1) then
 c
 c.... Fill-up the global sparse LHS mass matrix
 c
-            call fillsparse_if( lhsk,mienif0(iblk)%p,mienif0(iblk)%p,col,row,egmassif00,nflow,nshg,nnz,nnz_tot)
-            call fillsparse_if( lhsk,mienif0(iblk)%p,mienif1(iblk)%p,col,row,egmassif01,nflow,nshg,nnz,nnz_tot)
-            call fillsparse_if( lhsk,mienif1(iblk)%p,mienif0(iblk)%p,col,row,egmassif10,nflow,nshg,nnz,nnz_tot)
-            call fillsparse_if( lhsk,mienif1(iblk)%p,mienif1(iblk)%p,col,row,egmassif11,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if( lhsk,mienif0(iblk)%p,mienif0(iblk)%p,col,row,egmassif00,npro,nedof,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if( lhsk,mienif1(iblk)%p,mienif0(iblk)%p,col,row,egmassif10,npro,nedof,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if( lhsk,mienif0(iblk)%p,mienif1(iblk)%p,col,row,egmassif01,npro,nedof,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if( lhsk,mienif1(iblk)%p,mienif1(iblk)%p,col,row,egmassif11,npro,nedof,nflow,nshg,nnz,nnz_tot)
 c
           endif
-
+c
           deallocate (egmassif00)
           deallocate (egmassif01)
           deallocate (egmassif10)
@@ -690,21 +803,8 @@ c
 c
         enddo if_blocks
 c
-        do inode = 1,nshg
-c
-c ... NOT SURE IF THIS IS THE BEST IF :
-c
-          if (sum_vi_area(inode,nsd+1) > zero) then
-            umesh(inode,:) = sum_vi_area(inode,:) / sum_vi_area(inode,nsd+1)
-          endif
-c
-        enddo
-c 
-c      write(*,*) 'umesh   65: ',umesh(65,:)
-c      write(*,*) 'umesh 2871: ',umesh(2871,:)
-c
-        deallocate(sum_vi_area)
-c
+        deallocate (if_normal)
+        deallocate (if_kappa)
 c
 c before the commu we need to rotate the residual vector for axisymmetric
 c boundary conditions (so that off processor periodicity is a dof add instead
@@ -729,7 +829,6 @@ c          BDiag(:,5,5)=Bdiagvec(:,5)
 
 c.... -------------------->   communications <-------------------------
 c
-
       if (numpe > 1) then
         call commu (res  , ilwork, nflow  , 'in ')
 
@@ -737,13 +836,73 @@ c
 
         if(iprec .ne. 0) call commu (BDiag, ilwork, nflow*nflow, 'in ')
       endif
-
+c
+c------> BEGIN DEBUG <---------
+c
+c      write(*,998) '[',myrank,'] in elmgmr AFTER commu.'
+c      do i = 1,nshg
+c        if (abs(x(i,1)-x1)<tol .and. abs(x(i,2)-x2)<tol .and. abs(x(i,3)-x3)<tol) then
+c        if (any(abs(res(i,:))>1.e-6)) then
+c          write(*,997) myrank,i,x(i,:),y(i,:)
+c          write(*,999) myrank,i,x(i,:),res(i,:)
+c        end if
+c      enddo
+c
+c      do irank = 0,numpe-1
+c        call MPI_Barrier (MPI_COMM_WORLD,ierr)
+c        if (irank == myrank) then
+c          numtask = ilwork(1)
+c          itkbeg = 1
+c          m = 0
+c!          write(*,990) myrank,numtask
+c          do itask = 1, numtask
+c            m = m + 1
+c            iother = ilwork (itkbeg + 3)
+c            numseg = ilwork (itkbeg + 4)
+c!            write(*,991) myrank,ilwork(itkbeg+1:itkbeg+5)
+c!      if (myrank == 0 .and. iother == 1 .or.
+c!     &    myrank == 1 .and. iother == 0) then
+c        do is = 1,numseg
+c          isgbeg = ilwork(itkbeg + 3 + 2*is)
+c          lenseg = ilwork(itkbeg + 4 + 2*is)
+c          isgend = isgbeg + lenseg - 1
+c          do isg = isgbeg,isgend
+c!            write(*,801) myrank,is,isg,lenseg,x(isg,:)!,res(isg,:)
+c          enddo
+c        enddo
+c!      endif
+c            itkbeg = itkbeg + 4 + 2*numseg
+c          enddo
+c        endif
+c      enddo
+c
+801   format('[',i2,'] is,isgbeg,lenseg,isg,x:',3i4,x,3f8.3,x,5e24.16)
+990   format('[',i2,'] numtask:',i3)
+991   format('[',i2,'] itag, iacc, iother, numseg, isgbeg:',5i6)
+997   format('[',i2,'] i,x,y:  ',i6,3f7.3,5e24.16)
+998   format(a,i2,a)
+999   format('[',i2,'] i,x,res:',i6,3f7.3,5e24.16)
+c
+c--------> END DEBUG <--------------
 c
 c.... ---------------------->   post processing  <----------------------
 c
 c.... satisfy the BCs on the residual
 c
       call bc3Res (y,  iBC,  BC,  res,  iper, ilwork)
+c
+c------> BEGIN DEBUG <-----------
+c
+!      write(*,998) '[',myrank,'] in elmgmr AFTER bc3res.'
+!      do i = 1,nshg
+!        if (x(i,1) < 0.1001 .and. x(i,1) > 0.0999 
+!     & .and. x(i,2) < 0.0901 .and. x(i,2) > 0.0899
+!     & .and. x(i,3) < 0.0101 .and. x(i,3) > 0.0099
+!     &)
+!     &   write(*,999) '[',myrank,'] :',i,x(i,:),res(i,:)
+!      enddo
+c------> END DEBUG <-----------
+c
 c
 c.... satisfy the BCs on the block-diagonal preconditioner
 c

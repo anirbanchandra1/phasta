@@ -1,4 +1,4 @@
-        subroutine itrBC (y,ac, iBC, BC, iper, ilwork)
+        subroutine itrBC (y,ac, iBC, BC, iper, ilwork, umesh)
 c
 c----------------------------------------------------------------------
 c
@@ -14,7 +14,7 @@ c                         (3,:) upper bound
 c output:
 c  y      (nshg,nflow)   : Adjusted V value(s) corresponding to a 
 c                           constraint d.o.f.
-c  
+c  umesh  (numnp,nsd)    : mesh velocity. FOR ALE 
 c
 c Farzin Shakib, Winter 1987.
 c Zdenek Johan,  Winter 1991.  (Fortran 90)
@@ -26,6 +26,9 @@ c
      &            ac(nshg,nflow),            BC(nshg,ndofBC)
 
         dimension ilwork(nlwork),           iper(nshg)
+     
+        dimension umesh(numnp,nsd)    !FOR ALE   
+        integer   istp
 
         real*8 tmp(nshg), y1(nshg),q1(nshg)
         dimension rn1(nshg), rmagn1(nshg)
@@ -41,8 +44,8 @@ c
               locmin=minloc(y(:,i))
               ymax=maxval(y(:,i))
               ymin=minval(y(:,i))
-c              write(33,34)i,ymax,ymin,1.*locmax,1.*locmin
-c          call flush(33)
+              write(33,34)i,ymax,ymin,1.*locmax,1.*locmin
+          call flush(33)
               do j=1,numnp      ! only limit linear modes for now
                  ypc=y(j,i)
                  y(j,i)=min(ylimit(3,i),max(ylimit(2,i),y(j,i)))
@@ -50,10 +53,10 @@ c          call flush(33)
               enddo
            endif
         enddo
-c        if(maxval(limitcount).gt.0) then
-c           write(33,34)myrank,(limitcount(j)/numnp,j=1,nflow)
-c           call flush(33)
-c        endif
+        if(maxval(limitcount).gt.0) then
+           write(33,34)myrank,(limitcount(j)/numnp,j=1,nflow)
+           call flush(33)
+        endif
  34     format(i5,5(2x,e14.7))
 c
 c.... ------------------------>  Temperature  <------------------------
@@ -69,13 +72,6 @@ c
 c.... x1-velocity, 3D
 c
           where (ibits(iBC,3,3) .eq. 1)
-c$$$            rn1(:)=sqrt(one/(one + BC(:,4)**2+BC(:,4)**2))
-c$$$            rmagn1(:)=rn1(:)**2*(y(:,1)+y(:,2)*BC(:,4)
-c$$$     &                             +y(:,3)*BC(:,5)-BC(:,3))
-c$$$            y(:,1) = y(:,1)-rmagn1(:)
-c$$$            y(:,2) = y(:,2)-rmagn1(:)*BC(:,4)
-c$$$            y(:,3) = y(:,3)-rmagn1(:)*BC(:,5)
-
             y(:,1) =  BC(:,3)  - BC(:,4) * y(:,2)
      &                         - BC(:,5) * y(:,3)
           endwhere

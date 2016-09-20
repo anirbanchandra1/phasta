@@ -111,6 +111,7 @@ c     &                    ierr)
           resmax=resmaxl
         endif
         nrsmax = maxloc(rtmp)
+c      write(*,*) '[',myrank,'] nrsmax: ',nrsmax
 c
 c.... correct the residuals
 c

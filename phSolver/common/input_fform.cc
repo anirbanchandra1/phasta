@@ -28,7 +28,22 @@ void populate_eos_map
 (map<string,int>& eos_map)
 {
   eos_map.insert(map<string,int>::value_type("ideal_gas", ieos_ideal_gas));
+  eos_map.insert(map<string,int>::value_type("ideal_gas_2", ieos_ideal_gas_2));
   eos_map.insert(map<string,int>::value_type("liquid_1",  ieos_liquid_1));
+}
+
+void populate_dg_vi_ramp
+(map<string,int>& this_map)
+{
+  this_map.insert(map<string,int>::value_type("None", idg_no_ramp));
+  this_map.insert(map<string,int>::value_type("Linear", idg_linear_ramp));
+}
+
+void populate_dg_vi_model
+(map<string,int>& this_map)
+{
+  this_map.insert(map<string,int>::value_type("Constant", idg_const_vi));
+  this_map.insert(map<string,int>::value_type("Pressure-Based", idg_vi_model1));
 }
 
 int input_fform(phSolver::Input& inp)
@@ -37,6 +52,8 @@ int input_fform(phSolver::Input& inp)
   int ierr = 0 ;
   int i,j, n_tmp;
   map<string,int> eos_map;
+  map<string,int> DG_vi_ramp;
+  map<string,int> DG_vi_model;
 
   try {
     if(workfc.myrank==workfc.master) {
@@ -197,7 +214,6 @@ int input_fform(phSolver::Input& inp)
 
     // Disabled Features 
 
-    conpar.iALE = inp.GetValue("iALE");
     conpar.icoord = inp.GetValue("icoord");
     conpar.irs = inp.GetValue("irs");
     conpar.iexec = inp.GetValue("iexec");
@@ -212,7 +228,29 @@ int input_fform(phSolver::Input& inp)
     inpdat.Delt[0] = inp.GetValue("Time Step Size");
     inpdat.nstep[0] = inp.GetValue("Number of Timesteps");
     if((string)inp.GetValue("Viscous Control")=="Viscous") conpar.navier=1 ; else conpar.navier=0;
-   
+ 
+    if ((string)inp.GetValue("Mesh Motion Solver") == "None" ) {
+      conpar.iALE = 0; 
+    } else if ((string)inp.GetValue("Mesh Motion Solver") == "Fixed" ) {
+      conpar.iALE = 1;
+      alevar.raleF=inp.GetValue("raleF");
+      alevar.raleA=inp.GetValue("raleA");
+      alevar.raleX=inp.GetValue("raleX");
+      alevar.raleY=inp.GetValue("raleY");
+      alevar.raleLx=inp.GetValue("raleLx");
+      alevar.raleLy=inp.GetValue("raleLy");
+      alevar.raleRx=inp.GetValue("raleRx");
+      alevar.raleRy=inp.GetValue("raleRy");
+      alevar.ialeD=inp.GetValue("ialeD");
+      alevar.ialeT=inp.GetValue("ialeT");
+    } else if ((string)inp.GetValue("Mesh Motion Solver") == "Elastic" ) {
+      conpar.iALE = 2;
+    } else {
+      cout << " Mesh Motion Solver: Only Legal Values ( None, Fixed, Elastic )";
+      cout << endl;
+      exit(1);
+    }
+
     if ((string)inp.GetValue("Turbulence Model") == "No-Model" ) {
       turbvari.irans = 0;
       turbvari.iles  = 0;
@@ -247,13 +285,11 @@ int input_fform(phSolver::Input& inp)
     if (turbvari.irans<0 && turbvari.iles<0)
       turbvar.DES_SA_hmin=(double)inp.GetValue("DES SA Minimum Edge Length");
 
-    int solflow, solheat , solscalr, ilset, solelas;
+    int solflow, solheat , solscalr, ilset;
     ((string)inp.GetValue("Solve Flow") == "True")? solflow=1:solflow=0;
     ((string)inp.GetValue("Solve Heat") == "True")? solheat=1:solheat=0;
     //for compressible solheat= False so
     if((string)inp.GetValue("Equation of State") == "Compressible") solheat=0;
-    //for mesh-elastic solve
-    ((string)inp.GetValue("Solve Mesh-Elastic") == "True")? solelas=1:solelas=0;
     ilset = (int)inp.GetValue("Solve Level Set");
     solscalr = (int)inp.GetValue("Solve Scalars");
     solscalr += ilset;
@@ -265,7 +301,6 @@ int input_fform(phSolver::Input& inp)
       exit(1);
     }
     inpdat.impl[0] = 10*solflow+solscalr*100+solheat;
-    inpdat.impl[1] = solelas;   //for mesh-elastic solve
 
     levlset.iLSet = ilset;
     if( ilset > 0) {
@@ -484,6 +519,26 @@ int input_fform(phSolver::Input& inp)
     }
     vec.erase(vec.begin(),vec.end());
 
+    //DG interface input parameters
+    populate_dg_vi_ramp(DG_vi_ramp);
+    sbuf = (string)inp.GetValue("DG Interface Velocity Ramping");
+    e3if_dat.vi_ramping = DG_vi_ramp[sbuf];
+    if (sbuf == "Linear")
+      e3if_dat.ramp_time = (double)inp.GetValue("DG Interface Ramping Time");
+
+    populate_dg_vi_model(DG_vi_model);
+    sbuf = (string)inp.GetValue("DG Interface Velocity Model");
+    e3if_dat.vi_model = DG_vi_model[sbuf];
+    if (sbuf == "Constant")
+      e3if_dat.vi_mag = (double)inp.GetValue("DG Interface Velocity Magnitude");
+    else if (sbuf == "Pressure-Based") {
+      e3if_dat.dgif_alpha = (double)inp.GetValue("DG Interface Velocity alpha");
+      e3if_dat.dgif_beta = (double)inp.GetValue("DG Interface Velocity beta");}
+
+    e3if_dat.s = (double)inp.GetValue("DG Interface Stability Factor");
+    e3if_dat.e = (double)inp.GetValue("DG Interface Kinematic Condition epsilon");
+    e3if_dat.h = (double)inp.GetValue("DG Interface Kinematic Condition h");
+
 //for mesh-elastic--------------------------------------------
     vec = inp.GetValue("Lame Constant Lamda");
       matdat.datelas[0][0] = vec[0];
@@ -698,6 +753,11 @@ int input_fform(phSolver::Input& inp)
     if((string)inp.GetValue("Time Integration Rule") == "First Order")
       inpdat.rhoinf[0] = -1 ;
     else inpdat.rhoinf[0] = (double)inp.GetValue("Time Integration Rho Infinity");
+
+    if((string)inp.GetValue("Scalar Time Integration Rule") == "First Order")
+      inpdat.rhoinfS[0] = -1 ;
+    else inpdat.rhoinfS[0] = (double)inp.GetValue("Scalar Time Integration Rho Infinity");
+
     if((string)inp.GetValue("Predictor at Start of Step")=="Same Velocity")
       genpar.ipred = 1;
     if((string)inp.GetValue("Predictor at Start of Step")=="Zero Acceleration")

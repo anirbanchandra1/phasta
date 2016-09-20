@@ -1,9 +1,4 @@
-      subroutine gensavif 
-     &(
-     &           ienif0, ienif1,
-     &           ientmp, mattmp,
-     &           mater
-     &)
+      subroutine gensavif (ienif0, ienif1)
 c
         use mattype_m
 c

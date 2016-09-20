@@ -1,4 +1,4 @@
-#define _GNU_SOURCE
+//#define _GNU_SOURCE
 #define _WITH_DPRINTF
 #include <cstdio>
 #include <cstdlib>

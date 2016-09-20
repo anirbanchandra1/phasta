@@ -6,42 +6,6 @@ c
 c
       contains
 c
-        subroutine getdiff_(prop)
-c
-          type(prop_t), dimension(:), pointer, intent(inout) :: prop
-c
-          integer :: i
-          real*8 :: rmu, rlm, rlm2mu, con
-c
-c
-          do i = 1,npro
-c
-            select case (prop(i)%mater)
-            case (0)
-c              rmu = 1.78d-5
-              rmu = 0.0d0
-              rlm = -pt66 * rmu
-              con = 0.046d0
-            case (1)
-c              rmu = 1.137d-3
-              rmu = 0.0d0
-              rlm = 0.0d0
-              con = 0.6d0
-            case default
-              call error ('getdiff  ', 'wrong material', 0)
-            end select 
-c
-            rlm2mu = rlm + two * rmu
-c
-            prop(i)%rmu = rmu
-            prop(i)%rlm = rlm
-            prop(i)%rlm2mu = rlm2mu
-            prop(i)%con = con
-c
-          enddo
-c
-        end subroutine getdiff_
-c
         subroutine calc_stiff (prop,var,mater)
 c
           type(prop_t), dimension(:), pointer, intent(inout) :: prop
@@ -51,9 +15,7 @@ c
           integer :: i,j
           real*8, dimension(npro) :: rmu, rlm, rlm2mu, con
           real*8, dimension(:), pointer :: u1, u2, u3
-          
 c
-c          call getdiff_(prop)
           call getdiff(rmu, rlm, rlm2mu, con, npro, mater)
 c
 c          rmu    => prop%rmu

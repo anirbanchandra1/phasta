@@ -36,10 +36,12 @@ c
 
         ! Get the total number of different interior topologies in the whole domain. 
         ! Try to read from a field. If the field does not exist, scan the geombc file.
+C<--- BEGIN HARD CODE
           itpblktot=1  ! hardwired to montopology for now
-        call phio_readheader(fhandle,
-     &   c_char_'total number of interior tpblocks' // char(0),
-     &   c_loc(itpblktot), ione, dataInt, iotype) 
+C        call phio_readheader(fhandle,
+C     &   c_char_'total number of interior tpblocks' // char(0),
+C     &   c_loc(itpblktot), ione, dataInt, iotype) 
+C<--- END HARD CODE
 
         if (itpblktot == -1) then 
           ! The field 'total number of different interior tpblocks' was not found in the geombc file.
@@ -78,7 +80,7 @@ c
         ndofl = ndof
         nsymdl = nsymdf
 
-        do iblk = 1, itpblktot
+        iblk_loop: do iblk = 1, itpblktot
            writeLock=0;
            if(input_mode.ge.1) then
              write (fname2,"('connectivity interior',i1)") iblk
@@ -88,7 +90,7 @@ c
            endif
 
            ! Synchronization for performance monitoring, as some parts do not include some topologies
-           call MPI_Barrier(MPI_COMM_WORLD,ierr) 
+C           call MPI_Barrier(MPI_COMM_WORLD,ierr) 
            call phio_readheader(fhandle, fname2 // char(0),
      &      c_loc(intfromfile), iseven, dataInt, iotype)
            neltp  =intfromfile(1)
@@ -98,15 +100,16 @@ c
            ijunk  =intfromfile(5)
            ijunk  =intfromfile(6)
            lcsyst =intfromfile(7)
-           allocate (ientp(neltp,nshl))
-           allocate (ientmp(ibksz,nshl))
-           allocate (mattype(intfromfile(1)))
-           allocate (neltp_mattype(nummat))
-           iientpsiz=neltp*nshl
 
            if (neltp==0) then
               writeLock=1;
+      cycle iblk_loop
            endif
+
+           allocate (ientp(neltp,nshl))
+           allocate (ientmp(ibksz,nshl))
+           allocate (neltp_mattype(nummat))
+           iientpsiz=neltp*nshl
 
            call phio_readdatablock(fhandle,fname2 // char(0),
      &      c_loc(ientp), iientpsiz, dataInt, iotype)
@@ -114,12 +117,15 @@ c
            if(input_mode.ge.1) then
              write(fname2,"('material type interior',i1)") iblk
            else
-             write(fname2,"('material type interior')")
+             write(fname2,"('material type interior linear tetrahedron')")
            endif
 c
-           call MPI_Barrier(MPI_COMM_WORLD,ierr) 
+C           call MPI_Barrier(MPI_COMM_WORLD,ierr) 
            call phio_readheader(fhandle, fname2 // char(0),
      &      c_loc(intfromfile), 1, dataInt, iotype)
+c
+           allocate (mattype(intfromfile(1)))
+c
            call phio_readdatablock(fhandle,fname2 // char(0),
      &      c_loc(mattype), intfromfile(1), dataInt, iotype)
 
@@ -186,7 +192,7 @@ c     &                       mmat(nelblk)%p)
            endif
            deallocate(ientp,ientmp)
            deallocate(mattype,neltp_mattype)
-        enddo
+        enddo iblk_loop
 
         lcblk(1,nelblk+1) = iel
         return

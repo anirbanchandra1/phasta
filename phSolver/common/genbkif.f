@@ -33,10 +33,12 @@ c
 c
         ! Get the total number of different interface topologies in the whole domain. 
         ! Try to read from a field. If the field does not exist, scan the geombc file.
+C<--- BEGIND HARD CODE
         itpblktot=1  ! hardwired to montopology for now
-        call phio_readheader(fhandle,
-     &   c_char_'total number of interface tpblocks' // char(0),
-     &   c_loc(itpblktot), ione, dataInt, iotype) 
+C        call phio_readheader(fhandle,
+C     &   c_char_'number of interface tpblocks' // char(0),
+C     &   c_loc(itpblktot), ione, dataInt, iotype) 
+C<--- END HARD CODE
 c
         if (itpblktot == -1) then 
           ! The field 'total number of different interface tpblocks' was not found in the geombc file.
@@ -75,7 +77,7 @@ c
         ndofl  = ndof
         nsymdl = nsymdf      ! ????
 c
-        do iblk = 1, itpblk
+        iblk_loop: do iblk = 1, itpblk
 c
            writeLock=0;
            if(input_mode.ge.1) then
@@ -86,7 +88,7 @@ c
            endif
 
            ! Synchronization for performance monitoring, as some parts do not include some topologies
-           call MPI_Barrier(MPI_COMM_WORLD,ierr) 
+c           call MPI_Barrier(MPI_COMM_WORLD,ierr) 
            call phio_readheader(fhandle, fname2 // char(0),
      &      c_loc(intfromfile), inine, dataInt, iotype)
 c
@@ -99,6 +101,11 @@ c
            nnface = intfromfile(7)       ! number of nodes on the interface
            lcsyst0= intfromfile(8)       ! element type 0
            lcsyst1= intfromfile(9)       ! element type 1
+
+           if (neltp==0) then
+              writeLock=1;
+      cycle iblk_loop
+           endif
 c
 c... reads all the connectivity data in one array
 c
@@ -108,16 +115,17 @@ c
      &      c_loc(ientp), iientpsiz, dataInt, iotype)
 c
           if (nummat <= 1) then
+            write(*,'(a,i4,a)') '[',myrank,'] ERROR (genbkif): Number of materials is <= 1'
             call error ('genbkif  ', 'Number of Materials', nummat)
           endif
 c
            if(input_mode.ge.1) then
              write(fname2,"('material type interface',i1)") iblk
            else
-             write(fname2,"('material type interface')")
+             write(fname2,"('material type interface linear tetrahedron tetrahedron')")
            endif
 c
-           call MPI_Barrier(MPI_COMM_WORLD,ierr) 
+c           call MPI_Barrier(MPI_COMM_WORLD,ierr) 
            call phio_readheader(fhandle, fname2 // char(0),
      &      c_loc(intfromfile), itwo, dataInt, iotype)
            allocate(mattypeif(intfromfile(1),intfromfile(2)))
@@ -214,7 +222,7 @@ c
           deallocate(mattypeif)
           deallocate(ienif0tmp,ienif1tmp)
 c
-        enddo
+        enddo iblk_loop
 c
         lcblkif(1,nelblif+1) = iel
 c

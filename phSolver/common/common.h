@@ -9,8 +9,10 @@ c
 c Zdenek Johan, Winter 1991.  (Fortran 90)
 c----------------------------------------------------------------------
 c
+      use mpi_def_m
       use number_def_m
       use matdat_def_m
+      use e3if_inp_m
 
 	IMPLICIT REAL*8 (a-h,o-z)
 c
@@ -78,7 +80,6 @@ c from different modules
      &  numRCRSrfs, nsrflistRCR(0:MAXSURF),ircrfile,
      &  ideformwall, iwallmassfactor, iwallstiffactor, iviscflux 
         common /sequence/ seqsize, stepseq(100)
-	common /workfc/ master, numpe, myrank
 	common /fronts/ maxfront, nlwork
 	common /newdim/ nshgt, minowned,maxowned, numper, nshg0
 	common /timer4/ birth, death, comtim
@@ -157,7 +158,8 @@ c
 
         common /conpar/ numnp,    numel,  numelb, numelif,
      &                  numpbc,   nen,    nfaces,
-     &                  numflx,   ndof,   iALE,   icoord, navier,
+     &                  numflx,   ndof,   iALE,
+     &                  icoord,   navier,
      &                  irs,      iexec,  necho,  ichem,  iRK,    nedof,
      &                  ndofelas, nshg,   nnz,    istop,  nflow,  nelas, 
      &                  nnz_tot,  idtn,
@@ -201,6 +203,9 @@ c...........................................................................
 c...........................................................................
 
 c
+        common /alevar/ raleF,   raleA,   raleX,   raleY,   raleLx,
+     &                  raleLy, raleRx,   raleRy,  ialeD,   ialeT
+c
         common /levlset/ epsilon_ls, epsilon_lsd, dtlset, iLSet, 
      &                   ivconstraint, iExpLSSclr1, iExpLSSclr2
 
@@ -230,13 +235,14 @@ c
      &                  idiff,  lhs,    itau,   ipord,  ipred,  lstres,
      &                  iepstm, dtsfct, taucfct, ibksiz, iabc, isurf,
      &                  idflx,  Bo,     EntropyPressure, irampViscOutlet,
-     &                  istretchOutlet, iremoveStabTimeTerm, iLHScond
+     &                  istretchOutlet, iremoveStabTimeTerm, iLHScond,
+     &                  ndofBC2
 
 c
         integer :: svLSType, svLSFlag
         common /inpdat/ epstol(6),  Delt(MAXTS),    CFLfl(MAXTS),
      &                  CFLsl(MAXTS),   nstep(MAXTS),   niter(MAXTS),
-     &                  impl(MAXTS),    rhoinf(MAXTS),
+     &                  impl(MAXTS),    rhoinf(MAXTS),  rhoinfS(MAXTS),
      &                  LHSupd(6),  loctim(MAXTS),  deltol(MAXTS,2), 
      &                  leslib,     svLSFlag,   svLSType
 c
@@ -453,6 +459,7 @@ c                 ( = 0 not used; = 1 global reconstruction )
 c itau          : type of tau to be used
 c iLHScond      : add contributiosn from the heat flux BC to the LHS 
 c                 tangency matrix. 
+c ndofBC2       : dimension size of the boundary condition array BC before constraint
 c
 c----------------------------------------------------------------------
 c

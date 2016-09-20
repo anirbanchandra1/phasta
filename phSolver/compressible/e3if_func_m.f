@@ -22,8 +22,8 @@ c
         call getdiff(rmu0, rlm0, rlm2mu0, con0, npro, mater0)
         call getdiff(rmu1, rlm1, rlm2mu1, con1, npro, mater1)
 c
-        call set_Kij(Kij0,rmu0,rlm0,rlm2mu0,con0,u0(:,1),u0(:,2),u0(:,3))
-        call set_Kij(Kij1,rmu1,rlm1,rlm2mu1,con1,u1(:,1),u1(:,2),u1(:,3))
+        call set_Kij(Kij0,rmu0,rlm0,rlm2mu0,con0,u0)
+        call set_Kij(Kij1,rmu1,rlm1,rlm2mu1,con1,u1)
 c
         deallocate(rmu0,rlm0,rlm2mu0,con0)
         deallocate(rmu1,rlm1,rlm2mu1,con1)
@@ -48,25 +48,25 @@ c
 c
         Ai(:,1,1,1) = drdp * (u1 - um1)
         Ai(:,1,1,2) = rho
-c       Ai(:,1,1,3) = zero
-c       Ai(:,1,1,4) = zero
+        Ai(:,1,1,3) = zero
+        Ai(:,1,1,4) = zero
         Ai(:,1,1,5) = drdT * (u1 - um1)
 c
         Ai(:,1,2,1) = drdp * (u1 - um1) * u1 + 1
         Ai(:,1,2,2) = rho  * (u1 - um1) + rho * u1
-c       Ai(:,1,2,3) = zero
-c       Ai(:,1,2,4) = zero
+        Ai(:,1,2,3) = zero
+        Ai(:,1,2,4) = zero
         Ai(:,1,2,5) = drdT * (u1 - um1) * u1
 c
         Ai(:,1,3,1) = drdp * (u1 - um1) * u2 
         Ai(:,1,3,2) = rho  * u2
         Ai(:,1,3,3) = rho  * (u1 - um1)
-c       Ai(:,1,3,4) = zero
+        Ai(:,1,3,4) = zero
         Ai(:,1,3,5) = drdT * (u1 - um1) * u2
 c
         Ai(:,1,4,1) = drdp * (u1 - um1) * u3 
         Ai(:,1,4,2) = rho  * u3
-c       Ai(:,1,4,3) = zero
+        Ai(:,1,4,3) = zero
         Ai(:,1,4,4) = rho  * (u1 - um1)
         Ai(:,1,4,5) = drdT * (u1 - um1) * u3
 c
@@ -77,25 +77,25 @@ c
         Ai(:,1,5,5) = (u1 - um1) * e4p
 c
         Ai(:,2,1,1) = drdp * (u2 - um2)
-c       Ai(:,2,1,2) = zero
+        Ai(:,2,1,2) = zero
         Ai(:,2,1,3) = rho
-c       Ai(:,2,1,4) = zero
+        Ai(:,2,1,4) = zero
         Ai(:,2,1,5) = drdT * (u2 - um2)
 c
         Ai(:,2,2,1) = drdp * u1 * (u2 - um2)
         Ai(:,2,2,2) = rho  * (u2 - um2)
         Ai(:,2,2,3) = rho  * u1
-c       Ai(:,2,2,4) = zero
+        Ai(:,2,2,4) = zero
         Ai(:,2,2,5) = drdT * u1 * (u2 - um2)
 c
         Ai(:,2,3,1) = drdp * (u2 - um2) * u2 + 1
-c       Ai(:,2,3,2) = zero
+        Ai(:,2,3,2) = zero
         Ai(:,2,3,3) = rho  * (u2 - um2) + rho * u2
-c       Ai(:,2,3,4) = zero
+        Ai(:,2,3,4) = zero
         Ai(:,2,3,5) = drdT * (u2 - um2) * u2
 c
         Ai(:,2,4,1) = drdp * (u2 - um2) * u3 
-c       Ai(:,2,4,2) = zero
+        Ai(:,2,4,2) = zero
         Ai(:,2,4,3) = rho  * u3
         Ai(:,2,4,4) = rho  * (u2 - um2)
         Ai(:,2,4,5) = drdT * (u2 - um2) * u3
@@ -107,26 +107,26 @@ c
         Ai(:,2,5,5) = (u2 - um2) * e4p
 c
         Ai(:,3,1,1) = drdp * (u3 - um3)
-c       Ai(:,3,1,2) = zero
-c       Ai(:,3,1,3) = zero
+        Ai(:,3,1,2) = zero
+        Ai(:,3,1,3) = zero
         Ai(:,3,1,4) = rho
         Ai(:,3,1,5) = drdT * (u3 - um3)
 c
         Ai(:,3,2,1) = drdp * u1 * (u3 - um3) 
         Ai(:,3,2,2) = rho  * (u3 - um3)
-c       Ai(:,3,2,3) = zero
+        Ai(:,3,2,3) = zero
         Ai(:,3,2,4) = rho  * u1
         Ai(:,3,2,5) = drdT * u1 * (u3 - um3)
 c
         Ai(:,3,3,1) = drdp * (u3 - um3) * u2 
-c       Ai(:,3,3,2) = zero
+        Ai(:,3,3,2) = zero
         Ai(:,3,3,3) = rho  * (u3 - um3)
         Ai(:,3,3,4) = rho  * u2
         Ai(:,3,3,5) = drdT * (u3 - um3) * u2
 c
         Ai(:,3,4,1) = drdp * (u3 - um3) * u3 + 1
-c       Ai(:,3,4,2) = zero
-c       Ai(:,3,4,3) = zero
+        Ai(:,3,4,2) = zero
+        Ai(:,3,4,3) = zero
         Ai(:,3,4,4) = rho  * u3 + rho * (u3 - um3)
         Ai(:,3,4,5) = drdT * (u3 - um3) * u3
 c
@@ -138,10 +138,17 @@ c
 c
       end subroutine set_Ai
 c
-      subroutine set_Kij(Kij,rmu,rlm,rlm2mu,con,u1,u2,u3)
+      subroutine set_Kij(Kij,rmu,rlm,rlm2mu,con,u)
 c
         real*8, dimension(:,:,:,:,:), pointer, intent(out) :: Kij
-        real*8, dimension(:), pointer, intent(in) :: rmu,rlm,rlm2mu,con,u1,u2,u3
+        real*8, dimension(:), pointer, intent(in) :: rmu,rlm,rlm2mu,con
+        real*8, dimension(:,:), pointer, intent(in) :: u
+c
+        real*8, pointer :: u1(:), u2(:), u3(:)
+c
+        u1 => u(:,1)
+        u2 => u(:,2)
+        u3 => u(:,3)
 c
         Kij = zero
 c
@@ -218,5 +225,43 @@ c
         kij(:,3,3,5,5) = con
 c
       end subroutine set_Kij
+c
+        subroutine calc_y_jump
+c
+          integer :: iflow,isd
+c
+          do iflow = 1,nflow
+            do isd = 1,nsd
+              y_jump(:,iflow,isd) = y0(:,iflow)*nv0(:,isd) + y1(:,iflow)*nv1(:,isd)
+            enddo
+          enddo
+c
+        end subroutine calc_y_jump
+c
+        subroutine calc_CKij(CKij,Kij)
+c
+c          Multiply the two matrixes...
+c
+           real*8, dimension(:,:,:,:,:), intent(out) :: CKij
+           real*8, dimension(:,:,:,:,:), intent(in) :: Kij
+c
+           integer :: iflow,jflow,kflow,isd,jsd
+c
+           ! calculate C*Kij:
+           do isd = 1,nsd
+             do jsd = 1,nsd
+               do iflow = 1,nflow
+                 do jflow = 1,nflow
+                   CKij(:,iflow,jflow,isd,jsd) = zero
+                   do kflow = 1,nflow
+                     CKij(:,iflow,jflow,isd,jsd) = CKij(:,iflow,jflow,isd,jsd) + 
+     &                   cmtrx(:,iflow,kflow)*Kij(:,isd,jsd,kflow,jflow)
+                   enddo
+                 enddo
+               enddo
+             enddo
+           enddo
+c
+        end subroutine calc_CKij
 c
       end module e3if_func_m

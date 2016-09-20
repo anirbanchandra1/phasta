@@ -43,10 +43,12 @@ c
 
         ! Get the total number of different interior topologies in the whole domain. 
         ! Try to read from a field. If the field does not exist, scan the geombc file.
+C<--- BEGIN HARD CODE
         itpblktot=1  ! hardwired to monotopology for now
-        call phio_readheader(fhandle,
-     &   c_char_'total number of boundary tpblocks' // char(0),
-     &   c_loc(itpblktot), ione, dataInt, iotype)
+C        call phio_readheader(fhandle,
+C     &   c_char_'total number of boundary tpblocks' // char(0),
+C     &   c_loc(itpblktot), ione, dataInt, iotype)
+C<--- END HARD CODE
 
         if (itpblktot == -1) then 
           ! The field 'total number of different boundary tpblocks' was not found in the geombc file.
@@ -82,7 +84,7 @@ c
         mattyp=0
         ndofl = ndof
 
-        do iblk = 1, itpblktot
+        iblk_loop: do iblk = 1, itpblktot
            writeLock=0;
             if(input_mode.ge.1)then
                write (fname2,"('connectivity boundary',i1)") iblk
@@ -91,7 +93,7 @@ c
             endif
            
            ! Synchronization for performance monitoring, as some parts do not include some topologies
-           call MPI_Barrier(MPI_COMM_WORLD,ierr) 
+C           call MPI_Barrier(MPI_COMM_WORLD,ierr) 
            call phio_readheader(fhandle, fname2 // char(0),
      &      c_loc(intfromfile), ieight, dataInt, iotype)
            neltp =intfromfile(1)
@@ -102,6 +104,11 @@ c
            nenbl =intfromfile(6)
            lcsyst=intfromfile(7)
            numnbc=intfromfile(8)
+
+           if (neltp==0) then
+              writeLock=1;
+      cycle iblk_loop
+           endif
 
            allocate (ientp(neltp,nshl))
            allocate (iBCBtp(neltp,ndiBCB))
@@ -114,10 +121,6 @@ c
            
            iientpsiz=neltp*nshl
 
-           if (neltp==0) then
-              writeLock=1;
-           endif
-
            call phio_readdatablock(fhandle, fname2 // char(0),
      &      c_loc(ientp),iientpsiz,dataInt,iotype)
 c
@@ -128,7 +131,7 @@ c
            else
              write( fname2,"('material type boundary')")
            endif
-           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
+C           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
            call phio_readheader(fhandle, fname2 // char(0),
      &      c_loc(intfromfile), ione, dataInt, iotype)
            call phio_readdatablock(fhandle, fname2 // char(0),
@@ -136,7 +139,7 @@ c
 c     
 c.... Read the boundary flux codes
 c
-           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
+C           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
             if(input_mode.ge.1)then
                write (fname2,"('nbc codes',i1)") iblk
             else
@@ -151,7 +154,7 @@ c
 c     
 c.... read the boundary condition data
 c     
-           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
+C           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
             if(input_mode.ge.1)then
                write (fname2,"('nbc values',i1)") iblk
             else
@@ -262,7 +265,7 @@ c
            deallocate(neltp_mattype)
            deallocate(bcbtmp)
 
-        enddo
+        enddo iblk_loop
         lcblkb(1,nelblb+1) = iel
         return
 c

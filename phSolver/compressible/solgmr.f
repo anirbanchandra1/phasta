@@ -324,8 +324,8 @@ c
 
         echeck=abs(eBrg(iKs+1))
         if (echeck .le. epsnrm) exit
-        if(myrank.eq.master) write(*,*)'solver tolerance %satisfaction',
-     &  (one-echeck/unorm)/(one-etol)*100
+c        if(myrank.eq.master) write(*,*)'solver tolerance %satisfaction',
+c    &  (one-echeck/unorm)/(one-etol)*100
 c     
 c.... end of mGMRES loop
 c
@@ -495,7 +495,6 @@ c
 c.... Pre-precondition the LHS mass matrix and set up the sparse 
 c     preconditioners
 c
-
       if(lhs.eq.1) call Spsi3pre (BDiag, lhsK, nflow, col, row)
 c     
 c.... copy res in uBrg(1)
@@ -512,11 +511,13 @@ c
 c.... check if GMRES iterations are required
 c
       iKs    = 0
-      lGMRESs = 0
+      lGMRES = 0
 c
 c.... if we are down to machine precision, don't bother solving
 c
-      if (unorm .lt. 100.*epsM**2) goto 3000 
+      if (unorm .lt. 100.*epsM**2) then 
+        goto 3000 
+      endif
 c
 c.... set up tolerance of the Hessenberg's problem
 c
@@ -527,7 +528,7 @@ c
 c.... loop through GMRES cycles
 c
       do 2000 mGMRES = 1, nGMRES
-         lGMRESs = mGMRES - 1
+         lGMRES = mGMRES - 1
 c
          if (lGMRES .gt. 0) then
 c
@@ -670,7 +671,10 @@ c.... check for convergence
 c     
             ntotGM = ntotGM + 1
             echeck=abs(eBrg(iKs+1))
+c      if (MOD(iks,10) == 0 .AND. myrank == 0) 
+c     & write(*,'(a,i2,a,i4,2(x,e24.16))')'[',myrank,']', iKs, echeck, epsnrm
             if (echeck .le. epsnrm.and. iKs .ge. minIters) exit
+
 c     
 c.... end of GMRES iteration loop
 c     
@@ -703,8 +707,8 @@ c.... check for convergence
 c     
         echeck=abs(eBrg(iKs+1))
         if (echeck .le. epsnrm) exit
-!        if(myrank.eq.master) write(*,*)'solver tolerance %satisfaction',
-!     &  (one-echeck*etol/epsnrm)/(one-etol)*100
+        if(myrank.eq.master) write(*,*)'solver tolerance %satisfaction',
+     &  (one-echeck*etol/epsnrm)/(one-etol)*100
 
 c     
 c.... end of mGMRES loop

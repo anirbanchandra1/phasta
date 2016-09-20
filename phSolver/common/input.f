@@ -55,12 +55,12 @@ c
         if (myrank == master) then
           write (iecho,1100) ititle, numpe,  numnp,  numel,  numelb, numelif,
      &                               nen,    nfaces, nsd,    numflx
-          write (iecho,1200)         iALE,   icoord, navier, irs,
-     &                               iexec,  necho
+          write (iecho,1200)         iALE,   icoord,
+     &                               navier, irs,    iexec,  necho
 c
 c.... check the input parameters
 c
-          if (iALE .lt. 0 .or. iALE .gt. 1)
+          if (iALE .lt. 0 .or. iALE .gt. 2)
      &                     call error ('input   ','iALE    ',iALE)
 c
           if (icoord .lt. 0 .or. icoord .gt. 1)

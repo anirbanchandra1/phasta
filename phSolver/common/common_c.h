@@ -25,6 +25,7 @@
 #define ductvari FortranCInterface_GLOBAL_(ductvari,DUCTVARI)
 #define ctrlvar FortranCInterface_GLOBAL_(ctrlvar,CTRLVAR)
 #define ductvar FortranCInterface_GLOBAL_(ductvar,DUCTVAR)
+#define alevar FortranCInterface_GLOBAL_(alevar, ALEVAR)
 #define shpdat FortranCInterface_GLOBAL_(shpdat,SHPDAT)
 #define datpnt FortranCInterface_GLOBAL_(datpnt,DATPNT)
 #define elmpar FortranCInterface_GLOBAL_(elmpar,ELMPAR)
@@ -36,6 +37,7 @@
 #define itrpar FortranCInterface_GLOBAL_(itrpar,ITRPAR)
 #define itrpnt FortranCInterface_GLOBAL_(itrpnt,ITRPNT)
 #define matdat FortranCInterface_GLOBAL_(matdat,MATDAT)
+#define e3if_dat FortranCInterface_GLOBAL_(e3if_dat,E3IF_DAT)
 #define mmatpar FortranCInterface_GLOBAL_(mmatpar,MMATPAR)
 #define outpar FortranCInterface_GLOBAL_(outpar,OUTPAR)
 #define point FortranCInterface_GLOBAL_(point,POINT)
@@ -90,7 +92,13 @@
 #define inv1024sq 9.5367431640625e-7
 
 #define ieos_ideal_gas 1
-#define ieos_liquid_1  2
+#define ieos_ideal_gas_2 2
+#define ieos_liquid_1  3
+
+#define idg_no_ramp 1
+#define idg_linear_ramp 2
+#define idg_const_vi 1
+#define idg_vi_model1 2
 
 #ifdef __cplusplus
 extern "C" {
@@ -319,8 +327,19 @@ extern "C" {
 		double EVrampMin;
 		double EVrampMax;
 	} ductvar;
-//////////////////////////////////////////
 
+  extern struct {
+    double raleF;
+    double raleA;
+    double raleX;
+    double raleY;
+    double raleLx;
+    double raleLy;
+    double raleRx;
+    double raleRy;
+    int ialeD;
+    int ialeT;
+  } alevar;
  
   extern struct { 
     double epsilon_ls;
@@ -407,7 +426,8 @@ extern "C" {
     int irampViscOutlet;
     int istretchOutlet;
     int iremoveStabTimeTerm;
-	int iLHScond;
+    int iLHScond;
+    int ndofBC2;
   } genpar ;
 
   extern struct { 
@@ -420,6 +440,7 @@ extern "C" {
     int niter[MAXTS];
     int impl[MAXTS];
     double rhoinf[MAXTS];
+    double rhoinfS[MAXTS];
     int LHSupd[6];
     int loctim[MAXTS];
     double deltol[2][MAXTS];
@@ -485,6 +506,18 @@ extern "C" {
     int mexist;
     double datelas[2][1];
   } matdat ;
+
+  extern struct {
+    int vi_ramping;
+    int vi_model;
+    double ramp_time;
+    double vi_mag;
+    double dgif_alpha;
+    double dgif_beta;
+    double s;
+    double e;
+    double h;
+  } e3if_dat;
 
   extern struct { 
     double pr, Planck, Stephan, Nh, Rh, Rgas;

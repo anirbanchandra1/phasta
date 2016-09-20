@@ -51,6 +51,7 @@ c
         real*8 c0, c1, c2, c3, x1, x2
         integer nn
 
+
 c        if ((irscale .ge. 0) .and. (myrank.eq.master)) then
 c           call setSPEBC(numnp, point2nfath, nsonmax)
 c        endif
@@ -214,11 +215,15 @@ c$$$$$$$$$$$$$$$$$$$$
 !End modifications for Duct
 !======================================================================
 c
+c.... start CPU_timer
+c
+        call timer ('Begin   ')
 c
 c.... call the semi-discrete predictor multi-corrector iterative driver
 c
         call itrdrv (y,              ac,             
      &               uold,           point2x,
+     &               umesh,          xn,           
      &               iBC,            BC,
      &               point2iper,     point2ilwork,   shp,
      &               shgl,           shpb,           shglb,
@@ -230,7 +235,7 @@ c
 c
 c.... stop CPU-timer
 c
-CAD        call timer ('End     ')
+        call timer ('End     ')
 c
 c.... close echo file
 c
@@ -256,14 +261,21 @@ c
 c.... end of the program
 c
 CAD        write(6,*) 'Life: ', second(0) - ttim(100)
+
+        deallocate(mattype_interior)
+
         deallocate(point2iper)
         if(numpe.gt.1) then
           call Dctypes(point2ilwork(1))
-          deallocate(point2ilwork)
+c          deallocate(point2ilwork)
         endif
         deallocate(point2x)
         deallocate(point2nsons)
         deallocate(point2ifath)
+        deallocate(point2ilwork)
+        deallocate(xn)
+c        deallocate(xdotold)
+        deallocate(umesh)
         deallocate(uold)
         deallocate(wnrm)
         deallocate(otwn)

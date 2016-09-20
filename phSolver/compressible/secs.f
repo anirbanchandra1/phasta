@@ -2,7 +2,7 @@
       
       real t
       
-      secs = 0.0
+c      secs = 0.0
       
       return
       end

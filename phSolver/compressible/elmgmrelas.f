@@ -142,7 +142,6 @@ c
 c
 c.... return
 c
-      call timer ('Back    ')
       return
       end
 

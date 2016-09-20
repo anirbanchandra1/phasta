@@ -1,8 +1,10 @@
       module e3if_m
 c
+        use mpi_def_m
         use hierarchic_m
         use matdat_def_m
         use e3if_defs_m
+        use e3if_geom_m
         use e3if_func_m
         use e3if_diff_m
         use eqn_state_m
@@ -23,6 +25,8 @@ c
           real*8, dimension(nqpt), intent(in) :: qwtif0, qwtif1
 c
           integer :: intp
+      integer :: iel,isd,n
+      real*8 ::sum0,sumg0
 c
 c      write(*,*) 'In e3if...'
 c
@@ -38,8 +42,8 @@ c
             ri0 = zero
             ri1 = zero
 c
-            call calc_normal_vectors(nv0,area,WdetJif0,xl0,qwtif0,lcsyst0,intp)
-            call calc_normal_vectors(nv1,area,WdetJif1,xl1,qwtif1,lcsyst1,intp)
+            call calc_normal_vectors(nv0,area,WdetJif0,xl0,qwtif0,lcsyst0,intp,npro)
+            call calc_normal_vectors(nv1,area,WdetJif1,xl1,qwtif1,lcsyst1,intp,npro)
 c
 c... do not include this quadrature point, if Det. .eq. 0
 c
@@ -70,29 +74,45 @@ c
             call e3metric(shg0, dxdxi0,shgl0,xl0)
             call e3metric(shg1, dxdxi1,shgl1,xl1)
 c
-            call e3var(var0, ycl0, shp0, shgl0, shg0, dxdxi0, nshl0) 
-            call e3var(var1, ycl1, shp1, shgl1, shg1, dxdxi1, nshl1) 
+            call e3var(y0, var0, ycl0, shp0, shgl0, shg0, dxdxi0, nshl0) 
+            call e3var(y1, var1, ycl1, shp1, shgl1, shg1, dxdxi1, nshl1) 
 c
             call calc_stiff(prop0, var0, mater0)
             call calc_stiff(prop1, var1, mater1)
 c
+      write(*,*) 'KAPPA 0: ',kappa0
+      write(*,*) 'KAPPA 1: ',kappa1
+c
             call e3if_flux
 c
-c... calculate the contribution of the interface velocity V_i
-c
-c            call e3if_vi
-c
             call calc_cmtrx
-            call kinematic_condition
+            call calc_y_jump
+c
+            call stability_term(ri0,Kij0)
+            call stability_term(ri1,Kij1)
+c
+            call kinematic_conditions(ri0,y0,y1,prop0)
+            call kinematic_conditions(ri1,y1,y0,prop1)
+c            call kinematic_condition
 c
 c...LHS calculations...
 c
-            call set_lhs_matrices
+            if (lhs_dg .eq. 1) then
 c
-c            call calc_egmass(egmass00,AiNa0,KijNaj0,KijNaj0,KijNajC0,shp0,shp0,nv0,nv0,WdetJif0,nshl0,nshl0)
-c            call calc_egmass(egmass01,AiNa1,KijNaj0,KijNaj1,KijNajC0,shp0,shp1,nv0,nv1,WdetJif0,nshl0,nshl1)
-c            call calc_egmass(egmass10,AiNa0,KijNaj1,KijNaj0,KijNajC1,shp1,shp0,nv1,nv0,WdetJif1,nshl1,nshl0)
-c            call calc_egmass(egmass11,AiNa1,KijNaj1,KijNaj1,KijNajC1,shp1,shp1,nv1,nv1,WdetJif1,nshl1,nshl1)
+              call set_lhs_matrices
+c
+             call calc_egmass(egmass00,egmass01,AiNa0,AiNa1,KijNaj0,KijNaj1,KijNajC0,KijNajC1,
+     &         shp0,nv0,nv1,WdetJif0,prop0,nshl0,nshl1)
+
+             call calc_egmass(egmass11,egmass10,AiNa1,AiNa0,KijNaj1,KijNaj0,KijNajC1,KijNajC0,
+     &         shp1,nv1,nv0,WdetJif1,prop1,nshl1,nshl0)
+
+c      call calc_egmass_(egmass00,AiNa0,KijNaj0,KijNaj0,KijNajC0,shp0,shp1,nv0,nv1,WdetJif0,nshl0,nshl1)
+c      call calc_egmass_(egmass01,AiNa1,KijNaj0,KijNaj1,KijNajC1,shp0,shp1,nv0,nv1,WdetJif0,nshl0,nshl1)
+c      call calc_egmass_(egmass10,AiNa0,KijNaj1,KijNaj0,KijNajC0,shp1,shp0,nv1,nv0,WdetJif1,nshl1,nshl0)
+c      call calc_egmass_(egmass11,AiNa1,KijNaj1,KijNaj1,KijNajC1,shp1,shp0,nv1,nv0,WdetJif1,nshl1,nshl0)
+c
+            endif
 c
             call e3if_wmlt(rl0, ri0, shp0, shg0, WdetJif0, nshl0)
             call e3if_wmlt(rl1, ri1, shp1, shg1, WdetJif1, nshl1)
@@ -100,64 +120,51 @@ c
 c ... Interface velocity calculations...
 c
             if     (mat_eos(mater0,1) == ieos_ideal_gas) then
-              call calc_vi(pres0,nv0)
+              call calc_vi(pres0,nv0,u1)
             elseif (mat_eos(mater1,1) == ieos_ideal_gas) then
-              call calc_vi(pres1,nv1)
+              call calc_vi(pres1,nv1,u0)
             else
               call error ('wrong mater: ', 'calc vi', 0)
             endif
+c      do iel = 1,npro
+c        write(*,'(a,i4,a,i4,3f12.4)') '[',myrank,'] iel: ',iel,vi(iel,:)
+c      enddo
 c
-            call calc_vi_area_node(sum_vi_area_l0,shp0,nshl0)
-            call calc_vi_area_node(sum_vi_area_l1,shp1,nshl1)
+            call calc_vi_area_node(sum_vi_area_l0,shp0,WdetJif0,nshl0)
+            call calc_vi_area_node(sum_vi_area_l1,shp1,WdetJif1,nshl1)
 c
           enddo  ! end of integeration points loop 
 c
         end subroutine e3if
 c
-        subroutine e3var(var,y,shp,shgl,shg,dxdxi,nshl)
+        subroutine e3var(y,var,ycl,shp,shgl,shg,dxdxi,nshl)
 c
+          real*8, dimension(:,:), intent(out) :: y
           type(var_t), pointer, intent(out) :: var(:)
           real*8, pointer, intent(in) :: shp(:,:),shgl(:,:,:), shg(:,:,:)
-          real*8, dimension(npro,nshl,nflow), intent(in) :: y
+          real*8, dimension(npro,nshl,nflow), intent(in) :: ycl
           real*8, dimension(:,:,:), intent(in) :: dxdxi
           integer, intent(in) :: nshl
 c
           integer :: iel,ivar,isd,jsd,n
           real*8 :: grad_y(npro)
 c
-          do iel = 1,npro
-            do ivar = 1,nflow
-              var(iel)%y(ivar) = sum_qpt(nshl,y(iel,:,ivar),shp(iel,:))
-              do isd = 1,nsd
-c                var(iel)%grad_yl(isd,ivar) = sum_qpt(nshl,y(iel,:,ivar),shgl(iel,isd,:))
-                var(iel)%grad_y(isd,ivar) = sum_qpt(nshl,y(iel,:,ivar),shg(iel,:,isd))
-              enddo
+          do ivar = 1,nflow
+            y(:,ivar) = zero
+            var(:)%y(ivar) = zero
+            var(:)%grad_y(1,ivar) = zero
+            var(:)%grad_y(2,ivar) = zero
+            var(:)%grad_y(3,ivar) = zero
+            do n = 1,nshl
+              y(:,ivar) = y(:,ivar) + ycl(:,n,ivar)*shp(:,n)
+              var(:)%y(ivar) = var(:)%y(ivar) + ycl(:,n,ivar)*shp(:,n)
+              var(:)%grad_y(1,ivar) = var(:)%grad_y(1,ivar) + ycl(:,n,ivar)*shg(:,n,1)
+              var(:)%grad_y(2,ivar) = var(:)%grad_y(2,ivar) + ycl(:,n,ivar)*shg(:,n,2)
+              var(:)%grad_y(3,ivar) = var(:)%grad_y(3,ivar) + ycl(:,n,ivar)*shg(:,n,3)
             enddo
           enddo
-      do n = 1,nshl
-c         write(*,*)'y:     ', n,y(1,n,5)
-c         write(*,*)'shg:   ', n,shg(1,n,:)
-c         write(*,*)'grad_y:', n,var(1)%grad_y(:,5)
-      enddo
-c
-      return
-c
-c...Multiply by the element deformation tensor to get the 
-c...global Y-gradient:
-c
-          do ivar = 1, nflow
-            do isd = 1, nsd
-c
-              grad_y = zero
-c
-              do jsd = 1, nsd
-                grad_y = grad_y + dxdxi(:,jsd,isd)*var(:)%grad_yl(jsd,ivar)
-              enddo
-c
-              var(:)%grad_y(isd,ivar) = grad_y(:)
-c
-            enddo
-          enddo
+
+          return
 c
         end subroutine e3var
 c
@@ -244,63 +251,6 @@ c
 c
         end function sum_qpt
 c
-        subroutine calc_normal_vectors(nv,area,WdetJ,xl,qwt,lcsyst,intp)
-c
-          real*8, dimension(:,:), pointer, intent(out) :: nv
-          real*8, dimension(:),   pointer, intent(out) :: area, WdetJ
-          real*8, dimension(:,:,:), pointer, intent(in) :: xl
-          real*8, dimension(nqpt),           intent(in) :: qwt
-          integer, intent(in) :: lcsyst,intp
-c
-          real*8 :: temp_len(npro)
-          real*8, dimension(npro, nsd) :: v1, v2, temp_normal
-          integer :: isd, iel
-          character(len=8) :: err_msg
-c
-c      write(*,*) 'In calc_normal_vectors...'
-c
-c.... compute the normal to the boundary. This is achieved by taking
-c     the cross product of two vectors in the plane of the 2-d 
-c     boundary face.
-c
-          do isd = 1,nsd
-            v1(:,isd) = xl(:,2,isd) - xl(:,1,isd)
-            v2(:,isd) = xl(:,3,isd) - xl(:,1,isd)
-          enddo
-c
-          select case (lcsyst)
-          case (1)
-c
-            temp_normal(:,1) = + v1(:,2)*v2(:,3) - v1(:,3)*v2(:,2)
-            temp_normal(:,2) = - v1(:,1)*v2(:,3) + v1(:,3)*v2(:,1)
-            temp_normal(:,3) = + v1(:,1)*v2(:,2) - v1(:,2)*v2(:,1)
-c
-            area = pt50 * sqrt(temp_normal(:,1)*temp_normal(:,1)
-     &                       + temp_normal(:,2)*temp_normal(:,2)
-     &                       + temp_normal(:,3)*temp_normal(:,3))
-c
-          case default
-c            write(err_msg,'(a,i1)') 'lcsyst ',lcsyst
-            call error ('calc_normal_vectors ', err_msg, 0)
-          end select
-c
-          do iel = 1,npro
-            temp_len(iel) = sqrt(dot_product(temp_normal(iel,1:3),temp_normal(iel,1:3)))
-            nv(iel,1:nsd) = temp_normal(iel,1:nsd) / temp_len(iel)
-          enddo
-c
-c... also calculate WdetJ here...
-c
-          select case (lcsyst)
-          case (1)
-            WdetJ = qwt(intp) * temp_len * pt25
-          case default
-            write(err_msg,'(a,i1)') 'lcsyst ',lcsyst
-            call error ('calc WdetJif ', err_msg, 0)
-          end select
-c
-        end subroutine calc_normal_vectors
-c
         subroutine e3if_flux
 c
           integer :: iel,iflow,isd,jsd,jflow
@@ -316,20 +266,25 @@ c
 c
             call calc_diff_flux(fdiff0,var0(iel),prop0(iel))
             call calc_diff_flux(fdiff1,var1(iel),prop1(iel))
+c        write(*,500) myrank,iel,fconv0(1,:)
+c        write(*,500) myrank,iel,fconv1(1,:)
+c        write(*,500) myrank,iel,fdiff0(1,:)
+c        write(*,500) myrank,iel,fdiff1(1,:)
+c        write(*,500) myrank,iel,fdiff0(:,5)-fdiff1(:,5)
+c        write(*,500) myrank,iel,var0(iel)%grad_y(:,5)-var1(iel)%grad_y(:,5)
 c
 c... calculate flux in normal direction...
 c
             do iflow = 1,nflow
-c
               f0(:,iflow) = fconv0(:,iflow) - fdiff0(:,iflow)
               f1(:,iflow) = fconv1(:,iflow) - fdiff1(:,iflow)
-c
               f0n0(iflow) = dot_product(f0(:,iflow),nv0(iel,:))
               f0n1(iflow) = dot_product(f0(:,iflow),nv1(iel,:))
               f1n0(iflow) = dot_product(f1(:,iflow),nv0(iel,:))
               f1n1(iflow) = dot_product(f1(:,iflow),nv1(iel,:))
-c
             enddo
+c        write(*,500) myrank,iel,f0n0(:)
+c
 c
 c      if (iel == 1) then
 c        write(*,10) 'rho0, u0, p0, T0, ei0:', rho0(iel), u0(iel,1), pres0(iel), ei0(iel)
@@ -352,53 +307,140 @@ c
             ri1(iel,16:20) = ri1(iel,16:20) + 0.5 * ( f1n1(1:5) + f0n1(1:5) )
 c
 c...UPWIND????
+c   Flow is in n0 direction...
 c
-c      ri0(iel,16:20) = ri0(iel,16:20) + f1n0(1:5)
-c      ri1(iel,16:20) = ri1(iel,16:20) + f1n1(1:5)
+c      ri0(iel,16:20) = ri0(iel,16:20) + f0n0(1:5)
+c      ri1(iel,16:20) = ri1(iel,16:20) + f0n1(1:5)
 c
+c       write(*,500) myrank,iel,ri0(iel,16:20)
+c        write(*,500) myrank,iel,ri1(iel,16:20)
           enddo
 c
 10    format(a,5e24.16)
 20    format(a,1e24.16)
+500   format('[',i2,'] ',i3,x,5e24.16)
 c
         end subroutine e3if_flux
 c
-        subroutine     e3if_vi
+        subroutine stability_term(ri,Kij)
 c
-c... HARDCODED
-c    interface progression velocity
+           real*8, dimension(:,:), intent(inout) :: ri
+           real*8, dimension(:,:,:,:,:), intent(in) :: Kij
 c
-          real*8, dimension(3), parameter :: vi = (/-1.0e-3,0.,0./)
-          real*8 :: vini0,vini1
-          real*8 :: etot0,etot1
+           integer :: iflow,jflow,kflow,isd,jsd
+           real*8 :: this_sum(npro)
+           real*8, dimension(npro,nflow,nflow,nsd,nsd) :: CKij
 c
-          integer :: iel
+           call calc_CKij(CKij,Kij)
 c
-          do iel = 1,npro
+           do iflow = 1,nflow
+             do isd = 1,nsd
 c
-            vini0 = dot_product(vi,nv0(iel,:))
-            vini1 = dot_product(vi,nv1(iel,:))
+               this_sum = zero
 c
-c...mass
-            ri0(iel,1) = ri0(iel,1) + 0.5*(rho0(iel)-rho1(iel))*vini0
-            ri1(iel,1) = ri1(iel,1) + 0.5*(rho1(iel)-rho0(iel))*vini1
+               do jflow = 1,nflow
+                 do jsd = 1,nsd
+                   this_sum = this_sum + CKij(:,iflow,jflow,isd,jsd)*y_jump(:,jflow,jsd)
+                 enddo
+               enddo
 c
-c...momentum
-            ri0(iel,2:4) = ri0(iel,2:4) + 0.5*(rho0(iel)*u0(iel,1:3)-rho1(iel)*u1(iel,1:3))*vini0
-            ri1(iel,2:4) = ri1(iel,2:4) + 0.5*(rho1(iel)*u1(iel,1:3)-rho0(iel)*u0(iel,1:3))*vini1
+               ri(:,nflow*(isd-1)+iflow) = ri(:,nflow*(isd-1)+iflow) 
+     &          + pt50 * s * this_sum
 c
-c...energy
-            etot0 = ei0(iel) + 0.5*dot_product(u0(iel,:),u0(iel,:))
-            etot1 = ei1(iel) + 0.5*dot_product(u1(iel,:),u1(iel,:))
+             enddo
+           enddo
 c
-            ri0(iel,5) = ri0(iel,5) + 0.5*(rho0(iel)*etot0-rho1(iel)*etot1)*vini0
-            ri1(iel,5) = ri1(iel,5) + 0.5*(rho1(iel)*etot1-rho0(iel)*etot0)*vini1
+        end subroutine stability_term
+c
+        subroutine kinematic_conditions(ri,y0,y1,prop)
+c
+           real*8, dimension(:,:), intent(inout) :: ri
+           real*8, dimension(:,:), intent(in) :: y0,y1
+           type(prop_t), dimension(:), pointer, intent(in) :: prop
+c
+           integer :: iflow,jflow,isd
+           real*8 :: this_sum(npro)
+c
+           do iflow = 1,nflow
+             do isd = 1,nsd
+c
+               this_sum = zero
+c
+               do jflow = 1,nflow
+                 this_sum = this_sum + ctc(:,iflow,jflow)*(y0(:,jflow)-y1(:,jflow))
+               enddo
+c
+c               ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*mu/h * this_sum
+               select case(iflow)
+               case(2:4)
+                 ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*prop%stiff(3,3)/h * this_sum  ! for mu
+               case(5)
+                 ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*prop%stiff(5,5)/h * this_sum  ! for kappa
+               end select
+c
+             enddo
+           enddo
+c
+        end subroutine kinematic_conditions
+c
+        subroutine kinematic_condition
+c
+          integer :: iflow,jflow,isd,jsd
+          real*8, dimension(npro,nflow) :: cy0,cy1
+          real*8, dimension(npro,nsd,nflow) :: cy_jump 
+          real*8, dimension(npro) :: Kij_CY_i0, Kij_CY_i1, CWCY0, CWCY1
+c
+          do iflow = 1,nflow
+c
+            cy0(:,iflow) = zero
+            cy1(:,iflow) = zero
+c
+            do jflow = 1,nflow
+              cy0(:,iflow) = cy0(:,iflow) + cmtrx(:,iflow,jflow)*var0(:)%y(jflow)
+              cy1(:,iflow) = cy1(:,iflow) + cmtrx(:,iflow,jflow)*var1(:)%y(jflow)
+            enddo
+c
+            do isd = 1,nsd
+              cy_jump(:,isd,iflow) = cy0(:,iflow)*nv0(:,isd) + cy1(:,iflow)*nv1(:,isd)
+            enddo
 c
           enddo
 c
-        end subroutine e3if_vi
+          do iflow = 1,nflow
 c
-        subroutine kinematic_condition
+            CWCY0 = zero
+            CWCY1 = zero
+c
+            do isd = 1,nsd
+c
+              Kij_CY_i0 = zero
+              Kij_CY_i1 = zero
+c
+              do jflow = 1,nflow
+                do jsd = 1,nsd
+c
+                  Kij_CY_i0 = Kij_CY_i0 + Kij0(:,isd,jsd,iflow,jflow)*cy_jump(:,jsd,jflow)
+                  Kij_CY_i1 = Kij_CY_i1 + Kij1(:,isd,jsd,iflow,jflow)*cy_jump(:,jsd,jflow)
+c
+                  CWCY0 = CWCY0 + cmtrx(:,iflow,jflow)*nv0(:,jsd)*cy_jump(:,jsd,jflow)
+                  CWCY1 = CWCY1 + cmtrx(:,iflow,jflow)*nv1(:,jsd)*cy_jump(:,jsd,jflow)
+c
+                enddo
+              enddo
+c
+              ri0(:,nflow*(isd-1)+iflow) = ri0(:,nflow*(isd-1)+iflow) + pt50 * s * Kij_CY_i0
+              ri1(:,nflow*(isd-1)+iflow) = ri1(:,nflow*(isd-1)+iflow) + pt50 * s * Kij_CY_i1
+c
+            enddo
+c
+            ri0(:,3*nflow+iflow) = ri0(:,3*nflow+iflow) + e*mu/h * CWCY0
+            ri1(:,3*nflow+iflow) = ri1(:,3*nflow+iflow) + e*mu/h * CWCY1
+c
+          enddo
+c
+        end subroutine kinematic_condition
+c
+        subroutine kinematic_condition_old
 c
           integer :: i,j,isd,jsd
           real*8 :: cy_jump(npro,nsd,nflow)
@@ -474,13 +516,15 @@ c
 c      write(*,20) 'kij_cy0, kij_cy1:', kij_cy0(1), kij_cy1(1)
 20    format(a,2e24.16)
 c
-        end subroutine kinematic_condition
+        end subroutine kinematic_condition_old
 c
         subroutine calc_cmtrx
 c
           integer :: p,q,r
 c
           cmtrx = zero
+c
+c          cmtrx(:,1,1) = one
 c
           cmtrx(:,2,2) = one - nv0(:,1)*nv0(:,1)
           cmtrx(:,2,3) =     - nv0(:,1)*nv0(:,2)
@@ -502,7 +546,7 @@ c
             do p = 1,nflow
               ctc(:,p,q) = zero
               do r = 1,nflow
-                ctc(:,p,q) = ctc(:,p,q) + cmtrx(:,r,p)*cmtrx(:,r,q)
+                ctc(:,p,q) = ctc(:,p,q) + cmtrx(:,p,r)*cmtrx(:,r,q)
               enddo
             enddo
           enddo
