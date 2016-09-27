@@ -1,5 +1,6 @@
       module e3if_geom_m
 c
+        use mpi_def_m
         use e3if_defs_m
         use hierarchic_m
 c
@@ -15,6 +16,8 @@ c
           allocate(WdetJif0(npro),WdetJif1(npro))
           allocate(if_normal_l0(npro,nshl0,nsd+1))
           allocate(if_normal_l1(npro,nshl1,nsd+1))
+          allocate(if_kappa_l0(npro,nshl0,nsd+1))
+          allocate(if_kappa_l1(npro,nshl1,nsd+1))
           allocate(nv0(npro,nsd))
           allocate(nv1(npro,nsd))
           allocate(shp0(npro,nshl0))
@@ -32,6 +35,7 @@ c
           deallocate(area)
           deallocate(WdetJif0,WdetJif1)
           deallocate(if_normal_l0,if_normal_l1)
+          deallocate(if_kappa_l0,if_kappa_l1)
           deallocate(nv0,nv1)
           deallocate(shp0,shp1)
           deallocate(shgl0,shgl1)
@@ -146,73 +150,55 @@ c
 c
         end subroutine calc_normal_vectors
 c
-        subroutine calc_mean_curvature(if_kappa,ienif0,ienif1)
+        subroutine calc_mean_curvature(if_kappa_l,xl0,ienif0)
 c
-          real*8, dimension(:,:), pointer, intent(inout) :: if_kappa
-          integer, dimension(:,:), pointer, intent(in) :: ienif0,ienif1
+          real*8, dimension(:,:,:), pointer, intent(inout) :: if_kappa_l
+          real*8, dimension(:,:,:), pointer, intent(in) :: xl0
+          integer, dimension(:,:), pointer, intent(in) :: ienif0
 c
           integer,parameter :: nnode = 3 ! ONLY WORKS ON THE TRIAGLES
-          integer :: inode(3,3)
-          data inode  /1,2,3,2,3,1,3,1,2/
-          integer :: iel,i,j,k
-          real*8 :: v1(3),v2(3),v(3),area
+          integer :: iel,i,j,k,inode
+          real*8 :: v1(3),v2(3),v3(3),v(3),area,l1sq,l2sq,l3sq,n(3)
           real*8, dimension(nnode) :: cot0(3),cot1(3)
           logical :: obtuse
 c
           do iel = 1,npro
 c
-            do k = 1,nnode
-              i = inode(k,2)
-              j = inode(k,3)
-              v1 = xl0(iel,i,:) - xl0(iel,k,:)
-              v2 = xl0(iel,j,:) - xl0(iel,k,:)
-              cot0 = cotan(v1,v2)
-              v1 = xl1(iel,i,:) - xl1(iel,k,:)
-              v2 = xl1(iel,j,:) - xl1(iel,k,:)
-              cot1 = cotan(v1,v2)
-            enddo
+            v1 = xl0(iel,2,:)-xl0(iel,1,:)
+            v2 = xl0(iel,3,:)-xl0(iel,2,:)
+            v3 = xl0(iel,1,:)-xl0(iel,3,:)
 c
             call cross(v,v1,v2)
-            area = pt50*norm2(v)
+            area = pt5*norm2(v)
+c
+            l1sq = dot_product(v1,v1)
+            l2sq = dot_product(v2,v2)
+            l3sq = dot_product(v3,v3)
+c
+            cot0(1) = cotan(v1,-v3)
+            cot0(2) = cotan(v2,-v1)
+            cot0(3) = cotan(v3,-v2)
+c
+            if_kappa_l(iel,1,1:nsd) = pt5*(cot0(2)*v3-cot0(3)*v1)
+            if_kappa_l(iel,2,1:nsd) = pt5*(cot0(3)*v1-cot0(1)*v2)
+            if_kappa_l(iel,3,1:nsd) = pt5*(cot0(1)*v2-cot0(2)*v3)
 c
             obtuse = any(cot0(:) < zero)
+      obtuse = .false.
 c
-            do k = 1,nnode
-c
-              i = inode(k,2)
-              j = inode(k,3)
-c
-              if_kappa(ienif0(iel,i),1:nsd) = if_kappa(ienif0(iel,i),1:nsd) + pt5*cot0(k)*(xl0(iel,i,1:nsd)-xl0(iel,j,1:nsd))
-              if_kappa(ienif0(iel,j),1:nsd) = if_kappa(ienif0(iel,j),1:nsd) + pt5*cot0(k)*(xl0(iel,j,1:nsd)-xl0(iel,i,1:nsd))
-c
-              if_kappa(ienif1(iel,i),1:nsd) = if_kappa(ienif1(iel,i),1:nsd) + pt5*cot1(k)*(xl1(iel,i,1:nsd)-xl1(iel,j,1:nsd))
-              if_kappa(ienif1(iel,j),1:nsd) = if_kappa(ienif1(iel,j),1:nsd) + pt5*cot1(k)*(xl1(iel,j,1:nsd)-xl1(iel,i,1:nsd))
-c
-c ...NOW collect the voronoi area...
-c
-              if (.not. obtuse) then
-c
-                v = xl0(iel,i,:) - xl0(iel,j,:)
-                if_kappa(ienif0(iel,k),nsd+1) = if_kappa(ienif0(iel,k),nsd+1) + pt125*cot0(k)*norm2(v)
-c
-                v = xl1(iel,i,:) - xl1(iel,j,:)
-                if_kappa(ienif1(iel,k),nsd+1) = if_kappa(ienif1(iel,k),nsd+1) + pt125*cot1(k)*norm2(v)
-c
-              else
-c
-                if (cot0(k) < zero) then
-                  if_kappa(ienif0(iel,k),nsd+1) = if_kappa(ienif0(iel,k),nsd+1) + pt50*area
+            if (.not. obtuse) then
+              if_kappa_l(iel,1,nsd+1) = pt125*(cot0(3)*l1sq+cot0(2)*l3sq)
+              if_kappa_l(iel,2,nsd+1) = pt125*(cot0(1)*l2sq+cot0(3)*l1sq)
+              if_kappa_l(iel,3,nsd+1) = pt125*(cot0(2)*l3sq+cot0(1)*l2sq)
+            else
+              do i = 1,nsd
+                if (cot0(i) < zero) then
+                  if_kappa_l(iel,i,nsd+1) = if_kappa_l(iel,i,nsd+1) + pt5*area
                 else
-                  if_kappa(ienif0(iel,k),nsd+1) = if_kappa(ienif0(iel,k),nsd+1) + pt25*area
+                  if_kappa_l(iel,i,nsd+1) = if_kappa_l(iel,i,nsd+1) + pt25*area
                 endif
-                if (cot1(k) < zero) then
-                  if_kappa(ienif1(iel,k),nsd+1) = if_kappa(ienif1(iel,k),nsd+1) + pt50*area
-                else
-                  if_kappa(ienif1(iel,k),nsd+1) = if_kappa(ienif1(iel,k),nsd+1) + pt25*area
-                endif
-              endif
-c
-            enddo
+              enddo
+            endif
 c
           enddo
 c
@@ -228,8 +214,11 @@ c
 c
         real*8 function cotan(v1,v2)
           real*8, dimension(nsd) :: v1,v2,v
+          real*8 n2
           call cross(v,v1,v2)
-          cotan = dot_product(v1,v2)/norm2(v)
+          n2 = norm2(v)
+          if (n2 == zero) call error('cotan','norm2=0',0)
+          cotan = dot_product(v1,v2)/n2
         end function cotan
 c
       end module e3if_geom_m

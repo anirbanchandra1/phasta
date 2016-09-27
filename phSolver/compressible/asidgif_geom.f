@@ -21,6 +21,8 @@ c
         real*8, intent(in) :: qwtif0(nqpt), qwtif1(nqpt)
         integer, dimension(:,:), pointer, intent(in)   :: ienif0, ienif1
 c
+      integer :: iel,inode,n
+c
         call malloc_e3if_geom
 c
         if (ipord .gt. 1) then
@@ -36,7 +38,11 @@ c
         call local (if_normals, if_normal_l0, ienif0, nsd, 'scatter ', nshg, nshl0,npro,ipord,sbytes,flops)
         call local (if_normals, if_normal_l1, ienif1, nsd, 'scatter ', nshg, nshl1,npro,ipord,sbytes,flops)
 c
-        call calc_mean_curvature(if_kappa,ienif0,ienif1)
+        call calc_mean_curvature(if_kappa_l0,xl0,ienif0)
+        call calc_mean_curvature(if_kappa_l1,xl1,ienif1)
+c
+        call local (if_kappa, if_kappa_l0, ienif0, nsd+1, 'scatter ', nshg, nshl0,npro,ipord,sbytes,flops)
+        call local (if_kappa, if_kappa_l1, ienif1, nsd+1, 'scatter ', nshg, nshl1,npro,ipord,sbytes,flops)
 c
         call mfree_e3if_geom
 c

@@ -427,6 +427,8 @@ c
         real*8, pointer :: if_normal(:,:), if_kappa(:,:)
         real*8 :: length
 c
+        integer, pointer, dimension(:,:) :: ienif0,ienif1
+c
         ttim(80) = ttim(80) - secs(0.0)
 c
 c.... set up the timer
@@ -673,6 +675,8 @@ c
           ipord   = lcblkif(5, iblk)    ! polynomial order
           nenl0   = lcblkif(6, iblk)    ! number of vertices per element0
           nenl1   = lcblkif(7, iblk)    ! number of vertices per element1
+          mattyp0 = lcblkif(9, iblk)
+          mattyp1 = lcblkif(10,iblk)
           nshl0   = lcblkif(13,iblk)
           nshl1   = lcblkif(14,iblk)
           ngaussif = nintif0(lcsyst0)   ! or nintif1(lcsyst1)? should be the same!
@@ -685,6 +689,9 @@ c
      &    )
      &   
 c
+          ienif0 => mienif0(iblk)%p
+          ienif1 => mienif1(iblk)%p
+c
           call asidgif_geom
      &   (
      &    if_normal,if_kappa,
@@ -694,14 +701,14 @@ c
      &    shgif0(lcsyst0,1:nsd,1:nshl0,:),
      &    shgif1(lcsyst1,1:nsd,1:nshl1,:),
      &    qwtif0(lcsyst0,:), qwtif1(lcsyst1,:),
-     &    mienif0(iblk)%p, mienif1(iblk)%p
+     &    ienif0, ienif1
      & )
 c
         enddo if_blocks1
 c
         if (numpe > 1) then
           call commu (if_normal(:,1:3), ilwork, nsd, 'in ')
-          call commu (if_kappa(:,1:3), ilwork, nsd, 'in ')
+          call commu (if_kappa(:,1:nsd), ilwork, nsd, 'in ')
           call commu (if_kappa(:,nsd+1), ilwork, 1, 'in ')
           call MPI_BARRIER (MPI_COMM_WORLD,ierr)
         endif
@@ -711,7 +718,64 @@ c
           if (length > zero) then
             if_normal(inode,1:nsd) = if_normal(inode,1:nsd) / length
           endif
+          if (if_kappa(inode,nsd+1) > zero) 
+     &      if_kappa(inode,1:nsd) = pt5*if_kappa(inode,1:nsd)/if_kappa(inode,nsd+1)
         enddo
+c
+        if (numpe > 1) then
+          call commu (if_kappa(:,1:nsd), ilwork, nsd, 'out')
+          call MPI_BARRIER (MPI_COMM_WORLD,ierr)
+        endif
+c
+c
+c-----> BEGIN HARDCODE <-------
+c     Curvature Error Calculations:
+c
+          nsum = 0
+          err2 = zero
+        do iblk = 1, nelblif
+c
+          iel     = lcblkif(1, iblk)
+          npro    = lcblkif(1,iblk+1) - iel
+          lcsyst0 = lcblkif(3, iblk)    ! element0 type
+          lcsyst1 = lcblkif(4, iblk)    ! element1 type
+          ipord   = lcblkif(5, iblk)    ! polynomial order
+          nenl0   = lcblkif(6, iblk)    ! number of vertices per element0
+          nenl1   = lcblkif(7, iblk)    ! number of vertices per element1
+          mattyp0 = lcblkif(9, iblk)
+          mattyp1 = lcblkif(10,iblk)
+          nshl0   = lcblkif(13,iblk)
+          nshl1   = lcblkif(14,iblk)
+          ngaussif = nintif0(lcsyst0)   ! or nintif1(lcsyst1)? should be the same!
+c
+          do iel = 1,npro
+            do n = 1,3
+              inode = mienif0(iblk)%p(iel,n)
+c      if (abs(x(inode,1)-0.0)<1.e-4 .and. abs(x(inode,2)-0.05)<1.e-4 .and. abs(x(inode,3)-0.05)<1.e-4) then
+c       write(*,'(a,i2,a,i4,x,3f7.2)')'[',myrank,'] ',inode,x(inode,1:nsd)
+c        write(*,*) '[',myrank,'] ienif0',inode,iel,n, if_kappa(inode,:)    
+        write(*,*) '[',myrank,'] ienif0',inode,iel,n, norm2(if_kappa(inode,1:nsd))
+c      endif
+              inode = mienif1(iblk)%p(iel,n)
+c      if (abs(x(inode,1)-0.0)<1.e-4 .and. abs(x(inode,2)-0.05)<1.e-4 .and. abs(x(inode,3)-0.05)<1.e-4) then
+c       write(*,'(a,i2,a,i4,x,3f7.2)')'[',myrank,'] ',inode,x(inode,1:nsd)
+c        write(*,*) '[',myrank,'] ienif1',inode,iel,n, if_kappa(inode,:)    
+        write(*,*) '[',myrank,'] ienif1',inode,iel,n, norm2(if_kappa(inode,1:nsd))
+c      endif
+                err2 = err2 + (norm2(if_kappa(inode,1:nsd))/10.d0-1.0d0)**2
+                nsum = nsum + 1
+            enddo
+          enddo
+          if (nsum > 0) then
+            err2 = sqrt(err2)/real(nsum,8)
+            write(*,'(a,i3,a,e24.16)')'[',myrank,'] L2-norm of curvature error: ',err2
+          else
+            write(*,*) 'SOMETHING IS WRONG...'
+          endif
+
+        enddo
+
+c-----> END HARDCODE <----------
 c
         sum_vi_area = zero
 c
