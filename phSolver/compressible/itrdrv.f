@@ -681,6 +681,7 @@ c
                      umesh = disp / Delt(1)
 c
                      call itrCorrectElas(x, disp)
+c
                   endif ! end of switch for flow or scalar or mesh-elastic update
                endif            !end of switch between solve or update
             enddo               ! loop over sequence in step
