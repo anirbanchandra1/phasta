@@ -41,10 +41,6 @@ c
         integer :: iblk, iel, npro,inode, inode0, inode1, n, ierr
         integer, pointer :: ienif0(:,:), ienif1(:,:)
 
-      do inode = 1,nshg
-c        write(*,100) 'BEFORE: ',myrank, inode, x(inode,:), sum_vi_area(inode,:),umesh(inode,:)
-      enddo
- 
         if (numpe > 1) then
           call commu (sum_vi_area(:,1:3), ilwork, nsd, 'in ')
           call commu (sum_vi_area(:,4), ilwork, 1, 'in ')
@@ -62,6 +58,11 @@ c
 c      write(*,100) 'AFTER: ', myrank,inode, x(inode,:), sum_vi_area(inode,:),umesh(inode,:)
         enddo
 c 
+        if (numpe > 1) then
+          call commu (sum_vi_area(:,1:3), ilwork, nsd, 'out')
+          call MPI_BARRIER (MPI_COMM_WORLD,ierr)
+        endif
+c
 100   format(a,'[',i2,'] ',i6,3f7.3,x,7e24.16)
       end subroutine set_if_velocity
 c

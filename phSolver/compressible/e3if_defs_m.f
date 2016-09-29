@@ -18,7 +18,9 @@ c
         real*8,  dimension(:,:),   pointer :: nv0, nv1      ! interface normal vectors
         real*8,  dimension(:,:),   pointer :: vi            ! interface velocity (at integration point)
         real*8,  dimension(:),     pointer :: area
+        real*8,  dimension(:),     pointer :: kappa0, kappa1
         real*8,  dimension(:,:,:), pointer :: sum_vi_area_l0, sum_vi_area_l1
+        real*8,  dimension(:,:,:), pointer :: if_normal_l0, if_normal_l1,if_kappa_l0,if_kappa_l1
         real*8,  dimension(:,:,:), pointer :: cmtrx,ctc     ! kinematic continuity matrix C
         real*8,  dimension(:,:),   pointer :: shp0, shp1    ! element shape function at quadrature point
         real*8,  dimension(:,:,:), pointer :: shgl0, shgl1  ! element shape function gradient at a quadrature point
@@ -80,81 +82,18 @@ c
         type(prop_t), dimension(:), pointer :: prop0, prop1
         type(element_t), dimension(:), pointer :: e0, e1
 c
+        integer :: gbytes, sbytes, flops
+c
       contains
-c
-        subroutine setparam_e3if
-     &  (
-     &    nshg_,nshl0_,nshl1_,nenl0_,nenl1_,lcsyst0_,lcsyst1_,
-     &    npro_,ndof_,nsd_,nflow_,ipord_,nqpt_,
-     &    egmassif00,egmassif01,egmassif10,egmassif11,
-     &    materif0, materif1,
-     &    time_, lhs
-     &  )
-c
-          use e3if_inp_m
-c
-          integer, intent(in) :: nshg_,nshl0_,nshl1_,nenl0_,nenl1_,lcsyst0_,lcsyst1_
-          integer, intent(in) :: npro_,ndof_,nsd_,nflow_,ipord_,nqpt_
-          real*8, dimension(:,:,:), allocatable, target, intent(in) :: egmassif00,egmassif01,egmassif10,egmassif11
-          integer, intent(in) :: materif0, materif1
-          real*8, intent(in) :: time_
-          integer, intent(in) :: lhs
-c
-          nshg  = nshg_
-          nshl0 = nshl0_
-          nshl1 = nshl1_
-          nenl0 = nenl0_
-          nenl1 = nenl1_
-          lcsyst0 = lcsyst0_
-          lcsyst1 = lcsyst1_
-          npro  = npro_
-          ndof  = ndof_
-          nsd   = nsd_
-          nflow = nflow_
-          ipord = ipord_
-          nqpt  = nqpt_
-c
-          time  = time_
-c
-          mater0 = materif0
-          mater1 = materif1
-c
-          if (allocated(egmassif00)) then
-            egmass00 => egmassif00
-            egmass01 => egmassif01
-            egmass10 => egmassif10
-            egmass11 => egmassif11
-          else
-            nullify(egmass00)
-            nullify(egmass01)
-            nullify(egmass10)
-            nullify(egmass11)
-          endif
-c
-          s = dgif_s
-          e = dgif_e
-          h = dgif_h
-c
-          lhs_dg = lhs
-c
-        end subroutine setparam_e3if
 c
         subroutine     malloc_e3if
 c
           integer :: i
 c
-          allocate(sgn0(npro,nshl0))
-          allocate(sgn1(npro,nshl1))
-c
           allocate(ycl0(npro,nshl0,ndof))
           allocate(ycl1(npro,nshl1,ndof))
-          allocate(xl0(npro,nenl0,nsd))
-          allocate(xl1(npro,nenl1,nsd))
           allocate(umeshl0(npro,nenl0,nsd))
           allocate(umeshl1(npro,nenl1,nsd))
-          allocate(nv0(npro,nsd))
-          allocate(nv1(npro,nsd))
-          allocate(area(npro))
           allocate(vi(npro,nsd))
           allocate(sum_vi_area_l0(npro,nshl0,nsd+1))
           allocate(sum_vi_area_l1(npro,nshl1,nsd+1))
@@ -163,14 +102,9 @@ c
           allocate(acl0(npro,nshl0,ndof))
           allocate(acl1(npro,nshl1,ndof))
 c
-          allocate(shp0(npro,nshl0))
-          allocate(shp1(npro,nshl1))
-          allocate(shgl0(npro,nsd,nshl0))
-          allocate(shgl1(npro,nsd,nshl1))
           allocate(shg0(npro,nshl0,nsd))
           allocate(shg1(npro,nshl1,nsd))
           allocate(dxdxi0(npro,nsd,nsd),dxdxi1(npro,nsd,nsd))
-          allocate(WdetJif0(npro),WdetJif1(npro))
 c
           allocate(rl0(npro,nshl0,nflow))
           allocate(rl1(npro,nshl1,nflow))
@@ -209,28 +143,23 @@ c
           allocate(KijNajC0(npro,nsd,nflow,nflow))
           allocate(KijNajC1(npro,nsd,nflow,nflow))
 c
+          allocate(kappa0(npro),kappa1(npro))
+c
         end subroutine malloc_e3if
 c
-        subroutine     free_e3if
+        subroutine     mfree_e3if
 c
           integer :: i
 c
-          deallocate(sgn0,sgn1)
           deallocate(ycl0,ycl1)
-          deallocate(xl0,xl1)
           deallocate(umeshl0,umeshl1)
-          deallocate(nv0,nv1)
-          deallocate(area)
           deallocate(vi)
           deallocate(sum_vi_area_l0,sum_vi_area_l1)
           deallocate(cmtrx)
           deallocate(ctc)
           deallocate(acl0,acl1)
-          deallocate(shp0,shp1)
-          deallocate(shgl0,shgl1)
           deallocate(shg0,shg1)
           deallocate(dxdxi0,dxdxi1)
-          deallocate(WdetJif0,WdetJif1)
           deallocate(y0,y1)
           deallocate(y_jump)
           deallocate(rl0,rl1)
@@ -262,6 +191,8 @@ c
           nullify(egmass10)
           nullify(egmass11)
 c
-        end subroutine free_e3if
+          deallocate(kappa0,kappa1)
+c
+        end subroutine mfree_e3if
 c
       end module e3if_defs_m

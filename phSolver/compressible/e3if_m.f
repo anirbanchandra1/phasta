@@ -4,6 +4,7 @@ c
         use hierarchic_m
         use matdat_def_m
         use e3if_defs_m
+        use e3if_geom_m
         use e3if_func_m
         use e3if_diff_m
         use eqn_state_m
@@ -41,8 +42,8 @@ c
             ri0 = zero
             ri1 = zero
 c
-            call calc_normal_vectors(nv0,area,WdetJif0,xl0,qwtif0,lcsyst0,intp)
-            call calc_normal_vectors(nv1,area,WdetJif1,xl1,qwtif1,lcsyst1,intp)
+            call calc_normal_vectors(nv0,area,WdetJif0,xl0,qwtif0,lcsyst0,intp,npro)
+            call calc_normal_vectors(nv1,area,WdetJif1,xl1,qwtif1,lcsyst1,intp,npro)
 c
 c... do not include this quadrature point, if Det. .eq. 0
 c
@@ -72,18 +73,6 @@ c... Element Metrics
 c
             call e3metric(shg0, dxdxi0,shgl0,xl0)
             call e3metric(shg1, dxdxi1,shgl1,xl1)
-c      do iel = 1,npro
-c        do isd = 1,nsd
-c          write(*,'(i4,i2,x,1(x,e24.16))') iel,isd, sum(shg0(iel,:,isd))
-c          sum0 = zero
-c          sumg0 = zero
-c          do n = 1,nshl0
-c            sum0 = sum0 + ycl0(iel,n,5)*shg0(iel,n,isd)
-c            sumg0 = sumg0 + shg0(iel,n,isd)
-c            write(*,'(4(x,e24.16))') ycl0(iel,n,5),shg0(iel,n,isd),sumg0,sum0
-c          enddo
-c        enddo
-c      enddo
 c
             call e3var(y0, var0, ycl0, shp0, shgl0, shg0, dxdxi0, nshl0) 
             call e3var(y1, var1, ycl1, shp1, shgl1, shg1, dxdxi1, nshl1) 
@@ -134,9 +123,6 @@ c
             else
               call error ('wrong mater: ', 'calc vi', 0)
             endif
-c      do iel = 1,npro
-c        write(*,'(a,i4,a,i4,3f12.4)') '[',myrank,'] iel: ',iel,vi(iel,:)
-c      enddo
 c
             call calc_vi_area_node(sum_vi_area_l0,shp0,WdetJif0,nshl0)
             call calc_vi_area_node(sum_vi_area_l1,shp1,WdetJif1,nshl1)
@@ -258,63 +244,6 @@ c
           enddo
 c
         end function sum_qpt
-c
-        subroutine calc_normal_vectors(nv,area,WdetJ,xl,qwt,lcsyst,intp)
-c
-          real*8, dimension(:,:), pointer, intent(out) :: nv
-          real*8, dimension(:),   pointer, intent(out) :: area, WdetJ
-          real*8, dimension(:,:,:), pointer, intent(in) :: xl
-          real*8, dimension(nqpt),           intent(in) :: qwt
-          integer, intent(in) :: lcsyst,intp
-c
-          real*8 :: temp_len(npro)
-          real*8, dimension(npro, nsd) :: v1, v2, temp_normal
-          integer :: isd, iel
-          character(len=8) :: err_msg
-c
-c      write(*,*) 'In calc_normal_vectors...'
-c
-c.... compute the normal to the boundary. This is achieved by taking
-c     the cross product of two vectors in the plane of the 2-d 
-c     boundary face.
-c
-          do isd = 1,nsd
-            v1(:,isd) = xl(:,2,isd) - xl(:,1,isd)
-            v2(:,isd) = xl(:,3,isd) - xl(:,1,isd)
-          enddo
-c
-          select case (lcsyst)
-          case (1)
-c
-            temp_normal(:,1) = + v1(:,2)*v2(:,3) - v1(:,3)*v2(:,2)
-            temp_normal(:,2) = - v1(:,1)*v2(:,3) + v1(:,3)*v2(:,1)
-            temp_normal(:,3) = + v1(:,1)*v2(:,2) - v1(:,2)*v2(:,1)
-c
-            area = pt50 * sqrt(temp_normal(:,1)*temp_normal(:,1)
-     &                       + temp_normal(:,2)*temp_normal(:,2)
-     &                       + temp_normal(:,3)*temp_normal(:,3))
-c
-          case default
-c            write(err_msg,'(a,i1)') 'lcsyst ',lcsyst
-            call error ('calc_normal_vectors ', err_msg, 0)
-          end select
-c
-          do iel = 1,npro
-            temp_len(iel) = sqrt(dot_product(temp_normal(iel,1:3),temp_normal(iel,1:3)))
-            nv(iel,1:nsd) = temp_normal(iel,1:nsd) / temp_len(iel)
-          enddo
-c
-c... also calculate WdetJ here...
-c
-          select case (lcsyst)
-          case (1)
-            WdetJ = qwt(intp) * temp_len * pt25
-          case default
-            write(err_msg,'(a,i1)') 'lcsyst ',lcsyst
-            call error ('calc WdetJif ', err_msg, 0)
-          end select
-c
-        end subroutine calc_normal_vectors
 c
         subroutine e3if_flux
 c
