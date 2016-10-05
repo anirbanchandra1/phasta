@@ -95,6 +95,8 @@ c.... For mesh-elastic solve
 c
        real*8  umesh(nshg,nsd),     meshq(numel), 
      &         disp(numnp, nsd),    elasDy(nshg,nelas)
+
+       logical alive
  
         integer iTurbWall(nshg) 
         real*8 yInlet(3), yInletg(3)
@@ -143,7 +145,12 @@ c.... open history and aerodynamic forces files
 c
         if (myrank .eq. master) then
           open (unit=ihist,  file=fhist,  status='unknown')
-          open (unit=iforce, file=fforce, status='unknown')
+          inquire(file=fforce, exist=alive)
+          if (alive .and. (lstep .gt. 0) ) then 
+            open (unit=iforce, file=fforce, status='old', position='append')
+          else
+            open (unit=iforce, file=fforce, status='unknown')
+          endif
         endif
 c
 c
@@ -440,10 +447,10 @@ c
 c     
 c.... reset the aerodynamic forces
 c     
-                     Force(1) = zero
-                     Force(2) = zero
-                     Force(3) = zero
-                     HFlux    = zero
+                     Force(1,:) = zero
+                     Force(2,:) = zero
+                     Force(3,:) = zero
+                     HFlux(:)   = zero
 c     
 c.... form the element data and solve the matrix problem
 c     
@@ -808,7 +815,7 @@ c.. writing ybar field if requested in each restart file
 !    &              shglb,         nodflx,    ilwork)
                   
                call timer ('Output  ')      !set up the timer
-c... DEBUGGING       
+c... write file even when it is at stream fashion       
                if (output_mode .eq. -1) then 
                  output_mode = 0 
 c... write solution and fields
@@ -823,15 +830,17 @@ c... write solution and fields
 c                   call write_field(
 c     &                  myrank,'a'//char(0),'xdot'//char(0), 4,
 c     &                  xdot,  'd'//char(0), numnp, nsd, lstep)
-c                   call write_field(
-c     &                  myrank,'a'//char(0),'meshQ'//char(0), 5, 
-c     &                  meshq, 'd'//char(0), numel, 1,   lstep)
-c
+                   call write_field(
+     &                  myrank,'a'//char(0),'meshQ'//char(0), 5, 
+     &                  meshq, 'd'//char(0), numel, 1,   lstep)
+                   call write_field(
+     &                  myrank,'a'//char(0),'material_type'//char(0),13,
+     &                  mattype_interior, 'd',numel, 1, lstep)   
                  endif
 c... end writing
                  output_mode = -1
                endif
-c... END DEBUGGING
+c... end if stream fashion
  
                !write the solution and time derivative 
                call restar ('out ',  yold, acold)  
@@ -848,9 +857,9 @@ c
 c                 call write_field(
 c     &                myrank,'a'//char(0),'xdot'//char(0), 4,
 c     &                xdot,  'd'//char(0), numnp, nsd, lstep)
-c                 call write_field(
-c     &                myrank,'a'//char(0),'meshQ'//char(0), 5, 
-c     &                meshq, 'd'//char(0), numel, 1,   lstep)
+                 call write_field(
+     &                myrank,'a'//char(0),'meshQ'//char(0), 5, 
+     &                meshq, 'd'//char(0), numel, 1,   lstep)
                endif
 c
                   call write_field(
@@ -905,6 +914,8 @@ c         tcorewc2 = secs(0.0)
          endif
         
       call wtime
+
+      call destroyfncorp
 
  3000 continue !end of NTSEQ loop
 c

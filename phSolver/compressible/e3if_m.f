@@ -80,9 +80,6 @@ c
             call calc_stiff(prop0, var0, mater0)
             call calc_stiff(prop1, var1, mater1)
 c
-      write(*,*) 'KAPPA 0: ',kappa0
-      write(*,*) 'KAPPA 1: ',kappa1
-c
             call e3if_flux
 c
             call calc_cmtrx
@@ -126,9 +123,6 @@ c
             else
               call error ('wrong mater: ', 'calc vi', 0)
             endif
-c      do iel = 1,npro
-c        write(*,'(a,i4,a,i4,3f12.4)') '[',myrank,'] iel: ',iel,vi(iel,:)
-c      enddo
 c
             call calc_vi_area_node(sum_vi_area_l0,shp0,WdetJif0,nshl0)
             call calc_vi_area_node(sum_vi_area_l1,shp1,WdetJif1,nshl1)

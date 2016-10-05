@@ -188,7 +188,7 @@ void print_system_stats(double *tcorecp, double *tcorecpscal) {
 
 void countfieldstowriterestart()
 {
-  int nfields = 3; /*magic number, solution, time derivatives*/
+  int nfields = 4; /*magic number, solution, time derivatives, material type*/
 
   if(outpar.ivort == 1){
     nfields++; /*vorticity*/
@@ -228,7 +228,7 @@ void countfieldstowriterestart()
   }
 
   if (conpar.iALE == 2) {
-//HARDCODED BY FAN, it should be + 3, including meshQ
+//HARDCODED BY FAN, 3 fields: mesh_vel, mesh_coord, meshQ
     nfields = nfields + 3; 
   }
 

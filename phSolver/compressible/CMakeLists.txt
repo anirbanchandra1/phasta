@@ -8,7 +8,8 @@ set(PHASTAC_INCLUDE_DIRS
 )
 
 add_library(compressible ${SRC_FILES})
-add_dependencies(compressible common)
+#add_dependencies(compressible common)
+target_link_libraries(compressible PUBLIC common)
 
 add_executable(phastaC.exe main.cc)
 include_directories(${PHASTAC_INCLUDE_DIRS})

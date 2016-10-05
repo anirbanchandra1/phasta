@@ -20,7 +20,7 @@ c
         real*8,  dimension(:),     pointer :: area
         real*8,  dimension(:),     pointer :: kappa0, kappa1
         real*8,  dimension(:,:,:), pointer :: sum_vi_area_l0, sum_vi_area_l1
-        real*8,  dimension(:,:,:), pointer :: if_normal_l0, if_normal_l1
+        real*8,  dimension(:,:,:), pointer :: if_normal_l0, if_normal_l1,if_kappa_l0,if_kappa_l1
         real*8,  dimension(:,:,:), pointer :: cmtrx,ctc     ! kinematic continuity matrix C
         real*8,  dimension(:,:),   pointer :: shp0, shp1    ! element shape function at quadrature point
         real*8,  dimension(:,:,:), pointer :: shgl0, shgl1  ! element shape function gradient at a quadrature point

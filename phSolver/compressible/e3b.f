@@ -342,7 +342,7 @@ c  if we have a nonzero value then
 c  calculate the fluxes through this surface 
 c
            iface = abs(iBCB(iel,2))
-           if (iface .ne. 0 .and. ires.ne.2) then
+           if (nsrflist(iface) .ne. 0 .and. ires.ne.2) then
               flxID(1,iface) =  flxID(1,iface) + WdetJb(iel)! measure area too
 c              flxID(2,iface) =  flxID(2,iface) - WdetJb(iel) * un(iel)
               flxID(2,iface) =  flxID(2,iface) - WdetJb(iel) * rou(iel)
@@ -366,23 +366,27 @@ c
 c
 c.... compute the forces on the body
 c
-          where (.not.btest(iBCB(:,1),0) )
-            tau1n = ( pres * bnorm(:,1) - tau1n ) * WdetJb
-            tau2n = ( pres * bnorm(:,2) - tau2n ) * WdetJb
-            tau3n = ( pres * bnorm(:,3) - tau3n ) * WdetJb
-            heat  = - heat * WdetJb
-          elsewhere
-            tau1n = zero
-            tau2n = zero
-            tau3n = zero
-            heat  = zero
-          endwhere
-c
-          Force(1) = Force(1) + sum(tau1n)
-          Force(2) = Force(2) + sum(tau2n)
-          Force(3) = Force(3) + sum(tau3n)
-          HFlux    = HFlux    + sum(heat)
-c
+        do i = 1, npro
+          if (nsrflist(iBCB(i,2)).ge.1) then
+            tau1n(i) = ( pres(i) * bnorm(i,1) - tau1n(i) ) * WdetJb(i)
+            tau2n(i) = ( pres(i) * bnorm(i,2) - tau2n(i) ) * WdetJb(i)
+            tau3n(i) = ( pres(i) * bnorm(i,3) - tau3n(i) ) * WdetJb(i)
+            heat(i)  = - heat(i) * WdetJb(i)
+          else
+            tau1n(i)  = zero
+            tau2n(i)  = zero
+            tau3n(i)  = zero
+            heat(i)   = zero
+          endif
+            Force(1,nsrflist(iBCB(i,2))) =
+     &      Force(1,nsrflist(iBCB(i,2))) + tau1n(i)
+            Force(2,nsrflist(iBCB(i,2))) = 
+     &      Force(2,nsrflist(iBCB(i,2))) + tau2n(i)
+            Force(3,nsrflist(iBCB(i,2))) =
+     &      Force(3,nsrflist(iBCB(i,2))) + tau3n(i)
+            HFlux(nsrflist(iBCB(i,2))) =
+     &      HFlux(nsrflist(iBCB(i,2))) + heat(i)
+          enddo
         endif
 c
 c.... end of integration loop

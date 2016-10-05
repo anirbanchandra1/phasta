@@ -231,13 +231,14 @@ extern "C" {
     int consrv_sclr_conv_vel;
   } sclrs;
 
-  extern struct { 
+  extern struct {
     double flxID[MAXSURF+1][10] ;
-    double Force[3];
-    double HFlux;
+    double flxIDsclr[MAXSURF][4];
+    double Force[MAXSURF][3];
+    double HFlux[MAXSURF];
+    int nsrfCM;
     int nsrflist[MAXSURF+1];
     int isrfIM;
-    double flxIDsclr[MAXSURF][4];
     int irankfilesforce[MAXSURF+1];
   } aerfrc ;
 
