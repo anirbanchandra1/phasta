@@ -37,6 +37,7 @@ c
         real*8, dimension(:),     pointer :: WdetJelas
         real*8, dimension(:,:,:), pointer :: Kelas, dxidxelas
         real*8  lamda(npro),  mu(npro), meshq(npro), meshV(npro)
+        real*8  youngMod(npro), poisnRat(npro)
 c
 c
 c----------------------------------------------------------------------
@@ -48,9 +49,14 @@ c        if (associated(dxidxelas)) deallocate(dxidxelas)
 c
 c.... initial setup
 c
-c        Estiff = zero
-        lamda(:) = datelas(1,1) / meshV(:) ! volume
-        mu(:)    = datelas(1,2) / meshV(:) ! volume
+c.... modify Young's Modulus and Poisson Ratio
+c
+        youngMod(:) = datelas(1,1) / meshV(:)
+        poisnRat(:) = datelas(1,2)
+c
+        lamda(:) = youngMod(:) * poisnRat(:) / 
+     &         (1.0+poisnRat(:)) / (1.0-2.0*poisnRat(:))
+        mu(:)    = youngMod(:) / 2.0 / (1.0+poisnRat(:))
 c
 c.... loop through the integration points
 c
