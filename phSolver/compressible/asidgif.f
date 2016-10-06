@@ -27,6 +27,7 @@ c
           real*8, pointer, intent(inout) :: sum_vi_area(:,:)
           real*8, pointer, intent(in) :: if_normals(:,:)
 c
+      integer :: iel,n
           call malloc_e3if
           call malloc_e3if_geom
 c
@@ -52,12 +53,35 @@ c
         call localx(if_normals, if_normal_l0,  ienif0, nsd, 'gather  ', nshg, nenl0, npro, gbytes)
         call localx(if_normals, if_normal_l1,  ienif1, nsd, 'gather  ', nshg, nenl1, npro, gbytes)
 c
-       call e3if(shpif0,shpif1,shgif0,shgif1,qwtif0,qwtif1)
+        if (associated(if_kappa)) then
+          call localx(if_kappa, if_kappa_l0,  ienif0, nsd, 'gather  ', nshg, nenl0, npro, gbytes)
+          call localx(if_kappa, if_kappa_l1,  ienif1, nsd, 'gather  ', nshg, nenl1, npro, gbytes)
+        endif
+c
+        call e3if(shpif0,shpif1,shgif0,shgif1,qwtif0,qwtif1)
 c
 c.... assemble the local residual arrays
 c
+
+      do iel = 1,npro
+        do n = 1,nshl0
+          if (ienif0(iel,n) == 1337) then
+c            write(*,*) '0: iel, n, rl0: ',iel,n,rl0(iel,n,:)
+          endif
+        enddo
+        do n = 1,nshl1
+          if (ienif1(iel,n) == 1337) then
+c            write(*,*) '1: iel, n, rl1: ',iel,n,rl1(iel,n,:)
+          endif
+        enddo
+      enddo
+
+c      if (any(ienif0 == 1337) .or. any(ienif1 == 1337) )
+c     &  write(*,*) 'res before: ',res(1337,:)
         call local (res, rl0, ienif0, nflow, 'scatter ', nshg,nshl0,npro,ipord,sbytes,flops)
         call local (res, rl1, ienif1, nflow, 'scatter ', nshg,nshl1,npro,ipord,sbytes,flops)
+c      if (any(ienif0 == 1337) .or. any(ienif1 == 1337) )
+c     &  write(*,*) 'res after: ',res(1337,:)
 c
         call local (sum_vi_area, sum_vi_area_l0, ienif0, nsd+1, 'scatter ', nshg, nshl0,npro,ipord,sbytes,flops)
         call local (sum_vi_area, sum_vi_area_l1, ienif1, nsd+1, 'scatter ', nshg, nshl1,npro,ipord,sbytes,flops)

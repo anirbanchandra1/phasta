@@ -11,6 +11,7 @@ c
         use e3metric_m
         use e3if_lhs_m
         use e3if_vi_m
+        use if_global_m
 c
         implicit none
 c
@@ -247,11 +248,12 @@ c
 c
         subroutine e3if_flux
 c
-          integer :: iel,iflow,isd,jsd,jflow
+          integer :: iel,iflow,isd,jsd,jflow,n
           real*8, dimension(nsd,nflow) :: f0, f1, fconv0, fconv1, fdiff0, fdiff1
           real*8, dimension(nflow) :: f0n0, f0n1, f1n0, f1n1
 c
           real*8 :: etot, diff_flux(nsd,nflow), dTdx0
+          real*8 :: kappa0(nsd), kappa1(nsd), k0,k1 ! mean curvature
 c
           do iel = 1,npro
 c
@@ -299,6 +301,24 @@ c      endif
 c
             ri0(iel,16:20) = ri0(iel,16:20) + 0.5 * ( f0n0(1:5) + f1n0(1:5) )
             ri1(iel,16:20) = ri1(iel,16:20) + 0.5 * ( f1n1(1:5) + f0n1(1:5) )
+c
+C... Do we account for surface tension in jump?
+c
+            if (associated(if_kappa)) then
+c
+              kappa0 = zero
+              kappa1 = zero
+              do n = 1,3
+                kappa0 = kappa0 + shp0(iel,n)*if_kappa_l0(iel,n,1:nsd)
+                kappa1 = kappa1 + shp1(iel,n)*if_kappa_l1(iel,n,1:nsd)
+              enddo
+              k0 = dot_product(kappa0,nv0(iel,:))
+              k1 = dot_product(kappa1,nv1(iel,:))
+c
+              ri0(iel,17:19) = ri0(iel,17:19) + 0.5 * surface_tension_coeff * k0 * nv0(iel,1:nsd)
+              ri1(iel,17:19) = ri1(iel,17:19) + 0.5 * surface_tension_coeff * k1 * nv1(iel,1:nsd)
+c
+            endif
 c
 c...UPWIND????
 c   Flow is in n0 direction...

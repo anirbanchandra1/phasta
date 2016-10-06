@@ -237,7 +237,6 @@ c
      &                  idflx,  Bo,     EntropyPressure, irampViscOutlet,
      &                  istretchOutlet, iremoveStabTimeTerm, iLHScond,
      &                  ndofBC2
-
 c
         integer :: svLSType, svLSFlag
         common /inpdat/ epstol(6),  Delt(MAXTS),    CFLfl(MAXTS),
