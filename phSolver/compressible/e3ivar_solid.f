@@ -11,6 +11,8 @@ c
         npro = npro_
         nsd = nsd_
 c
+        rho => rho_
+c
         dudx => g1yi_(:,2:4)
         dudy => g2yi_(:,2:4)
         dudz => g3yi_(:,2:4)
