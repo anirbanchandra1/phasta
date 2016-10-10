@@ -39,11 +39,10 @@ c
       use wallData
       use fncorpmod
       use if_velocity_m
-
+c
         include "common.h"
         include "mpif.h"
         include "auxmpi.h"
-      
 c
         dimension y(nshg,ndof),            ac(nshg,ndof),  
      &            yold(nshg,ndof),         acold(nshg,ndof),           
