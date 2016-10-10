@@ -74,4 +74,11 @@ c        c =  sqrt(one/(rho_ref*betaT))
 c
       end subroutine getthm_liquid_1
 c
+      subroutine getthm_solid_1(rho,npro)
+c
+        real*8, dimension(npro), intent(out) :: rho
+        integer, intent(in) :: npro
+c
+      end subroutine getthm_solid_1
+c
       end module eqn_state_m

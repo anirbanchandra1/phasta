@@ -61,6 +61,18 @@ c----------------------------------------------------------------------
 c
         include "common.h"
 c
+        interface
+          subroutine e3ivar_solid(g1yi_,g2yi_,g3yi_,rho_,npro_,nsd_)
+            use solid_func_m
+            implicit none
+            real*8, dimension(npro_,nsd_), target, intent(in) :: g1yi_,g2yi_,g3yi_
+            real*8, dimension(npro_), target, intent(inout) :: rho_
+            integer, intent(in) :: npro_,nsd_
+          end subroutine e3ivar_solid
+        end interface
+c
+          
+c
 c  passed arrays
 c
         dimension yl(npro,nshl,nflow),        ycl(npro,nshl,ndof),
@@ -362,6 +374,10 @@ c
           g3yi(:,5) = g3yi(:,5) + shg(:,n,3) * yl(:,n,5)
 c
         enddo
+      endif
+c
+      if(mat_eos(mater,1).eq.ieos_solid_1) then
+        call e3ivar_solid(g1yi,g2yi,g3yi,rho,npro,nsd)
       endif
 c
 c.... u^m_{i,i} divum at integral point
