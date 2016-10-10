@@ -498,14 +498,16 @@ extern "C" {
   } itrpar ;
 
   extern struct { 
-    double datmat[MAXTS][MAXPROP][MAXMAT];
     int matflg[MAXTS][MAXMAT];
     int mat_tag[MAXTS][MAXMAT];
     int mat_eos[MAXTS][MAXMAT];
-    double mat_prop[MAXTS][MAXPROP][MAXMAT];
     int nummat;
     int mexist;
+    double mat_prop[MAXTS][MAXPROP][MAXMAT];
+    double datmat[MAXTS][MAXPROP][MAXMAT];
     double datelas[2][1];
+    double surface_tension_coeff;
+    int surface_tension_flag;
   } matdat ;
 
   extern struct {
