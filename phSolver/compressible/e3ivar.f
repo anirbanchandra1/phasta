@@ -62,6 +62,14 @@ c
         include "common.h"
 c
         interface
+          subroutine getthm (rho_,ei_,p_,T_,npro_,mater_
+     &,                      h_,  cv_,cp_,alphaP_,betaT_,gamb_,c_)
+            use eqn_state_m
+            implicit none
+            integer, intent(in) :: npro_, mater_
+            real*8, dimension(npro), target, intent(in) :: p_,T_
+            real*8, dimension(npro), target, intent(inout) :: rho_,ei_,h_,cv_,cp_,alphaP_,betaT_,gamb_,c_
+          end subroutine getthm
           subroutine e3ivar_solid(g1yi_,g2yi_,g3yi_,rho_,npro_,nsd_)
             use solid_func_m
             implicit none

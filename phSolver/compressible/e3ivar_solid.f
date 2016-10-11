@@ -18,6 +18,6 @@ c
         dudz => g3yi_(:,2:4)
 c
         call calc_solid
-        call getthm_solid_1(rho_,npro_)
+        call getthm_solid_1
 c
       end subroutine e3ivar_solid

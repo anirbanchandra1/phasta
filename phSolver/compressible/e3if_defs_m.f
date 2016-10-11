@@ -1,15 +1,12 @@
       module e3if_defs_m
 c
+        use e3_def_m
         use number_def_m
         use pointer_data
 c
         implicit none
 c
-        integer :: nshg, nshl0, nshl1, nenl0, nenl1, lcsyst0, lcsyst1
-        integer :: npro, ndof, nsd, nflow, ipord, nqpt
-c
         integer, dimension(:,:),   pointer :: sgn0, sgn1
-        integer :: mater0, mater1
 c
         real*8,  dimension(:,:,:), pointer :: ycl0, ycl1
         real*8,  dimension(:,:,:), pointer :: acl0, acl1
@@ -51,7 +48,7 @@ c
 c
 !        real*8, parameter :: s = 1.0d0, e = 1.0d-3, h = 1.d-2, mu = 1.d1 ! single phase cases
 !        real*8, parameter :: s = 1.0d0, e = 1.0d-1, h = 1.d-2, mu = 1.d0
-        real*8 :: s, e, h, mu
+        real*8 :: s, e, length_h, mu
 c
         integer :: lhs_dg
 c

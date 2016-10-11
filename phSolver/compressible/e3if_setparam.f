@@ -69,7 +69,7 @@ c
 c
           s = dgif_s
           e = dgif_e
-          h = dgif_h
+          length_h = dgif_h
 c
           lhs_dg = lhs
 c

@@ -1,21 +1,16 @@
       module eqn_state_m
 c
+        use e3_def_m
         use number_def_m
         use matdat_def_m
 c
         implicit none
 c
+        real*8, dimension(:), pointer :: rho,ei,p,T,h,cv,cp,alphaP,betaT,gamb,c
+c
       contains
 c
-      subroutine getthm_ideal_gas (rho,    ei
-     &,                            p,      T,     npro, mater
-     &,                            h,      cv,    cp
-     &,                            alphaP, betaT, gamb, c)
-c
-        integer, intent(in) :: npro, mater
-        real*8, dimension(npro), intent(out) :: rho,ei
-        real*8, dimension(npro), intent(out) :: h,cv,cp,alphaP,betaT,gamb,c
-        real*8, dimension(npro), intent(in)  :: p, T
+      subroutine getthm_ideal_gas
 c
         real*8 :: Rgas,gamma,gamma1,mw
 c
@@ -42,15 +37,7 @@ c
         rho = p / (R*T)
       end function rho_ideal_gas
 c
-      subroutine getthm_liquid_1 (rho,    ei
-     &,                           p,      T,     npro, mater
-     &,                           h,      cv,    cp
-     &,                           alphaP, betaT, gamb, c)
-c
-        integer, intent(in) :: npro, mater
-        real*8, dimension(npro), intent(out) :: rho,ei
-        real*8, dimension(npro), intent(out) :: h,cv,cp,alphaP,betaT,gamb,c
-        real*8, dimension(npro), intent(in)  :: p, T
+      subroutine getthm_liquid_1
 c
         real*8 :: rho_ref, p_ref, T_ref, alpha_P, beta_T, cv_
 c
@@ -74,10 +61,8 @@ c        c =  sqrt(one/(rho_ref*betaT))
 c
       end subroutine getthm_liquid_1
 c
-      subroutine getthm_solid_1(rho,npro)
+      subroutine getthm_solid_1
 c
-        real*8, dimension(npro), intent(out) :: rho
-        integer, intent(in) :: npro
 c
       end subroutine getthm_solid_1
 c

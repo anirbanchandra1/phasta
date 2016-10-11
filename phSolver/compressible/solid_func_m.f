@@ -1,13 +1,11 @@
       module solid_func_m
 c
+        use e3_def_m
         use solid_m
         use eqn_state_m
 c
         implicit none
 c
-        integer :: npro,nsd
-c
-        real*8, dimension(:), pointer :: rho
         real*8, dimension(:,:), pointer :: dudx, dudy, dudz
         real*8, dimension(:,:,:), pointer :: AS
 c
