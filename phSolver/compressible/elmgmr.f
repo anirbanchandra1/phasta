@@ -298,6 +298,7 @@ c
         use pointer_data
         use timedataC
         use if_velocity_m
+        use if_global_m
 c
         include "common.h"
         include "mpif.h"
@@ -332,7 +333,7 @@ c
           end subroutine e3if_setparam2
           subroutine asidgif_geom
      &    (
-     &     if_normal,if_kappa,
+     &     if_normal,
      &     x,shpif0,shpif1,shgif0,shgif1,
      &     qwtif0, qwtif1,
      &     ienif0, ienif1
@@ -340,8 +341,9 @@ c
             use hierarchic_m
             use local_m
             use e3if_geom_m
+            use if_global_m
             implicit none
-            real*8, dimension(:,:), pointer, intent(inout) :: if_normal, if_kappa
+            real*8, dimension(:,:), pointer, intent(inout) :: if_normal
             real*8, intent(in) :: x(nshg,nsd)
             real*8, dimension(nshl0,nqpt),intent(in)   :: shpif0
             real*8, dimension(nshl1,nqpt),intent(in)   :: shpif1
@@ -424,7 +426,7 @@ c
         real*8, allocatable :: EGmass(:,:,:)
 c
         real*8, dimension(:,:,:), allocatable :: egmassif00,egmassif01,egmassif10,egmassif11
-        real*8, pointer :: if_normal(:,:), if_kappa(:,:)
+        real*8, pointer :: if_normal(:,:)
         real*8 :: length
 c
         integer, pointer, dimension(:,:) :: ienif0,ienif1
@@ -661,10 +663,14 @@ c    The first loop is for interface outward normal vector calculations on the i
 c    The second loop is for residual calculations...
 c
         allocate(if_normal(nshg,nsd))
-        allocate(if_kappa(nshg,nsd+1))
+        if (surface_tension_flag .eq. 1)  then
+          allocate(if_kappa(nshg,nsd+1))
+          if_kappa = zero
+        else
+          nullify(if_kappa)
+        endif
 c
         if_normal = zero
-        if_kappa = zero
 c
         if_blocks1: do iblk = 1, nelblif
 c
@@ -694,7 +700,7 @@ c
 c
           call asidgif_geom
      &   (
-     &    if_normal,if_kappa,
+     &    if_normal,
      &    x,
      &    shpif0(lcsyst0,1:nshl0,:), 
      &    shpif1(lcsyst1,1:nshl1,:), 
@@ -708,8 +714,10 @@ c
 c
         if (numpe > 1) then
           call commu (if_normal(:,1:3), ilwork, nsd, 'in ')
-          call commu (if_kappa(:,1:nsd), ilwork, nsd, 'in ')
-          call commu (if_kappa(:,nsd+1), ilwork, 1, 'in ')
+          if (associated(if_kappa)) then
+            call commu (if_kappa(:,1:nsd), ilwork, nsd, 'in ')
+            call commu (if_kappa(:,nsd+1), ilwork, 1, 'in ')
+          endif
           call MPI_BARRIER (MPI_COMM_WORLD,ierr)
         endif
 c
@@ -718,64 +726,18 @@ c
           if (length > zero) then
             if_normal(inode,1:nsd) = if_normal(inode,1:nsd) / length
           endif
-          if (if_kappa(inode,nsd+1) > zero) 
-     &      if_kappa(inode,1:nsd) = pt5*if_kappa(inode,1:nsd)/if_kappa(inode,nsd+1)
+          if (associated(if_kappa)) then
+            if (if_kappa(inode,nsd+1) > zero) 
+     &        if_kappa(inode,1:nsd) = if_kappa(inode,1:nsd)/if_kappa(inode,nsd+1)
+          endif
         enddo
 c
-        if (numpe > 1) then
+        if (numpe > 1 .and. associated(if_kappa)) then
           call commu (if_kappa(:,1:nsd), ilwork, nsd, 'out')
           call MPI_BARRIER (MPI_COMM_WORLD,ierr)
         endif
 c
-c
-c-----> BEGIN HARDCODE <-------
-c     Curvature Error Calculations:
-c
-          nsum = 0
-          err2 = zero
-        do iblk = 1, nelblif
-c
-          iel     = lcblkif(1, iblk)
-          npro    = lcblkif(1,iblk+1) - iel
-          lcsyst0 = lcblkif(3, iblk)    ! element0 type
-          lcsyst1 = lcblkif(4, iblk)    ! element1 type
-          ipord   = lcblkif(5, iblk)    ! polynomial order
-          nenl0   = lcblkif(6, iblk)    ! number of vertices per element0
-          nenl1   = lcblkif(7, iblk)    ! number of vertices per element1
-          mattyp0 = lcblkif(9, iblk)
-          mattyp1 = lcblkif(10,iblk)
-          nshl0   = lcblkif(13,iblk)
-          nshl1   = lcblkif(14,iblk)
-          ngaussif = nintif0(lcsyst0)   ! or nintif1(lcsyst1)? should be the same!
-c
-          do iel = 1,npro
-            do n = 1,3
-              inode = mienif0(iblk)%p(iel,n)
-c      if (abs(x(inode,1)-0.0)<1.e-4 .and. abs(x(inode,2)-0.05)<1.e-4 .and. abs(x(inode,3)-0.05)<1.e-4) then
-c       write(*,'(a,i2,a,i4,x,3f7.2)')'[',myrank,'] ',inode,x(inode,1:nsd)
-c        write(*,*) '[',myrank,'] ienif0',inode,iel,n, if_kappa(inode,:)    
-c        write(*,*) '[',myrank,'] ienif0',inode,iel,n, norm2(if_kappa(inode,1:nsd))
-c      endif
-              inode = mienif1(iblk)%p(iel,n)
-c      if (abs(x(inode,1)-0.0)<1.e-4 .and. abs(x(inode,2)-0.05)<1.e-4 .and. abs(x(inode,3)-0.05)<1.e-4) then
-c       write(*,'(a,i2,a,i4,x,3f7.2)')'[',myrank,'] ',inode,x(inode,1:nsd)
-c        write(*,*) '[',myrank,'] ienif1',inode,iel,n, if_kappa(inode,:)    
-c        write(*,*) '[',myrank,'] ienif1',inode,iel,n, norm2(if_kappa(inode,1:nsd))
-c      endif
-                err2 = err2 + (norm2(if_kappa(inode,1:nsd))/10.d0-1.0d0)**2
-                nsum = nsum + 1
-            enddo
-          enddo
-          if (nsum > 0) then
-            err2 = sqrt(err2)/real(nsum,8)
-c            write(*,'(a,i3,a,e24.16)')'[',myrank,'] L2-norm of curvature error: ',err2
-          else
-            write(*,*) 'SOMETHING IS WRONG...'
-          endif
-
-        enddo
-
-c-----> END HARDCODE <----------
+c        call calc_kappa_error(x,lcblkif(1,:),nelblif,nsd,nshg)
 c
         sum_vi_area = zero
 c
@@ -868,7 +830,7 @@ c
         enddo if_blocks
 c
         deallocate (if_normal)
-        deallocate (if_kappa)
+        if (associated(if_kappa)) deallocate (if_kappa)
 c
 c before the commu we need to rotate the residual vector for axisymmetric
 c boundary conditions (so that off processor periodicity is a dof add instead

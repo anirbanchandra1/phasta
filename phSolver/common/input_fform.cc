@@ -621,18 +621,18 @@ int input_fform(phSolver::Input& inp)
     vec.erase(vec.begin(),vec.end());
 
     if ( (string)inp.GetValue("Surface Tension Option") == "No" ){
-        genpar.isurf = 0;
+        matdat.surface_tension_flag = 0;
     }
     else if ((string)inp.GetValue("Surface Tension Option") == "Yes" ){
-        genpar.isurf = 1;
+        matdat.surface_tension_flag = 1;
     }
     else {
       cout << " Surface Tension: Only Legal Values (Yes, No) ";
       cout << endl;
       exit(1);
     }
-    if( genpar.isurf > 0) {
-      genpar.Bo = inp.GetValue("Bond Number");
+    if( matdat.surface_tension_flag > 0) {
+      matdat.surface_tension_coeff = inp.GetValue("Surface Tension Coefficient");
     }
 
     genpar.EntropyPressure = inp.GetValue("Entropy Form of Pressure Constraint on Weight Space");

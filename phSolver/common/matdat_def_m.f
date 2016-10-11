@@ -5,16 +5,10 @@ c
         integer, parameter :: MAXMAT  = 6
      &,                       MAXPROP = 10
      &,                       MAXTS   = 100
-        real*8  :: datmat(MAXMAT,MAXPROP,MAXTS)
         integer :: nummat
      &,            matflg(MAXMAT,MAXTS)
      &,            mat_tag(MAXMAT,MAXTS)
      &,            mat_eos(MAXMAT,MAXTS)
-        real*8  :: mat_prop(MAXMAT,MAXPROP,MAXTS)
-        logical :: mexist
-        real*8  :: datelas(1,2)
-        common /matdat/ datmat,   matflg, mat_tag, mat_eos,
-     &                  mat_prop, nummat, mexist,  datelas
         integer, parameter :: ieos_ideal_gas = 1
      &,                       ieos_ideal_gas_2 = 2
      &,                       ieos_liquid_1  = 3
@@ -30,11 +24,24 @@ c
      &,                       iprop_liquid_1_alphaP  = 5
      &,                       iprop_liquid_1_betaT   = 6
 c
+        integer :: surface_tension_flag
+c
+        real*8  :: datmat(MAXMAT,MAXPROP,MAXTS)
+        real*8  :: mat_prop(MAXMAT,MAXPROP,MAXTS)
+        real*8  :: surface_tension_coeff
+        real*8  :: datelas(1,2)
+c
 c NOTE: This should only be an integer array BUT
 c       since vtk reader does not support int yet,
 c       so, we cast the integer numbers into this 
 c       real array!!!
-c
         real*8, pointer :: mattype_interior(:)
+c
+        logical :: mexist
+c
+        common /matdat/ matflg, mat_tag, mat_eos, nummat, mexist
+     &,   mat_prop, datmat, datelas
+     &,   surface_tension_coeff, surface_tension_flag
+c
 c
       end module matdat_def_m
