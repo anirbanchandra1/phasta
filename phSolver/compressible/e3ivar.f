@@ -67,8 +67,8 @@ c
             use eqn_state_m
             implicit none
             integer, intent(in) :: npro_, mater_
-            real*8, dimension(npro), target, intent(in) :: p_,T_
-            real*8, dimension(npro), target, intent(inout) :: rho_,ei_,h_,cv_,cp_,alphaP_,betaT_,gamb_,c_
+            real*8, dimension(npro_), target, intent(in) :: p_,T_
+            real*8, dimension(npro_), target, intent(inout) :: rho_,ei_,h_,cv_,cp_,alphaP_,betaT_,gamb_,c_
           end subroutine getthm
           subroutine e3ivar_solid(g1yi_,g2yi_,g3yi_,rho_,npro_,nsd_)
             use solid_func_m
