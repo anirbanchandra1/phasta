@@ -1,17 +1,16 @@
       module solid_func_m
 c
+        use e3_def_m
         use solid_m
         use eqn_state_m
 c
         implicit none
 c
-        integer :: npro_s, nsd_s
         integer :: almBi_s, alfBi_s, gamBi_s
         
 c
         real*8  :: Delt_s
 c
-        real*8, dimension(:), pointer :: rho
         real*8, dimension(:,:), pointer :: dudx, dudy, dudz
         real*8, dimension(:,:,:), pointer :: AS
 c

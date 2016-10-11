@@ -1,21 +1,16 @@
       module eqn_state_m
 c
+        use e3_def_m
         use number_def_m
         use matdat_def_m
 c
         implicit none
 c
+        real*8, dimension(:), pointer :: rho,ei,p,T,h,cv,cp,alphaP,betaT,gamb,c
+c
       contains
 c
-      subroutine getthm_ideal_gas (rho,    ei
-     &,                            p,      T,     npro, mater
-     &,                            h,      cv,    cp
-     &,                            alphaP, betaT, gamb, c)
-c
-        integer, intent(in) :: npro, mater
-        real*8, dimension(npro), intent(out) :: rho,ei
-        real*8, dimension(npro), intent(out) :: h,cv,cp,alphaP,betaT,gamb,c
-        real*8, dimension(npro), intent(in)  :: p, T
+      subroutine getthm_ideal_gas
 c
         real*8 :: Rgas,gamma,gamma1,mw
 c
@@ -42,15 +37,7 @@ c
         rho = p / (R*T)
       end function rho_ideal_gas
 c
-      subroutine getthm_liquid_1 (rho,    ei
-     &,                           p,      T,     npro, mater
-     &,                           h,      cv,    cp
-     &,                           alphaP, betaT, gamb, c)
-c
-        integer, intent(in) :: npro, mater
-        real*8, dimension(npro), intent(out) :: rho,ei
-        real*8, dimension(npro), intent(out) :: h,cv,cp,alphaP,betaT,gamb,c
-        real*8, dimension(npro), intent(in)  :: p, T
+      subroutine getthm_liquid_1
 c
         real*8 :: rho_ref, p_ref, T_ref, alpha_P, beta_T, cv_
 c
@@ -75,19 +62,10 @@ c
       end subroutine getthm_liquid_1
 c
 c
-      subroutine getthm_solid_1(rho,    ei
-     &,                           p,      T,     npro, mater
-     &,                           h,      cv,    cp
-     &,                           alphaP, betaT, bulkMod, shearMod
-     &,                           Ja_def)
-
+      subroutine getthm_solid_1(bulkMod, shearMod,Ja_def)
 c
-        integer, intent(in) :: npro, mater
-        real*8, dimension(npro), intent(in)  :: p, T, Ja_def        
-        real*8, dimension(npro), intent(out) :: rho,ei,h
-        real*8, dimension(npro), intent(out) :: cv,cp,alphaP,betaT
         real*8, dimension(npro), intent(out) :: bulkMod, shearMod
-c
+        real*8, dimension(npro), intent(in)  :: Ja_def
 c
         real*8 :: rho_ref_s, p_ref_s, T_ref_s, alpha_P_s, cv_s
         real*8 :: bulkMod_s, shearMod_s 
@@ -99,13 +77,14 @@ c
         alpha_P_s = mat_prop(mater,iprop_solid_1_alphaP, 1)
         bulkMod_s = mat_prop(mater,iprop_solid_1_bulkMod, 1)
         shearMod_s = mat_prop(mater,iprop_solid_1_shearMod, 1)
+c        beta_T  = mat_prop(mater,iprop_solid_1_betaT,  1)
 c
         alphaP = alpha_P_s
         betaT  = one /(bulkMod_s * Ja_def) ! double check here
         rho = rho_ref_s * (one - alphaP*(T - T_ref_s) 
      &                    + betaT*(p - p_ref_s))
 c        ei  = ( cv_s - P * alpha_P_s/rho)* T 
-c     &        + (betaT * P - alphaP * T)/rho * p
+c    &        + (betaT * P - alphaP * T)/rho * p
         ei  = cv_s * T
         h   = ei + p/rho
         cv  = cv_s
@@ -114,6 +93,7 @@ c     &        + (betaT * P - alphaP * T)/rho * p
         shearMod = shearMod_s
 c        c =  sqrt(one/(rho_ref*betaT))
 C         c =  sqrt(one/(rho*betaT))
+C         gamb = zero
 c
 c
       end subroutine getthm_solid_1

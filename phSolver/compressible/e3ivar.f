@@ -62,11 +62,21 @@ c
         include "common.h"
 c
         interface
-          subroutine e3ivar_solid(g1yi_,g2yi_,g3yi_,rho_,npro_,nsd_)
+          subroutine getthm (rho_,ei_,p_,T_,npro_,mater_
+     &,                      h_,  cv_,cp_,alphaP_,betaT_,gamb_,c_)
+            use eqn_state_m
+            implicit none
+            integer, intent(in) :: npro_, mater_
+            real*8, dimension(npro_), target, intent(in) :: p_,T_
+            real*8, dimension(npro_), target, intent(inout) :: rho_,ei_,h_,cv_,cp_,alphaP_,betaT_,gamb_,c_
+          end subroutine getthm
+          subroutine e3ivar_solid(rho_, bulkMod_, shearMod_, Ja_def_, g1yi_,g2yi_,g3yi_,npro_,nsd_)
             use solid_func_m
             implicit none
-            real*8, dimension(npro_,nsd_), target, intent(in) :: g1yi_,g2yi_,g3yi_
+            real*8, dimension(npro_), intent(out) :: bulkMod_, shearMod_
             real*8, dimension(npro_), target, intent(inout) :: rho_
+            real*8, dimension(npro_,nsd_), target, intent(in) :: g1yi_,g2yi_,g3yi_
+            real*8, dimension(npro_,nsd_), intent(in) :: Ja_def_
             integer, intent(in) :: npro_,nsd_
           end subroutine e3ivar_solid
         end interface
@@ -377,7 +387,7 @@ c
       endif
 c
       if(mat_eos(mater,1).eq.ieos_solid_1) then
-        call e3ivar_solid(g1yi,g2yi,g3yi,rho,npro,nsd)
+        call e3ivar_solid(rho,tmp,tmp,tmp,g1yi,g2yi,g3yi,npro,nsd)
       endif
 c
 c.... u^m_{i,i} divum at integral point

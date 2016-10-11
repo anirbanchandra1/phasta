@@ -105,7 +105,7 @@ c
      &              pt50 * shp0(:,i) * ( AiNa0(:,isd,iflow,jflow) 
      &                                - KijNaj0(:,isd,iflow,jflow) ) * n0(:,isd) 
      &            + pt50 * s * KijNajC0(:,isd,iflow,jflow)*n0(:,isd)
-     &            + e*this_mu(:,iflow,jflow)/h * ctc(:,iflow,jflow)*shp0(:,i)
+     &            + e*this_mu(:,iflow,jflow)/length_h * ctc(:,iflow,jflow)*shp0(:,i)
      &              ) * WdetJ0
                 enddo
 c
@@ -128,7 +128,7 @@ c
      &              pt50 * shp0(:,i) * ( AiNa1(:,isd,iflow,jflow) 
      &                                - KijNaj1(:,isd,iflow,jflow) ) * n0(:,isd) 
      &            + pt50 * s * KijNajC0(:,isd,iflow,jflow)*n1(:,isd)
-     &            - e*this_mu(:,iflow,jflow)/h * ctc(:,iflow,jflow)*shp0(:,i)
+     &            - e*this_mu(:,iflow,jflow)/length_h * ctc(:,iflow,jflow)*shp0(:,i)
      &              ) * WdetJ0
                 enddo
 c
@@ -172,7 +172,7 @@ c
      &                pt50 * shp0(:,i) * ( 
      &                AiNa1  (:,isd,iflow,jflow) - KijNaj1(:,isd,iflow,jflow)) * n0(:,isd)
      &             + pt50 * s * KijNajC0(:,isd,iflow,jflow)*n1(:,isd)
-     &             + e*mu/h * ctc(:,iflow,jflow)*shp0(:,i)*n0(:,isd)*shp1(:,j)*n1(:,isd)
+     &             + e*mu/length_h * ctc(:,iflow,jflow)*shp0(:,i)*n0(:,isd)*shp1(:,j)*n1(:,isd)
      &            ) * WdetJ
 c
                 enddo
@@ -252,7 +252,7 @@ c
               egmass(:,p,q) = egmass(:,p,q) + (
      &              pt50 * shp0(:,inode0) * (AiNa1(:,isd,p,q)+KijNaj1(:,isd,p,q))*n0(:,isd)
      &            + pt50 * s * KijNajC0(:,isd,p,q)*n1(:,isd)
-     &            + e*mu/h * ctc(:,p,q)*shp0(:,inode0)*n0(:,isd)*shp1(:,inode1)*n1(:,isd)
+     &            + e*mu/length_h * ctc(:,p,q)*shp0(:,inode0)*n0(:,isd)*shp1(:,inode1)*n1(:,isd)
      &            )*WdetJ
             enddo
 c
