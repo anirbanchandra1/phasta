@@ -754,13 +754,13 @@ c
 c      if (abs(x(inode,1)-0.0)<1.e-4 .and. abs(x(inode,2)-0.05)<1.e-4 .and. abs(x(inode,3)-0.05)<1.e-4) then
 c       write(*,'(a,i2,a,i4,x,3f7.2)')'[',myrank,'] ',inode,x(inode,1:nsd)
 c        write(*,*) '[',myrank,'] ienif0',inode,iel,n, if_kappa(inode,:)    
-        write(*,*) '[',myrank,'] ienif0',inode,iel,n, norm2(if_kappa(inode,1:nsd))
+c        write(*,*) '[',myrank,'] ienif0',inode,iel,n, norm2(if_kappa(inode,1:nsd))
 c      endif
               inode = mienif1(iblk)%p(iel,n)
 c      if (abs(x(inode,1)-0.0)<1.e-4 .and. abs(x(inode,2)-0.05)<1.e-4 .and. abs(x(inode,3)-0.05)<1.e-4) then
 c       write(*,'(a,i2,a,i4,x,3f7.2)')'[',myrank,'] ',inode,x(inode,1:nsd)
 c        write(*,*) '[',myrank,'] ienif1',inode,iel,n, if_kappa(inode,:)    
-        write(*,*) '[',myrank,'] ienif1',inode,iel,n, norm2(if_kappa(inode,1:nsd))
+c        write(*,*) '[',myrank,'] ienif1',inode,iel,n, norm2(if_kappa(inode,1:nsd))
 c      endif
                 err2 = err2 + (norm2(if_kappa(inode,1:nsd))/10.d0-1.0d0)**2
                 nsum = nsum + 1
@@ -768,7 +768,7 @@ c      endif
           enddo
           if (nsum > 0) then
             err2 = sqrt(err2)/real(nsum,8)
-            write(*,'(a,i3,a,e24.16)')'[',myrank,'] L2-norm of curvature error: ',err2
+c            write(*,'(a,i3,a,e24.16)')'[',myrank,'] L2-norm of curvature error: ',err2
           else
             write(*,*) 'SOMETHING IS WRONG...'
           endif
