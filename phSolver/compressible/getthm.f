@@ -1,12 +1,15 @@
       subroutine getthm (rho_,ei_,p_,T_,npro_,mater_
-     &,                  h_,  cv_,cp_,alphaP_,betaT_,gamb_,c_)
+     &,                  h_,  cv_,cp_,alphaP_,betaT_,gamb_,c_
+     &,                  Ja_def_, bulkMod_, shearMod_)
+c
         use eqn_state_m
 c
         implicit none
 c
+        real*8, dimension(npro_), target, intent(out) :: rho_,ei_,h_,cv_,cp_,alphaP_,betaT_,gamb_,c_
+        real*8, dimension(npro_), target, intent(out) :: bulkMod_, shearMod_
+        real*8, dimension(npro_), target, intent(in) :: p_,T_, Ja_def_
         integer, intent(in) :: npro_, mater_
-        real*8, dimension(npro_), target, intent(in) :: p_,T_
-        real*8, dimension(npro_), target, intent(inout) :: rho_,ei_,h_,cv_,cp_,alphaP_,betaT_,gamb_,c_
 c
         npro = npro_
         mater = mater_
@@ -28,6 +31,8 @@ c
           call getthm_ideal_gas
         case (ieos_liquid_1)
           call getthm_liquid_1
+        case (ieos_solid_1)
+          call getthm_solid_1(bulkMod_, shearMod_, Ja_def_)
         case default
           call error ('getthm  ', 'wrong material', mater)
         end select

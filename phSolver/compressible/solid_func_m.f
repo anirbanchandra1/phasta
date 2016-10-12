@@ -2,7 +2,7 @@
 c
         use e3_def_m
         use solid_m
-        use eqn_state_m
+        use number_def_m
 c
         implicit none
 c
@@ -28,11 +28,11 @@ c
         allocate(AS(npro,6,6))
 c
         call calc_as_matrix
-        d(:,:) = almBi_s * b(iblk_now)%p(:,intp_s,:)
+        d(:,:) = almBi_s * b(iblk_solid)%p(:,intp_s,:)
      &+      alfBi_s * Delt_s * (almBi_s - gamBi_s) 
-     &*      b_dot(iblk_now)%p(:,intp_s,:)
+     &*      b_dot(iblk_solid)%p(:,intp_s,:)
         call setB_af
-        call get_det(b_af(iblk_now)%p(:,intp_s,:),det_baf)
+        call get_det(b_af(iblk_solid)%p(:,intp_s,:),det_baf)
         Ja_def= (det_baf)**0.5
         call get_det(d,det_d)
 c
@@ -40,8 +40,6 @@ c
 
 c
       end subroutine calc_solid
-c
-c
 c
       subroutine calc_as_matrix
 c initialize the AS matrix
@@ -98,7 +96,7 @@ c
         do i = 1, npro
         temp_matrix(:,:) = almBi_s * ident(:,:) + gamBi_s * Delt_s
      &                     *alfBi_s * AS(i,:,:) !check here
-        b_af(iblk_now)%p(i,intp_s,:) = matmul(temp_matrix(:,:) , d(i,:))
+        b_af(iblk_solid)%p(i,intp_s,:) = matmul(temp_matrix(:,:) , d(i,:))
         enddo
 c
 c
