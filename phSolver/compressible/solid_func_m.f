@@ -7,12 +7,19 @@ c
         implicit none
 c
         integer :: almBi_s, alfBi_s, gamBi_s
+        integer :: intp_s
         
 c
         real*8  :: Delt_s
 c
         real*8, dimension(:,:), pointer :: dudx, dudy, dudz
         real*8, dimension(:,:,:), pointer :: AS
+c
+c        real*8, dimension(:,:), pointer :: bulkMod, shearMod
+        real*8, dimension(:,:), pointer :: d
+        real*8, dimension(:), pointer :: Ja_def
+        real*8, dimension(:), pointer :: det_d
+        real*8, dimension(:), pointer :: det_baf
 c
       contains
 c
@@ -21,18 +28,22 @@ c
         allocate(AS(npro,6,6))
 c
         call calc_as_matrix
-        d = almBi * bq + alfBi * Delt(1) * (almBi - gamBi) * bq_dot
-        call setB_af(d, AS, bq_af)
-        call get_det(bq_af,det_baf)
+        d(:,:) = almBi_s * b(iblk_now)%p(:,intp_s,:)
+     &+      alfBi_s * Delt_s * (almBi_s - gamBi_s) 
+     &*      b_dot(iblk_now)%p(:,intp_s,:)
+        call setB_af
+        call get_det(b_af(iblk_now)%p(:,intp_s,:),det_baf)
         Ja_def= (det_baf)**0.5
-        call get_det
+        call get_det(d,det_d)
 c
         deallocate(AS)
 
 c
       end subroutine calc_solid
 c
-      subroutine calc_as_matrix(dudx, dudy,dudz)
+c
+c
+      subroutine calc_as_matrix
 c initialize the AS matrix
          AS = zero !add
 c
@@ -69,17 +80,15 @@ c
 c
       end subroutine calc_as_matrix
 c
-      subroutine setB_af (d, AS, bq_af)
+      subroutine setB_af
 c... calculate the left Cauchy-green tensor at time step n+af
        implicit none 
 c
-       real*8, dimension(npro,6),intent(in) :: d
-       real*8, dimension(npro,6,6),intent(in) :: AS
        integer,parameter :: nsize = 6 
 c
-       real*8, dimension(npro,6) :: bq_af
        real*8, dimension(6,6) :: ident
        real*8, dimension(6,6) :: temp_matrix
+       integer :: i
 c..................
        ident = zero
         do i = 1, nsize
@@ -87,9 +96,9 @@ c..................
         enddo
 c
         do i = 1, npro
-        temp_matrix(:,:) = almBi * ident(:,:) + gamBi * Delt(1)
-     &                     *alfBi * AS(i,:,:) !check here
-        bq_af(i,:) = matmul(temp_matrix(:,:) , d(i,:))
+        temp_matrix(:,:) = almBi_s * ident(:,:) + gamBi_s * Delt_s
+     &                     *alfBi_s * AS(i,:,:) !check here
+        b_af(iblk_now)%p(i,intp_s,:) = matmul(temp_matrix(:,:) , d(i,:))
         enddo
 c
 c

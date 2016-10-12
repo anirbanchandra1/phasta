@@ -6,7 +6,8 @@ c
 c
         implicit none
 c
-        real*8, dimension(:), pointer :: rho,ei,p,T,h,cv,cp,alphaP,betaT,gamb,c
+        real*8, dimension(:), pointer :: rho, ei, p, T, h, cv, cp,
+     &                                   alphaP, betaT, gamb, c
 c
       contains
 c

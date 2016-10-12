@@ -11,6 +11,8 @@ c
         type (r3d), dimension(MAXBLK2) ::  bdy_b_dot!time derivative of b on the boudary,added
         type (r3d), dimension(MAXBLK2) ::  bdy_b_af! b at time step n+af on the boudary,added
 c
+        integer ::iblk_now
+c
       contains
 c
         subroutine alloc_solid
