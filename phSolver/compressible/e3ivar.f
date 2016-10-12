@@ -70,14 +70,29 @@ c
             real*8, dimension(npro_), target, intent(in) :: p_,T_
             real*8, dimension(npro_), target, intent(inout) :: rho_,ei_,h_,cv_,cp_,alphaP_,betaT_,gamb_,c_
           end subroutine getthm
-          subroutine e3ivar_solid(rho_, bulkMod_, shearMod_, Ja_def_, g1yi_,g2yi_,g3yi_,npro_,nsd_)
+          subroutine e3ivar_solid(rho_,     ei_,      p_,       T_,        h_,
+     &                        cv_,      cp_,      alphaP_,   betaT_,
+     &                        bulkMod_, shearMod_,Ja_def_,   d_,
+     &                        det_d_,   det_baf_, g1yi_,    g2yi_,    g3yi_,
+     &                        npro_,    nsd_,     almBi_,    alfBi_,
+     &                        gamBi_,    intp_,   Delt_)
+
             use solid_func_m
             implicit none
             real*8, dimension(npro_), intent(out) :: bulkMod_, shearMod_
-            real*8, dimension(npro_), target, intent(inout) :: rho_
+            real*8, dimension(npro_), target, intent(inout) :: rho_, ei_, p_,
+     &                                                     T_, h_, cv_,
+     &                                                     cp_, alphaP_,
+     &                                                     betaT_
             real*8, dimension(npro_,nsd_), target, intent(in) :: g1yi_,g2yi_,g3yi_
-            real*8, dimension(npro_,nsd_), intent(in) :: Ja_def_
-            integer, intent(in) :: npro_,nsd_
+            real*8, dimension(npro_,6), target :: d_
+            real*8, dimension(npro_), target :: Ja_def_
+            real*8, dimension(npro_), target :: det_d_
+            real*8, dimension(npro_), target :: det_baf_
+            real*8, intent(in) :: Delt_
+            integer, intent(in) :: npro_, nsd_
+            integer, intent(in) :: intp_
+            real*8, intent(in) :: almBi_, alfBi_, gamBi_
           end subroutine e3ivar_solid
         end interface
 c
@@ -116,6 +131,13 @@ c
         dimension um1(npro),                 um2(npro),
      &            um3(npro),                 divum(npro),
      &            uml(npro, nshl, nsd)
+c
+c....Solid arrays
+c...
+        real*8,dimension(npro) :: bulkMod,shearMod,
+     &                            det_baf,Ja_def,det_d
+        real*8,dimension(npro,6) :: d
+c................
 c
         ttim(20) = ttim(20) - secs(0.0)
 
@@ -387,7 +409,13 @@ c
       endif
 c
       if(mat_eos(mater,1).eq.ieos_solid_1) then
-        call e3ivar_solid(rho,tmp,tmp,tmp,g1yi,g2yi,g3yi,npro,nsd)
+        call e3ivar_solid(rho,     ei,      pres,       T,        h,
+     &                    cv,      cp,      alfaP,   betaT,
+     &                    bulkMod, shearMod,Ja_def,   d,
+     &                    det_d,   det_baf, g1yi,    g2yi,    g3yi,
+     &                    npro,    nsd,     almBi,    alfBi,
+     &                    gamBi,    intp,   Delt(1))
+
       endif
 c
 c.... u^m_{i,i} divum at integral point

@@ -6,7 +6,8 @@ c
 c
         implicit none
 c
-        real*8, dimension(:), pointer :: rho,ei,p,T,h,cv,cp,alphaP,betaT,gamb,c
+        real*8, dimension(:), pointer :: rho, ei, p, T, h, cv, cp,
+     &                                   alphaP, betaT, gamb, c
 c
       contains
 c
@@ -61,6 +62,7 @@ c        c =  sqrt(one/(rho_ref*betaT))
 c
       end subroutine getthm_liquid_1
 c
+c
       subroutine getthm_solid_1(bulkMod, shearMod,Ja_def)
 c
         real*8, dimension(npro), intent(out) :: bulkMod, shearMod
@@ -83,7 +85,7 @@ c
         rho = rho_ref_s * (one - alphaP*(T - T_ref_s) 
      &                    + betaT*(p - p_ref_s))
 c        ei  = ( cv_s - P * alpha_P_s/rho)* T 
-c     &        + (betaT * P - alphaP * T)/rho * p
+c    &        + (betaT * P - alphaP * T)/rho * p
         ei  = cv_s * T
         h   = ei + p/rho
         cv  = cv_s

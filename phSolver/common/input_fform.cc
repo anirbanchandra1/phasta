@@ -758,6 +758,10 @@ int input_fform(phSolver::Input& inp)
       inpdat.rhoinfS[0] = -1 ;
     else inpdat.rhoinfS[0] = (double)inp.GetValue("Scalar Time Integration Rho Infinity");
 
+    if((string)inp.GetValue("Time Integration Rule for solid") == "First Order")
+      inpdat.rhoinf_B[0] = -1 ;
+    else inpdat.rhoinf_B[0] = (double)inp.GetValue("Time Integration Rho Infinity_B");
+
     if((string)inp.GetValue("Predictor at Start of Step")=="Same Velocity")
       genpar.ipred = 1;
     if((string)inp.GetValue("Predictor at Start of Step")=="Zero Acceleration")
