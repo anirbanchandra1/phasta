@@ -62,11 +62,11 @@ c        c =  sqrt(one/(rho_ref*betaT))
 c
       end subroutine getthm_liquid_1
 c
+      subroutine getthm_solid_1
 c
-      subroutine getthm_solid_1(bulkMod, shearMod,Ja_def)
+        use solid_def_m
 c
-        real*8, dimension(npro), intent(out) :: bulkMod, shearMod
-        real*8, dimension(npro), intent(in)  :: Ja_def
+        implicit none
 c
         real*8 :: rho_ref_s, p_ref_s, T_ref_s, alpha_P_s, cv_s
         real*8 :: bulkMod_s, shearMod_s 

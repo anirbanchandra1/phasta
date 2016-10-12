@@ -3,6 +3,7 @@
      &,                  Ja_def_, bulkMod_, shearMod_)
 c
         use eqn_state_m
+        use solid_def_m
 c
         implicit none
 c
@@ -28,11 +29,21 @@ c
 c 
         select case (mat_eos(mater,1))
         case (ieos_ideal_gas,ieos_ideal_gas_2)
+c
           call getthm_ideal_gas
+c
         case (ieos_liquid_1)
+c
           call getthm_liquid_1
+c
         case (ieos_solid_1)
-          call getthm_solid_1(bulkMod_, shearMod_, Ja_def_)
+c
+          bulkMod => bulkMod_
+          shearMod => shearMod_
+          Ja_def => Ja_def_
+c
+          call getthm_solid_1
+c
         case default
           call error ('getthm  ', 'wrong material', mater)
         end select

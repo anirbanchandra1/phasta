@@ -66,6 +66,7 @@ c
      &,                  h_,  cv_,cp_,alphaP_,betaT_,gamb_,c_
      &,                  Ja_def_, bulkMod_, shearMod_)
             use eqn_state_m
+            use solid_def_m
             implicit none
             real*8, dimension(npro_), target, intent(out) :: rho_,ei_,h_,cv_,cp_,alphaP_,betaT_,gamb_,c_
             real*8, dimension(npro_), target, intent(out) :: bulkMod_, shearMod_

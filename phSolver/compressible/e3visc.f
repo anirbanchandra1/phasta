@@ -35,6 +35,9 @@ c Zdenek Johan, Winter 1991. (Fortran 90)
 c Kenneth Jansen, Winter 1997 Primitive Variables
 c----------------------------------------------------------------------
 c
+      use solid_def_m
+      use solid_m
+c
       include "common.h"
 c
 c     passed arrays

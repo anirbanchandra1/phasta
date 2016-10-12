@@ -1,7 +1,18 @@
+      module solid_def_m
+c
+        implicit none
+c
+        real*8, dimension(:,:), pointer :: d
+        real*8, dimension(:), pointer :: det_d, det_baf
+        real*8, dimension(:), pointer :: bulkMod, shearMod, Ja_def
+c
+      end module solid_def_m
+
       module solid_func_m
 c
         use e3_def_m
         use solid_m
+        use solid_def_m
         use number_def_m
 c
         implicit none
@@ -14,12 +25,6 @@ c
 c
         real*8, dimension(:,:), pointer :: dudx, dudy, dudz
         real*8, dimension(:,:,:), pointer :: AS
-c
-c        real*8, dimension(:,:), pointer :: bulkMod, shearMod
-        real*8, dimension(:,:), pointer :: d
-        real*8, dimension(:), pointer :: Ja_def
-        real*8, dimension(:), pointer :: det_d
-        real*8, dimension(:), pointer :: det_baf
 c
       contains
 c
