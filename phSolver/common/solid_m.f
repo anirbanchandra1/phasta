@@ -4,6 +4,8 @@ c
 c
         implicit none
 c
+        integer :: iblk_solid
+c
         type (r3d), dimension(MAXBLK2) ::  b !for solid,left Cauchy_green tensor,added
         type (r3d), dimension(MAXBLK2) ::  b_dot!time derivative of b,added
         type (r3d), dimension(MAXBLK2) ::  b_af! b at time step n+af,added
