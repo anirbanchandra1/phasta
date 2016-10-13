@@ -100,6 +100,13 @@ c
      &            um2(npro),              um3(npro), 
      &            divum(npro)
 c
+C.....Additional solid properties
+        real*8    bulkMod(npro),             shearMod(npro),
+     &            det_baf(npro),      
+     &            Ja_def(npro),              det_d(npro)
+        real*8    d(npro,6)
+
+
         ttim(6) = ttim(6) - secs(0.0)
 c
 c.... local reconstruction of diffusive flux vector

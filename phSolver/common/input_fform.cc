@@ -30,6 +30,7 @@ void populate_eos_map
   eos_map.insert(map<string,int>::value_type("ideal_gas", ieos_ideal_gas));
   eos_map.insert(map<string,int>::value_type("ideal_gas_2", ieos_ideal_gas_2));
   eos_map.insert(map<string,int>::value_type("liquid_1",  ieos_liquid_1));
+  eos_map.insert(map<string,int>::value_type("solid_1",  ieos_solid_1));
 }
 
 void populate_dg_vi_ramp
@@ -483,7 +484,6 @@ int input_fform(phSolver::Input& inp)
       vector<double>::iterator it = vec.begin();
       while (it++ < vec.end()) {
         matdat.mat_prop[0][j][i] = vec[j];
-//cout << vec[j] << endl;
         j++;
       }
       vec.erase(vec.begin(),vec.end());
@@ -757,6 +757,10 @@ int input_fform(phSolver::Input& inp)
     if((string)inp.GetValue("Scalar Time Integration Rule") == "First Order")
       inpdat.rhoinfS[0] = -1 ;
     else inpdat.rhoinfS[0] = (double)inp.GetValue("Scalar Time Integration Rho Infinity");
+
+    if((string)inp.GetValue("Time Integration Rule for solid") == "First Order")
+      inpdat.rhoinf_B[0] = -1 ;
+    else inpdat.rhoinf_B[0] = (double)inp.GetValue("Time Integration Rho Infinity_B");
 
     if((string)inp.GetValue("Predictor at Start of Step")=="Same Velocity")
       genpar.ipred = 1;

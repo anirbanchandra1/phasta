@@ -61,6 +61,38 @@ c----------------------------------------------------------------------
 c
         include "common.h"
 c
+        interface
+          subroutine getthm (rho_,ei_,p_,T_,npro_,mater_
+     &,                  h_,  cv_,cp_,alphaP_,betaT_,gamb_,c_
+     &,                  Ja_def_, bulkMod_, shearMod_)
+            use eqn_state_m
+            use solid_def_m
+            implicit none
+            real*8, dimension(npro_), target, intent(out) :: rho_,ei_,h_,cv_,cp_,alphaP_,betaT_,gamb_,c_
+            real*8, dimension(npro_), target, intent(out) :: bulkMod_, shearMod_
+            real*8, dimension(npro_), target, intent(in) :: p_,T_, Ja_def_
+            integer, intent(in) :: npro_, mater_
+          end subroutine getthm
+          subroutine e3ivar_solid(Ja_def_,   d_,       det_d_,   det_baf_, 
+     &                            g1yi_,     g2yi_,    g3yi_,
+     &                            npro_,     nsd_,     almBi_,   alfBi_,
+     &                            gamBi_,    intp_,    Delt_)
+             use solid_func_m
+             implicit none
+             real*8, dimension(npro_,nsd_), target, intent(in) :: g1yi_,g2yi_,g3yi_
+             real*8, dimension(npro_,6), target :: d_
+             real*8, dimension(npro_), target :: Ja_def_
+             real*8, dimension(npro_), target :: det_d_
+             real*8, dimension(npro_), target :: det_baf_
+             real*8, intent(in) :: Delt_
+             integer, intent(in) :: npro_, nsd_
+             integer, intent(in) :: intp_
+             real*8, intent(in) :: almBi_, alfBi_, gamBi_
+          end subroutine e3ivar_solid
+        end interface
+c
+          
+c
 c  passed arrays
 c
         dimension yl(npro,nshl,nflow),        ycl(npro,nshl,ndof),
@@ -95,153 +127,18 @@ c
      &            um3(npro),                 divum(npro),
      &            uml(npro, nshl, nsd)
 c
+c....Solid arrays
+c...
+        real*8,dimension(npro) :: bulkMod,shearMod,
+     &                            det_baf,Ja_def,det_d
+        real*8,dimension(npro,6) :: d
+c................
+c
         ttim(20) = ttim(20) - secs(0.0)
-
-c
-        ttim(10) = ttim(10) - secs(0.0)
-
-        dui = zero
-c
-        do n = 1, nshl
-           dui(:,1) = dui(:,1) + shape(:,n) * yl(:,n,1) ! p
-           dui(:,2) = dui(:,2) + shape(:,n) * yl(:,n,2) ! u1
-           dui(:,3) = dui(:,3) + shape(:,n) * yl(:,n,3) ! u2
-           dui(:,4) = dui(:,4) + shape(:,n) * yl(:,n,4) ! u3
-           dui(:,5) = dui(:,5) + shape(:,n) * yl(:,n,5) ! T
-        enddo
-c     
-!      flops = flops + 10*nshl*npro
-c     
-c     
-c.... compute conservative variables
-c
-        rk = pt5 * (dui(:,2)**2 + dui(:,3)**2 + dui(:,4)**2)
-c     
-        if (iLSet .ne. 0)then
-           Sclr = zero
-           isc=abs(iRANS)+6
-           do n = 1, nshl
-              Sclr = Sclr + shape(:,n) * ycl(:,n,isc)
-           enddo
-        endif
-        
-        ithm = 6
-         call getthm(rho, ei, dui(:,1), dui(:,5), npro, mater
-     &,              tmp, tmp, tmp, tmp, tmp, tmp, tmp)
-c
-        dui(:,1) = rho
-        dui(:,2) = rho * dui(:,2)
-        dui(:,3) = rho * dui(:,3)
-        dui(:,4) = rho * dui(:,4)
-        dui(:,5) = rho * (ei + rk)
-        
-          
-       ttim(10) = ttim(10) + secs(0.0)
-c
-c.... ------------->  Primitive variables at int. point  <--------------
-c
-c.... compute primitive variables
-c
-       ttim(11) = ttim(11) - secs(0.0)
-
-       pres = zero
-       u1   = zero
-       u2   = zero
-       u3   = zero
-       um1  = zero
-       um2  = zero
-       um3  = zero
-       T    = zero
-       do n = 1, nshl 
-c
-c  y(int)=SUM_{a=1}^nshl (N_a(int) Ya)
-c
-          pres = pres + shape(:,n) * ycl(:,n,1)
-          u1   = u1   + shape(:,n) * ycl(:,n,2)
-          u2   = u2   + shape(:,n) * ycl(:,n,3)
-          u3   = u3   + shape(:,n) * ycl(:,n,4)
-          T    = T    + shape(:,n) * ycl(:,n,5)          
-c
-c.... ALE convective velocity at integral point
-c
-          um1  = um1  + shape(:,n) * uml(:,n,1)
-          um2  = um2  + shape(:,n) * uml(:,n,2)
-          um3  = um3  + shape(:,n) * uml(:,n,3)
-       enddo
-
-       if( (iLES.gt.10).and.(iLES.lt.20))  then  ! bardina
-       rlsli = zero
-       do n = 1, nshl 
-
-          rlsli(:,1) = rlsli(:,1) + shape(:,n) * rlsl(:,n,1)
-          rlsli(:,2) = rlsli(:,2) + shape(:,n) * rlsl(:,n,2)
-          rlsli(:,3) = rlsli(:,3) + shape(:,n) * rlsl(:,n,3)
-          rlsli(:,4) = rlsli(:,4) + shape(:,n) * rlsl(:,n,4)
-          rlsli(:,5) = rlsli(:,5) + shape(:,n) * rlsl(:,n,5)
-          rlsli(:,6) = rlsli(:,6) + shape(:,n) * rlsl(:,n,6)
-
-       enddo
-       else
-          rlsli = zero
-       endif
-c
-       
-       ttim(11) = ttim(11) + secs(0.0)
-
-c
-c.... ----------------------->  accel. at int. point  <----------------------
-c
-       
-c       if (ires .ne. 2)  then
-          ttim(12) = ttim(12) - secs(0.0)
-c
-c.... compute primitive variables
-c
-          aci = zero
-c
-          do n = 1, nshl
-             aci(:,1) = aci(:,1) + shape(:,n) * acl(:,n,1)
-             aci(:,2) = aci(:,2) + shape(:,n) * acl(:,n,2)
-             aci(:,3) = aci(:,3) + shape(:,n) * acl(:,n,3)
-             aci(:,4) = aci(:,4) + shape(:,n) * acl(:,n,4)
-             aci(:,5) = aci(:,5) + shape(:,n) * acl(:,n,5)
-          enddo
-c
-!      flops = flops + 10*nshl*npro
-          ttim(12) = ttim(12) + secs(0.0)
-c       endif                    !ires .ne. 2
-c
-c.... ----------------->  Thermodynamic Properties  <-------------------
-c
-c.... compute the kinetic energy
-c
-        ttim(27) = ttim(27) - secs(0.0)
-c
-        rk = pt5 * ( u1**2 + u2**2 + u3**2 )
-c
-c.... get the thermodynamic properties
-c
-        if (iLSet .ne. 0)then
-           Sclr = zero
-           isc=abs(iRANS)+6
-           do n = 1, nshl
-              Sclr = Sclr + shape(:,n) * ycl(:,n,isc)
-           enddo
-        endif
-
-        ithm = 7
-         call getthm(rho, ei, pres, T, npro, mater
-     &,              h,   cv, cp,   alfap, betaT, tmp,  tmp)
-c
-        ttim(27) = ttim(27) + secs(0.0)
-c
-c ........Get the material properties 
-c
-         call getdiff(rmu, rlm, rlm2mu, con, npro, mater)
 c
 c.... --------------------->  Element Metrics  <-----------------------
 c
-      ttim(26) = ttim(26) - secs(0.0)
+       ttim(26) = ttim(26) - secs(0.0)
 c
         call e3metric( xl,         shgl,        dxidx,  
      &                 shg,        WdetJ)
@@ -258,6 +155,7 @@ c
         g3yi = zero
 c
         ttim(13) = ttim(13) + secs(0.0)
+c
         ttim(7) = ttim(7) - secs(0.0)
 c
 c.... compute the global gradient of Y-variables
@@ -363,6 +261,166 @@ c
 c
         enddo
       endif
+c
+        ttim(10) = ttim(10) - secs(0.0)
+
+        dui = zero
+c
+        do n = 1, nshl
+           dui(:,1) = dui(:,1) + shape(:,n) * yl(:,n,1) ! p
+           dui(:,2) = dui(:,2) + shape(:,n) * yl(:,n,2) ! u1
+           dui(:,3) = dui(:,3) + shape(:,n) * yl(:,n,3) ! u2
+           dui(:,4) = dui(:,4) + shape(:,n) * yl(:,n,4) ! u3
+           dui(:,5) = dui(:,5) + shape(:,n) * yl(:,n,5) ! T
+        enddo
+c     
+!      flops = flops + 10*nshl*npro
+c     
+c     
+c.... compute conservative variables
+c
+        rk = pt5 * (dui(:,2)**2 + dui(:,3)**2 + dui(:,4)**2)
+c     
+        if (iLSet .ne. 0)then
+           Sclr = zero
+           isc=abs(iRANS)+6
+           do n = 1, nshl
+              Sclr = Sclr + shape(:,n) * ycl(:,n,isc)
+           enddo
+        endif
+c
+c
+c-----> SOLID CALCULATIONS <------------
+c
+      if(mat_eos(mater,1).eq.ieos_solid_1) then
+          call e3ivar_solid(Ja_def,   d,       det_d,   det_baf, 
+     &                      g1yi,     g2yi,    g3yi,
+     &                      npro,     nsd,     almBi,   alfBi,
+     &                      gamBi,    intp,    Delt(1))
+      endif
+
+
+
+
+
+
+
+
+
+c       
+        ithm = 6
+         call getthm(rho, ei, dui(:,1), dui(:,5), npro, mater
+     &,              tmp, tmp, tmp, tmp, tmp, tmp, tmp, Ja_def, bulkMod, shearMod)
+c
+        dui(:,1) = rho
+        dui(:,2) = rho * dui(:,2)
+        dui(:,3) = rho * dui(:,3)
+        dui(:,4) = rho * dui(:,4)
+        dui(:,5) = rho * (ei + rk)
+          
+       ttim(10) = ttim(10) + secs(0.0)
+c
+c.... ------------->  Primitive variables at int. point  <--------------
+c
+c.... compute primitive variables
+c
+       ttim(11) = ttim(11) - secs(0.0)
+
+       pres = zero
+       u1   = zero
+       u2   = zero
+       u3   = zero
+       um1  = zero
+       um2  = zero
+       um3  = zero
+       T    = zero
+       do n = 1, nshl 
+c
+c  y(int)=SUM_{a=1}^nshl (N_a(int) Ya)
+c
+          pres = pres + shape(:,n) * ycl(:,n,1)
+          u1   = u1   + shape(:,n) * ycl(:,n,2)
+          u2   = u2   + shape(:,n) * ycl(:,n,3)
+          u3   = u3   + shape(:,n) * ycl(:,n,4)
+          T    = T    + shape(:,n) * ycl(:,n,5)          
+c
+c.... ALE convective velocity at integral point
+c
+          um1  = um1  + shape(:,n) * uml(:,n,1)
+          um2  = um2  + shape(:,n) * uml(:,n,2)
+          um3  = um3  + shape(:,n) * uml(:,n,3)
+       enddo
+
+       if( (iLES.gt.10).and.(iLES.lt.20))  then  ! bardina
+       rlsli = zero
+       do n = 1, nshl 
+
+          rlsli(:,1) = rlsli(:,1) + shape(:,n) * rlsl(:,n,1)
+          rlsli(:,2) = rlsli(:,2) + shape(:,n) * rlsl(:,n,2)
+          rlsli(:,3) = rlsli(:,3) + shape(:,n) * rlsl(:,n,3)
+          rlsli(:,4) = rlsli(:,4) + shape(:,n) * rlsl(:,n,4)
+          rlsli(:,5) = rlsli(:,5) + shape(:,n) * rlsl(:,n,5)
+          rlsli(:,6) = rlsli(:,6) + shape(:,n) * rlsl(:,n,6)
+
+       enddo
+       else
+          rlsli = zero
+       endif
+c
+       
+       ttim(11) = ttim(11) + secs(0.0)
+
+c
+c.... ----------------------->  accel. at int. point  <----------------------
+c
+       
+c       if (ires .ne. 2)  then
+          ttim(12) = ttim(12) - secs(0.0)
+c
+c.... compute primitive variables
+c
+          aci = zero
+c
+          do n = 1, nshl
+             aci(:,1) = aci(:,1) + shape(:,n) * acl(:,n,1)
+             aci(:,2) = aci(:,2) + shape(:,n) * acl(:,n,2)
+             aci(:,3) = aci(:,3) + shape(:,n) * acl(:,n,3)
+             aci(:,4) = aci(:,4) + shape(:,n) * acl(:,n,4)
+             aci(:,5) = aci(:,5) + shape(:,n) * acl(:,n,5)
+          enddo
+c
+!      flops = flops + 10*nshl*npro
+          ttim(12) = ttim(12) + secs(0.0)
+c       endif                    !ires .ne. 2
+c
+c.... ----------------->  Thermodynamic Properties  <-------------------
+c
+c.... compute the kinetic energy
+c
+        ttim(27) = ttim(27) - secs(0.0)
+c
+        rk = pt5 * ( u1**2 + u2**2 + u3**2 )
+c
+c.... get the thermodynamic properties
+c
+        if (iLSet .ne. 0)then
+           Sclr = zero
+           isc=abs(iRANS)+6
+           do n = 1, nshl
+              Sclr = Sclr + shape(:,n) * ycl(:,n,isc)
+           enddo
+        endif
+
+        ithm = 7
+         call getthm(rho, ei, pres, T, npro, mater
+     &,              h,   cv, cp,   alfap, betaT, tmp,  tmp, Ja_def, bulkMod, shearMod)
+c
+        ttim(27) = ttim(27) + secs(0.0)
+c
+c ........Get the material properties 
+c
+         call getdiff(rmu, rlm, rlm2mu, con, npro, mater)
+c
 c
 c.... u^m_{i,i} divum at integral point
 c

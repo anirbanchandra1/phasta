@@ -1,21 +1,17 @@
       module eqn_state_m
 c
+        use e3_def_m
         use number_def_m
         use matdat_def_m
 c
         implicit none
 c
+        real*8, dimension(:), pointer :: rho, ei, p, T, h, cv, cp,
+     &                                   alphaP, betaT, gamb, c
+c
       contains
 c
-      subroutine getthm_ideal_gas (rho,    ei
-     &,                            p,      T,     npro, mater
-     &,                            h,      cv,    cp
-     &,                            alphaP, betaT, gamb, c)
-c
-        integer, intent(in) :: npro, mater
-        real*8, dimension(npro), intent(out) :: rho,ei
-        real*8, dimension(npro), intent(out) :: h,cv,cp,alphaP,betaT,gamb,c
-        real*8, dimension(npro), intent(in)  :: p, T
+      subroutine getthm_ideal_gas
 c
         real*8 :: Rgas,gamma,gamma1,mw
 c
@@ -42,15 +38,7 @@ c
         rho = p / (R*T)
       end function rho_ideal_gas
 c
-      subroutine getthm_liquid_1 (rho,    ei
-     &,                           p,      T,     npro, mater
-     &,                           h,      cv,    cp
-     &,                           alphaP, betaT, gamb, c)
-c
-        integer, intent(in) :: npro, mater
-        real*8, dimension(npro), intent(out) :: rho,ei
-        real*8, dimension(npro), intent(out) :: h,cv,cp,alphaP,betaT,gamb,c
-        real*8, dimension(npro), intent(in)  :: p, T
+      subroutine getthm_liquid_1
 c
         real*8 :: rho_ref, p_ref, T_ref, alpha_P, beta_T, cv_
 c
@@ -73,5 +61,42 @@ c        c =  sqrt(one/(rho_ref*betaT))
         gamb = zero
 c
       end subroutine getthm_liquid_1
+c
+      subroutine getthm_solid_1
+c
+        use solid_def_m
+c
+        implicit none
+c
+        real*8 :: rho_ref_s, p_ref_s, T_ref_s, alpha_P_s, cv_s
+        real*8 :: bulkMod_s, shearMod_s 
+c
+        rho_ref_s = mat_prop(mater,iprop_solid_1_rho_ref,1)
+        p_ref_s   = mat_prop(mater,iprop_solid_1_p_ref,  1)
+        T_ref_s   = mat_prop(mater,iprop_solid_1_T_ref,  1)
+        cv_s     = mat_prop(mater,iprop_solid_1_cv,     1)
+        alpha_P_s = mat_prop(mater,iprop_solid_1_alphaP, 1)
+        bulkMod_s = mat_prop(mater,iprop_solid_1_bulkMod, 1)
+        shearMod_s = mat_prop(mater,iprop_solid_1_shearMod, 1)
+c        beta_T  = mat_prop(mater,iprop_solid_1_betaT,  1)
+c
+        alphaP = alpha_P_s
+        betaT  = one /(bulkMod_s * Ja_def) ! double check here
+        rho = rho_ref_s * (one - alphaP*(T - T_ref_s) 
+     &                    + betaT*(p - p_ref_s))
+c        ei  = ( cv_s - P * alpha_P_s/rho)* T 
+c    &        + (betaT * P - alphaP * T)/rho * p
+        ei  = cv_s * T
+        h   = ei + p/rho
+        cv  = cv_s
+        cp  = cv_s
+        bulkMod = bulkMod_s
+        shearMod = shearMod_s
+c        c =  sqrt(one/(rho_ref*betaT))
+C         c =  sqrt(one/(rho*betaT))
+C         gamb = zero
+c
+c
+      end subroutine getthm_solid_1
 c
       end module eqn_state_m

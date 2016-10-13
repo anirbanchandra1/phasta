@@ -387,9 +387,9 @@ c
 c               ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*mu/h * this_sum
                select case(iflow)
                case(2:4)
-                 ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*prop%stiff(3,3)/h * this_sum  ! for mu
+                 ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*prop%stiff(3,3)/length_h * this_sum  ! for mu
                case(5)
-                 ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*prop%stiff(5,5)/h * this_sum  ! for kappa
+                 ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*prop%stiff(5,5)/length_h * this_sum  ! for kappa
                end select
 c
              enddo
@@ -447,8 +447,8 @@ c
 c
             enddo
 c
-            ri0(:,3*nflow+iflow) = ri0(:,3*nflow+iflow) + e*mu/h * CWCY0
-            ri1(:,3*nflow+iflow) = ri1(:,3*nflow+iflow) + e*mu/h * CWCY1
+            ri0(:,3*nflow+iflow) = ri0(:,3*nflow+iflow) + e*mu/length_h * CWCY0
+            ri1(:,3*nflow+iflow) = ri1(:,3*nflow+iflow) + e*mu/length_h * CWCY1
 c
           enddo
 c
@@ -519,8 +519,8 @@ c      endif
 c
             enddo
 c
-            ri0(:,nflow*3+i) = ri0(:,nflow*3+i) + e*mu/h * cwcy0
-            ri1(:,nflow*3+i) = ri1(:,nflow*3+i) + e*mu/h * cwcy1
+            ri0(:,nflow*3+i) = ri0(:,nflow*3+i) + e*mu/length_h * cwcy0
+            ri1(:,nflow*3+i) = ri1(:,nflow*3+i) + e*mu/length_h * cwcy1
 c
 c      write(*,*) 'i, cwcy0: ',i,cwcy0(1)
 c      write(*,*) 'i, cwcy1: ',i,cwcy1(1)
