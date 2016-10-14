@@ -258,6 +258,7 @@ extern "C" {
     int numflx;
     int ndof;
     int iALE;
+    int iSOLID;
     int icoord;
     int navier;
     int irs;

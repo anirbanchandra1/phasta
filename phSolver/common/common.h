@@ -159,7 +159,7 @@ c
 
         common /conpar/ numnp,    numel,  numelb, numelif,
      &                  numpbc,   nen,    nfaces,
-     &                  numflx,   ndof,   iALE,
+     &                  numflx,   ndof,   iALE, iSOLID,
      &                  icoord,   navier,
      &                  irs,      iexec,  necho,  ichem,  iRK,    nedof,
      &                  ndofelas, nshg,   nnz,    istop,  nflow,  nelas, 
@@ -383,6 +383,7 @@ c nsd           : number of space dimensions
 c numflx        : number of flux boundary nodes
 c ndof          : number of degrees of freedom per node
 c iALE          : ALE formulation flag
+c iSOLID        : Solid formulation flag
 c icoord        : coordinate system flag
 c navier        : Navier-Stokes calculation flag
 c irs           : restart option 
