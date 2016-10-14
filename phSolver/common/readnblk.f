@@ -30,7 +30,7 @@ c
       
       end module
 
-      subroutine readnblk
+      subroutine readnblk(i_iniSolid)
       use iso_c_binding 
       use readarrays
       use fncorpmod
@@ -62,6 +62,7 @@ c
       integer :: ierr_io, numprocs, itmp, itmp2
       integer :: ignored
       integer :: fileFmt
+      integer :: i_iniSolid !solid initialization flag
       character*255 fname2, temp2
       character*64 temp1
       type(c_ptr) :: handle
@@ -535,6 +536,9 @@ c
             write(*,*) warning
          endif
          acold=zero
+c.... set flag to intialize solid arrays
+         i_iniSolid = 1 
+c.....End of setting flag for solid arrays
       endif
 
 c read in ALE stuff

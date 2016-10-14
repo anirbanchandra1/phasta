@@ -632,7 +632,10 @@ c
           
           tmpshpb(1:nshl,:) = shpb(lcsyst,1:nshl,:)
           tmpshglb(:,1:nshl,:) = shglb(lcsyst,:,1:nshl,:)
+c
 
+          iblk_solid = iblk  ! this is used at the lower level solid calculations 
+c
           call AsBMFG (y,                       x,
      &                 tmpshpb,                 tmpshglb, 
      &                 mienb(iblk)%p,           mattyp,
