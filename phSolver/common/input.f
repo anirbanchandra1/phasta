@@ -10,6 +10,7 @@ c Zdenek Johan,  Winter 1991.  (Fortran 90)
 c----------------------------------------------------------------------
 c
         use genint_m
+        use solid_m
 c
         include "common.h"
         include "mpif.h"
