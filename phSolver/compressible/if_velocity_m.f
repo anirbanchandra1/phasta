@@ -6,7 +6,7 @@ c
 c
         implicit none
 c
-        real*8, pointer :: sum_vi_area(:,:)    ! interface velocity weighted by interfacea area
+        real*8, pointer :: sum_vi_area(:,:)    ! interface velocity weighted by interface area
 c
       contains
 c
