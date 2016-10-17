@@ -8,23 +8,25 @@ c
         integer, intent(in) :: npro, mater
         real*8, dimension(npro), intent(out) :: rmu,rlm,rlm2mu,con
 c
-        integer :: ivisc, icon
-c
-c -----> BEGIN HARDCODE <-----------
-c HARDCODED until the proper indexing system is implemented
+        integer :: ivisc, icond
 c
         select case (mat_eos(mater,1))
         case (ieos_ideal_gas,ieos_ideal_gas_2)
-          ivisc = 3
-          icon = 4
+          ivisc = iprop_gas_visc
+          icond = iprop_gas_cond
         case (ieos_liquid_1)
-          ivisc = 7
-          icon = 8
+          ivisc = iprop_liquid_1_visc
+          icond = iprop_liquid_1_cond
+        case (ieos_solid_1)
+          icond = iprop_solid_1_cond
+          rmu = zero
+          rlm = zero
+          rlm2mu = zero
+          con = mat_prop(mater,icond,1)
+          return
         case default
           call error ('getdiff ', 'ERROR: index can not be set!',0)
         end select
-c
-c------> END HARDCODE <-----------
 c
         if (matflg(2,mater) == 0) then ! Shear Law: Constant Viscosity
           rmu = mat_prop(mater,ivisc,1)
@@ -40,7 +42,7 @@ c
 c
         rlm2mu = rlm + two * rmu
 c
-        con = mat_prop(mater,icon,1)
+        con = mat_prop(mater,icond,1)
 c
 c        if (iLES .gt. 0 .or. iRANS.eq.0) then
 c          call error ('getdiff ', 'ERROR: Turbulence Viscosity is NOT supported!', 0)

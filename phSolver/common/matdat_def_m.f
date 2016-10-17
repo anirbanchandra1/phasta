@@ -14,15 +14,18 @@ c
      &,                       ieos_liquid_1  = 3
      &,                       ieos_solid_1   = 10
 c
-        integer, parameter :: iprop_ideal_gas_mw    = 1  ! molecular weight
-     &,                       iprop_ideal_gas_gamma = 2
-     &,                       iprop_gas_visc  = 3
+        integer, parameter :: iprop_ideal_gas_mw     = 1  ! molecular weight
+     &,                       iprop_ideal_gas_gamma  = 2
+     &,                       iprop_gas_visc         = 3
+     &,                       iprop_gas_cond         = 4
      &,                       iprop_liquid_1_rho_ref = 1
      &,                       iprop_liquid_1_p_ref   = 2
      &,                       iprop_liquid_1_T_ref   = 3
      &,                       iprop_liquid_1_cv      = 4
      &,                       iprop_liquid_1_alphaP  = 5
      &,                       iprop_liquid_1_betaT   = 6
+     &,                       iprop_liquid_1_visc    = 7
+     &,                       iprop_liquid_1_cond    = 8
 c
 c......Adding the solid capability    
      &,                       iprop_solid_1_rho_ref  = 1
