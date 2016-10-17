@@ -296,6 +296,7 @@ c Chris Whiting, Winter 1998.     (Matrix EBE-GMRES)
 c----------------------------------------------------------------------
 c
         use pointer_data
+        use solid_m
         use timedataC
         use if_velocity_m
         use if_global_m
@@ -543,7 +544,9 @@ c
           allocate (tmpshgl(nsd,nshl,MAXQPT))
           tmpshp(1:nshl,:) = shp(lcsyst,1:nshl,:)
           tmpshgl(:,1:nshl,:) = shgl(lcsyst,:,1:nshl,:)
-
+c
+          iblk_solid = iblk  ! this is used at the lower level solid calculations 
+c
           call AsIGMR (y,                   ac,
      &                 x,                   mxmudmi(iblk)%p,
      &                 tmpshp,

@@ -12,7 +12,7 @@ c
         integer, parameter :: ieos_ideal_gas = 1
      &,                       ieos_ideal_gas_2 = 2
      &,                       ieos_liquid_1  = 3
-     &,                       ieos_solid_1   = 4
+     &,                       ieos_solid_1   = 10
 c
         integer, parameter :: iprop_ideal_gas_mw    = 1  ! molecular weight
      &,                       iprop_ideal_gas_gamma = 2
@@ -23,6 +23,19 @@ c
      &,                       iprop_liquid_1_cv      = 4
      &,                       iprop_liquid_1_alphaP  = 5
      &,                       iprop_liquid_1_betaT   = 6
+c
+c......Adding the solid capability    
+     &,                       iprop_solid_1_rho_ref  = 1
+     &,                       iprop_solid_1_p_ref    = 2
+     &,                       iprop_solid_1_T_ref    = 3
+     &,                       iprop_solid_1_cv       = 4
+     &,                       iprop_solid_1_alphaP   = 5
+     &,                       iprop_solid_1_bulkMod  = 6
+     &,                       iprop_solid_1_shearMod = 7
+     &,                       iprop_solid_1_cond     = 8
+C      &,                       iprop_solid_1_shearMod = 7
+C      &,                       iprop_solid_1_bulkMod  = 8
+
 c
         integer :: surface_tension_flag
 c

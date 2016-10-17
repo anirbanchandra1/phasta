@@ -243,6 +243,7 @@ c
         common /inpdat/ epstol(6),  Delt(MAXTS),    CFLfl(MAXTS),
      &                  CFLsl(MAXTS),   nstep(MAXTS),   niter(MAXTS),
      &                  impl(MAXTS),    rhoinf(MAXTS),  rhoinfS(MAXTS),
+     &                  rhoinf_B(MAXTS),
      &                  LHSupd(6),  loctim(MAXTS),  deltol(MAXTS,2), 
      &                  leslib,     svLSFlag,   svLSType
 c
@@ -298,7 +299,9 @@ c
 c
         common /timdat/ time,   CFLfld, CFLsld, Dtgl,   Dtmax,  alpha,
      &                  etol,   lstep,  ifunc,  itseq,  istep,  iter,
-     &                  nitr,   almi,   alfi,   gami,   flmpl,  flmpr,
+     &                  nitr,   almi,   alfi,   gami,   
+     &                  almBi,  alfBi,  gamBi,
+     &                  flmpl,  flmpr,
      &                  dtol(2), iCFLworst, lskeep
 c
         common /timpar/ LCtime, ntseq
