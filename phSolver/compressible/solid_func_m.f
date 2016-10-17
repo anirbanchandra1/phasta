@@ -17,11 +17,11 @@ c
 c
         implicit none
 c
-        integer :: almBi_s, alfBi_s, gamBi_s
-        integer :: intp_s
+        integer :: almBi, alfBi, gamBi
+c        integer :: intp_s
         
 c
-        real*8  :: Delt_s
+c        real*8  :: Delt
 c
         real*8, dimension(:,:), pointer :: dudx, dudy, dudz
         real*8, dimension(:,:,:), pointer :: AS
@@ -33,8 +33,8 @@ c
         allocate(AS(npro,6,6))
 c
         call calc_as_matrix
-        d(:,:) = almBi_s * b(iblk_solid)%p(:,intp_s,:)
-     &+      alfBi_s * Delt_s * (almBi_s - gamBi_s) 
+        d(:,:) = almBi * b(iblk_solid)%p(:,intp_s,:)
+     &+      alfBi * Delt * (almBi - gamBi) 
      &*      b_dot(iblk_solid)%p(:,intp_s,:)
         call setB_af
         call get_det(b_af(iblk_solid)%p(:,intp_s,:),det_baf)
@@ -99,8 +99,8 @@ c..................
         enddo
 c
         do i = 1, npro
-        temp_matrix(:,:) = almBi_s * ident(:,:) + gamBi_s * Delt_s
-     &                     *alfBi_s * AS(i,:,:) !check here
+        temp_matrix(:,:) = almBi * ident(:,:) + gamBi * Delt
+     &                     *alfBi * AS(i,:,:) !check here
         b_af(iblk_solid)%p(i,intp_s,:) = matmul(temp_matrix(:,:) , d(i,:))
         enddo
 c
