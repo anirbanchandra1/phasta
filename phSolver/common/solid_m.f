@@ -40,8 +40,8 @@ c.... allocate space for solid arrays
 !for solid block only
          if (mat_eos(mattyp_s,1).eq.ieos_solid_1)then
            allocate (b(iblk)%p(npro_s,ngauss_s,6))!for solid
-           allocate (b_dot(iblk)%p(npro_s,ngauss_s,6)) !for solid,added
-           allocate (b_af(iblk)%p(npro_s,ngauss_s,6)) !for solid,added
+           allocate (b_dot(iblk)%p(npro_s,ngauss_s,6)) !for solid
+           allocate (b_af(iblk)%p(npro_s,ngauss_s,6)) !for solid
 c......... these arrays need initialization
            if (i_iniSolid .eq. 1)then
               b(iblk)%p    = zero 
@@ -57,8 +57,6 @@ c..
       enddo blocks_loop
 c
 c
-c
-c 
       boundary_ blocks_loop: do iblk = 1, nelblb
          mattyp_sb = lcblkb(7,iblk)
          lcsyst_sb = lcblkb(3,iblk)
@@ -67,8 +65,8 @@ c
 !for solid block only
          if (mat_eos(mattyp_sb,1).eq.ieos_solid_1)then
            allocate (bdy_b(iblk)%p(npro_sb,ngauss_sb,6))!for solid
-           allocate (bdy_b_dot(iblk)%p(npro_sb,ngauss_sb,6)) !for solid,added
-           allocate (bdy_b_af(iblk)%p(npro_sb,ngauss_sb,6)) !for solid,added
+           allocate (bdy_b_dot(iblk)%p(npro_sb,ngauss_sb,6)) !for solid
+           allocate (bdy_b_af(iblk)%p(npro_sb,ngauss_sb,6)) !for solid
 c......... these arrays need initialization
            if (i_iniSolid .eq. 1)then
              bdy_b(iblk)%p    = zero

@@ -19,11 +19,11 @@ c
 c
         npro = npro_
         nsd = nsd_
-        Delt_s = Delt_
+        Delt = Delt_
         intp_s = intp_
-        almBi_s = almBi_
-        alfBi_s = alfBi_
-        gamBi_s = gamBi_  
+        almBi = almBi_
+        alfBi = alfBi_
+        gamBi = gamBi_  
 c
         d => d_
         Ja_def => Ja_def_

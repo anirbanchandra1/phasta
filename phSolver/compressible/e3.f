@@ -199,7 +199,8 @@ c
      &               rmu,             rlm,             rlm2mu,
      &               u1,              u2,              u3,
      &               ri,              rmi,             stiff,
-     &               con, rlsli,     compK, T)
+     &               con,             rlsli,           compK,
+     &               T,               mater)
         endif
         ttim(15) = ttim(15) + secs(0.0)
 c
