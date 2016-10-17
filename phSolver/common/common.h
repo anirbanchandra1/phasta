@@ -10,51 +10,17 @@ c Zdenek Johan, Winter 1991.  (Fortran 90)
 c----------------------------------------------------------------------
 c
       use mpi_def_m
+      use global_const_m
       use number_def_m
       use conpar_m
       use time_m
+      use elmpar_m
+      use blkdat_m
+      use intpt_m
       use matdat_def_m
       use e3if_inp_m
 
 	IMPLICIT REAL*8 (a-h,o-z)
-c
-c.... parameters  IF YOU CHANGE THES YOU HAVE TO CHANGE THEM IN
-c                  common_c.h ALSO
-c
-        parameter     ( MAXBLK = 50000)
-        parameter     ( MAXSH = 32, NSD = 3 , NSDSQ = 9)
-c
-c  The five types of region topology are  1= Tet, 2=Hex, 3= Wedge (tri-start),
-c                                         4= Wedge (quad-first) 5=pyramid
-c
-c  The two types of face topology are  1= tri, 2=quad
-c
-        parameter     ( MAXTOP = 6, MAXSURF=1000 )
-c
-c
-c...  The twelve different topological interface region are:
-c
-        parameter     ( MAXTOPIF = 12 )
-c
-c  sharing a tri face:
-c
-c  1= tet-tet 
-c  2= tet-pyramid
-c  3= tet-wedge
-c  4= pyramid-pyramid
-c  5= pyramid-wedge
-c  6= wedge-wedge
-c
-c  sharing a quad face:
-c
-c  7= pyramid-pyramid
-c  8= pyramid-wedge
-c  9= pyramid-hex
-c  10= wedge-wedge
-c  11= wedge-hex
-c  12= hex-hex
-c
-
 c
 c the common block nomodule holds all the things which have been removed
 c from different modules
@@ -116,20 +82,6 @@ c from different modules
 c 
 c.... common blocks
 c
-      parameter (MAXQPT = 125)
-c
-c.... common blocks for hierarchic basis functions
-c
-      common /intpt/  Qpt (MAXTOP ,4,MAXQPT), Qwt (MAXTOP ,MAXQPT), 
-     &                Qptb(MAXTOP,4,MAXQPT),  Qwtb(MAXTOP,MAXQPT), 
-     &                Qptif0(MAXTOPIF,4,MAXQPT), Qwtif0(MAXTOPIF,MAXQPT),
-     &                Qptif1(MAXTOPIF,4,MAXQPT), Qwtif1(MAXTOPIF,MAXQPT),
-     &                nint(MAXTOP),           nintb(MAXTOP),
-     &                nintif0(MAXTOPIF),       nintif1(MAXTOPIF),
-     &                ngauss,                 ngaussb,        ngaussif,
-     &                intp,
-     &                maxnint
- 
 c nsrflist is a binary switch that tells us if a given srfID should be
 c included in the consistent flux calculation.  It starts from zero
 c since we need to be able to handle/ignore surfaces with no srfID attached
@@ -146,13 +98,9 @@ c
 c
         common /astore/ a(100000)
 c
-        common /blkdat/ lcblk  (10,MAXBLK+1),
-     &                  lcblkb (10,MAXBLK+1),
-     &                  lcblkif(14,MAXBLK+1)
-c
         common /mbndnod/ mnodeb(9,8,3)
 c
-	      integer, target ::  nelblk, nelblb, nelblif, ntopsh, nlwork, nfath
+	      integer, target ::  ntopsh, nlwork, nfath
 c
 c...........................................................................
         common /ctrlvari/ iI2Binlet, isetOutPres, isetInitial
@@ -208,14 +156,6 @@ c
 c
         common /melmcat/ mcsyst, melCat, nenCat(8,3),    nfaCat(8,3)
 c
-        common /elmpar/ lelCat, lcsyst, iorder, nenb,   
-     &                  nelblk, nelblb, nelblif,
-     &                  ndofl,  nsymdl, nenl,   nfacel,
-     &                  nenl0,  nenl1,  lcsyst0, lcsyst1,
-     &                  nenbl,  intind, mattyp,
-     &                  mattyp0, mattyp1, 
-     &                  iftpid(MAXBLK)
-c
 
         integer EntropyPressure
 
@@ -235,7 +175,8 @@ c
      &                  LHSupd(6),  loctim(MAXTS),  deltol(MAXTS,2), 
      &                  leslib,     svLSFlag,   svLSType
 c
-        common /intdat/ intg(3,MAXTS),  intpt(3),       intptb(3)
+c
+       common /intdat/ intg(3,MAXTS),  intpt(3),       intptb(3)
 c
         common /mintpar/ indQpt(3,3,4),  numQpt(3,3,4),
      &                  intmax
@@ -338,14 +279,6 @@ c a(...)        : the blank array used for front-end data storage
 c
 c----------------------------------------------------------------------
 c
-c.... common /blkdat/   : blocking data
-c
-c lcblk  (10,MAXBLK+1) : blocking data for the interior elements
-c lcblkb (10,MAXBLK+1) : blocking data for the boundary elements
-c lcblkif (14,MAXBLK+1) : blocking data for the interface elements
-c
-c----------------------------------------------------------------------
-c
 c.... common /bndnod/   : boundary nodes of boundary elements
 c
 c mnodeb (9,8,3) : boundary nodes of each element category and dimension
@@ -370,29 +303,6 @@ c mcsyst        : maximum number of element coordinate system
 c melCat        : maximum number of element categories
 c nenCat (8,3)  : number of nodes for each category and dimension
 c nfaCat (8,3)  : number of faces for each category and dimension
-c
-c----------------------------------------------------------------------
-c
-c.... common /elmpar/   : element parameters
-c
-c lelCat        : element category (P1, Q1, P2, Q2, etc.)
-c lcsyst        : element coordinate system
-c iorder        : element order (=k for Pk and Qk)
-c nenb          : number of element nodes per boundary sides
-c maxsh         : total number integration points
-c maxshb        : total number integration points of boundary elements
-c nelblk        : number of element blocks
-c nelblb        : number of boundary element blocks
-c nelblif       : number of interface element blocks
-c ndofl         : number of degrees of freedom (for current block)
-c nsymdl        : number of d.o.f for symm. storage (for current block)
-c nenl          : number of element nodes (for current block)
-c nfacel        : number of element faces (for current block)
-c nenbl         : number of boundary element nodes
-c intind        : integration data index
-c nintg         : number of integration points
-c mattyp        : material type ( = 0 for fluid; = 1 for solid )
-c iftpid(MAXBLK): holds the interface topological combination
 c
 c----------------------------------------------------------------------
 c
@@ -441,7 +351,6 @@ c
 c intg  (2,MAXTS) : integration parameters
 c intpt (3)       : integration pointers
 c intptb(3)       : integration pointers of boundary elements
-c
 c----------------------------------------------------------------------
 c
 c.... common /shpdat/   : hierarchic shape function quadrature data

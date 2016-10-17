@@ -13,18 +13,19 @@ c
         type (r3d), dimension(MAXBLK2) ::  bdy_b_dot!time derivative of b on the boudary,added
         type (r3d), dimension(MAXBLK2) ::  bdy_b_af! b at time step n+af on the boudary,added
 c
+        integer, pointer :: is_solid(:)
+c
       contains
 c
-        subroutine alloc_solid(lcblk, lcblkb, nelblk, nelblb,
-     &                         nint,  nintb,  MAXTOP, i_iniSolid) !check
+        subroutine alloc_solid(i_iniSolid) !check
         use matdat_def_m
         use number_def_m
+        use elmpar_m
+        use blkdat_m
+        use intpt_m
         implicit none
 c
-        integer, dimension (10,nelblk+1) :: lcblk
-        integer, dimension (10,nelblb+1) :: lcblkb
-        integer, dimension (MAXTOP) :: nint, nintb
-        integer :: nelblk, nelblb, MAXTOP, i_iniSolid
+        integer :: i_iniSolid
 c
         integer :: mattyp_s, lcsyst_s, npro_s, ngauss_s
         integer :: mattyp_sb, lcsyst_sb, npro_sb, ngauss_sb
