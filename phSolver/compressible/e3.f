@@ -1,7 +1,7 @@
         subroutine e3 (yl,      ycl,     acl,     shp,
      &                 shgl,    xl,      rl,      rml,    xmudmi,
      &                 BDiagl,  ql,      sgn,     rlsl,   EGmass,
-     &                 rerrl,   ytargetl, mater,  uml)
+     &                 rerrl,   ytargetl, uml)
 c                                                                      
 c----------------------------------------------------------------------
 c
@@ -30,7 +30,7 @@ c  BDiagl (npro,nshl,nflow,nflow) : block-diagonal preconditioner
 c
 c
 c Note: This routine will calculate the element matrices for the
-c        Hulbert's generalized alpha method integrator
+c        Hulberts generalized alpha method integrator
 c
 c Note: nedof = nflow*nshape is the total number of degrees of freedom
 c       at each element node.
@@ -45,6 +45,8 @@ c Kenneth Jansen, Winter 1997. (Primitive Variables)
 c Chris Whiting, Winter 1998.  (LHS matrix formation)
 c----------------------------------------------------------------------
 c
+        use e3_param_m
+c
         include "common.h"
 c
         dimension yl(npro,nshl,nflow),     ycl(npro,nshl,ndof),
@@ -55,9 +57,9 @@ c
      &            rl(npro,nshl,nflow),     ql(npro,nshl,idflx),
      &            rml(npro,nshl,nflow),    xmudmi(npro,ngauss),
      &            BDiagl(npro,nshl,nflow,nflow),
-     &            EGmass(npro,nedof,nedof),cv(npro),
+     &            EGmass(npro,nedof,nedof),
+!     &            cv(npro),
      &            ytargetl(npro,nshl,nflow)
-        integer, intent(in) :: mater
 c
         dimension dui(npro,ndof),            aci(npro,ndof)
 c
@@ -67,11 +69,13 @@ c
 c
         dimension dxidx(npro,nsd,nsd),       WdetJ(npro)
 c
-        dimension rho(npro),                 pres(npro),
-     &            T(npro),                   ei(npro),
-     &            h(npro),                   alfap(npro),
-     &            betaT(npro),               DC(npro,ngauss),
-     &            cp(npro),                  rk(npro),
+c        dimension rho(npro),                 pres(npro),
+c     &            T(npro),                   ei(npro),
+c     &            h(npro),                   alfap(npro),
+c     &            betaT(npro),
+c     &            cp(npro),                  rk(npro),
+        
+        dimension DC(npro,ngauss),
      &            u1(npro),                  u2(npro),
      &            u3(npro),                  A0DC(npro,4),
      &            Sclr(npro),                dVdY(npro,15),
@@ -145,17 +149,18 @@ c
      &               xl,              dui,             aci,
      &               g1yi,            g2yi,            g3yi,
      &               shg,             dxidx,           WdetJ,
-     &               rho,             pres,            T,
-     &               ei,              h,               alfap,
-     &               betaT,           cp,              rk,
+!     &               rho,             pres,            T,
+!     &               ei,              h,               alfap,
+!     &               betaT,           cp,              rk,
      &               u1,              u2,              u3,              
      &               um1,             um2,             um3,
      &               ql,              divqi,           sgn,
      &               rLyi,  !passed as a work array
      &               rmu,             rlm,             rlm2mu,
      &               con,             rlsl,            rlsli,
-     &               xmudmi,          sforce,          cv,
-     &               mater,           uml,             divum   )
+     &               xmudmi,          sforce, 
+!     &               cv,
+     &               uml,             divum   )
         ttim(8) = ttim(8) + secs(0.0)
         
 c
@@ -163,7 +168,7 @@ c.... calculate the relevant matrices
 c
         ttim(9) = ttim(9) - secs(0.0)
         call e3mtrx (rho,             pres,           T,
-     &               ei,              h,              alfap,
+     &               ei,              h,              alphap,
      &               betaT,           cp,             rk,
      &               u1,              u2,             u3,
      &               um1,             um2,            um3,
@@ -199,8 +204,7 @@ c
      &               rmu,             rlm,             rlm2mu,
      &               u1,              u2,              u3,
      &               ri,              rmi,             stiff,
-     &               con,             rlsli,           compK,
-     &               T,               mater)
+     &               con,             rlsli,           compK)
         endif
         ttim(15) = ttim(15) + secs(0.0)
 c

@@ -37,7 +37,7 @@ c
 c.... read in and block all data
 c
         i_iniSolid = 0 !set the flag to be zero
-        call readnblk(i_iniSolid)
+        call readnblk
 c
 c.... open the echo file (echo closed at exit)
 c
@@ -149,9 +149,11 @@ c.... generate the spatial integration rules
 c
         call genint
         call genint_if
+c
 c.....allocate and initialize solid arrays
-c        call alloc_solid (lcblk, lcblkb, nelblk, nelblb,
-c     &                    nint,  nintb,  MAXTOP, i_iniSolid) !check
+c
+        if (solid_p%is_active)
+     &   call alloc_solid
 c.....
         ichem = 0
 c

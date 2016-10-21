@@ -80,7 +80,7 @@ c
         call e3  (ycl,     ycl,     acl,     shp,
      &            shgl,    xl,      rl,      rml,   xmudmi,
      &            BDiagl,  ql,      sgn,     rlsl,  EGmass,
-     &            rerrl,   ytargetl, mater,  uml)
+     &            rerrl,   ytargetl, uml)
 
         ttim(31) = ttim(31) + secs(0.0)
 c

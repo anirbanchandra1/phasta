@@ -1,10 +1,7 @@
-      module solid_m
+      module solid_data_m
 c
         use pointer_data
-c
         implicit none
-c
-        integer :: iblk_solid
 c
         type (r3d), dimension(MAXBLK2) ::  b !for solid,left Cauchy_green tensor,added
         type (r3d), dimension(MAXBLK2) ::  b_dot!time derivative of b,added
@@ -14,73 +11,90 @@ c
         type (r3d), dimension(MAXBLK2) ::  bdy_b_af! b at time step n+af on the boudary,added
 c
         integer, pointer :: is_solid(:)
+        integer, parameter :: b_size = 6
+c
+        type solid_t
+          logical :: is_active
+          integer :: nel
+          real*8, pointer :: b(:)
+        end type solid_t
+c
+        type(solid_t) :: solid_p
+c
+      end module solid_data_m
+c
+      module solid_m
+c
+        use solid_data_m
+        implicit none
 c
       contains
 c
-        subroutine alloc_solid(i_iniSolid) !check
-        use matdat_def_m
-        use number_def_m
-        use elmpar_m
-        use blkdat_m
-        use intpt_m
-        implicit none
+        subroutine alloc_solid
+          use matdat_def_m
+          use number_def_m
+          use elmpar_m
+          use blkdat_m
+          use intpt_m
+          implicit none
 c
-        integer :: i_iniSolid
-c
-        integer :: mattyp_s, lcsyst_s, npro_s, ngauss_s
-        integer :: mattyp_sb, lcsyst_sb, npro_sb, ngauss_sb
-        integer :: iblk
+          integer :: mattype, iblk, npro
 c
 c.... allocate space for solid arrays 
  
-       blocks_loop: do iblk = 1, nelblk
-         mattyp_s = lcblk(7,iblk)
-         lcsyst_s = lcblk(3,iblk)
-         ngauss_s = nint(lcsyst_s)
-         npro_s = lcblk(1,iblk+1) - lcblk(1,iblk)
-!for solid block only
-         if (mat_eos(mattyp_s,1).eq.ieos_solid_1)then
-           allocate (b(iblk)%p(npro_s,ngauss_s,6))!for solid
-           allocate (b_dot(iblk)%p(npro_s,ngauss_s,6)) !for solid
-           allocate (b_af(iblk)%p(npro_s,ngauss_s,6)) !for solid
-c......... these arrays need initialization
-           if (i_iniSolid .eq. 1)then
-              b(iblk)%p    = zero 
-              b_dot(iblk)%p = zero
-              b(iblk)%p(:,:,1)= one
-              b(iblk)%p(:,:,2)= one
-              b(iblk)%p(:,:,3)= one
-              b_af(iblk)%p = b(iblk)%p
-           endif
+          blocks_loop: do iblk = 1, nelblk
 c
-          endif
+            mattype = lcblk(i_mattype,iblk)
+            lcsyst = lcblk(3,iblk)
+            ngauss = nint(lcsyst)
+            npro = lcblk(1,iblk+1) - lcblk(1,iblk)
+c
+            if (mat_eos(mattype,1).eq.ieos_solid_1)then
+c
+              allocate (b(iblk)%p(npro,ngauss,b_size))
+              allocate (b_dot(iblk)%p(npro,ngauss,b_size))
+              allocate (b_af(iblk)%p(npro,ngauss,b_size))
+c
+              if (associated(solid_p%b)) then
+c
+              else
+c
+                b(iblk)%p(:,:,:)= one
+                b_af(iblk)%p(:,:,:) = one
+c
+              endif
+            else
+              cycle   
+            endif
+c
+          enddo blocks_loop
+c
+          boundary_blocks_loop: do iblk = 1, nelblb
+c
+            mattype = lcblkb(i_mattype,iblk)
+            lcsyst = lcblkb(3,iblk)
+            ngauss = nintb(lcsyst)
+            npro = lcblkb(1,iblk+1) - lcblkb(1,iblk)
+c
+            if (mat_eos(mattype,1).eq.ieos_solid_1)then
+c
+              allocate (bdy_b(iblk)%p(npro,ngaussb,b_size))
+              allocate (bdy_b_dot(iblk)%p(npro,ngaussb,b_size))
+              allocate (bdy_b_af(iblk)%p(npro,ngaussb,b_size))
+c
+              if (associated(solid_p%b)) then
+c
+              else
+c
+                bdy_b(iblk)%p(:,:,:)= one
+                bdy_b_af(iblk)%p(:,:,:) = one
+c
+              endif
+            else
+              cycle
+            endif
 c..
-      enddo blocks_loop
-c
-c
-      boundary_ blocks_loop: do iblk = 1, nelblb
-         mattyp_sb = lcblkb(7,iblk)
-         lcsyst_sb = lcblkb(3,iblk)
-         ngauss_sb = nintb(lcsyst_sb)
-         npro_sb = lcblkb(1,iblk+1) - lcblkb(1,iblk)
-!for solid block only
-         if (mat_eos(mattyp_sb,1).eq.ieos_solid_1)then
-           allocate (bdy_b(iblk)%p(npro_sb,ngauss_sb,6))!for solid
-           allocate (bdy_b_dot(iblk)%p(npro_sb,ngauss_sb,6)) !for solid
-           allocate (bdy_b_af(iblk)%p(npro_sb,ngauss_sb,6)) !for solid
-c......... these arrays need initialization
-           if (i_iniSolid .eq. 1)then
-             bdy_b(iblk)%p    = zero
-             bdy_b_dot(iblk)%p = zero
-             bdy_b(iblk)%p(:,:,1)= one
-             bdy_b(iblk)%p(:,:,2)= one
-             bdy_b(iblk)%p(:,:,3)= one
-             bdy_b_af(iblk)%p = bdy_b(iblk)%p
-           endif
-c
-          endif
-c..
-      enddo boundary_blocks_loop
+          enddo boundary_blocks_loop
 c
         end subroutine alloc_solid
 c

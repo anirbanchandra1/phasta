@@ -1,10 +1,9 @@
       module matdat_def_m
 c
+        use global_const_m
+c
         implicit none
 c
-        integer, parameter :: MAXMAT  = 6
-     &,                       MAXPROP = 10
-     &,                       MAXTS   = 100
         integer :: nummat
      &,            matflg(MAXMAT,MAXTS)
      &,            mat_tag(MAXMAT,MAXTS)

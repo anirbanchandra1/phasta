@@ -3,8 +3,7 @@
      &                     rmu,     rlm,     rlm2mu,
      &                     u1,      u2,      u3,      
      &                     ri,      rmi,     stiff,
-     &                     con,     rlsli,   compK, 
-     &                     T,       mater)
+     &                     con,     rlsli,   compK)
 c
 c----------------------------------------------------------------------
 c
@@ -23,7 +22,7 @@ c  rlm    (npro)              : Lambda
 c  rlm2mu (npro)              : Lambda + 2 Mu
 c  con    (npro)              : Conductivity
 c  cp     (npro)              : specific heat at constant pressure
-c  rlsli  (npro,6)              : Resolved Reynold's stresses
+c  rlsli  (npro,6)            : Resolved Reynolds stresses
 c output:
 c  ri     (npro,nflow*(nsd+1)) : partial residual
 c  rmi    (npro,nflow*(nsd+1)) : partial modified residual
@@ -36,7 +35,8 @@ c Zdenek Johan, Winter 1991. (Fortran 90)
 c Kenneth Jansen, Winter 1997 Primitive Variables
 c----------------------------------------------------------------------
 c
-      use solid_def_m
+      use e3_param_m
+      use e3_solid_m
       use solid_m
 c
       include "common.h"
@@ -47,7 +47,7 @@ c
      &     g3yi(npro,nflow),   
      &     Sclr(npro),                dxidx(npro,nsd,nsd),
      &     u1(npro),                  u2(npro),
-     &     u3(npro),                  rho(npro),
+     &     u3(npro),
      &     ri(npro,nflow*(nsd+1)),     rmi(npro,nflow*(nsd+1))
 c
 c
@@ -56,13 +56,12 @@ c
      &     stiff(npro,3*nflow,3*nflow),
      &     rlsli(npro,6),                  compK(npro,10),
      &     f1(npro), f2(npro), f3(npro), f4(npro), 
-     &     f5(npro), f6(npro),  T(npro), rk(npro) 
+     &     f5(npro), f6(npro)
+c     &,     rk(npro) 
 c.....Used for solid calculation
       real*8, dimension(npro) :: d_temp1,d_temp2,d_temp3
       real*8, dimension(npro,6) :: bq_af
 c.....
-      integer,intent(in) :: mater
-  
       ttim(23) = ttim(23) - secs(0.0)
 c
 c... dynamic model is now being accounted for in getdiff.f

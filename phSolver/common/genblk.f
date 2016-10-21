@@ -12,6 +12,7 @@ c
         use phio
         use iso_c_binding
         use mattype_m
+        use matdat_def_m
         include "common.h"
         include "mpif.h" !Required to determine the max for itpblk
 
@@ -151,6 +152,8 @@ c
                    iptr = iptr + 1
                    if (npro == ibksz .or. iptr > neltp) exit
                  enddo
+c
+                 if (npro == 0) cycle material_loop
 c
                  nelblk = nelblk + 1
                  lcblk(1,nelblk)  = iel

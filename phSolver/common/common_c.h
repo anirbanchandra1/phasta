@@ -526,8 +526,9 @@ extern "C" {
   } e3if_dat;
 
   extern struct { 
-    double pr, Planck, Stephan, Nh, Rh, Rgas;
-    double gamma, gamma1, s0;
+    double Rgas, gamma, gamma1, mw;
+    double pr;
+    /* double pr, Planck, Stephan, Nh, Rh, Rgas;*/
     /*, const, xN2, xO2;*/
     /*double yN2,    yO2,    Msh[5], cpsh[5],s0sh[5],h0sh[5];*/
     /*double Rs[5],  cps[5], cvs[5], h0s[5], Trot[5],sigs[5];*/

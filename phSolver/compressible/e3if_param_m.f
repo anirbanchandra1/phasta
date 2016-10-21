@@ -1,8 +1,13 @@
-      module e3if_defs_m
+      module e3if_param_m
 c
-        use e3_def_m
+        use e3_param_m
         use number_def_m
         use pointer_data
+        use elmpar_m
+        use shpdat_m
+        use conpar_m
+        use genpar_m
+        use propar_m
 c
         implicit none
 c
@@ -79,11 +84,11 @@ c
         type(prop_t), dimension(:), pointer :: prop0, prop1
         type(element_t), dimension(:), pointer :: e0, e1
 c
-        integer :: gbytes, sbytes, flops
+        procedure(getthm2), pointer :: getthmif0_ptr, getthmif1_ptr
 c
       contains
 c
-        subroutine     malloc_e3if
+        subroutine e3if_malloc
 c
           integer :: i
 c
@@ -142,9 +147,9 @@ c
 c
           allocate(kappa0(npro),kappa1(npro))
 c
-        end subroutine malloc_e3if
+        end subroutine e3if_malloc
 c
-        subroutine     mfree_e3if
+        subroutine e3if_mfree
 c
           integer :: i
 c
@@ -190,6 +195,6 @@ c
 c
           deallocate(kappa0,kappa1)
 c
-        end subroutine mfree_e3if
+        end subroutine e3if_mfree
 c
-      end module e3if_defs_m
+      end module e3if_param_m

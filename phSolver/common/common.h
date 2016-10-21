@@ -10,15 +10,23 @@ c Zdenek Johan, Winter 1991.  (Fortran 90)
 c----------------------------------------------------------------------
 c
       use mpi_def_m
-      use global_const_m
       use number_def_m
+      use matdat_def_m
+      use e3if_inp_m
+      use global_const_m
       use conpar_m
-      use time_m
+      use timdat_m
       use elmpar_m
       use blkdat_m
       use intpt_m
-      use matdat_def_m
-      use e3if_inp_m
+      use shpdat_m
+      use genpar_m
+      use inpdat_m
+      use propar_m
+      use mmatpar_m
+      use mtimer1_m
+      use mtimer2_m
+      use timer3_m
 
 	IMPLICIT REAL*8 (a-h,o-z)
 c
@@ -100,7 +108,7 @@ c
 c
         common /mbndnod/ mnodeb(9,8,3)
 c
-	      integer, target ::  ntopsh, nlwork, nfath
+	      integer, target ::  nlwork
 c
 c...........................................................................
         common /ctrlvari/ iI2Binlet, isetOutPres, isetInitial
@@ -147,34 +155,10 @@ c
      &                   ivconstraint, iExpLSSclr1, iExpLSSclr2
 
 c 
-        common /shpdat/ nshape, nshapeb, nshapeif, maxshb,
-     &                  nshl, nshlb, nshl0, nshl1,      ! nshl0,1 for interface
-     &                  nfath,  ntopsh,  nsonmax
-c
         common /datpnt/ mshp,   mshgl,  mwght,  mshpb,  mshglb, mwghtb,
      &                  mmut,   mrhot,  mxst
 c
         common /melmcat/ mcsyst, melCat, nenCat(8,3),    nfaCat(8,3)
-c
-
-        integer EntropyPressure
-
-        common /genpar/ E3nsd,  I3nsd,  nsymdf, ndofBC, ndiBCB, ndBCB,
-     &                  Jactyp, jump,   ires,   iprec,  iprev,  ibound,
-     &                  idiff,  lhs,    itau,   ipord,  ipred,  lstres,
-     &                  iepstm, dtsfct, taucfct, ibksiz, iabc, isurf,
-     &                  idflx,  Bo,     EntropyPressure, irampViscOutlet,
-     &                  istretchOutlet, iremoveStabTimeTerm, iLHScond,
-     &                  ndofBC2
-c
-        integer :: svLSType, svLSFlag
-        common /inpdat/ epstol(6),  Delt(MAXTS),    CFLfl(MAXTS),
-     &                  CFLsl(MAXTS),   nstep(MAXTS),   niter(MAXTS),
-     &                  impl(MAXTS),    rhoinf(MAXTS),  rhoinfS(MAXTS),
-     &                  rhoinf_B(MAXTS),
-     &                  LHSupd(6),  loctim(MAXTS),  deltol(MAXTS,2), 
-     &                  leslib,     svLSFlag,   svLSType
-c
 c
        common /intdat/ intg(3,MAXTS),  intpt(3),       intptb(3)
 c
@@ -196,14 +180,6 @@ c /*         common /andres/ fwr1,ngaussf,idim,nlist */
 c
         common /itrpar/ eGMRES, lGMRES, lGMRESs, iKs, iKss,    ntotGM, ntotGMs
 c
-        REAL*8          Nh, Msh
-        common /mmatpar/ pr,     Planck, Stefan, Nh,     Rh,     Rgas,
-     &                  gamma,  gamma1, s0,     const,  xN2,    xO2,
-     &                  yN2,    yO2,    Msh(5), cpsh(5),s0sh(5),h0sh(5),
-     &                  Rs(5),  cps(5), cvs(5), h0s(5), Trot(5),sigs(5),
-     &                  Tvib(5),g0s(5), dofs(5),ithm
-c
-
         integer input_mode, output_mode
         common /outpar/ ro,     vel,    temper, press,  entrop, ntout,
      &                  ioform, iowflux, iofieldv, iotype, ioybar,
@@ -216,8 +192,6 @@ c
         common /point / mbeg,   mend,   mprec
 c
         common /precis/ epsM,   iabres
-c
-        common /propar/ npro
 c
         common /resdat/ resfrt, resfrts
 c
@@ -232,15 +206,6 @@ c
      &                  iprjFlag,     nPrjs,    ipresPrjFlag, nPresPrjs,
      &                  prestol,      statsflow(6), statssclr(6),
      &                  iverbose
-c
-        character(8) :: ccode(13)
-        common /mtimer1/ ccode
-c
-        integer       flops,  gbytes, sbytes
-        common /mtimer2/ flops,  gbytes, sbytes, iclock, icd,    icode,
-     &                  icode2, icode3
-c
-        common /timer3/ cpu(11),        cpu0(11),       nacess(11)
 c
         character*80    title,  ititle
         common /title / title,  ititle
@@ -303,46 +268,6 @@ c mcsyst        : maximum number of element coordinate system
 c melCat        : maximum number of element categories
 c nenCat (8,3)  : number of nodes for each category and dimension
 c nfaCat (8,3)  : number of faces for each category and dimension
-c
-c----------------------------------------------------------------------
-c
-c.... common /genpar/   : control parameters
-c
-c E3nsd         : NSD .eq. 3 flag; 0. for 2D, 1. for 3D
-c I3nsd         : NSD .eq. 3 flag; 0  for 2D, 1  for 3D
-c nsymdf        : number of d.o.f.'s in symm. storage (= ndof*(ndof+1)/2)
-c ndofBC        : dimension size of the boundary condition array BC
-c ndiBCB        : dimension size of the boundary condition array iBCB
-c ndBCB         : dimension size of the boundary condition array BCB
-c Jactyp        : Jacobian type flag
-c jump          : jump term computation flag
-c ires          : residual type computation flag
-c iprec         : block-diagonal preconditioner flag
-c iprev         : ypl array allocation flag
-c ibound        : boundary element flag
-c idiff         : diffusive flux vector flag
-c                 ( = 0 not used; = 1 global reconstruction )
-c itau          : type of tau to be used
-c iLHScond      : add contributiosn from the heat flux BC to the LHS 
-c                 tangency matrix. 
-c ndofBC2       : dimension size of the boundary condition array BC before constraint
-c
-c----------------------------------------------------------------------
-c
-c.... common /inpdat/   : time sequence input data
-c
-c epstol (MAXTS)  : tolerance for GMRES solvers
-c Delt   (MAXTS)  : global time step
-c CFLfl  (MAXTS)  : CFL number for fluid flow
-c CFLsl  (MAXTS)  : CFL number for structural heating
-c nstep  (MAXTS)  : number of time steps
-c niter  (MAXTS)  : number of iterations per time step
-c impl   (MAXTS)  : solver flag
-c iturb  (MAXTS)  : turbulence model flag
-c rhoinf (MAXTS)  : time integration spectral radius paramter
-c                             (0=Gears       1= trapezoidal rule)
-c LHSupd (MAXTS)  : LHS/preconditioner update
-c loctim (MAXTS)  : local time stepping flag
 c
 c----------------------------------------------------------------------
 c
@@ -498,12 +423,6 @@ c.... common /precis/   : finite difference interval data
 c
 c epsM          : square root of machine precision
 c iabres        : absolute value residual flag
-c
-c----------------------------------------------------------------------
-c
-c....common /propar/    : processor related information
-c
-c npro          : number of virtual processors for the current block
 c
 c----------------------------------------------------------------------
 c

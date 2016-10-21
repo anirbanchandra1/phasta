@@ -14,7 +14,7 @@ c
           real*8, dimension(MAXTOPIF, nsd, maxsh, MAXQPT), intent(out) :: shgif0  ! shape function gradient 
           real*8, dimension(MAXTOPIF, nsd, maxsh, MAXQPT), intent(out) :: shgif1  ! shape function gradient 
 c
-          integer :: i, iblk, id, nshl0, nshl1
+          integer :: i, iblk, id
 c
 c... loop over the interface blocks and 
 c    generate shape functions and gradients

@@ -1,18 +1,28 @@
       module e3metric_m
 c
-        use e3if_defs_m
+        use mpi_def_m
+        use global_const_m
+        use propar_m
+        use number_def_m
 c
         implicit none
 c
       contains
 c
-      subroutine e3metric(shg, dxdxi,shgl,xl)
+      subroutine e3metric(shg,shgl,xl)
 c
-        real*8, dimension(:,:,:), pointer, intent(out) :: dxdxi, shg
+        implicit none
+c
+        real*8, dimension(:,:,:), pointer, intent(out) :: shg
         real*8, dimension(:,:,:), pointer, intent(in)  :: xl, shgl
 c
-        integer :: n, nshl
-        real*8  :: dxidx(npro,nsd,nsd), WdetJ(npro), tmp(npro)
+        real*8, dimension(:,:,:), allocatable  :: dxdxi, dxidx
+        real*8, dimension(npro)  :: tmp
+c
+        integer :: n, nshl, err0,err1
+c        real*8  :: WdetJ(npro)
+c
+        allocate(dxdxi(npro,nsd,nsd),dxidx(npro,nsd,nsd))
 c
         call calc_deform_grad(dxdxi,xl,shgl)
 c
@@ -60,21 +70,23 @@ c
      &                 shgl(:,2,n) * dxidx(:,2,3) +
      &                 shgl(:,3,n) * dxidx(:,3,3) 
        enddo
-
+c
+       deallocate(dxdxi,stat=err0)
+       deallocate(dxidx,stat=err1)
+c      print*, myrank,npro,nsd,err0,err1
+c
        return
 c
       end subroutine e3metric      
 c
       subroutine calc_deform_grad(dxdxi,xl,shgl)
 c
-        real*8, dimension(:,:,:), intent(out) :: dxdxi
+        real*8, dimension(npro,nsd,nsd), intent(out) :: dxdxi
         real*8, dimension(:,:,:), intent(in)  :: xl, shgl
 c
-        integer :: npro,nenl,nsd,n,i,j
+        integer :: nenl,n,i,j
 c
-        npro = size(xl,1)
         nenl = size(xl,2)
-        nsd  = size(xl,3)
 c
         dxdxi = zero
 c
