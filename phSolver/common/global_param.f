@@ -78,12 +78,9 @@ c
 c----------------------------------------------------------------------
 c
       module conpar_m
-c
         use iso_c_binding
-c
         implicit none
-c
-        integer, target :: numnp, numel,  numelb, numelif,
+        integer(c_int), target :: numnp, numel,  numelb, numelif,
      &                  numpbc,   nen,    nfaces,
      &                  numflx,   ndof,   iALE, iSOLID,
      &                  icoord,   navier,
@@ -91,7 +88,6 @@ c
      &                  ndofelas, nshg,   nnz,    istop,  nflow,  nelas, 
      &                  nnz_tot,  idtn,
      &                  ncorpsize, iownnodes, usingpetsc
-c
         common /conpar/ numnp, numel,  numelb, numelif,
      &                  numpbc,   nen,    nfaces,
      &                  numflx,   ndof,   iALE, iSOLID,
@@ -100,7 +96,6 @@ c
      &                  ndofelas, nshg,   nnz,    istop,  nflow,  nelas, 
      &                  nnz_tot,  idtn,
      &                  ncorpsize, iownnodes, usingpetsc
-c
       end module conpar_m
 c
 c----------------------------------------------------------------------
@@ -124,18 +119,15 @@ c
       module timdat_m
         use iso_c_binding
         implicit none
-c
-        integer :: lstep, ifunc, itseq, istep, iter, nitr, iCFLworst, lskeep
-        real*8 :: time, CFLfld, CFLsld, Dtgl, Dtmax, alpha, etol,
+        integer(c_int) :: lstep, ifunc, itseq, istep, iter, nitr, iCFLworst, lskeep
+        real(c_double) :: time, CFLfld, CFLsld, Dtgl, Dtmax, alpha, etol,
      &            almi, alfi, gami, almBi, alfBi, gamBi, flmpl, flmpr, dtol(2)
-c
         common /timdat/ time,   CFLfld, CFLsld, Dtgl,   Dtmax,  alpha,
      &                  etol,   lstep,  ifunc,  itseq,  istep,  iter,
      &                  nitr,   almi,   alfi,   gami,   
      &                  almBi,  alfBi,  gamBi,
      &                  flmpl,  flmpr,
      &                  dtol, iCFLworst, lskeep
-c
       end module timdat_m
 c
 c----------------------------------------------------------------------
@@ -193,16 +185,12 @@ c lcblkb (10,MAXBLK+1) : blocking data for the boundary elements
 c lcblkif (14,MAXBLK+1) : blocking data for the interface elements
 c
       module blkdat_m
-c
         use global_const_m
         implicit none
-c
         integer, parameter :: i_mattype = 7
-c
         integer :: lcblk  (10,MAXBLK+1),
      &             lcblkb (10,MAXBLK+1),
      &             lcblkif(14,MAXBLK+1)
-c
       end module blkdat_m
 c
 c----------------------------------------------------------------------
