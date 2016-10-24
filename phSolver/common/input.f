@@ -22,8 +22,6 @@ c
         character*8  date
         character*80 card
 c
-        integer :: i_iniSolid !solid initialization flag
-c
 c assigned in phasta.cc
 c        numpe=npe
 c        myrank=mrank
@@ -36,8 +34,7 @@ c        myrank=mrank
 c
 c.... read in and block all data
 c
-        i_iniSolid = 0 !set the flag to be zero
-        call readnblk
+        call readnblk()
 c
 c.... open the echo file (echo closed at exit)
 c

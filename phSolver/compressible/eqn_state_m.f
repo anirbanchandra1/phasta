@@ -129,6 +129,7 @@ c
         cp   => cp0
         alphaP => alfaP0
         betaT => betaT0
+        mater = mater0
 c
         call getthmif0_ptr
 c
@@ -140,6 +141,7 @@ c
         cp   => cp1
         alphaP => alfaP1
         betaT => betaT1
+        mater = mater1
 c
         call getthmif1_ptr
 c

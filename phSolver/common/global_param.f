@@ -208,7 +208,6 @@ c
 c----------------------------------------------------------------------
 c
       module intpt_m
-c
         use global_const_m
         implicit none
 c
@@ -223,7 +222,6 @@ c
      &                ngauss,                 ngaussb,        ngaussif,
      &                intp,
      &                maxnint
-c
       end module intpt_m
 c
       module shpdat_m
@@ -336,7 +334,7 @@ c
      &                    yN2,    yO2,    Msh(5), cpsh(5),s0sh(5),h0sh(5),
      &                    Rs(5),  cps(5), cvs(5), h0s(5), Trot(5),sigs(5),
      &                    Tvib(5),g0s(5), dofs(5),ithm
-        common /mmatpar/ Rgas, gamma, gamma1, mw 
+        common /mmatpar/ Rgas, gamma, gamma1, mw, pr
       end module mmatpar_m
 c
       module mtimer1_m

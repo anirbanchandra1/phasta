@@ -706,6 +706,7 @@ c
         endif
 c
         if_normal = zero
+        if_kappa  = zero
 c
         if_blocks1: do iblk = 1, nelblif
 c
