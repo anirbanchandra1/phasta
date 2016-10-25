@@ -1,6 +1,6 @@
       module if_velocity_m
 c
-        use mpi_def_m
+        use workfc_m
         use number_def_m
         use pointer_data
 c

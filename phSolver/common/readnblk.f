@@ -39,7 +39,7 @@ c
       use syncio
       use posixio
       use streamio
-      use solid_data_m
+      use solid_m
       include "common.h"
 
       real*8, target, allocatable :: xread(:,:), qread(:,:), acread(:,:)
@@ -540,23 +540,8 @@ c
 c
 c... read solid part
 c
-      nullify(solid_p%b)
+      call read_restart_solid
 c
-      intfromfile=0
-      call phio_readheader(fhandle,
-     & c_char_'solid b' // char(0),
-     & c_loc(intfromfile), ione, dataInt, iotype)
-      if (intfromfile(1) > 0) then
-        solid_p%is_active = .true.
-        solid_p%nel = intfromfile(1)
-        allocate(solid_p%b(intfromfile(1)*b_size))
-        call phio_readdatablock(fhandle,
-     &   c_char_'solid b' // char(0),
-     &   c_loc(solid_p%b), intfromfile(1)*b_size, dataDbl, iotype)
-      endif
-c
-      if (any(mat_eos(:,1) .eq. ieos_solid_1)) 
-     &  solid_p%is_active = .true.
 c
 c read in ALE stuff
 c read in coordinate at n time step      

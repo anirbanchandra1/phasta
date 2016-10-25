@@ -9,7 +9,6 @@ c
 c Zdenek Johan, Winter 1991.  (Fortran 90)
 c----------------------------------------------------------------------
 c
-      use mpi_def_m
       use number_def_m
       use matdat_def_m
       use dgifinp_m
@@ -27,6 +26,8 @@ c
       use mtimer1_m
       use mtimer2_m
       use timer3_m
+      use outpar_m
+      use workfc_m
 
 	IMPLICIT REAL*8 (a-h,o-z)
 c
@@ -173,22 +174,13 @@ c /*         common /andres/ fwr1,ngaussf,idim,nlist */
 
         character*80    fin,    fgeom,  fpar,   fbndc,  fmat,   fecho,
      &                  frstin, frstou, fhist,  ferror, ftable, fforce,
-     &                  fgraph, ftime,  iotype     
+     &                  fgraph, ftime
         common /mioname/ fin,    fgeom,  fpar,   fbndc,  fmat,   fecho,
      &                  frstin, frstou, fhist,  ferror, ftable, fforce,
      &                  fgraph, ftime
 c
         common /itrpar/ eGMRES, lGMRES, lGMRESs, iKs, iKss,    ntotGM, ntotGMs
 c
-        integer input_mode, output_mode
-        common /outpar/ ro,     vel,    temper, press,  entrop, ntout,
-     &                  ioform, iowflux, iofieldv, iotype, ioybar,
-     &                  nstepsincycle, nphasesincycle, 
-     &                  ncycles_startphaseavg, ivort, icomputevort,
-     &                  nsynciofiles, nsynciofieldswriterestart, 
-     &                  iv_rankpercore, iv_corepernode, 
-     &                  input_mode, output_mode
-
         common /point / mbeg,   mend,   mprec
 c
         common /precis/ epsM,   iabres
@@ -396,18 +388,6 @@ c datmat (3,5,2) : material data
 c matflg (5,100)   : material type flag
 c nummat           : number of materials
 c mexist           : flag indicating the presence of MATERIAL.DAT
-c
-c----------------------------------------------------------------------
-c
-c.... common /outpar/   : output parameters
-c
-c ro            : density     rescaling factor for output
-c vel           : velocity    rescaling factor for output
-c temper        : temperature rescaling factor for output
-c press         : pressure    rescaling factor for output
-c entrop        : entropy     rescaling factor for output
-c ntout         : number of steps between consecutive printouts
-c ioform        : output I/O format
 c
 c----------------------------------------------------------------------
 c

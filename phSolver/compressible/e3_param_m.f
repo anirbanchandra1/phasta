@@ -28,7 +28,6 @@ c
 c
         procedure(e3_malloc), pointer :: e3_malloc_ptr
         procedure(e3_mfree), pointer :: e3_mfree_ptr
-c
         procedure(getthm2), pointer :: getthm6_ptr, getthm7_ptr
 c
         contains
