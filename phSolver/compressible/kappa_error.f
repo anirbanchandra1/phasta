@@ -3,7 +3,7 @@ c
 #define case 1 
 c
         use pointer_data
-        use mpi_def_m
+        use workfc_m
         use if_global_m
 c
         implicit none

@@ -149,8 +149,6 @@ c
 c
 c.....allocate and initialize solid arrays
 c
-        solid_p%is_active = any(mat_eos(:,1) .eq. ieos_solid_1)
-c
         if (solid_p%is_active)
      &   call malloc_solid
 c.....
