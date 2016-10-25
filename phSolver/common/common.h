@@ -12,7 +12,7 @@ c
       use mpi_def_m
       use number_def_m
       use matdat_def_m
-      use e3if_inp_m
+      use dgifinp_m
       use global_const_m
       use conpar_m
       use timdat_m

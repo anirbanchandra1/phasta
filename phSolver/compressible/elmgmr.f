@@ -328,7 +328,7 @@ c
      &     materif0, materif1,
      &     time_
      &    )
-            use e3if_inp_m
+            use dgifinp_m
             use e3if_param_m
             implicit none
             real*8, dimension(:,:,:), allocatable, target, intent(in) :: egmassif00,egmassif01,egmassif10,egmassif11

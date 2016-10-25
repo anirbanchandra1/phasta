@@ -33,7 +33,7 @@ c
      &    time_
      &  )
 c
-          use e3if_inp_m
+          use dgifinp_m
           use e3if_param_m
 c
           implicit none

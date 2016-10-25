@@ -37,7 +37,7 @@
 #define itrpar FortranCInterface_GLOBAL_(itrpar,ITRPAR)
 #define itrpnt FortranCInterface_GLOBAL_(itrpnt,ITRPNT)
 #define matdat FortranCInterface_GLOBAL_(matdat,MATDAT)
-#define e3if_dat FortranCInterface_GLOBAL_(e3if_dat,E3IF_DAT)
+#define dgifinp FortranCInterface_GLOBAL_(dgifinp,DGIFINP)
 #define mmatpar FortranCInterface_GLOBAL_(mmatpar,MMATPAR)
 #define outpar FortranCInterface_GLOBAL_(outpar,OUTPAR)
 #define point FortranCInterface_GLOBAL_(point,POINT)
@@ -96,10 +96,10 @@
 #define ieos_liquid_1  3
 #define ieos_solid_1 10
 
+#define idg_const_vi 1
+#define idg_vieilles_burning 2
 #define idg_no_ramp 1
 #define idg_linear_ramp 2
-#define idg_const_vi 1
-#define idg_vi_model1 2
 
 #ifdef __cplusplus
 extern "C" {
@@ -514,16 +514,15 @@ extern "C" {
   } matdat ;
 
   extern struct {
+    int phase_change_model;
     int vi_ramping;
-    int vi_model;
     double ramp_time;
     double vi_mag;
-    double dgif_alpha;
-    double dgif_beta;
     double s;
     double e;
     double h;
-  } e3if_dat;
+    double burn_rate_exp, burn_rate_coeff;
+  } dgifinp;
 
   extern struct { 
     double Rgas, gamma, gamma1, mw;

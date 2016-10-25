@@ -1,6 +1,6 @@
       module e3if_vi_m
 c
-        use e3if_inp_m
+        use dgifinp_m
         use e3if_param_m
 c
         implicit none
@@ -14,32 +14,38 @@ c
         integer :: isd
         real*8 :: vimag,v1,t1,c1
 c
-        select case (vi_model)
-        case (const_vi)
-          vimag = vi_mag
-        case default
-          call error ('ERROR in e3if_vi:',' vi_model is not supported.',vi_model)
-        end select
-c
         select case (vi_ramping)
         case (no_ramp)
-          c1 = vimag
+          c1 = one
         case (linear_ramp)
           t1 = ramp_time
           v1 = vimag
 c
           if (time <= t1) then
-            c1 = v1*time/t1
+            c1 = time/t1
           else
-            c1 = v1
+            c1 = one
           endif
         case default
           call error ('ERROR in e3if_vi:',' vi_ramping is not supported,',vi_ramping)
         end select
 c
-        do isd = 1,nsd
-          vi(:,isd) = c1*n(:,isd) + u(:,isd)
-        enddo
+        select case (phase_change_model)
+        case (const_vi)
+          vi = vi_mag * n
+        case (vieilles_burning)
+          vi(:,1) = burn_rate_coeff*p**burn_rate_exp * n(:,1)
+          vi(:,2) = burn_rate_coeff*p**burn_rate_exp * n(:,2)
+          vi(:,3) = burn_rate_coeff*p**burn_rate_exp * n(:,3)
+        case default
+          call error ('ERROR in e3if_vi:',' phase_change_model is not supported.',phase_change_model)
+        end select
+c
+c... add flow velocity
+c
+        vi(:,1) = c1*vi(:,1) + u(:,1)
+        vi(:,2) = c1*vi(:,2) + u(:,2)
+        vi(:,3) = c1*vi(:,3) + u(:,3)
 c
       end subroutine calc_vi
 c
