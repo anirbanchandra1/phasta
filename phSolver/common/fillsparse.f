@@ -239,7 +239,7 @@ c
      &    npro, nedof,
      &    nflow,nshg,nnz,nnz_tot)
 c
-        use mpi_def_m
+        use workfc_m
 c
         implicit none
 c

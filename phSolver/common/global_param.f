@@ -346,3 +346,39 @@ c
         real(c_double) :: cpu(11), cpu0(11)
         common /timer3/ cpu,cpu0,nacess
       end module timer3_m
+c
+c----------------------------------------------------------------------
+c
+c.... common /outpar/   : output parameters
+c
+c ro            : density     rescaling factor for output
+c vel           : velocity    rescaling factor for output
+c temper        : temperature rescaling factor for output
+c press         : pressure    rescaling factor for output
+c entrop        : entropy     rescaling factor for output
+c ntout         : number of steps between consecutive printouts
+c ioform        : output I/O format
+c
+      module outpar_m
+        use iso_c_binding
+        implicit none
+        integer(c_int) :: ntout,ioform,iowflux,iofieldv,ioybar,nstepsincycle,nphasesincycle,
+     &    ncycles_startphaseavg,ivort,icomputevort,nsynciofiles,nsynciofieldswriterestart,
+     &    iv_rankpercore,iv_corepernode,input_mode,output_mode
+        real(c_double) :: ro,vel,temper,press,entrop
+        character(len=80) :: iotype
+        common /outpar/ ro,     vel,    temper, press,  entrop, ntout,
+     &                  ioform, iowflux, iofieldv, iotype, ioybar,
+     &                  nstepsincycle, nphasesincycle, 
+     &                  ncycles_startphaseavg, ivort, icomputevort,
+     &                  nsynciofiles, nsynciofieldswriterestart, 
+     &                  iv_rankpercore, iv_corepernode, 
+     &                  input_mode, output_mode
+      end module outpar_m
+c
+      module workfc_m
+        use iso_c_binding
+        implicit none
+        integer(c_int) :: master, numpe, myrank
+	      common /workfc/ master, numpe, myrank
+      end module workfc_m

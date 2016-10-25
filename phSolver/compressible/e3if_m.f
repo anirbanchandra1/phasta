@@ -1,6 +1,6 @@
       module e3if_m
 c
-        use mpi_def_m
+        use workfc_m
         use hierarchic_m
         use matdat_def_m
         use e3if_param_m

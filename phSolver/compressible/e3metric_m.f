@@ -1,6 +1,6 @@
       module e3metric_m
 c
-        use mpi_def_m
+        use workfc_m
         use global_const_m
         use propar_m
         use number_def_m

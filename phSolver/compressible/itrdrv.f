@@ -39,6 +39,7 @@ c
       use wallData
       use fncorpmod
       use if_velocity_m
+      use solid_m
 c
         include "common.h"
         include "mpif.h"
@@ -843,6 +844,9 @@ c     &                  xdot,  'd'//char(0), numnp, nsd, lstep)
                    call write_field(
      &                  myrank,'a'//char(0),'material_type'//char(0),13,
      &                  mattype_interior, 'd',numel, 1, lstep)   
+c
+      if (solid_p%is_active) call write_restart_solid
+c
                  endif
 c... end writing
                  output_mode = -1
@@ -872,6 +876,9 @@ c
                   call write_field(
      &              myrank,'a'//char(0),'material_type'//char(0),13,
      &              mattype_interior, 'd',numel, 1, lstep)   
+c
+               if (solid_p%is_active)
+     &           call write_restart_solid
 
                !Write the distance to wall field in each restart
                if((istep==nstp) .and. (irans < 0 )) then !d2wall is allocated
