@@ -252,6 +252,16 @@ int input_fform(phSolver::Input& inp)
       exit(1);
     }
 
+    if ((string)inp.GetValue("Solid Phase") == "False" ) {
+      conpar.iSOLID = -1;
+    } else if ((string)inp.GetValue("Solid Phase") == "True" ) {
+      conpar.iSOLID = 1;
+    } else {
+      cout << " Solid Phase: Only Legal Values ( False, True)";
+      cout << endl;
+      exit(1);
+    }
+
     if ((string)inp.GetValue("Turbulence Model") == "No-Model" ) {
       turbvari.irans = 0;
       turbvari.iles  = 0;

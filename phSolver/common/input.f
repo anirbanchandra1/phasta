@@ -10,6 +10,7 @@ c Zdenek Johan,  Winter 1991.  (Fortran 90)
 c----------------------------------------------------------------------
 c
         use genint_m
+        use solid_m
 c
         include "common.h"
         include "mpif.h"
@@ -20,7 +21,7 @@ c
 c
         character*8  date
         character*80 card
-
+c
 c assigned in phasta.cc
 c        numpe=npe
 c        myrank=mrank
@@ -145,7 +146,12 @@ c.... generate the spatial integration rules
 c
         call genint
         call genint_if
-
+c
+c.....allocate and initialize solid arrays
+c
+        if (solid_p%is_active)
+     &   call alloc_solid
+c.....
         ichem = 0
 c
 c.... estimate number of nonzero global entries:

@@ -1,6 +1,6 @@
       module e3if_diff_m
 c
-        use e3if_defs_m
+        use e3if_param_m
 c
         implicit none
 c

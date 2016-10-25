@@ -1,5 +1,6 @@
       module local_m
 c
+        use mtimer2_m
         implicit none
 c
       contains
@@ -7,7 +8,7 @@ c
         subroutine local
      & (
      &    global, rlocal, ientmp, n, code,
-     &    nshg,   nshl,  npro,   ipord, bytes, flops
+     &    nshg,   nshl,  npro,   ipord
      & )
 
           real*8, dimension(nshg,n),          intent(inout) :: global
@@ -16,7 +17,6 @@ c
           integer,                            intent(in)    :: n
           character*8,                        intent(in)    :: code
           integer,                            intent(in)    :: nshg, nshl, npro, ipord
-          integer,                            intent(inout) :: bytes, flops
 c
           integer :: i,j,nel
           integer, dimension(npro,nshl) :: ien
@@ -46,7 +46,7 @@ c
 c
 c.... transfer and flop counts
 c
-            bytes = bytes + n*nshl*npro
+            sbytes = sbytes + n*nshl*npro
             flops = flops + n*nshl*npro
 c
             return
@@ -61,7 +61,7 @@ c
         subroutine localx
      &  (
      &    global, rlocal, ien,  nsd, code,
-     &    nshg,   nenl,   npro, gbytes
+     &    nshg,   nenl,   npro
      &  )
           real*8, dimension(nshg,nsd),        intent(in)    :: global
           real*8,  dimension(:,:,:), pointer, intent(inout) :: rlocal
@@ -69,7 +69,6 @@ c
           integer,                            intent(in)    :: nsd
           character*8,                        intent(in)    :: code
           integer,                            intent(in)    :: nshg, nenl, npro
-          integer,                            intent(inout) :: gbytes
 c
           integer :: i,j
 c
@@ -103,7 +102,7 @@ c
         subroutine localy
      & (
      &    global, rlocal, ientmp, n, code,
-     &    nshg,   nshl,  npro,   ipord, gbytes
+     &    nshg,   nshl,  npro,   ipord
      & )
 
           real*8, dimension(nshg,n),          intent(in)    :: global
@@ -112,7 +111,6 @@ c
           integer,                            intent(in)    :: n
           character*8,                        intent(in)    :: code
           integer,                            intent(in)    :: nshg, nshl, npro, ipord
-          integer,                            intent(inout) :: gbytes
 c
           integer :: ishp,ivar
           integer, dimension(npro,nshl) :: ien

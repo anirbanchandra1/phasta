@@ -232,6 +232,11 @@ void countfieldstowriterestart()
     nfields = nfields + 3; 
   }
 
+  if (conpar.iSOLID == 1) {
+//HARDCODED BY Yu, 3 fields added: elmB1, elmB2, disp_solid
+    nfields = nfields + 3; 
+  }
+
   outpar.nsynciofieldswriterestart = nfields;
 
   if(workfc.myrank == 0) {

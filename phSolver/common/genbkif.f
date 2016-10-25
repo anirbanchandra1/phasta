@@ -12,8 +12,7 @@ c
 c
         integer :: iel, iblk, itpblk,
      &             n,neltp,ioprdl,nnface,
-     &             iientpsiz0,iientpsiz1,
-     &             nsymdl,ndofl
+     &             iientpsiz0,iientpsiz1
         integer, target :: intfromfile(50)
         integer, target, allocatable :: ientp(:,:)
         integer, dimension(ibksz) :: mater

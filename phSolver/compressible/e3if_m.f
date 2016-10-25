@@ -3,7 +3,7 @@ c
         use mpi_def_m
         use hierarchic_m
         use matdat_def_m
-        use e3if_defs_m
+        use e3if_param_m
         use e3if_geom_m
         use e3if_func_m
         use e3if_diff_m
@@ -72,11 +72,11 @@ c
 c
 c... Element Metrics
 c
-            call e3metric(shg0, dxdxi0,shgl0,xl0)
-            call e3metric(shg1, dxdxi1,shgl1,xl1)
+            call e3metric(shg0,shgl0,xl0)
+            call e3metric(shg1,shgl1,xl1)
 c
-            call e3var(y0, var0, ycl0, shp0, shgl0, shg0, dxdxi0, nshl0) 
-            call e3var(y1, var1, ycl1, shp1, shgl1, shg1, dxdxi1, nshl1) 
+            call e3var(y0, var0, ycl0, shp0, shgl0, shg0, nshl0) 
+            call e3var(y1, var1, ycl1, shp1, shgl1, shg1, nshl1) 
 c
             call calc_stiff(prop0, var0, mater0)
             call calc_stiff(prop1, var1, mater1)
@@ -132,13 +132,12 @@ c
 c
         end subroutine e3if
 c
-        subroutine e3var(y,var,ycl,shp,shgl,shg,dxdxi,nshl)
+        subroutine e3var(y,var,ycl,shp,shgl,shg,nshl)
 c
           real*8, dimension(:,:), intent(out) :: y
           type(var_t), pointer, intent(out) :: var(:)
           real*8, pointer, intent(in) :: shp(:,:),shgl(:,:,:), shg(:,:,:)
           real*8, dimension(npro,nshl,nflow), intent(in) :: ycl
-          real*8, dimension(:,:,:), intent(in) :: dxdxi
           integer, intent(in) :: nshl
 c
           integer :: iel,ivar,isd,jsd,n
@@ -178,10 +177,11 @@ c
           call get_mesh_velocity(um0,umeshl0,shp0,npro,nshl0)
           call get_mesh_velocity(um1,umeshl1,shp1,npro,nshl1)
 c
-          call getthm(rho0, ei0, pres0, T0, npro, mater0
-     &,               h0, tmp, cp0, alfaP0, betaT0, tmp, tmp)
-          call getthm(rho1, ei1, pres1, T1, npro, mater1
-     &,               h1, tmp, cp1, alfaP1, betaT1, tmp, tmp)
+c          call getthm(rho0, ei0, pres0, T0, npro, mater0
+c     &,               h0, tmp, cp0, alfaP0, betaT0, tmp, tmp)
+c          call getthm(rho1, ei1, pres1, T1, npro, mater1
+c     &,               h1, tmp, cp1, alfaP1, betaT1, tmp, tmp)
+           call getthmif
 c
         end subroutine e3if_var
 c

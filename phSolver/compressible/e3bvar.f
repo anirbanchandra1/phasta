@@ -1,11 +1,14 @@
         subroutine e3bvar (yl,      ycl,     BCB,     shpb,    shglb,   
      &                     xlb,     lnode,   g1yi,    g2yi,
-     &                     g3yi,    WdetJb,  bnorm,   pres,    T,
+     &                     g3yi,    WdetJb,  bnorm,
+!     &                     bnorm,           pres,         T,
      &                     u1,      u2,      u3,      
      &                     um1,     um2,     um3,    
-     &                     rho,     ei,      cp,      rk,      
-     &                     rou,     p,       tau1n,   tau2n,   tau3n,
-     &                     heat,    dNadx,   materb,  uml)
+!     &                     rho,     ei,      cp,      rk,      
+     &                     rou,     
+!     &                     rou,          p,
+     &                     tau1n,   tau2n,   tau3n,
+     &                     heat,    dNadx,   uml)
 c
 c----------------------------------------------------------------------
 c
@@ -49,7 +52,27 @@ c Zdenek Johan, Summer 1990.  (Modified from e2bvar.f)
 c Zdenek Johan, Winter 1991.  (Fortran 90)
 c----------------------------------------------------------------------
 c
+        use e3_param_m
+c
         include "common.h"
+c
+        interface
+          subroutine getthm (rho_,ei_,p_,T_,npro_,mater_
+     &,                  h_,  cv_,cp_,alphaP_,betaT_,gamb_,c_)
+            use eqn_state_m
+            use e3_solid_m
+            implicit none
+            real*8, dimension(npro_), target, intent(out) :: rho_,ei_,h_,cv_,cp_,alphaP_,betaT_,gamb_,c_
+            real*8, dimension(npro_), target, intent(in) :: p_,T_
+            integer, intent(in) :: npro_, mater_
+          end subroutine getthm
+          subroutine e3bvar_solid(g1yi_,g2yi_,g3yi_,almBi_,alfBi_,gamBi_)
+            use e3_solid_func_m
+            implicit none
+            real*8, dimension(npro,nflow), target, intent(in) :: g1yi_,g2yi_,g3yi_
+            real*8, intent(in) :: almBi_, alfBi_, gamBi_
+          end subroutine e3bvar_solid
+        end interface
 c
         dimension yl(npro,nshl,nflow),      BCB(npro,nshlb,ndBCB),
      &            ycl(npro,nshl,ndof),
@@ -59,12 +82,12 @@ c
      &            lnode(27),               g1yi(npro,nflow),
      &            g2yi(npro,nflow),        g3yi(npro,nflow),
      &            WdetJb(npro),            bnorm(npro,nsd),
-     &            pres(npro),              T(npro),
+!     &            pres(npro),              T(npro),
      &            u1(npro),                u2(npro),
-     &            u3(npro),                rho(npro),
-     &            ei(npro),                cp(npro),
-     &            rk(npro),                  
-     &            rou(npro),               p(npro),
+     &            u3(npro),                !rho(npro),
+!     &            ei(npro),                cp(npro),
+!     &            rk(npro),                  
+     &            rou(npro),               !p(npro),
      &            tau1n(npro),             tau2n(npro),
      &            tau3n(npro),             heat(npro)
 
@@ -75,70 +98,21 @@ c
      &            temp3(npro),
      &            dNadx(npro, nshl, nsd),  dNadxi(npro, nshl, nsd)
 
-        dimension h(npro),                 cv(npro),
-     &            alfap(npro),             betaT(npro),
-     &            gamb(npro),              c(npro),
+        dimension !h(npro),                 cv(npro),
+     &            !alfap(npro),             betaT(npro),
+     &            !gamb(npro),              c(npro),
      &            tmp(npro),
      &            v1(npro,nsd),            v2(npro,nsd)
 c
         dimension um1(npro),                 um2(npro),
      &            um3(npro),                 uml(npro, nshl, nsd)
 c
-        integer, intent(in) :: materb
         integer   aa
 c
-c.... ------------------->  integration variables  <--------------------
-c
-c.... compute the primitive variables at the integration point
-c
-        pres = zero
-        u1   = zero
-        u2   = zero
-        u3   = zero
-        um1  = zero
-        um2  = zero
-        um3  = zero
-        T    = zero
-c
-        do n = 1, nshlb
-          nodlcl = lnode(n)
-c
-          pres = pres + shpb(:,nodlcl) * yl(:,nodlcl,1)
-          u1   = u1   + shpb(:,nodlcl) * yl(:,nodlcl,2)
-          u2   = u2   + shpb(:,nodlcl) * yl(:,nodlcl,3)
-          u3   = u3   + shpb(:,nodlcl) * yl(:,nodlcl,4)
-          T    = T    + shpb(:,nodlcl) * yl(:,nodlcl,5)
-c
-c.... Mesh velocity at integral point on boundary
-c
-          um1  = um1  + shpb(:,nodlcl) * uml(:,nodlcl,1)
-          um2  = um2  + shpb(:,nodlcl) * uml(:,nodlcl,2)
-          um3  = um3  + shpb(:,nodlcl) * uml(:,nodlcl,3)
-        enddo
-c
-c.... calculate the specific kinetic energy
-c
-        rk = pt5 * ( u1**2 + u2**2  + u3**2 )
-c
-c.... get the thermodynamic properties
-c
-        if (iLSet .ne. 0)then
-           temp = zero
-           isc=abs(iRANS)+6
-           do n = 1, nshlb
-              temp = temp + shpb(:,n) * ycl(:,n,isc)
-           enddo
-        endif
-
-        ithm = 6
-        if (Navier .eq. 1) ithm = 7
-c        call getthm (pres,            T,                  temp,
-c     &               rk,              rho,                ei,
-c     &               h,               tmp,                cv,
-c     &               cp,              alfap,              betaT,
-c     &               gamb,            c)
-         call getthm(rho, ei,  pres, T, npro, materb
-     &,              h,   cv,  cp,   alfap, betaT, tmp,  tmp)
+c....Solid arrays
+c...
+        real*8,dimension(npro) :: bulkMod,shearMod,det_baf,Ja_def,det_d
+        real*8,dimension(npro,6) :: d
 c
 c.... ---------------------->  Element Metrics  <-----------------------
 c
@@ -339,6 +313,68 @@ c
           endif
          
         endif
+c
+c.... ------------------->  integration variables  <--------------------
+c
+c.... compute the primitive variables at the integration point
+c
+        pres = zero
+        u1   = zero
+        u2   = zero
+        u3   = zero
+        um1  = zero
+        um2  = zero
+        um3  = zero
+        T    = zero
+c
+        do n = 1, nshlb
+          nodlcl = lnode(n)
+c
+          pres = pres + shpb(:,nodlcl) * yl(:,nodlcl,1)
+          u1   = u1   + shpb(:,nodlcl) * yl(:,nodlcl,2)
+          u2   = u2   + shpb(:,nodlcl) * yl(:,nodlcl,3)
+          u3   = u3   + shpb(:,nodlcl) * yl(:,nodlcl,4)
+          T    = T    + shpb(:,nodlcl) * yl(:,nodlcl,5)
+c
+c.... Mesh velocity at integral point on boundary
+c
+          um1  = um1  + shpb(:,nodlcl) * uml(:,nodlcl,1)
+          um2  = um2  + shpb(:,nodlcl) * uml(:,nodlcl,2)
+          um3  = um3  + shpb(:,nodlcl) * uml(:,nodlcl,3)
+        enddo
+c
+c.... calculate the specific kinetic energy
+c
+        rk = pt5 * ( u1**2 + u2**2  + u3**2 )
+c
+c.... get the thermodynamic properties
+c
+        if (iLSet .ne. 0)then
+           temp = zero
+           isc=abs(iRANS)+6
+           do n = 1, nshlb
+              temp = temp + shpb(:,n) * ycl(:,n,isc)
+           enddo
+        endif
+c
+c-----> SOLID CALCULATIONS <------------
+c
+      if(mat_eos(mater,1).eq.ieos_solid_1) then
+          call e3bvar_solid(g1yi,g2yi,g3yi,almBi,alfBi,gamBi)
+      endif
+c
+c------> END SOLID <--------------------
+c
+        ithm = 6
+        if (Navier .eq. 1) ithm = 7
+c        call getthm (pres,            T,                  temp,
+c     &               rk,              rho,                ei,
+c     &               h,               tmp,                cv,
+c     &               cp,              alfap,              betaT,
+c     &               gamb,            c)
+c         call getthm(rho, ei, pres, T, npro, materb
+c     &,              h,   cv, cp,   alfap, betaT, tmp,  tmp)
+        call getthm7_ptr
 c
 c.... -------------------->  Boundary Conditions  <--------------------
 c

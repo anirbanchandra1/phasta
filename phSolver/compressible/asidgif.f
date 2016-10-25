@@ -11,6 +11,8 @@
           use local_m
           use e3if_m
           use e3if_geom_m
+          use if_global_m
+          use conpar_m
 c
           implicit none
 c
@@ -27,10 +29,6 @@ c
           real*8, pointer, intent(inout) :: sum_vi_area(:,:)
           real*8, pointer, intent(in) :: if_normals(:,:)
 c
-      integer :: iel,n
-          call malloc_e3if
-          call malloc_e3if_geom
-c
 c.... create the matrix of mode signs for the hierarchic basis 
 c     functions. 
 c
@@ -41,52 +39,31 @@ c
 c
 c... localize
 c
-        call localy(y, ycl0, ienif0, ndof, 'gather  ', nshg, nshl0, npro, ipord, gbytes)
-        call localy(y, ycl1, ienif1, ndof, 'gather  ', nshg, nshl1, npro, ipord, gbytes)
+        call localy(y, ycl0, ienif0, ndof, 'gather  ', nshg, nshl0, npro, ipord)
+        call localy(y, ycl1, ienif1, ndof, 'gather  ', nshg, nshl1, npro, ipord)
 c
-        call localx(x, xl0,  ienif0, nsd, 'gather  ', nshg, nenl0, npro, gbytes)
-        call localx(x, xl1,  ienif1, nsd, 'gather  ', nshg, nenl1, npro, gbytes)
+        call localx(x, xl0,  ienif0, nsd, 'gather  ', nshg, nenl0, npro)
+        call localx(x, xl1,  ienif1, nsd, 'gather  ', nshg, nenl1, npro)
 c
-        call localx(umesh, umeshl0,  ienif0, nsd, 'gather  ', nshg, nenl0, npro, gbytes)
-        call localx(umesh, umeshl1,  ienif1, nsd, 'gather  ', nshg, nenl1, npro, gbytes)
+        call localx(umesh, umeshl0,  ienif0, nsd, 'gather  ', nshg, nenl0, npro)
+        call localx(umesh, umeshl1,  ienif1, nsd, 'gather  ', nshg, nenl1, npro)
 c
-        call localx(if_normals, if_normal_l0,  ienif0, nsd, 'gather  ', nshg, nenl0, npro, gbytes)
-        call localx(if_normals, if_normal_l1,  ienif1, nsd, 'gather  ', nshg, nenl1, npro, gbytes)
+        call localx(if_normals, if_normal_l0,  ienif0, nsd, 'gather  ', nshg, nenl0, npro)
+        call localx(if_normals, if_normal_l1,  ienif1, nsd, 'gather  ', nshg, nenl1, npro)
 c
         if (associated(if_kappa)) then
-          call localx(if_kappa, if_kappa_l0,  ienif0, nsd, 'gather  ', nshg, nenl0, npro, gbytes)
-          call localx(if_kappa, if_kappa_l1,  ienif1, nsd, 'gather  ', nshg, nenl1, npro, gbytes)
+          call localx(if_kappa, if_kappa_l0,  ienif0, nsd, 'gather  ', nshg, nenl0, npro)
+          call localx(if_kappa, if_kappa_l1,  ienif1, nsd, 'gather  ', nshg, nenl1, npro)
         endif
 c
         call e3if(shpif0,shpif1,shgif0,shgif1,qwtif0,qwtif1)
 c
 c.... assemble the local residual arrays
 c
-
-      do iel = 1,npro
-        do n = 1,nshl0
-          if (ienif0(iel,n) == 1337) then
-c            write(*,*) '0: iel, n, rl0: ',iel,n,rl0(iel,n,:)
-          endif
-        enddo
-        do n = 1,nshl1
-          if (ienif1(iel,n) == 1337) then
-c            write(*,*) '1: iel, n, rl1: ',iel,n,rl1(iel,n,:)
-          endif
-        enddo
-      enddo
-
-c      if (any(ienif0 == 1337) .or. any(ienif1 == 1337) )
-c     &  write(*,*) 'res before: ',res(1337,:)
-        call local (res, rl0, ienif0, nflow, 'scatter ', nshg,nshl0,npro,ipord,sbytes,flops)
-        call local (res, rl1, ienif1, nflow, 'scatter ', nshg,nshl1,npro,ipord,sbytes,flops)
-c      if (any(ienif0 == 1337) .or. any(ienif1 == 1337) )
-c     &  write(*,*) 'res after: ',res(1337,:)
+        call local (res, rl0, ienif0, nflow, 'scatter ', nshg,nshl0,npro,ipord)
+        call local (res, rl1, ienif1, nflow, 'scatter ', nshg,nshl1,npro,ipord)
 c
-        call local (sum_vi_area, sum_vi_area_l0, ienif0, nsd+1, 'scatter ', nshg, nshl0,npro,ipord,sbytes,flops)
-        call local (sum_vi_area, sum_vi_area_l1, ienif1, nsd+1, 'scatter ', nshg, nshl1,npro,ipord,sbytes,flops)
-c
-        call mfree_e3if
-        call mfree_e3if_geom
+        call local (sum_vi_area, sum_vi_area_l0, ienif0, nsd+1, 'scatter ', nshg, nshl0,npro,ipord)
+        call local (sum_vi_area, sum_vi_area_l1, ienif1, nsd+1, 'scatter ', nshg, nshl1,npro,ipord)
 c
       end subroutine asidgif

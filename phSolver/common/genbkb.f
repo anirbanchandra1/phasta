@@ -127,9 +127,9 @@ c
 c.... Read the boundary material type
 c
            if(input_mode.gt.1)then
-             write (fname2,"('material type boundary',i1)") iblk
+             write (fname2,"('material type boundary linear tetrahedron',i1)") iblk
            else
-             write( fname2,"('material type boundary')")
+             write( fname2,"('material type boundary linear tetrahedron')")
            endif
 C           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
            call phio_readheader(fhandle, fname2 // char(0),
@@ -214,6 +214,8 @@ c
                  if (npro == ibksz .or. iptr>neltp) exit
                enddo
 c
+               if (npro == 0) cycle material_loop
+c
                  nelblb=nelblb+1
 c
                  lcblkb(1,nelblb)  = iel
@@ -228,9 +230,9 @@ c
 c     
 c.... save the element block
 c     
-                 n1=n
-                 n2=n+npro-1
-                 materb=1       ! all one material for now
+c                 n1=n
+c                 n2=n+npro-1
+c                 materb=1       ! all one material for now
 c     
 c.... allocate memory for stack arrays
 c

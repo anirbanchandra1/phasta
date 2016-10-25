@@ -296,10 +296,16 @@ c Chris Whiting, Winter 1998.     (Matrix EBE-GMRES)
 c----------------------------------------------------------------------
 c
         use pointer_data
-        use solid_m
+        use e3_param_m
+        use e3if_param_m
+        use e3if_geom_m
+        use solid_data_m
+        use e3_solid_func_m
         use timedataC
         use if_velocity_m
         use if_global_m
+        use eqn_state_m
+        use e3_solid_m
 c
         include "common.h"
         include "mpif.h"
@@ -309,28 +315,25 @@ c
           subroutine e3if_setparam
      &    (
      &      nshg_,nshl0_,nshl1_,nenl0_,nenl1_,lcsyst0_,lcsyst1_,
-     &      npro_,ndof_,nsd_,nflow_,ipord_,nqpt_,
-     &      gbytes_,sbytes_,flops_
+     &      npro_,ndof_,nsd_,nflow_,ipord_,nqpt_
      &    )
-            use e3if_defs_m
+            use e3if_param_m
             implicit none
             integer, intent(in) :: nshg_,nshl0_,nshl1_,nenl0_,nenl1_,lcsyst0_,lcsyst1_
             integer, intent(in) :: npro_,ndof_,nsd_,nflow_,ipord_,nqpt_
-            integer, intent(inout) :: gbytes_, sbytes_, flops_
           end subroutine e3if_setparam
           subroutine e3if_setparam2
      &    (
      &     egmassif00,egmassif01,egmassif10,egmassif11,
      &     materif0, materif1,
-     &     time_, lhs
+     &     time_
      &    )
             use e3if_inp_m
-            use e3if_defs_m
+            use e3if_param_m
             implicit none
             real*8, dimension(:,:,:), allocatable, target, intent(in) :: egmassif00,egmassif01,egmassif10,egmassif11
             integer, intent(in) :: materif0, materif1
             real*8, intent(in) :: time_
-            integer, intent(in) :: lhs
           end subroutine e3if_setparam2
           subroutine asidgif_geom
      &    (
@@ -366,6 +369,7 @@ c
             use local_m
             use e3if_m
             use e3if_geom_m
+            use conpar_m
             implicit none
             real*8, dimension(nshg,nflow), intent(inout) :: res
             real*8, dimension(nshg,ndof),  intent(in)    :: y
@@ -436,7 +440,6 @@ c
 c
 c.... set up the timer
 c
-
         call timer ('Elm_Form')
 c
 c.... -------------------->   interior elements   <--------------------
@@ -464,7 +467,7 @@ c
           lcsyst = lcblk(3,iblk)
           iorder = lcblk(4,iblk)
           nshl   = lcblk(10,iblk)
-          mattyp = lcblk(7,iblk)
+          mater  = lcblk(7,iblk)
           ndofl  = lcblk(8,iblk)
           nsymdl = lcblk(9,iblk)
           npro   = lcblk(1,iblk+1) - iel
@@ -523,7 +526,7 @@ c
           iorder = lcblk(4,iblk)
           nenl   = lcblk(5,iblk)   ! no. of vertices per element
           nshl   = lcblk(10,iblk)
-          mattyp = lcblk(7,iblk)
+          mater  = lcblk(7,iblk)
           ndofl  = lcblk(8,iblk)
           nsymdl = lcblk(9,iblk)
           npro   = lcblk(1,iblk+1) - iel 
@@ -532,7 +535,6 @@ c
 c
 c.... compute and assemble the residual and tangent matrix
 c
-
           if(lhs.eq.1) then
              allocate (EGmass(npro,nedof,nedof))
              EGmass = zero
@@ -545,20 +547,40 @@ c
           tmpshp(1:nshl,:) = shp(lcsyst,1:nshl,:)
           tmpshgl(:,1:nshl,:) = shgl(lcsyst,:,1:nshl,:)
 c
-          iblk_solid = iblk  ! this is used at the lower level solid calculations 
+          e3_malloc_ptr => e3_malloc
+          e3_mfree_ptr => e3_mfree
+c
+          select case (mat_eos(mater,1))
+          case (ieos_ideal_gas,ieos_ideal_gas_2)
+            getthm6_ptr => getthm6_ideal_gas
+            getthm7_ptr => getthm7_ideal_gas
+          case (ieos_liquid_1)
+            getthm6_ptr => getthm6_liquid_1
+            getthm7_ptr => getthm7_liquid_1
+          case (ieos_solid_1)
+            getthm6_ptr => getthm6_solid_1
+            getthm7_ptr => getthm7_solid_1
+            iblk_solid = iblk 
+            e3_malloc_ptr => e3_malloc_solid
+            e3_mfree_ptr => e3_mfree_solid
+          case default
+            call error ('getthm  ', 'wrong material', mater)
+          end select
+c
+          if (associated(e3_malloc_ptr)) call e3_malloc_ptr
 c
           call AsIGMR (y,                   ac,
      &                 x,                   mxmudmi(iblk)%p,
      &                 tmpshp,
      &                 tmpshgl,             mien(iblk)%p,
-     &                 mattyp,              res,
+     &                 mater,               res,
      &                 rmes,                BDiag,
      &                 qres,                EGmass,
      &                 rerr,                umesh )
 c
           if(lhs.eq.1) then
 c
-c.... satisfy the BC's on the implicit LHS
+c.... satisfy the BCs on the implicit LHS
 c     
              call bc3LHS (iBC,                  BC,  mien(iblk)%p, 
      &                    EGmass  ) 
@@ -570,6 +592,8 @@ c
      1                        lhsK, row, col)
           endif
 c
+          if (associated(e3_mfree_ptr)) call e3_mfree_ptr
+c
           deallocate ( EGmass )
           deallocate ( tmpshp )
           deallocate ( tmpshgl )
@@ -577,22 +601,6 @@ c
 c.... end of interior element loop
 c
        enddo
-!ifdef DEBUG !Nicholas Mati
-!        call write_debug(myrank, 'res-afterAsIGMR'//char(0),
-!     &                           'res'//char(0), res, 
-!     &                           'd'//char(0), nshg, nflow, lstep)
-!        call write_debug(myrank, 'y-afterAsIGMR'//char(0),
-!     &                           'y'//char(0), y, 
-!     &                           'd'//char(0), nshg, ndof, lstep)
-!endif //DEBUG
-c
-c      write(*,998) '[',myrank,'] in elmgmr AFTER INTERIOR.'
-c      do i = 1,nshg
-c        rad = sqrt(x(i,2)**2+x(i,3)**2)
-c        if (abs(rad-5.e-3)<1.e-4 .and. x(i,1)<=0.15 .and. x(i,1)>=0.1) then
-c          write(*,999) myrank,i,x(i,:),res(i,:)
-c        endif
-c      enddo
 c
 c.... -------------------->   boundary elements   <--------------------
 c
@@ -608,7 +616,7 @@ c
           iorder = lcblkb(4,iblk)
           nenl   = lcblkb(5,iblk)  ! no. of vertices per element
           nenbl  = lcblkb(6,iblk)  ! no. of vertices per bdry. face
-          mattyp = lcblkb(7,iblk)
+          mater  = lcblkb(7,iblk)
           ndofl  = lcblkb(8,iblk)
           nshl   = lcblkb(9,iblk)
           nshlb  = lcblkb(10,iblk)
@@ -632,10 +640,32 @@ c
           
           tmpshpb(1:nshl,:) = shpb(lcsyst,1:nshl,:)
           tmpshglb(:,1:nshl,:) = shglb(lcsyst,:,1:nshl,:)
-
+c
+          e3_malloc_ptr => e3_malloc
+          e3_mfree_ptr => e3_mfree
+c
+          select case (mat_eos(mater ,1))
+          case (ieos_ideal_gas,ieos_ideal_gas_2)
+            getthm6_ptr => getthm6_ideal_gas
+            getthm7_ptr => getthm7_ideal_gas
+          case (ieos_liquid_1)
+            getthm6_ptr => getthm6_liquid_1
+            getthm7_ptr => getthm7_liquid_1
+          case (ieos_solid_1)
+            getthm6_ptr => getthm6_solid_1
+            getthm7_ptr => getthm7_solid_1
+            iblk_solid = iblk 
+            e3_malloc_ptr => e3_malloc_solid
+            e3_mfree_ptr => e3_mfree_solid
+          case default
+            call error ('getthm  ', 'wrong material', mater )
+          end select
+c
+          if (associated(e3_malloc_ptr)) call e3_malloc_ptr
+c
           call AsBMFG (y,                       x,
      &                 tmpshpb,                 tmpshglb, 
-     &                 mienb(iblk)%p,           mattyp,
+     &                 mienb(iblk)%p,           mater ,
      &                 miBCB(iblk)%p,           mBCB(iblk)%p,
      &                 res,                     rmes, 
      &                 EGmass,                  umesh)
@@ -643,7 +673,9 @@ c
             call fillSparseC_BC(mienb(iblk)%p, EGmass, 
      &                   lhsk, row, col)
           endif
-
+c
+          if (associated(e3_mfree_ptr)) call e3_mfree_ptr
+c
           deallocate (EGmass)
           deallocate (tmpshpb)
           deallocate (tmpshglb)
@@ -674,6 +706,7 @@ c
         endif
 c
         if_normal = zero
+        if_kappa  = zero
 c
         if_blocks1: do iblk = 1, nelblif
 c
@@ -684,8 +717,8 @@ c
           ipord   = lcblkif(5, iblk)    ! polynomial order
           nenl0   = lcblkif(6, iblk)    ! number of vertices per element0
           nenl1   = lcblkif(7, iblk)    ! number of vertices per element1
-          mattyp0 = lcblkif(9, iblk)
-          mattyp1 = lcblkif(10,iblk)
+          mater0  = lcblkif(9, iblk)
+          mater1  = lcblkif(10,iblk)
           nshl0   = lcblkif(13,iblk)
           nshl1   = lcblkif(14,iblk)
           ngaussif = nintif0(lcsyst0)   ! or nintif1(lcsyst1)? should be the same!
@@ -693,10 +726,11 @@ c
           call e3if_setparam
      &    (
      &     nshg,nshl0,nshl1,nenl0,nenl1,lcsyst0,lcsyst1,
-     &     npro,ndof,nsd,nflow,ipord,ngaussif,
-     &     gbytes,sbytes,flops
+     &     npro,ndof,nsd,nflow,ipord,ngaussif
      &    )
      &   
+c
+          call e3if_geom_malloc
 c
           ienif0 => mienif0(iblk)%p
           ienif1 => mienif1(iblk)%p
@@ -712,6 +746,8 @@ c
      &    qwtif0(lcsyst0,:), qwtif1(lcsyst1,:),
      &    ienif0, ienif1
      & )
+c
+          call e3if_geom_mfree
 c
         enddo if_blocks1
 c
@@ -758,13 +794,37 @@ c
           iorder  = lcblkif(5, iblk)    ! polynomial order
           nshl0   = lcblkif(13,iblk)
           nshl1   = lcblkif(14,iblk)
-          mattyp0 = lcblkif(9, iblk)
-          mattyp1 = lcblkif(10,iblk)
+          mater0  = lcblkif(9, iblk)
+          mater1  = lcblkif(10,iblk)
           ndof    = lcblkif(11,iblk)
           nsymdl  = lcblkif(12,iblk)    ! ???
           npro    = lcblkif(1,iblk+1) - iel
           inum    = iel + npro - 1
           ngaussif = nintif0(lcsyst0)   ! or nintif1(lcsyst1)? should be the same!
+c
+c... set equations of state
+c
+          select case (mat_eos(mater0,1))
+          case (ieos_ideal_gas,ieos_ideal_gas_2)
+            getthmif0_ptr => getthm7_ideal_gas
+          case (ieos_liquid_1)
+            getthmif0_ptr => getthm7_liquid_1
+          case default
+            call error ('getthm  ', 'wrong material', mater0)
+          end select
+          if (.not.associated(getthmif0_ptr)) 
+     &      call error ('getthm  ', 'cannot set getthmif0')
+c
+          select case (mat_eos(mater1,1))
+          case (ieos_ideal_gas,ieos_ideal_gas_2)
+            getthmif1_ptr => getthm7_ideal_gas
+          case (ieos_liquid_1)
+            getthmif1_ptr => getthm7_liquid_1
+          case default
+            call error ('getthm  ', 'wrong material', mater1)
+          end select
+          if (.not.associated(getthmif1_ptr)) 
+     &      call error ('getthm  ', 'cannot set getthmif1')
 c
 c... compute and assemble the residual and tangent matrix
 c
@@ -787,17 +847,22 @@ c
           call e3if_setparam
      &    (
      &     nshg,nshl0,nshl1,nenl0,nenl1,lcsyst0,lcsyst1,
-     &     npro,ndof,nsd,nflow,ipord,ngaussif,
-     &     gbytes,sbytes,flops
+     &     npro,ndof,nsd,nflow,ipord,ngaussif
      &    )
      &   
 c
           call e3if_setparam2
      &    (
      &     egmassif00,egmassif01,egmassif10,egmassif11,
-     &     mattyp0, mattyp1,
-     &     real(lstep+1,8)*delt(1), lhs
+     &     mater0, mater1,
+     &     real(lstep+1,8)*delt(1)
      &    )
+c
+          call e3if_geom_malloc
+          call e3if_malloc
+c
+          ienif0 => mienif0(iblk)%p
+          ienif1 => mienif1(iblk)%p
 c
           call asidgif
      &    (
@@ -808,7 +873,7 @@ c
      &      shgif0(lcsyst0,1:nsd,1:nshl0,:),
      &      shgif1(lcsyst1,1:nsd,1:nshl1,:),
      &      qwtif0(lcsyst0,:), qwtif1(lcsyst1,:),
-     &      mienif0(iblk)%p, mienif1(iblk)%p,
+     &      ienif0, ienif1,
      &      sum_vi_area, if_normal
      &    )
 c
@@ -816,19 +881,20 @@ c
 c
 c.... Fill-up the global sparse LHS mass matrix
 c
-            call fillsparse_if( lhsk,mienif0(iblk)%p,mienif0(iblk)%p,col,row,egmassif00,npro,nedof,nflow,nshg,nnz,nnz_tot)
-            call fillsparse_if( lhsk,mienif1(iblk)%p,mienif0(iblk)%p,col,row,egmassif10,npro,nedof,nflow,nshg,nnz,nnz_tot)
-            call fillsparse_if( lhsk,mienif0(iblk)%p,mienif1(iblk)%p,col,row,egmassif01,npro,nedof,nflow,nshg,nnz,nnz_tot)
-            call fillsparse_if( lhsk,mienif1(iblk)%p,mienif1(iblk)%p,col,row,egmassif11,npro,nedof,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if( lhsk,ienif0,ienif0,col,row,egmassif00,npro,nedof,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if( lhsk,ienif1,ienif0,col,row,egmassif10,npro,nedof,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if( lhsk,ienif0,ienif1,col,row,egmassif01,npro,nedof,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if( lhsk,ienif1,ienif1,col,row,egmassif11,npro,nedof,nflow,nshg,nnz,nnz_tot)
 c
           endif
+c
+          call e3if_geom_mfree
+          call e3if_mfree
 c
           deallocate (egmassif00)
           deallocate (egmassif01)
           deallocate (egmassif10)
           deallocate (egmassif11)
-
-
 c
         enddo if_blocks
 c

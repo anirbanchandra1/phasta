@@ -1,14 +1,14 @@
       module e3if_geom_m
 c
         use mpi_def_m
-        use e3if_defs_m
+        use e3if_param_m
         use hierarchic_m
 c
         implicit none
 c
       contains
 c
-        subroutine malloc_e3if_geom
+        subroutine e3if_geom_malloc
 c
           allocate(xl0(npro,nenl0,nsd))
           allocate(xl1(npro,nenl1,nsd))
@@ -27,9 +27,9 @@ c
           allocate(sgn0(npro,nshl0))
           allocate(sgn1(npro,nshl1))
 c
-        end subroutine malloc_e3if_geom
+        end subroutine e3if_geom_malloc
 c
-        subroutine mfree_e3if_geom
+        subroutine e3if_geom_mfree
 c
           deallocate(xl0,xl1)
           deallocate(area)
@@ -41,7 +41,7 @@ c
           deallocate(shgl0,shgl1)
           deallocate(sgn0,sgn1)
 c
-        end subroutine mfree_e3if_geom
+        end subroutine e3if_geom_mfree
 c
         subroutine calc_if_normals(xl0,xl1,shpif0,shpif1,shgif0,shgif1,qwtif0,qwtif1)
 c

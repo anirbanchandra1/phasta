@@ -52,6 +52,8 @@ c Zdenek Johan, Winter 1991.  (Fortran 90)
 c Anilkumar Karanam Spring 2000 (Modified for Hierarchic Hexes)
 c----------------------------------------------------------------------
 c
+        use e3_param_m
+c
         include "common.h"
 c
         dimension yl(npro,nshl,nflow),          iBCB(npro,ndiBCB),
@@ -68,14 +70,15 @@ c
      &            dNadn(npro, nshl),       !dN_a/dx_i n_i, i.e. gradient normal to wall
      &            EGmass(npro, nshl, nshl)
 c
-        dimension un(npro),                    rk(npro),
+        dimension un(npro),                    !rk(npro),
      &            u1(npro),                    u2(npro),
-     &            u3(npro),                    
-     &            rho(npro),                   pres(npro),
-     &            T(npro),                     ei(npro),
-     &            cp(npro)
+     &            u3(npro)
+c     &,            rho(npro),                   pres(npro),
+c     &            T(npro),                     ei(npro),
+c     &            cp(npro)
 c
-        dimension rou(npro),                   p(npro),
+        dimension rou(npro),
+!                  rou(npro),                   p(npro),
      &            F1(npro),                    F2(npro),
      &            F3(npro),                    F4(npro),
      &            F5(npro),                    Fv2(npro),
@@ -134,14 +137,15 @@ c
      &               shdrv,           xlb,
      &               lnode,           g1yi,
      &               g2yi,            g3yi,         WdetJb,
-     &               bnorm,           pres,         T,
+     &               bnorm, 
+!     &               bnorm,           pres,         T,
      &               u1,              u2,           u3,
      &               um1,             um2,          um3,
-     &               rho,             ei,           cp,
-     &               rk,              rou,          p,
+!     &               rho,     ei,      cp,      rk,      
+     &               rou, 
+!     &               rou,          p,
      &               Fv2,             Fv3,          Fv4,
-     &               Fh5,             dNadx,        materb,
-     &               uml)
+     &               Fh5,             dNadx,        uml)
 c
 c.... ires = 1 or 3
 c

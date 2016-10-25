@@ -1,7 +1,7 @@
       module e3if_vi_m
 c
         use e3if_inp_m
-        use e3if_defs_m
+        use e3if_param_m
 c
         implicit none
 c

@@ -13,46 +13,22 @@ c
       use number_def_m
       use matdat_def_m
       use e3if_inp_m
+      use global_const_m
+      use conpar_m
+      use timdat_m
+      use elmpar_m
+      use blkdat_m
+      use intpt_m
+      use shpdat_m
+      use genpar_m
+      use inpdat_m
+      use propar_m
+      use mmatpar_m
+      use mtimer1_m
+      use mtimer2_m
+      use timer3_m
 
 	IMPLICIT REAL*8 (a-h,o-z)
-c
-c.... parameters  IF YOU CHANGE THES YOU HAVE TO CHANGE THEM IN
-c                  common_c.h ALSO
-c
-        parameter     ( MAXBLK = 50000)
-        parameter     ( MAXSH = 32, NSD = 3 , NSDSQ = 9)
-c
-c  The five types of region topology are  1= Tet, 2=Hex, 3= Wedge (tri-start),
-c                                         4= Wedge (quad-first) 5=pyramid
-c
-c  The two types of face topology are  1= tri, 2=quad
-c
-        parameter     ( MAXTOP = 6, MAXSURF=1000 )
-c
-c
-c...  The twelve different topological interface region are:
-c
-        parameter     ( MAXTOPIF = 12 )
-c
-c  sharing a tri face:
-c
-c  1= tet-tet 
-c  2= tet-pyramid
-c  3= tet-wedge
-c  4= pyramid-pyramid
-c  5= pyramid-wedge
-c  6= wedge-wedge
-c
-c  sharing a quad face:
-c
-c  7= pyramid-pyramid
-c  8= pyramid-wedge
-c  9= pyramid-hex
-c  10= wedge-wedge
-c  11= wedge-hex
-c  12= hex-hex
-c
-
 c
 c the common block nomodule holds all the things which have been removed
 c from different modules
@@ -114,20 +90,6 @@ c from different modules
 c 
 c.... common blocks
 c
-      parameter (MAXQPT = 125)
-c
-c.... common blocks for hierarchic basis functions
-c
-      common /intpt/  Qpt (MAXTOP ,4,MAXQPT), Qwt (MAXTOP ,MAXQPT), 
-     &                Qptb(MAXTOP,4,MAXQPT),  Qwtb(MAXTOP,MAXQPT), 
-     &                Qptif0(MAXTOPIF,4,MAXQPT), Qwtif0(MAXTOPIF,MAXQPT),
-     &                Qptif1(MAXTOPIF,4,MAXQPT), Qwtif1(MAXTOPIF,MAXQPT),
-     &                nint(MAXTOP),           nintb(MAXTOP),
-     &                nintif0(MAXTOPIF),       nintif1(MAXTOPIF),
-     &                ngauss,                 ngaussb,        ngaussif,
-     &                intp,
-     &                maxnint
- 
 c nsrflist is a binary switch that tells us if a given srfID should be
 c included in the consistent flux calculation.  It starts from zero
 c since we need to be able to handle/ignore surfaces with no srfID attached
@@ -144,28 +106,10 @@ c
 c
         common /astore/ a(100000)
 c
-        common /blkdat/ lcblk  (10,MAXBLK+1),
-     &                  lcblkb (10,MAXBLK+1),
-     &                  lcblkif(14,MAXBLK+1)
-c
         common /mbndnod/ mnodeb(9,8,3)
 c
-	integer, target :: numnp,  numel,  numelb, numelif, numpbc, 
-     &                  nen,    nfaces,
-     &                  numflx, ndof,   nelblk, nelblb, nelblif, ntopsh, nlwork,
-     &                  nedof,
-     &                  nshg,   nnz,    nflow,
-     &                  nfath, ncorpsize, iownnodes, usingpetsc
-
-        common /conpar/ numnp,    numel,  numelb, numelif,
-     &                  numpbc,   nen,    nfaces,
-     &                  numflx,   ndof,   iALE,
-     &                  icoord,   navier,
-     &                  irs,      iexec,  necho,  ichem,  iRK,    nedof,
-     &                  ndofelas, nshg,   nnz,    istop,  nflow,  nelas, 
-     &                  nnz_tot,  idtn,
-     &                  ncorpsize, iownnodes, usingpetsc
-
+	      integer, target ::  nlwork
+c
 c...........................................................................
         common /ctrlvari/ iI2Binlet, isetOutPres, isetInitial
         
@@ -211,43 +155,12 @@ c
      &                   ivconstraint, iExpLSSclr1, iExpLSSclr2
 
 c 
-        common /shpdat/ nshape, nshapeb, nshapeif, maxshb,
-     &                  nshl, nshlb, nshl0, nshl1,      ! nshl0,1 for interface
-     &                  nfath,  ntopsh,  nsonmax
-c
         common /datpnt/ mshp,   mshgl,  mwght,  mshpb,  mshglb, mwghtb,
      &                  mmut,   mrhot,  mxst
 c
         common /melmcat/ mcsyst, melCat, nenCat(8,3),    nfaCat(8,3)
 c
-        common /elmpar/ lelCat, lcsyst, iorder, nenb,   
-     &                  nelblk, nelblb, nelblif,
-     &                  ndofl,  nsymdl, nenl,   nfacel,
-     &                  nenl0,  nenl1,  lcsyst0, lcsyst1,
-     &                  nenbl,  intind, mattyp,
-     &                  mattyp0, mattyp1, 
-     &                  iftpid(MAXBLK)
-c
-
-        integer EntropyPressure
-
-        common /genpar/ E3nsd,  I3nsd,  nsymdf, ndofBC, ndiBCB, ndBCB,
-     &                  Jactyp, jump,   ires,   iprec,  iprev,  ibound,
-     &                  idiff,  lhs,    itau,   ipord,  ipred,  lstres,
-     &                  iepstm, dtsfct, taucfct, ibksiz, iabc, isurf,
-     &                  idflx,  Bo,     EntropyPressure, irampViscOutlet,
-     &                  istretchOutlet, iremoveStabTimeTerm, iLHScond,
-     &                  ndofBC2
-c
-        integer :: svLSType, svLSFlag
-        common /inpdat/ epstol(6),  Delt(MAXTS),    CFLfl(MAXTS),
-     &                  CFLsl(MAXTS),   nstep(MAXTS),   niter(MAXTS),
-     &                  impl(MAXTS),    rhoinf(MAXTS),  rhoinfS(MAXTS),
-     &                  rhoinf_B(MAXTS),
-     &                  LHSupd(6),  loctim(MAXTS),  deltol(MAXTS,2), 
-     &                  leslib,     svLSFlag,   svLSType
-c
-        common /intdat/ intg(3,MAXTS),  intpt(3),       intptb(3)
+       common /intdat/ intg(3,MAXTS),  intpt(3),       intptb(3)
 c
         common /mintpar/ indQpt(3,3,4),  numQpt(3,3,4),
      &                  intmax
@@ -267,14 +180,6 @@ c /*         common /andres/ fwr1,ngaussf,idim,nlist */
 c
         common /itrpar/ eGMRES, lGMRES, lGMRESs, iKs, iKss,    ntotGM, ntotGMs
 c
-        REAL*8          Nh, Msh
-        common /mmatpar/ pr,     Planck, Stefan, Nh,     Rh,     Rgas,
-     &                  gamma,  gamma1, s0,     const,  xN2,    xO2,
-     &                  yN2,    yO2,    Msh(5), cpsh(5),s0sh(5),h0sh(5),
-     &                  Rs(5),  cps(5), cvs(5), h0s(5), Trot(5),sigs(5),
-     &                  Tvib(5),g0s(5), dofs(5),ithm
-c
-
         integer input_mode, output_mode
         common /outpar/ ro,     vel,    temper, press,  entrop, ntout,
      &                  ioform, iowflux, iofieldv, iotype, ioybar,
@@ -288,8 +193,6 @@ c
 c
         common /precis/ epsM,   iabres
 c
-        common /propar/ npro
-c
         common /resdat/ resfrt, resfrts
 c
         common /solpar/ imap,   ivart,  iDC,    iPcond, Kspace, nGMRES,
@@ -297,28 +200,12 @@ c
 c
         common /msympar/ indsym(5,5)
 c
-        common /timdat/ time,   CFLfld, CFLsld, Dtgl,   Dtmax,  alpha,
-     &                  etol,   lstep,  ifunc,  itseq,  istep,  iter,
-     &                  nitr,   almi,   alfi,   gami,   
-     &                  almBi,  alfBi,  gamBi,
-     &                  flmpl,  flmpr,
-     &                  dtol(2), iCFLworst, lskeep
-c
         common /timpar/ LCtime, ntseq
 c
         common /incomp/ numeqns(100), minIters, maxIters, 
      &                  iprjFlag,     nPrjs,    ipresPrjFlag, nPresPrjs,
      &                  prestol,      statsflow(6), statssclr(6),
      &                  iverbose
-c
-        character(8) :: ccode(13)
-        common /mtimer1/ ccode
-c
-        integer       flops,  gbytes, sbytes
-        common /mtimer2/ flops,  gbytes, sbytes, iclock, icd,    icode,
-     &                  icode2, icode3
-c
-        common /timer3/ cpu(11),        cpu0(11),       nacess(11)
 c
         character*80    title,  ititle
         common /title / title,  ititle
@@ -357,45 +244,9 @@ c a(...)        : the blank array used for front-end data storage
 c
 c----------------------------------------------------------------------
 c
-c.... common /blkdat/   : blocking data
-c
-c lcblk  (10,MAXBLK+1) : blocking data for the interior elements
-c lcblkb (10,MAXBLK+1) : blocking data for the boundary elements
-c lcblkif (14,MAXBLK+1) : blocking data for the interface elements
-c
-c----------------------------------------------------------------------
-c
 c.... common /bndnod/   : boundary nodes of boundary elements
 c
 c mnodeb (9,8,3) : boundary nodes of each element category and dimension
-c
-c----------------------------------------------------------------------
-c
-c.... common /conpar/   : input constants
-c
-c numnp         : number of nodal points
-c numel         : number of elements
-c numelb        : number of boundary elements
-c numpbc        : number of nodes having a boundary condition
-c nen           : maximum number of element nodes
-c nfaces        : maximum number of element faces
-c nsd           : number of space dimensions
-c numflx        : number of flux boundary nodes
-c ndof          : number of degrees of freedom per node
-c iALE          : ALE formulation flag
-c icoord        : coordinate system flag
-c navier        : Navier-Stokes calculation flag
-c irs           : restart option 
-c iexec         : execute flag
-c necho         : input echo parameter
-c ichem         : equilibrium chemistry flag (for outchem.step dump)
-c iRK           : Runge-Kutta flag
-c nshg          : global number of shape functions (degrees of freedom,
-c                 or equations). Computed from the specified p-order,
-c                 the number of edges, and the number of faces (in the
-c                 entire mesh)
-c
-c----------------------------------------------------------------------
 c
 c.... common /datpnt/   : front-end data pointers
 c
@@ -420,75 +271,11 @@ c nfaCat (8,3)  : number of faces for each category and dimension
 c
 c----------------------------------------------------------------------
 c
-c.... common /elmpar/   : element parameters
-c
-c lelCat        : element category (P1, Q1, P2, Q2, etc.)
-c lcsyst        : element coordinate system
-c iorder        : element order (=k for Pk and Qk)
-c nenb          : number of element nodes per boundary sides
-c maxsh         : total number integration points
-c maxshb        : total number integration points of boundary elements
-c nelblk        : number of element blocks
-c nelblb        : number of boundary element blocks
-c nelblif       : number of interface element blocks
-c ndofl         : number of degrees of freedom (for current block)
-c nsymdl        : number of d.o.f for symm. storage (for current block)
-c nenl          : number of element nodes (for current block)
-c nfacel        : number of element faces (for current block)
-c nenbl         : number of boundary element nodes
-c intind        : integration data index
-c nintg         : number of integration points
-c mattyp        : material type ( = 0 for fluid; = 1 for solid )
-c iftpid(MAXBLK): holds the interface topological combination
-c
-c----------------------------------------------------------------------
-c
-c.... common /genpar/   : control parameters
-c
-c E3nsd         : NSD .eq. 3 flag; 0. for 2D, 1. for 3D
-c I3nsd         : NSD .eq. 3 flag; 0  for 2D, 1  for 3D
-c nsymdf        : number of d.o.f.'s in symm. storage (= ndof*(ndof+1)/2)
-c ndofBC        : dimension size of the boundary condition array BC
-c ndiBCB        : dimension size of the boundary condition array iBCB
-c ndBCB         : dimension size of the boundary condition array BCB
-c Jactyp        : Jacobian type flag
-c jump          : jump term computation flag
-c ires          : residual type computation flag
-c iprec         : block-diagonal preconditioner flag
-c iprev         : ypl array allocation flag
-c ibound        : boundary element flag
-c idiff         : diffusive flux vector flag
-c                 ( = 0 not used; = 1 global reconstruction )
-c itau          : type of tau to be used
-c iLHScond      : add contributiosn from the heat flux BC to the LHS 
-c                 tangency matrix. 
-c ndofBC2       : dimension size of the boundary condition array BC before constraint
-c
-c----------------------------------------------------------------------
-c
-c.... common /inpdat/   : time sequence input data
-c
-c epstol (MAXTS)  : tolerance for GMRES solvers
-c Delt   (MAXTS)  : global time step
-c CFLfl  (MAXTS)  : CFL number for fluid flow
-c CFLsl  (MAXTS)  : CFL number for structural heating
-c nstep  (MAXTS)  : number of time steps
-c niter  (MAXTS)  : number of iterations per time step
-c impl   (MAXTS)  : solver flag
-c iturb  (MAXTS)  : turbulence model flag
-c rhoinf (MAXTS)  : time integration spectral radius paramter
-c                             (0=Gears       1= trapezoidal rule)
-c LHSupd (MAXTS)  : LHS/preconditioner update
-c loctim (MAXTS)  : local time stepping flag
-c
-c----------------------------------------------------------------------
-c
 c.... common /intdat/   : integration data
 c
 c intg  (2,MAXTS) : integration parameters
 c intpt (3)       : integration pointers
 c intptb(3)       : integration pointers of boundary elements
-c
 c----------------------------------------------------------------------
 c
 c.... common /shpdat/   : hierarchic shape function quadrature data
@@ -639,12 +426,6 @@ c iabres        : absolute value residual flag
 c
 c----------------------------------------------------------------------
 c
-c....common /propar/    : processor related information
-c
-c npro          : number of virtual processors for the current block
-c
-c----------------------------------------------------------------------
-c
 c....common /resdat/    : residual statistics data
 c
 c resfrt        : first residual of convergence
@@ -665,24 +446,6 @@ c
 c.... common /sympar/   : symmetric storage parameters
 c
 c indsym (5,5)  : mapping from 2D storage to symmetric one
-c
-c----------------------------------------------------------------------
-c
-c.... common /timdat/   : time data
-c
-c time          : current run time
-c CFLfld        : CFL number for fluid flow
-c CFLsld        : CFL number for structural heating
-c Dtgl          : inverse of global time step
-c Dtmax         : maximum delta-time
-c alpha         : trapezoidal rule parameter
-c etol          : epsilon tolerance for GMRES
-c lstep         : current time step
-c ifunc         : func. eval. counter (=niter*(lstep-lstep0) + iter)
-c itseq         : sequence number
-c istep         : step number (reseted at the beginning of the run)
-c iter          : iteration number
-c nitr          : number of multi-corrector iterations for this sequence
 c
 c----------------------------------------------------------------------
 c

@@ -703,7 +703,15 @@ c
 c
             call itrUpdate( yold,  acold,   y,    ac)
 c
-              call itrBC (y,ac, iBC, BC, iper, ilwork, umesh)
+            call itrBC (y,ac, iBC, BC, iper, ilwork, umesh)
+c
+c... update B array for solid blocks...
+c
+c           if (isolid .eq. 1) then
+c
+              call update_solid_blocks
+c
+c           endif
 c
 c Elaine-SPEBC      
             if((irscale.ge.0).and.(myrank.eq.master)) then

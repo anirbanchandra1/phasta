@@ -3,16 +3,17 @@
      &                     xl,      dui,     aci,
      &                     g1yi,    g2yi,    g3yi,
      &                     shg,     dxidx,   WdetJ,   
-     &                     rho,     pres,    T,
-     &                     ei,      h,       alfap,   
-     &                     betaT,   cp,      rk,      
+!     &                     rho,     pres,    T,
+!     &                     ei,      h,       alfap,   
+!     &                     betaT,   cp,      rk,      
      &                     u1,      u2,      u3,
      &                     um1,     um2,     um3, 
      &                     ql,      divqi,   sgn, tmp,
      &                     rmu,     rlm,     rlm2mu,
      &                     con,     rlsl,    rlsli, 
-     &                     xmudmi,  sforce,  cv,
-     &                     mater,   uml,     divum )
+     &                     xmudmi,  sforce,
+!     &                     cv,
+     &                     uml,     divum )
 c
 c----------------------------------------------------------------------
 c
@@ -38,15 +39,6 @@ c  g3yi   (npro,nflow)           : grad-y in direction 3
 c  shg    (npro,nshl,nsd)       : element global grad-shape-functions
 c  dxidx  (npro,nsd,nsd)        : inverse of deformation gradient
 c  WdetJ  (npro)                : weighted Jacobian
-c  rho    (npro)                : density
-c  pres   (npro)                : pressure
-c  T      (npro)                : temperature
-c  ei     (npro)                : internal energy
-c  h      (npro)                : enthalpy
-c  alfap  (npro)                : expansivity
-c  betaT  (npro)                : isothermal compressibility
-c  cp     (npro)                : specific heat at constant pressure
-c  rk     (npro)                : kinetic energy
 c  u1     (npro)                : x1-velocity component
 c  u2     (npro)                : x2-velocity component
 c  u3     (npro)                : x3-velocity component
@@ -59,39 +51,27 @@ c Zdenek Johan, Winter 1991. (Fortran 90)
 c Kenneth Jansen, Winter 1997. Primitive Variables
 c----------------------------------------------------------------------
 c
+        use e3_param_m
+c
         include "common.h"
 c
         interface
           subroutine getthm (rho_,ei_,p_,T_,npro_,mater_
-     &,                  h_,  cv_,cp_,alphaP_,betaT_,gamb_,c_
-     &,                  Ja_def_, bulkMod_, shearMod_)
+     &,                  h_,  cv_,cp_,alphaP_,betaT_,gamb_,c_)
             use eqn_state_m
-            use solid_def_m
+            use e3_solid_m
             implicit none
             real*8, dimension(npro_), target, intent(out) :: rho_,ei_,h_,cv_,cp_,alphaP_,betaT_,gamb_,c_
-            real*8, dimension(npro_), target, intent(out) :: bulkMod_, shearMod_
-            real*8, dimension(npro_), target, intent(in) :: p_,T_, Ja_def_
+            real*8, dimension(npro_), target, intent(in) :: p_,T_
             integer, intent(in) :: npro_, mater_
           end subroutine getthm
-          subroutine e3ivar_solid(Ja_def_,   d_,       det_d_,   det_baf_, 
-     &                            g1yi_,     g2yi_,    g3yi_,
-     &                            npro_,     nsd_,     almBi_,   alfBi_,
-     &                            gamBi_,    intp_,    Delt_)
-             use solid_func_m
-             implicit none
-             real*8, dimension(npro_,nsd_), target, intent(in) :: g1yi_,g2yi_,g3yi_
-             real*8, dimension(npro_,6), target :: d_
-             real*8, dimension(npro_), target :: Ja_def_
-             real*8, dimension(npro_), target :: det_d_
-             real*8, dimension(npro_), target :: det_baf_
-             real*8, intent(in) :: Delt_
-             integer, intent(in) :: npro_, nsd_
-             integer, intent(in) :: intp_
-             real*8, intent(in) :: almBi_, alfBi_, gamBi_
+          subroutine e3ivar_solid(g1yi_,g2yi_,g3yi_,almBi_,alfBi_,gamBi_)
+            use e3_solid_func_m
+            implicit none
+            real*8, dimension(npro,nflow), target, intent(in) :: g1yi_,g2yi_,g3yi_
+            real*8, intent(in) :: almBi_, alfBi_, gamBi_
           end subroutine e3ivar_solid
         end interface
-c
-          
 c
 c  passed arrays
 c
@@ -104,11 +84,11 @@ c
      &            g2yi(npro,nflow),           g3yi(npro,nflow),
      &            shg(npro,nshl,nsd),        dxidx(npro,nsd,nsd),
      &            WdetJ(npro),
-     &            rho(npro),                 pres(npro),
-     &            T(npro),                   ei(npro),
-     &            h(npro),                   alfap(npro),
-     &            betaT(npro),               cp(npro),                  
-     &            rk(npro),                  cv(npro),
+!     &            rho(npro),                 pres(npro),
+!     &            T(npro),                   ei(npro),
+!     &            h(npro),                   alfap(npro),
+!     &            betaT(npro),               cp(npro),                  
+!     &            rk(npro),                  cv(npro),
      &            u1(npro),                  u2(npro),
      &            u3(npro),                  divqi(npro,nflow), 
      &            ql(npro,nshl,idflx),
@@ -121,17 +101,11 @@ c
      &            xmudmi(npro,ngauss)
         dimension gyti(npro,nsd),            gradh(npro,nsd),
      &            sforce(npro,3),            weber(npro) 
-        integer mater
 c
         dimension um1(npro),                 um2(npro),
      &            um3(npro),                 divum(npro),
      &            uml(npro, nshl, nsd)
 c
-c....Solid arrays
-c...
-        real*8,dimension(npro) :: bulkMod,shearMod,
-     &                            det_baf,Ja_def,det_d
-        real*8,dimension(npro,6) :: d
 c................
 c
         ttim(20) = ttim(20) - secs(0.0)
@@ -293,24 +267,19 @@ c
 c-----> SOLID CALCULATIONS <------------
 c
       if(mat_eos(mater,1).eq.ieos_solid_1) then
-          call e3ivar_solid(Ja_def,   d,       det_d,   det_baf, 
-     &                      g1yi,     g2yi,    g3yi,
-     &                      npro,     nsd,     almBi,   alfBi,
-     &                      gamBi,    intp,    Delt(1))
+        call e3ivar_solid(g1yi,g2yi,g3yi,almBi,alfBi,gamBi)
       endif
-
-
-
-
-
-
-
-
-
-c       
+c
+c------> END SOLID <--------------------
+c
         ithm = 6
-         call getthm(rho, ei, dui(:,1), dui(:,5), npro, mater
-     &,              tmp, tmp, tmp, tmp, tmp, tmp, tmp, Ja_def, bulkMod, shearMod)
+c         call getthm(rho, ei, dui(:,1), dui(:,5), npro, mater
+c     &,              tmp, tmp, tmp, tmp, tmp, tmp, tmp)
+c
+        pres = dui(:,1)
+        T = dui(:,5)
+c
+        call getthm6_ptr
 c
         dui(:,1) = rho
         dui(:,2) = rho * dui(:,2)
@@ -412,8 +381,10 @@ c
         endif
 
         ithm = 7
-         call getthm(rho, ei, pres, T, npro, mater
-     &,              h,   cv, cp,   alfap, betaT, tmp,  tmp, Ja_def, bulkMod, shearMod)
+c         call getthm(rho, ei, pres, T, npro, mater
+c     &,              h,   cv, cp,   alfap, betaT, tmp,  tmp)
+c
+        call getthm7_ptr
 c
         ttim(27) = ttim(27) + secs(0.0)
 c
@@ -604,7 +575,7 @@ c  u3     (npro)                : x3-velocity component at intpt
 c  shg    (npro,nshl,nsd)       : element global grad-shape-functions at intpt
 c
 c also used:
-c  pres   (npro)                : pressure at intpt
+c  p      (npro)                : pressure at intpt
 c  T      (npro)                : temperature at intpt
 c  ei     (npro)                : internal energy at intpt
 c  h      (npro)                : enthalpy at intpt

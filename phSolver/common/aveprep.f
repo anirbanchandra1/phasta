@@ -213,8 +213,6 @@ c         xdenli = xdenli
      &          x(numnp,3),            ien(npro,nshl),
      &          xl(npro,nenl,nsd),     ylist(idim)
       
-      integer intp
-      
       call localx (x,      xl,     ien,    3,  'gather  ')      
                 
 
