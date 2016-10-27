@@ -545,7 +545,6 @@ c
       if (solid_p%is_active) 
      &  call read_restart_solid
 c
-c
 c read in ALE stuff
 c read in coordinate at n time step      
       intfromfile=0

@@ -584,7 +584,6 @@ c.... satisfy the BCs on the implicit LHS
 c     
              call bc3LHS (iBC,                  BC,  mien(iblk)%p, 
      &                    EGmass  ) 
-
 c
 c.... Fill-up the global sparse LHS mass matrix
 c
@@ -623,12 +622,10 @@ c
           npro   = lcblkb(1,iblk+1) - iel 
           if(lcsyst.eq.3) lcsyst=nenbl
           ngaussb = nintb(lcsyst)
-          
 c
 c.... compute and assemble the residuals corresponding to the 
 c     boundary integral
 c
-
           allocate (tmpshpb(nshl,MAXQPT))
           allocate (tmpshglb(nsd,nshl,MAXQPT))
           if(lhs.eq.1 .and. iLHScond >= 1) then
@@ -669,6 +666,7 @@ c
      &                 miBCB(iblk)%p,           mBCB(iblk)%p,
      &                 res,                     rmes, 
      &                 EGmass,                  umesh)
+c
           if(lhs == 1 .and. iLHScond > 0) then
             call fillSparseC_BC(mienb(iblk)%p, EGmass, 
      &                   lhsk, row, col)
@@ -679,15 +677,8 @@ c
           deallocate (EGmass)
           deallocate (tmpshpb)
           deallocate (tmpshglb)
-        enddo   !end of boundary element loop
 c
-c      write(*,998) '[',myrank,'] in elmgmr AFTER BOUNDARY.'
-c      do i = 1,nshg
-c        rad = sqrt(x(i,2)**2+x(i,3)**2)
-c        if (abs(rad-5.e-3)<1.e-4 .and. x(i,1)<=0.15 .and. x(i,1)>=0.1) then
-c          write(*,999) myrank,i,x(i,:),res(i,:)
-c        endif
-c      enddo
+        enddo   !end of boundary element loop
 c
       ttim(80) = ttim(80) + secs(0.0)
 c
@@ -706,7 +697,6 @@ c
         endif
 c
         if_normal = zero
-        if_kappa  = zero
 c
         if_blocks1: do iblk = 1, nelblif
 c
@@ -779,6 +769,9 @@ c
 c        call calc_kappa_error(x,lcblkif(1,:),nelblif,nsd,nshg)
 c
         sum_vi_area = zero
+c
+c      print*,'[',myrank,'] BEFORE if loop2'
+c      call MPI_BARRIER (MPI_COMM_WORLD,ierr)
 c
         if_blocks: do iblk = 1, nelblif
 c
@@ -897,9 +890,15 @@ c
           deallocate (egmassif11)
 c
         enddo if_blocks
+c      print*,'[',myrank,'] DONE if loop2'
+c      call MPI_BARRIER (MPI_COMM_WORLD,ierr)
 c
         deallocate (if_normal)
-        if (associated(if_kappa)) deallocate (if_kappa)
+        nullify(if_normal)
+        if (associated(if_kappa)) then
+          deallocate (if_kappa)
+          nullify(if_kappa)
+        endif
 c
 c before the commu we need to rotate the residual vector for axisymmetric
 c boundary conditions (so that off processor periodicity is a dof add instead
