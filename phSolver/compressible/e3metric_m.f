@@ -4,23 +4,23 @@ c
         use global_const_m
         use propar_m
         use number_def_m
-c
         implicit none
 c
       contains
 c
-      subroutine e3metric(shg,shgl,xl)
+      subroutine e3metric(shg,shgl,xl,WdetJ,qwt)
 c
         implicit none
 c
         real*8, dimension(:,:,:), pointer, intent(out) :: shg
         real*8, dimension(:,:,:), pointer, intent(in)  :: xl, shgl
+        real*8, dimension(:), pointer, optional, intent(out)  :: WdetJ
+        real*8, optional, intent(in) :: qwt
 c
         real*8, dimension(:,:,:), allocatable  :: dxdxi, dxidx
         real*8, dimension(npro)  :: tmp
 c
         integer :: n, nshl, err0,err1
-c        real*8  :: WdetJ(npro)
 c
         allocate(dxdxi(npro,nsd,nsd),dxidx(npro,nsd,nsd))
 c
@@ -53,7 +53,13 @@ c
        dxidx(:,3,3) = (dxdxi(:,1,1) * dxdxi(:,2,2) 
      &                - dxdxi(:,1,2) * dxdxi(:,2,1)) * tmp
 c
-c       WdetJ = Qwt(lcsyst,intp) / tmp
+       if (present(WdetJ) .or. present(qwt))  then
+         if (present(WdetJ) .and. present(qwt)) then
+           WdetJ = qwt / tmp
+         else
+           call error ('e3metric_m:  ', 'both WdetJ and qwt should be present', qwt)
+         endif
+       endif
 c
 c.... compute the global gradient of shape-functions
 c

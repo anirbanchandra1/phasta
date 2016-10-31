@@ -154,12 +154,9 @@ c mattyp        : material type ( = 0 for fluid; = 1 for solid )
 c iftpid(MAXBLK): holds the interface topological combination
 c
       module elmpar_m
-c
         use iso_c_binding
         use global_const_m
-c
         implicit none
-c
 	      integer, target ::  nelblk, nelblb, nelblif
         integer :: lelCat, lcsyst, iorder, nenb,   
      &                  ndofl,  nsymdl, nenl,   nfacel,
@@ -167,13 +164,11 @@ c
      &                  nenbl,  intind, mattyp,
      &                  mattyp0, mattyp1, 
      &                  iftpid(MAXBLK)
-c
         common /elmpar/ lelCat, lcsyst, iorder, nenb,   
      &                  nelblk, nelblb, nelblif,
      &                  ndofl,  nsymdl, nenl,   nfacel,
      &                  nenbl,  intind, mattyp,
      &                  iftpid
-c
       end module elmpar_m
 c
 c----------------------------------------------------------------------
@@ -351,7 +346,7 @@ c
         use iso_c_binding
         implicit none
         integer, parameter :: no_ramp = 1, linear_ramp = 2
-        integer, parameter :: const_vi = 1, vieilles_burning=2
+        integer, parameter :: no_vi = 1, const_vi = 2, vieilles_burning=3
         integer(c_int) :: phase_change_model, vi_ramping
         real(c_double) :: ramp_time, vi_mag, dgif_alpha, dgif_beta, dgif_s, dgif_e, dgif_h
         real(c_double) :: burn_rate_exp, burn_rate_coeff

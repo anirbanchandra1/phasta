@@ -40,6 +40,7 @@ c
       use fncorpmod
       use if_velocity_m
       use solid_m
+      use probe_m
 c
         include "common.h"
         include "mpif.h"
@@ -684,6 +685,7 @@ c
 c
                   endif ! end of switch for flow or scalar or mesh-elastic update
                endif            !end of switch between solve or update
+c
             enddo               ! loop over sequence in step
         if((istop.lt.0).and.(iMoreRANS.lt.5)) then
             iMoreRANS=iMoreRANS+1
@@ -723,6 +725,8 @@ c               call itrBC (y,  ac,  iBC,  BC, iper, ilwork)
                call itrBCSclr (yold, acold,  iBC, BC, iper, ilwork)
             enddo
 c     
+      call probe_conservation(y,x,shp,shgl)
+c
             istep = istep + 1
             lstep = lstep + 1
             ntoutv=max(ntout,100) 

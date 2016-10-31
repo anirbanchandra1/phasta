@@ -43,6 +43,7 @@ void populate_dg_vi_ramp
 void populate_dg_phaseChange_model
 (map<string,int>& this_map)
 {
+  this_map.insert(map<string,int>::value_type("None", idg_no_vi));
   this_map.insert(map<string,int>::value_type("Constant", idg_const_vi));
   this_map.insert(map<string,int>::value_type("Vieille's-Burning", idg_vieilles_burning));
 }

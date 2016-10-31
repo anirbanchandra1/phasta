@@ -306,6 +306,7 @@ c
         use if_global_m
         use eqn_state_m
         use e3_solid_m
+        use probe_m
 c
         include "common.h"
         include "mpif.h"

@@ -9,7 +9,7 @@
       nlarge = 0
       DO j = 1,n
         DO i = 1,nshg
-          if (abs(u(i,j)).gt.1.0e10)  nlarge=nlarge+1
+          if (abs(u(i,j)).gt.1.0e18)  nlarge=nlarge+1
           if (u(i,j) .ne. u(i,j)) then
             nnanq = nnanq + 1
             u(i,j)=9.876543e21

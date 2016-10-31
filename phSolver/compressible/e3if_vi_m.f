@@ -31,6 +31,8 @@ c
         end select
 c
         select case (phase_change_model)
+        case (no_vi)
+          vi = zero
         case (const_vi)
           vi = c1 * vi_mag * n
         case (vieilles_burning)
@@ -43,9 +45,9 @@ c
 c
 c... add flow velocity
 c
-        vi(:,1) = c1*vi(:,1) + u(:,1)
-        vi(:,2) = c1*vi(:,2) + u(:,2)
-        vi(:,3) = c1*vi(:,3) + u(:,3)
+        vi(:,1) = vi(:,1) + u(:,1)
+        vi(:,2) = vi(:,2) + u(:,2)
+        vi(:,3) = vi(:,3) + u(:,3)
 c
       end subroutine calc_vi
 c

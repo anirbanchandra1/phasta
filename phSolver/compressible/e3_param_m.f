@@ -10,7 +10,6 @@ c  cp                    : specific heat at constant pressure
 c  rk                    : kinetic energy
 c
       module e3_param_m
-c
         use propar_m
 c
         implicit none
