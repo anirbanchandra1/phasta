@@ -472,6 +472,7 @@ extern "C" {
     int iforce;
     int igraph;
     int itime;
+    int iconserv;
   } mio ;
 
   extern struct { 
@@ -489,6 +490,7 @@ extern "C" {
     double fforce;
     double fgraph;
     double ftime;
+    double fconserv;
   } mioname ;
 
   extern struct { 
@@ -558,6 +560,7 @@ extern "C" {
     int iv_corepernode; 
     int input_mode; //FIXME -1:streams, 0:posix, >0:syncio
     int output_mode; //FIXME -1:streams, 0:posix, >0:syncio
+    int conservation_probe;
     /*  int iostats; */
 /*      int ipresref; */
   } outpar ;

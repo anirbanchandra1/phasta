@@ -28,6 +28,8 @@ c
       use timer3_m
       use outpar_m
       use workfc_m
+      use mio_m
+      use mioname_m
 
 	IMPLICIT REAL*8 (a-h,o-z)
 c
@@ -165,20 +167,8 @@ c
 c
         common /mintpar/ indQpt(3,3,4),  numQpt(3,3,4),
      &                  intmax
-c
-        common /mio    / iin,    igeom,  ipar,   ibndc,  imat,   iecho,
-     &                  iout,   ichmou, irstin, irstou, ihist,  iflux,
-     &                  ierror, itable, iforce, igraph, itime
-c
 c /*         common /andres/ fwr1,ngaussf,idim,nlist */
 
-        character*80    fin,    fgeom,  fpar,   fbndc,  fmat,   fecho,
-     &                  frstin, frstou, fhist,  ferror, ftable, fforce,
-     &                  fgraph, ftime
-        common /mioname/ fin,    fgeom,  fpar,   fbndc,  fmat,   fecho,
-     &                  frstin, frstou, fhist,  ferror, ftable, fforce,
-     &                  fgraph, ftime
-c
         common /itrpar/ eGMRES, lGMRES, lGMRESs, iKs, iKss,    ntotGM, ntotGMs
 c
         common /point / mbeg,   mend,   mprec
@@ -290,43 +280,6 @@ c Qpt   (4,*)   : xi, eta, zeta, weight of quadrature points
 c indQpt(3,3,4) : index to quadrature points for a given rule
 c numQpt(3,3,4) : number of quadrature points for a given rule
 c intmax        : number of allowable spatial integ. points per nsd
-c
-c----------------------------------------------------------------------
-c
-c.... common /io    /   : io channels
-c
-c iin           : input  (main parameters)          [INPUT.DAT]
-c igeom         : input  (problem geometry)         [GEOM.DAT]
-c ipar          : in/out (spectral mapping)         [PARTITION.DAT]
-c ibndc         : input  (problem boundary cond.)   [BC.DAT]
-c imat          : input  (element material types)   [MATERIAL.DAT]
-c iecho         : output (echo of input)            [ECHO.DAT]
-c iout          : output (result output)            [OUTPUT.lstep]
-c ichmou        : output (chemistry output)         [OUTCHM.lstep]
-c irstin        : input  (input restart)            [RESTAR.INP]
-c irstou        : output (output restart)           [RESTAR.OUT]
-c ihist         : output (history output)           [HISTOR.DAT]
-c iflux         : output (boundary flux)            [FLUX.lstep]
-c ierror        : output (error messages)           [ERROR.DAT]
-c itable        : input  (equilibrium chemistry)    [TABLE.DAT]
-c iforce        : output (aerodynamic forces)       [FORCES.DAT]
-c
-c----------------------------------------------------------------------
-c
-c.... common /ioname/   : io file names
-c
-c fin           : input.dat
-c fgeom         : geom.dat
-c fpar          : partition.dat
-c fbndc         : bc.dat
-c fmat          : material.dat
-c fecho         : echo.dat
-c frstin        : restar.inp
-c frstou        : restar.out
-c fhist         : histor.dat
-c ferror        : error.dat
-c ftable        : table.dat
-c fforce        : forces.dat
 c
 c----------------------------------------------------------------------
 c

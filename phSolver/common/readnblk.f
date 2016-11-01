@@ -56,7 +56,7 @@ c
       character*30 fmt1
       character*255 fname1,fnamer,fnamelr
       character*255 warning
-      integer igeomBAK, ibndc, irstin, ierr
+      integer igeomBAK, ierr
       integer, target :: intfromfile(50) ! integers read from headers
       integer :: descriptor, descriptorG, GPID, color, nfields
       integer ::  numparts, nppf

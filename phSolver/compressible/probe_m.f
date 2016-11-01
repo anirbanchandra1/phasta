@@ -81,6 +81,8 @@ c
       end subroutine set_probe
 c
       subroutine get_probe_global
+        use timdat_m
+        use mio_m
         implicit none
         include "mpif.h"
         real*8, dimension(nprobe*nflow) :: myprobe,globalprobe
@@ -94,9 +96,12 @@ c
         enddo
         globalprobe = zero
         call mpi_allreduce(myprobe,globalprobe,nprobe*nflow,MPI_DOUBLE_PRECISION,MPI_SUM, MPI_COMM_WORLD,ierr)
-        if (myrank == 0)
-     &    write(*,100) globalprobe(1:5)
-100   format(1x,'Total conservative variables: ',5e24.16)
+        if (myrank == 0) then
+          write(*,200) lstep,globalprobe(1:5)
+          write(iconserv,100) lstep,globalprobe(1:5)
+        endif
+100   format(1x,i6,5e24.16)
+200   format(1p,'Conservation: ',i6,5(2x,e10.3))
       end subroutine get_probe_global
 c
       end module probe_m

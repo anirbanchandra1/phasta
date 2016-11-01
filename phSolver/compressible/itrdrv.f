@@ -146,6 +146,7 @@ c.... open history and aerodynamic forces files
 c
         if (myrank .eq. master) then
           open (unit=ihist,  file=fhist,  status='unknown')
+          open (unit=iconserv,file=fconserv,status='unknown')
           inquire(file=fforce, exist=alive)
           if (alive .and. (lstep .gt. 0) ) then 
             open (unit=iforce, file=fforce, status='old', position='append')
@@ -725,14 +726,15 @@ c               call itrBC (y,  ac,  iBC,  BC, iper, ilwork)
                call itrBCSclr (yold, acold,  iBC, BC, iper, ilwork)
             enddo
 c     
-      call probe_conservation(y,x,shp,shgl)
-c
             istep = istep + 1
             lstep = lstep + 1
             ntoutv=max(ntout,100) 
             !boundary flux output moved after the error calculation so
             !everything can be written out in a single chunk of code -
-            !Nicholas Mati
+c
+            if (conservation_probe == 1)
+     &       call probe_conservation(y,x,shp,shgl)
+c
             
             !dump TIME SERIES
             if (exts) then
@@ -976,6 +978,7 @@ c
       if (myrank .eq. master) then
          close (ihist)
          close (iforce)
+         close (iconserv)
              
          if(exMC) then 
            call MC_writeState(lstep) 

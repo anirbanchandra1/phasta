@@ -40,6 +40,7 @@
       fforce = 'forces.dat'
       fgraph = 'graph.dat'
       ftime = 'time.out'
+      fconserv = 'conserv.dat'
 
       iin = 10
       igeom = 11
@@ -58,6 +59,7 @@
       iforce = 24
       igraph = 25
       itime = 26
+      iconserv = 27
 
       mcsyst = 4
       melCat = 8

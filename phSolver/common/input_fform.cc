@@ -391,6 +391,18 @@ int input_fform(phSolver::Input& inp)
     outpar.iv_rankpercore = inp.GetValue("Ranks per core");
     outpar.iv_corepernode = inp.GetValue("Cores per node");
 
+    if ( (string)inp.GetValue("Conservation Probe") == "No" ){
+        outpar.conservation_probe = 0;
+    }
+    else if ( (string)inp.GetValue("Conservation Probe") == "Yes" ){
+        outpar.conservation_probe = 1;
+    }
+    else {
+      cout << " Conservation Probe: Only Legal Values (Yes, No) ";
+      cout << endl;
+      exit(1);
+    }
+
     turbvari.iramp=0;
     if((string)inp.GetValue("Ramp Inflow") == "True") turbvari.iramp=1;
     if(turbvari.iramp == 1) {
