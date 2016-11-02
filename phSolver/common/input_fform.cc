@@ -555,8 +555,9 @@ int input_fform(phSolver::Input& inp)
     if (sbuf == "Constant")
       dgifinp.vi_mag = (double)inp.GetValue("DG Interface Velocity Magnitude");
     else if (sbuf == "Vieille's-Burning") {
-      dgifinp.burn_rate_exp = (double)inp.GetValue("Burn Rate Exponent alpha");
-      dgifinp.burn_rate_coeff = (double)inp.GetValue("Burn Rate Coefficient beta");}
+      dgifinp.burn_rate_exp   = (double)inp.GetValue("Burn Rate Exponent alpha");
+      dgifinp.burn_rate_coeff = (double)inp.GetValue("Burn Rate Coefficient beta");
+      dgifinp.burn_rate_pref  = (double)inp.GetValue("Burn Rate Reference Pressure");}
 
     dgifinp.s = (double)inp.GetValue("DG Interface Stability Factor");
     dgifinp.e = (double)inp.GetValue("DG Interface Kinematic Condition epsilon");

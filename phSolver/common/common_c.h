@@ -524,7 +524,7 @@ extern "C" {
     double s;
     double e;
     double h;
-    double burn_rate_exp, burn_rate_coeff;
+    double burn_rate_exp, burn_rate_coeff, burn_rate_pref;
   } dgifinp;
 
   extern struct { 

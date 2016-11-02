@@ -36,9 +36,11 @@ c
         case (const_vi)
           vi = c1 * vi_mag * n
         case (vieilles_burning)
-          vi(:,1) = c1 * burn_rate_coeff*p**burn_rate_exp * n(:,1)
-          vi(:,2) = c1 * burn_rate_coeff*p**burn_rate_exp * n(:,2)
-          vi(:,3) = c1 * burn_rate_coeff*p**burn_rate_exp * n(:,3)
+c
+          vi(:,1) = c1 * burn_rate_coeff*(p/burn_rate_pref)**burn_rate_exp * n(:,1)
+          vi(:,2) = c1 * burn_rate_coeff*(p/burn_rate_pref)**burn_rate_exp * n(:,2)
+          vi(:,3) = c1 * burn_rate_coeff*(p/burn_rate_pref)**burn_rate_exp * n(:,3)
+c
         case default
           call error ('ERROR in e3if_vi:',' phase_change_model is not supported.',phase_change_model)
         end select
