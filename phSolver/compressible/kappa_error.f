@@ -39,11 +39,14 @@ c
                 cycle
               endif
 #if case == 1
-              kappa_exact = 10.d0
+              kappa_exact = 4000.d0 ! 2/r for sphere
 #endif
               my_nsum = my_nsum + 1
-              this_err = (norm2(if_kappa(inode(n),1:nsd)) - kappa_exact)**2
+              this_err = (norm2(if_kappa(inode(n),1:nsd))/kappa_exact - 1.d0)**2
               my_err = my_err + this_err
+      if (this_err > 1.e-3) then
+        write(*,200) myrank,inode(n),x(inode(n),:),norm2(if_kappa(inode(n),1:nsd)),this_err
+      endif
               my_max_err = max(my_max_err,this_err)
 c
             enddo
@@ -60,6 +63,7 @@ c
           write(*,100) nsum,err,max_err
         endif
 c
-100   format(' Total interface nodes, L2, L_inf norms: ',i6,x,2(2x,e24.16))
+100   format(' Total interface nodes, L2, L_inf norms (normalized err): ',i6,x,2(2x,e24.16))
+200   format('[',i4,'] node, x(1:3), kappa, err:',i6,3(f8.4),x,2(2x,e24.16))
 c
       end subroutine calc_kappa_error

@@ -191,6 +191,9 @@ c
               if_kappa_l(iel,2,nsd+1) = pt125*(cot0(1)*l2sq+cot0(3)*l1sq)
               if_kappa_l(iel,3,nsd+1) = pt125*(cot0(2)*l3sq+cot0(1)*l2sq)
             else
+C
+C ...NOTE : THIS STILL NEEDS ATTENTION..
+C
               do i = 1,nsd
                 if (cot0(i) < zero) then
                   if_kappa_l(iel,i,nsd+1) = if_kappa_l(iel,i,nsd+1) + pt5*area
