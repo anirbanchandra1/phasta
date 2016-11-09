@@ -68,6 +68,7 @@ c
 c.... ----------------------> Wall Normals  <--------------------------
 c (calculate the normal and adjust BCinp to the true normal as needed)
 c
+      nsurf = zero
       if(navier.eq.1)then
          call genwnm (iBC,  BCtmp,   x,   ilwork, iper, nsurf)
       endif
