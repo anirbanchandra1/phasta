@@ -838,9 +838,9 @@ c... write solution and fields
                    call write_field(
      &                  myrank,'a'//char(0),'motion_coords'//char(0),13,
      &                  x,     'd'//char(0), numnp, nsd, lstep)
-                   call write_field(
-     &                  myrank,'a'//char(0),'mesh_vel'//char(0),  8,
-     &                  umesh, 'd'//char(0), numnp, nsd, lstep)
+c                   call write_field(
+c     &                  myrank,'a'//char(0),'mesh_vel'//char(0),  8,
+c     &                  umesh, 'd'//char(0), numnp, nsd, lstep)
 c                   call write_field(
 c     &                  myrank,'a'//char(0),'xdot'//char(0), 4,
 c     &                  xdot,  'd'//char(0), numnp, nsd, lstep)
@@ -868,9 +868,9 @@ c
                  call write_field(
      &                myrank,'a'//char(0),'motion_coords'//char(0),13,
      &                x,     'd'//char(0), numnp, nsd, lstep)
-                 call write_field(
-     &                myrank,'a'//char(0),'mesh_vel'//char(0),  8,
-     &                umesh, 'd'//char(0), numnp, nsd, lstep)
+c                 call write_field(
+c     &                myrank,'a'//char(0),'mesh_vel'//char(0),  8,
+c     &                umesh, 'd'//char(0), numnp, nsd, lstep)
 c                 call write_field(
 c     &                myrank,'a'//char(0),'xdot'//char(0), 4,
 c     &                xdot,  'd'//char(0), numnp, nsd, lstep)

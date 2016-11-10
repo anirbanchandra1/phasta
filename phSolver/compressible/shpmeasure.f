@@ -57,7 +57,9 @@ c
      &          / ( tetSumEdge(:) * tetSumEdge(:) * tetSumEdge(:) ) 
 c
        do i = 1, npro
-          if (meshq(i) .gt. 1.0 ) write(*,*) 'Meshq larger than one: ', meshq(i)
+          if (meshq(i) .gt. 1.0000001 ) then
+             write(*,*) 'Meshq larger than one: ', meshq(i)
+          endif
           if (meshq(i) .lt. 0.0 ) then 
              write(*,*) 'Meshq smaller than zero:', meshq(i)
              tetVolm(i) = abs (tetVolm(i))
