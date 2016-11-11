@@ -326,14 +326,12 @@ c
           subroutine e3if_setparam2
      &    (
      &     egmassif00,egmassif01,egmassif10,egmassif11,
-     &     materif0, materif1,
      &     time_
      &    )
             use dgifinp_m
             use e3if_param_m
             implicit none
             real*8, dimension(:,:,:), allocatable, target, intent(in) :: egmassif00,egmassif01,egmassif10,egmassif11
-            integer, intent(in) :: materif0, materif1
             real*8, intent(in) :: time_
           end subroutine e3if_setparam2
           subroutine asidgif_geom
@@ -758,7 +756,8 @@ c
           endif
           if (associated(if_kappa)) then
             if (if_kappa(inode,nsd+1) > zero) 
-     &        if_kappa(inode,1:nsd) = if_kappa(inode,1:nsd)/if_kappa(inode,nsd+1)
+C     &        if_kappa(inode,1:nsd) = if_kappa(inode,1:nsd)/if_kappa(inode,nsd+1)
+     &        if_kappa(inode,1:nsd) = pt50*if_kappa(inode,1:nsd)/if_kappa(inode,nsd+1)
           endif
         enddo
 c
@@ -848,7 +847,6 @@ c
           call e3if_setparam2
      &    (
      &     egmassif00,egmassif01,egmassif10,egmassif11,
-     &     mater0, mater1,
      &     real(lstep+1,8)*delt(1)
      &    )
 c
