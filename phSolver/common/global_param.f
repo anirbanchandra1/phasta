@@ -346,7 +346,7 @@ c
         use iso_c_binding
         implicit none
         integer, parameter :: no_ramp = 1, linear_ramp = 2
-        integer, parameter :: no_vi = 1, const_vi = 2, vieilles_burning=3
+        integer, parameter :: no_vi = 1, const_vi = 2, vieilles_burning=3, cavitation=4
         integer(c_int) :: phase_change_model, vi_ramping
         real(c_double) :: ramp_time, vi_mag, dgif_alpha, dgif_beta, dgif_s, dgif_e, dgif_h
         real(c_double) :: burn_rate_exp, burn_rate_coeff, burn_rate_pref

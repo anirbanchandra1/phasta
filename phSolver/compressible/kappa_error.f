@@ -44,9 +44,10 @@ c
               my_nsum = my_nsum + 1
               this_err = (norm2(if_kappa(inode(n),1:nsd))/kappa_exact - 1.d0)**2
               my_err = my_err + this_err
-      if (this_err > 1.e-3) then
-        write(*,200) myrank,inode(n),x(inode(n),:),norm2(if_kappa(inode(n),1:nsd)),this_err
-      endif
+      write(*,*) norm2(if_kappa(inode(n),:))
+c      if (this_err > 1.e-3) then
+c        write(*,200) myrank,inode(n),x(inode(n),:),norm2(if_kappa(inode(n),1:nsd)),this_err
+c      endif
               my_max_err = max(my_max_err,this_err)
 c
             enddo

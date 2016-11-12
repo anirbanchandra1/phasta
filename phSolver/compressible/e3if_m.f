@@ -117,13 +117,13 @@ c
 c
 c ... Interface velocity calculations...
 c
-            if     (mat_eos(mater0,1) == ieos_ideal_gas) then
+c            if     (mat_eos(mater0,1) == ieos_ideal_gas) then
               call calc_vi(pres0,nv0,u1)
-            elseif (mat_eos(mater1,1) == ieos_ideal_gas) then
-              call calc_vi(pres1,nv1,u0)
-            else
-              call error ('wrong mater: ', 'calc vi', 0)
-            endif
+c            elseif (mat_eos(mater1,1) == ieos_ideal_gas) then
+c              call calc_vi(pres1,nv1,u0)
+c            else
+c              call error ('wrong mater: ', 'calc vi', 0)
+c            endif
 c
             call calc_vi_area_node(sum_vi_area_l0,shp0,WdetJif0,nshl0)
             call calc_vi_area_node(sum_vi_area_l1,shp1,WdetJif1,nshl1)
@@ -315,8 +315,10 @@ c
               k0 = dot_product(kappa0,nv0(iel,:))
               k1 = dot_product(kappa1,nv1(iel,:))
 c
-              ri0(iel,17:19) = ri0(iel,17:19) + 0.5 * surface_tension_coeff * k0 * nv0(iel,1:nsd)
-              ri1(iel,17:19) = ri1(iel,17:19) + 0.5 * surface_tension_coeff * k1 * nv1(iel,1:nsd)
+c              ri0(iel,17:19) = ri0(iel,17:19) + pt50 * surface_tension_coeff * k0 * nv0(iel,1:nsd)
+c              ri1(iel,17:19) = ri1(iel,17:19) + pt50 * surface_tension_coeff * k1 * nv1(iel,1:nsd)
+              ri0(iel,17:19) = ri0(iel,17:19) + pt50 * surface_tension_coeff * kappa0
+              ri1(iel,17:19) = ri1(iel,17:19) + pt50 * surface_tension_coeff * kappa1
 c
             endif
 c

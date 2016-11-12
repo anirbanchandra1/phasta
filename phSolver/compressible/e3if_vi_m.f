@@ -11,8 +11,9 @@ c
 c
         real*8, pointer, intent(in) :: p(:), n(:,:), u(:,:)
 c
-        integer :: isd
+        integer :: isd,i
         real*8 :: vimag,v1,t1,c1
+        real*8 :: pvap,cprod,cdest
 c
         select case (vi_ramping)
         case (no_ramp)
@@ -40,7 +41,18 @@ c
           vi(:,1) = c1 * burn_rate_coeff*(p/burn_rate_pref)**burn_rate_exp * n(:,1)
           vi(:,2) = c1 * burn_rate_coeff*(p/burn_rate_pref)**burn_rate_exp * n(:,2)
           vi(:,3) = c1 * burn_rate_coeff*(p/burn_rate_pref)**burn_rate_exp * n(:,3)
-c      write(*,*) vi(1,:)
+c
+        case (cavitation)
+c
+c >>> NOTE: HARD CODED NUMBERS HERE
+c
+          pvap = 100.0d3
+          cdest = 10.d-3
+          cprod = 10.d-3
+c
+          vi(:,1) = -nv0(:,1)*(cdest*min(zero,pres0(i)-pvap) - cprod*max(zero,pres0-pvap))
+          vi(:,2) = -nv0(:,2)*(cdest*min(zero,pres0(i)-pvap) - cprod*max(zero,pres0-pvap))
+          vi(:,3) = -nv0(:,3)*(cdest*min(zero,pres0(i)-pvap) - cprod*max(zero,pres0-pvap))
 c
         case default
           call error ('ERROR in e3if_vi:',' phase_change_model is not supported.',phase_change_model)
@@ -51,6 +63,7 @@ c
         vi(:,1) = vi(:,1) + u(:,1)
         vi(:,2) = vi(:,2) + u(:,2)
         vi(:,3) = vi(:,3) + u(:,3)
+c      write(*,*) (norm2(vi(i,:)),i=1,npro)
 c
       end subroutine calc_vi
 c

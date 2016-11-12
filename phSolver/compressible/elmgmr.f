@@ -787,37 +787,48 @@ c
           iorder  = lcblkif(5, iblk)    ! polynomial order
           nshl0   = lcblkif(13,iblk)
           nshl1   = lcblkif(14,iblk)
-          mater0  = lcblkif(9, iblk)
-          mater1  = lcblkif(10,iblk)
+          materif0  = lcblkif(9, iblk)
+          materif1  = lcblkif(10,iblk)
           ndof    = lcblkif(11,iblk)
           nsymdl  = lcblkif(12,iblk)    ! ???
           npro    = lcblkif(1,iblk+1) - iel
           inum    = iel + npro - 1
           ngaussif = nintif0(lcsyst0)   ! or nintif1(lcsyst1)? should be the same!
 c
+c... setup material blocks such that 0 is vapor and 1 is liquid/solid
+c
+          mater0 = -1
+          mater1 = -1
+c
+          select case (mat_eos(materif0,1))
+          case (ieos_ideal_gas,ieos_ideal_gas_2)
+            mater0 = materif0
+            ienif0 => mienif0(iblk)%p
+          case (ieos_liquid_1)
+            mater1 = materif0
+            ienif1 => mienif0(iblk)%p
+          case default
+            call error ('getthm  ', 'WE DO NOT SUPPORT THIS MATERIAL YET!!', materif0)
+          end select
+c
+          select case (mat_eos(materif1,1))
+          case (ieos_ideal_gas,ieos_ideal_gas_2)
+            mater0 = materif1
+            ienif0 => mienif1(iblk)%p
+          case (ieos_liquid_1)
+            mater1 = materif1
+            ienif1 => mienif1(iblk)%p
+          case default
+            call error ('getthm  ', 'WE DO NOT SUPPORT THIS MATERIAL YET!!', materif1)
+          end select
+c
+          if (mater0 < 0 .or. mater1 < 0) 
+     &      call error ('elmgmr  ', 'failed setting up mater0,1', 0)
+c
 c... set equations of state
 c
-          select case (mat_eos(mater0,1))
-          case (ieos_ideal_gas,ieos_ideal_gas_2)
-            getthmif0_ptr => getthm7_ideal_gas
-          case (ieos_liquid_1)
-            getthmif0_ptr => getthm7_liquid_1
-          case default
-            call error ('getthm  ', 'wrong material', mater0)
-          end select
-          if (.not.associated(getthmif0_ptr)) 
-     &      call error ('getthm  ', 'cannot set getthmif0')
-c
-          select case (mat_eos(mater1,1))
-          case (ieos_ideal_gas,ieos_ideal_gas_2)
-            getthmif1_ptr => getthm7_ideal_gas
-          case (ieos_liquid_1)
-            getthmif1_ptr => getthm7_liquid_1
-          case default
-            call error ('getthm  ', 'wrong material', mater1)
-          end select
-          if (.not.associated(getthmif1_ptr)) 
-     &      call error ('getthm  ', 'cannot set getthmif1')
+          getthmif0_ptr => getthm7_ideal_gas
+          getthmif1_ptr => getthm7_liquid_1
 c
 c... compute and assemble the residual and tangent matrix
 c
@@ -852,9 +863,6 @@ c
 c
           call e3if_geom_malloc
           call e3if_malloc
-c
-          ienif0 => mienif0(iblk)%p
-          ienif1 => mienif1(iblk)%p
 c
           call asidgif
      &    (

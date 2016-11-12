@@ -99,6 +99,8 @@
 #define idg_no_vi 1
 #define idg_const_vi 2
 #define idg_vieilles_burning 3
+#define idg_cavitation 4
+
 #define idg_no_ramp 1
 #define idg_linear_ramp 2
 
