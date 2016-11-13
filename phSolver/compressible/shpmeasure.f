@@ -56,13 +56,17 @@ c
        meshq(:) = 15552.0 * tetVolm(:) * abs(tetVolm(:))
      &          / ( tetSumEdge(:) * tetSumEdge(:) * tetSumEdge(:) ) 
 c
+       printflag1 = 0
+       printflag2 = 0
        do i = 1, npro
-          if (meshq(i) .gt. 1.0000001 ) then
+          if (meshq(i) .gt. 1.0000001 .and. printflag1 = 0) then
              write(*,*) 'Meshq larger than one: ', meshq(i)
+             printflag1 = 1
           endif
-          if (meshq(i) .lt. 0.0 ) then 
+          if (meshq(i) .lt. 0.0 .and. printflag2 = 0) then 
              write(*,*) 'Meshq smaller than zero:', meshq(i)
              tetVolm(i) = abs (tetVolm(i))
+             printflag = 1
           endif
        enddo
 c

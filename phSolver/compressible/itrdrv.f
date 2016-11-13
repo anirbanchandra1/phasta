@@ -614,7 +614,7 @@ c.... only used for prescribing time-dependent mesh-elastic BC
 c.... comp3_elas and DG interface share the same iBC, thus, this
 c     call will replace the interface vel with prescribed value
 c.... !!!!!!!!! Please comment this when commit !!!!!!!!!!!!!!
-                     call timeDependBCElas(x, iBC, BC)
+c                     call timeDependBCElas(x, iBC, BC)
 c
 c... update displacement and umesh based on iBC and BC
 c
