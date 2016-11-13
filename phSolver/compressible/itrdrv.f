@@ -605,19 +605,27 @@ c
                       iprec=lhs
                       ndofelas = nshl * nelas
 c 
-                       call set_if_velocity (BC(:,ndof+2:ndof+4),  iBC, 
+                     call set_if_velocity (BC(:,ndof+2:ndof+4),  iBC, 
      &                                umesh,    x,     ilwork,
      &                                lcblkif,  nshg,  ndofBC,
      &                                nsd,   nelblif,  MAXBLK, nlwork )
-c 
-                     call itrBCElas(umesh,  disp,  iBC, 
+c
+c.... only used for prescribing time-dependent mesh-elastic BC
+c.... comp3_elas and DG interface share the same iBC, thus, this
+c     call will replace the interface vel with prescribed value
+c.... !!!!!!!!! Please comment this when commit !!!!!!!!!!!!!!
+                     call timeDependBCElas(x, iBC, BC)
+c
+c... update displacement and umesh based on iBC and BC
+c
+                     call itrBCElas(umesh,  disp,  iBC,
      &                              BC(:,ndof+2:ndof+5),
-     &                              iper,   ilwork         )
+     &                              iper,   ilwork)
 c
 c.... call to SolGMRElas ... For mesh-elastic solve
 c
                      call SolGMRElas (x,        disp,      iBC,    BC,
-     &                                colm,     rowp,      meshq,  
+     &                                colm,     rowp,      meshq,
      &                                hBrg,     eBrg, 
      &                                yBrg,     Rcos,      Rsin,     iper, 
      &                                ilwork,   shp,       shgl,     elasDy)
