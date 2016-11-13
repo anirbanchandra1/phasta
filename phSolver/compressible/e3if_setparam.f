@@ -28,9 +28,7 @@ c
 c
         subroutine e3if_setparam2
      &  (
-     &    egmassif00,egmassif01,egmassif10,egmassif11,
-     &    materif0, materif1,
-     &    time_
+     &    egmassif00,egmassif01,egmassif10,egmassif11,time_
      &  )
 c
           use dgifinp_m
@@ -39,13 +37,9 @@ c
           implicit none
 c
           real*8, dimension(:,:,:), allocatable, target, intent(in) :: egmassif00,egmassif01,egmassif10,egmassif11
-          integer, intent(in) :: materif0, materif1
           real*8, intent(in) :: time_
 c
           time  = time_
-c
-          mater0 = materif0
-          mater1 = materif1
 c
           if (allocated(egmassif00)) then
             egmass00 => egmassif00

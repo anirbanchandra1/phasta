@@ -197,7 +197,6 @@ c
           call read_field('solid b_dot',temp_b_dot)
           call read_field('solid b_af',temp_b_af)
           if (associated(temp_b)) then
-            solid_p%is_active = .true.
             solid_p%restart   = .true.
           endif
         end subroutine read_restart_solid

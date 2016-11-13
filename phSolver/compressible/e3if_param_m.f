@@ -11,6 +11,11 @@ c
 c
         implicit none
 c
+        abstract interface
+          subroutine calc_vi2
+          end subroutine calc_vi2
+        end interface
+c
         integer, dimension(:,:),   pointer :: sgn0, sgn1
 c
         real*8,  dimension(:,:,:), pointer :: ycl0, ycl1
@@ -85,6 +90,7 @@ c
         type(element_t), dimension(:), pointer :: e0, e1
 c
         procedure(getthm2), pointer :: getthmif0_ptr, getthmif1_ptr
+        procedure(calc_vi2), pointer :: calc_vi_cavitation
 c
       contains
 c

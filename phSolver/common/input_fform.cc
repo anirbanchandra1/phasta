@@ -46,6 +46,7 @@ void populate_dg_phaseChange_model
   this_map.insert(map<string,int>::value_type("None", idg_no_vi));
   this_map.insert(map<string,int>::value_type("Constant", idg_const_vi));
   this_map.insert(map<string,int>::value_type("Vieille's-Burning", idg_vieilles_burning));
+  this_map.insert(map<string,int>::value_type("Cavitation", idg_cavitation));
 }
 
 int input_fform(phSolver::Input& inp)
@@ -555,8 +556,9 @@ int input_fform(phSolver::Input& inp)
     if (sbuf == "Constant")
       dgifinp.vi_mag = (double)inp.GetValue("DG Interface Velocity Magnitude");
     else if (sbuf == "Vieille's-Burning") {
-      dgifinp.burn_rate_exp = (double)inp.GetValue("Burn Rate Exponent alpha");
-      dgifinp.burn_rate_coeff = (double)inp.GetValue("Burn Rate Coefficient beta");}
+      dgifinp.burn_rate_exp   = (double)inp.GetValue("Burn Rate Exponent alpha");
+      dgifinp.burn_rate_coeff = (double)inp.GetValue("Burn Rate Coefficient beta");
+      dgifinp.burn_rate_pref  = (double)inp.GetValue("Burn Rate Reference Pressure");}
 
     dgifinp.s = (double)inp.GetValue("DG Interface Stability Factor");
     dgifinp.e = (double)inp.GetValue("DG Interface Kinematic Condition epsilon");

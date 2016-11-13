@@ -62,6 +62,7 @@ c.... assemble the local residual arrays
 c
         call local (res, rl0, ienif0, nflow, 'scatter ', nshg,nshl0,npro,ipord)
         call local (res, rl1, ienif1, nflow, 'scatter ', nshg,nshl1,npro,ipord)
+c      write(*,*) 'ienif0, res: ', ienif0(1,1), res(ienif0(1,1),:)
 c
         call local (sum_vi_area, sum_vi_area_l0, ienif0, nsd+1, 'scatter ', nshg, nshl0,npro,ipord)
         call local (sum_vi_area, sum_vi_area_l1, ienif1, nsd+1, 'scatter ', nshg, nshl1,npro,ipord)
