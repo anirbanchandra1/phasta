@@ -801,10 +801,10 @@ c
           mater1 = -1
 c
           select case (mat_eos(materif0,1))
-          case (ieos_ideal_gas,ieos_ideal_gas_2)
+          case (ieos_ideal_gas)
             mater0 = materif0
             ienif0 => mienif0(iblk)%p
-          case (ieos_liquid_1)
+          case (ieos_liquid_1,ieos_ideal_gas_2)
             mater1 = materif0
             ienif1 => mienif0(iblk)%p
           case default
@@ -812,10 +812,10 @@ c
           end select
 c
           select case (mat_eos(materif1,1))
-          case (ieos_ideal_gas,ieos_ideal_gas_2)
+          case (ieos_ideal_gas)
             mater0 = materif1
             ienif0 => mienif1(iblk)%p
-          case (ieos_liquid_1)
+          case (ieos_liquid_1,ieos_ideal_gas_2)
             mater1 = materif1
             ienif1 => mienif1(iblk)%p
           case default

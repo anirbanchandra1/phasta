@@ -35,12 +35,12 @@ c
         case (no_vi)
           vi = zero
         case (const_vi)
-          vi = c1 * vi_mag * n
+          vi = vi_mag * n
         case (vieilles_burning)
 c
-          vi(:,1) = c1 * burn_rate_coeff*(p/burn_rate_pref)**burn_rate_exp * n(:,1)
-          vi(:,2) = c1 * burn_rate_coeff*(p/burn_rate_pref)**burn_rate_exp * n(:,2)
-          vi(:,3) = c1 * burn_rate_coeff*(p/burn_rate_pref)**burn_rate_exp * n(:,3)
+          vi(:,1) = burn_rate_coeff*(p/burn_rate_pref)**burn_rate_exp * n(:,1)
+          vi(:,2) = burn_rate_coeff*(p/burn_rate_pref)**burn_rate_exp * n(:,2)
+          vi(:,3) = burn_rate_coeff*(p/burn_rate_pref)**burn_rate_exp * n(:,3)
 c
         case (cavitation)
 c
@@ -60,9 +60,12 @@ c
 c
 c... add flow velocity
 c
-        vi(:,1) = vi(:,1) + u(:,1)
-        vi(:,2) = vi(:,2) + u(:,2)
-        vi(:,3) = vi(:,3) + u(:,3)
+        vi(:,1) = c1*(vi(:,1) + u(:,1))
+        vi(:,2) = c1*(vi(:,2) + u(:,2))
+        vi(:,3) = c1*(vi(:,3) + u(:,3))
+c        vi(:,1) = c1 * (vi(:,1) + pt50 * (u0(:,1)+u1(:,1)))
+c        vi(:,2) = c1 * (vi(:,2) + pt50 * (u0(:,2)+u1(:,2)))
+c        vi(:,3) = c1 * (vi(:,3) + pt50 * (u0(:,3)+u1(:,3)))
 c      write(*,*) (norm2(vi(i,:)),i=1,npro)
 c
       end subroutine calc_vi
