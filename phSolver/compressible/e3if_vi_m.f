@@ -10,6 +10,7 @@ c
       subroutine calc_vi(p,n,u)
 c
         real*8, pointer, intent(in) :: p(:), n(:,:), u(:,:)
+        real*8 :: vi_max
 c
         integer :: isd,i
         real*8 :: vimag,v1,t1,c1
@@ -46,13 +47,20 @@ c
 c
 c >>> NOTE: HARD CODED NUMBERS HERE
 c
-          pvap = 100.0d3
-          cdest = 10.d-3
-          cprod = 10.d-3
+          pvap = 110.0d3
+          cdest = 1.d-4
+          cprod = 1.d-4
 c
-          vi(:,1) = -nv0(:,1)*(cdest*min(zero,pres0(i)-pvap) - cprod*max(zero,pres0-pvap))
-          vi(:,2) = -nv0(:,2)*(cdest*min(zero,pres0(i)-pvap) - cprod*max(zero,pres0-pvap))
-          vi(:,3) = -nv0(:,3)*(cdest*min(zero,pres0(i)-pvap) - cprod*max(zero,pres0-pvap))
+c          vi(:,1) = -nv0(:,1)*(cdest*min(zero,pres0(i)-pvap) + cprod*max(zero,pres0-pvap))
+c          vi(:,2) = -nv0(:,2)*(cdest*min(zero,pres0(i)-pvap) + cprod*max(zero,pres0-pvap))
+c          vi(:,3) = -nv0(:,3)*(cdest*min(zero,pres0(i)-pvap) + cprod*max(zero,pres0-pvap))
+          vi(:,1) = nv1(:,1)*(cprod*max(zero,pres0-pvap))
+          vi(:,2) = nv1(:,2)*(cprod*max(zero,pres0-pvap))
+          vi(:,3) = nv1(:,3)*(cprod*max(zero,pres0-pvap))
+c      vi_max = 10.0d0
+c      vi(:,1) = nv1(:,1)*(min(vi_max,cprod*max(zero,pres0-pvap)))
+c      vi(:,2) = nv1(:,2)*(min(vi_max,cprod*max(zero,pres0-pvap)))
+c      vi(:,3) = nv1(:,3)*(min(vi_max,cprod*max(zero,pres0-pvap)))
 c
         case default
           call error ('ERROR in e3if_vi:',' phase_change_model is not supported.',phase_change_model)
