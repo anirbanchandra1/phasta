@@ -1,7 +1,5 @@
       subroutine calc_kappa_error(x,iel0,nelblkif,nsd,nshg)
 c
-#define case 1 
-c
         use pointer_data
         use workfc_m
         use if_global_m
@@ -38,13 +36,11 @@ c
               else
                 cycle
               endif
-#if case == 1
               kappa_exact = 4000.d0 ! 2/r for sphere
-#endif
               my_nsum = my_nsum + 1
-              this_err = (norm2(if_kappa(inode(n),1:nsd))/kappa_exact - 1.d0)**2
+              this_err = (sqrt(dot_product(if_kappa(inode(n),1:nsd),if_kappa(inode(n),1:nsd)))/kappa_exact - 1.d0)**2
               my_err = my_err + this_err
-      write(*,*) norm2(if_kappa(inode(n),:))
+      write(*,*) sqrt(dot_product(if_kappa(inode(n),:),if_kappa(inode(n),:)))
 c      if (this_err > 1.e-3) then
 c        write(*,200) myrank,inode(n),x(inode(n),:),norm2(if_kappa(inode(n),1:nsd)),this_err
 c      endif
