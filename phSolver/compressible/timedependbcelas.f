@@ -10,7 +10,7 @@ c
 c
       real*8    x(numnp,nsd)
       real*8    disp(numnp,nsd)
-      dimension iBC(nshg),        BC(nshg,4)
+      dimension iBC(nshg),        BC(nshg,3)
       integer   casenumber
       real*8    acc
       real*8    totalForce(3),    objMass
