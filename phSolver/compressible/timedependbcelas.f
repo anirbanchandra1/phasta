@@ -15,7 +15,7 @@ c
       real*8    acc
       real*8    totalForce(3),    objMass
 c
-      if (elasFDC .lt. 0) then
+      if (elasFDC .gt. 0) then
         casenumber = elasFDC
       else
         write(*,*) "Please use Force-driven as Mesh Elas Model"
