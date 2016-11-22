@@ -13,7 +13,7 @@ c
       dimension iBC(nshg),        BC(nshg,4)
       integer   casenumber
       real*8    acc
-      real*8    totalForce(3),    projMass
+      real*8    totalForce(3),    objMass
 c
       if (elasFDC .lt. 0) then
         casenumber = elasFDC
@@ -37,16 +37,16 @@ c.... 0.004225 = 0.065^2
         enddo ! end loop numnp
       endif  ! end case 1
 c
-c.... Update BC value based on total force on projectile
+c.... Update BC value based on total force on the object
 c
       if ( casenumber .eq. 2 ) then
         totalForce(:) = zero
-        projMass = 15.0 ! kg
+        objMass = 15.0 ! kg
         do j = 1,nsrfCM
           totalForce(:) = totalForce(:) + Force(:,j)
         enddo ! end collect total force
 
-        acc = totalForce(1) / projMass
+        acc = totalForce(1) / objMass
 c.... debugging
         write(*,*) "projectile acc: ", acc
 c.... end debugging
