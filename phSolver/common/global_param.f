@@ -85,17 +85,19 @@ c
      &                  numflx,   ndof,   iALE, iSOLID,
      &                  icoord,   navier,
      &                  irs,      iexec,  necho,  ichem,  iRK,    nedof,
-     &                  ndofelas, nshg,   nnz,    istop,  nflow,  nelas, 
+     &                  ndofelas, nshg,   nnz,    istop,  nflow,  nelas,
      &                  nnz_tot,  idtn,
-     &                  ncorpsize, iownnodes, usingpetsc
+     &                  ncorpsize, iownnodes, usingpetsc,
+     &                  elasModel, elasFDC
         common /conpar/ numnp, numel,  numelb, numelif,
      &                  numpbc,   nen,    nfaces,
      &                  numflx,   ndof,   iALE, iSOLID,
      &                  icoord,   navier,
      &                  irs,      iexec,  necho,  ichem,  iRK,    nedof,
-     &                  ndofelas, nshg,   nnz,    istop,  nflow,  nelas, 
+     &                  ndofelas, nshg,   nnz,    istop,  nflow,  nelas,
      &                  nnz_tot,  idtn,
-     &                  ncorpsize, iownnodes, usingpetsc
+     &                  ncorpsize, iownnodes, usingpetsc,
+     &                  elasModel, elasFDC
       end module conpar_m
 c
 c----------------------------------------------------------------------

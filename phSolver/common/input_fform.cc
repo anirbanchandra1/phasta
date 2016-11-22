@@ -254,6 +254,18 @@ int input_fform(phSolver::Input& inp)
       exit(1);
     }
 
+    if ((string)inp.GetValue("Mesh Elas Model") == "None" ) {
+      conpar.elasModel = 0;
+    } else if ((string)inp.GetValue("Mesh Elas Model") == "Force-driven" ) {
+      conpar.elasModel = 1;
+    } else {
+      cout << " Mesh Elas Model: Only Legal Values ( None, Force-driven )";
+      cout << endl;
+      exit(1);
+    }
+
+    conpar.elasFDC = inp.GetValue("Mesh Elas Force-driven case");
+
     if ((string)inp.GetValue("Solid Phase") == "False" ) {
       conpar.iSOLID = -1;
     } else if ((string)inp.GetValue("Solid Phase") == "True" ) {

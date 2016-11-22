@@ -15,7 +15,11 @@ c
       real*8    acc
       real*8    totalForce(3),    projMass
 c
-      casenumber = 2
+      if (elasFDC .lt. 0) then
+        casenumber = elasFDC
+      else
+        write(*,*) "Please use Force-driven as Mesh Elas Model"
+      endif
 c
 c.... Update BC value based on geom and iBC
 c
@@ -62,6 +66,4 @@ c
       return
       end
 c
-
-
 

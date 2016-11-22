@@ -281,6 +281,8 @@ extern "C" {
     int ncorpsize;
     int iownnodes;
     int usingpetsc;
+    int elasModel;
+    int elasFDC;
   } conpar ;
  
 /*chen Sep 25 2009  Flow Control Parameters*/
