@@ -691,6 +691,7 @@ c
      &                              iper,   ilwork        )
 c
                      umesh = disp / Delt(1)
+                     umeshold = umesh
 c
                      call itrCorrectElas(x, disp)
 c
