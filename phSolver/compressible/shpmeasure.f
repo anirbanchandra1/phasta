@@ -66,7 +66,7 @@ c
           if (meshq(i) .lt. 0.0 .and. printflag2 .eq. 0) then 
              write(*,*) 'Meshq smaller than zero:', meshq(i)
              tetVolm(i) = abs (tetVolm(i))
-             printflag = 1
+             printflag2 = 1
           endif
        enddo
 c
