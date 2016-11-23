@@ -501,6 +501,12 @@ c                        write(*,*) 'lhs=',lhs
      &                       shpb,          shglb,         
      &                       shpif0,        shpif1,        shgif0,        shgif1,
      &                       solinc,        rerr,          umesh)
+c
+                     call set_if_velocity (BC(:,ndof+2:ndof+4),  iBC, 
+     &                                umesh,    x,     ilwork,
+     &                                lcblkif,  nshg,  ndofBC,
+     &                                nsd,   nelblif,  MAXBLK, nlwork )
+c
                     endif
                       else if (mod(impl(1),100)/10 .eq. 2) then ! mfg solve
 c     
@@ -693,7 +699,7 @@ c
      &                              BC(:,ndof+2:ndof+5),
      &                              iper,   ilwork        )
 c
-                     umesh = disp / Delt(1)
+c                     umesh = disp / Delt(1)
                      umeshold = umesh
 c
                      call itrCorrectElas(x, disp)
