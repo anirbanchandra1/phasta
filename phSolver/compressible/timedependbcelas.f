@@ -5,6 +5,7 @@ c
 c-----------------------------------------------------------------
 c
       include "common.h"
+      include "mpif.h"
 c
 c
       real*8    x(numnp,nsd)
@@ -14,6 +15,7 @@ c
       integer   casenumber
       real*8    acc
       real*8    totalForce(3),    objMass
+      dimension Forin(3),         Forout(3)
 c
       if (elasFDC .gt. 0) then
         casenumber = elasFDC
@@ -42,14 +44,21 @@ c
       if ( casenumber .eq. 2 ) then
         totalForce(:) = zero
         objMass = 15.0 ! kg
+c.... bcase force to all processors
+        if (numpe > 1) then
+          do j = 1, nsrfCM
+            Forin  = (/ Force(1,j), Force(2,j), Force(3,j) /)
+            call MPI_BCAST (Forin(1), 3, MPI_DOUBLE_PRECISION,
+     &                      master,      MPI_COMM_WORLD,ierr)
+            Force(1:3,j) = Forin(1:3)
+          enddo
+        endif
+c.... collect total force
         do j = 1,nsrfCM
           totalForce(:) = totalForce(:) + Force(:,j)
         enddo ! end collect total force
 
         acc = totalForce(1) / objMass
-c.... debugging
-        write(*,*) "projectile acc: ", acc
-c.... end debugging
 
         do i = 1,numnp
           if ( (ibits(iBC(i),14,3) .eq. 7) .and.
