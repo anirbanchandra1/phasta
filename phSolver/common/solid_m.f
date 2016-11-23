@@ -178,15 +178,15 @@ c
           character(len=1024) :: dataInt, dataDbl
           integer, target :: intfromfile(50) ! integers read from headers
           intfromfile=0
-          call phio_readheader(fhandle,
-     &     c_char_'trim(fieldtag)' // char(0),
-     &     c_loc(intfromfile), 1, dataInt, iotype)
-          if (intfromfile(1) > 0) then
-            allocate(b(intfromfile(1)))
-            call phio_readdatablock(fhandle,
-     &       c_char_'trim(fieldtag)' // char(0),
-     &       c_loc(b), intfromfile(1), dataDbl, iotype)
-          endif
+c          call phio_readheader(fhandle,
+c     &     c_char_'trim(fieldtag)' // char(0),
+c     &     c_loc(intfromfile), 1, dataInt, iotype)
+c          if (intfromfile(1) > 0) then
+c            allocate(b(intfromfile(1)))
+c            call phio_readdatablock(fhandle,
+c     &       c_char_'trim(fieldtag)' // char(0),
+c     &       c_loc(b), intfromfile(1), dataDbl, iotype)
+c          endif
         end subroutine read_field
 c
         subroutine read_restart_solid

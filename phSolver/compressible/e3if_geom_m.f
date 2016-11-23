@@ -169,7 +169,8 @@ c
             v3 = xl0(iel,1,:)-xl0(iel,3,:)
 c
             call cross(v,v1,v2)
-            area = pt5*norm2(v)
+c            area = pt5*norm2(v)
+            area = pt5*sqrt(dot_product(v,v))
 c
             l1sq = dot_product(v1,v1)
             l2sq = dot_product(v2,v2)
@@ -219,7 +220,8 @@ c
           real*8, dimension(nsd) :: v1,v2,v
           real*8 n2
           call cross(v,v1,v2)
-          n2 = norm2(v)
+c          n2 = norm2(v)
+          n2 = sqrt(dot_product(v,v))
           if (n2 == zero) call error('cotan','norm2=0',0)
           cotan = dot_product(v1,v2)/n2
         end function cotan
