@@ -94,8 +94,9 @@ c
 c
 c.... For mesh-elastic solve
 c
-       real*8  umesh(nshg,nsd),     meshq(numel), 
-     &         disp(numnp, nsd),    elasDy(nshg,nelas)
+       real*8  umesh(numnp,nsd),    meshq(numel),
+     &         disp(numnp, nsd),    elasDy(nshg,nelas),
+     &         umeshold(numnp, nsd)
 
        logical alive
  
@@ -164,6 +165,7 @@ c
         time   = 0
         yold   = y
         acold  = ac
+        umeshold = umesh
 
 !Blower Setup
        call BC_init(Delt, lstep, BC)  !Note: sets BC_enable
@@ -615,7 +617,8 @@ c.... comp3_elas and DG interface share the same iBC, thus, this
 c     call will replace the interface vel with prescribed value
 c     when using Force-driven as Mesh Elas Model in solver.inp
                    if (elasModel .eq. 1) then
-                     call timeDependBCElas(x, iBC, BC(:,ndof+2:ndof+4))
+                     call timeDependBCElas(x, iBC, BC(:,ndof+2:ndof+4),
+     &                                     umeshold)
                    endif
 c
 c... update displacement and umesh based on iBC and BC

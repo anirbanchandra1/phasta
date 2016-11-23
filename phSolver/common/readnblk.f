@@ -17,7 +17,6 @@ c
       real*8, allocatable :: xn(:,:)
       real*8, allocatable :: xdotold(:,:)
       real*8, allocatable :: umesh(:,:)
-      real*8, allocatable :: umeshold(:,:)
       integer, allocatable :: iBCtmp(:)
       real*8, allocatable :: BCinp(:,:)
 
@@ -620,7 +619,6 @@ c read in umesh
      & c_char_'mesh_vel' //char(0), 
      & c_loc(intfromfile), ithree, dataInt, iotype)
        allocate( umesh(numnp,nsd) )
-       allocate( umeshold(numnp,nsd) )
        if(intfromfile(1).ne.0) then 
           numnp2=intfromfile(1)
           nsd2=intfromfile(2)
@@ -637,7 +635,6 @@ c read in umesh
      &    c_char_'mesh_vel' // char(0),
      &    c_loc(umeshread), iacsiz, dataDbl,iotype)
           umesh(:,1:nsd)=umeshread(:,1:nsd)
-          umeshold(:,1:nsd)=umeshread(:,1:nsd)
           deallocate(umeshread)
        else
           if (myrank.eq.master) then
@@ -645,7 +642,6 @@ c read in umesh
              write(*,*) warning
           endif
          umesh=zero
-         umeshold=zero
        endif
 c
 c.... end read ALE stuff

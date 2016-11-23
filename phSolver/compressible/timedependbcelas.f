@@ -1,15 +1,15 @@
-       subroutine timeDependBCElas(x, iBC, BC)          
+       subroutine timeDependBCElas(x, iBC, BC, umeshold)
 c
 c-----------------------------------------------------------------
 c
 c-----------------------------------------------------------------
 c
-      use readarrays            ! used to access umeshold
       include "common.h"
 c
 c
       real*8    x(numnp,nsd)
       real*8    disp(numnp,nsd)
+      real*8    umeshold(numnp,nsd)
       dimension iBC(nshg),        BC(nshg,3)
       integer   casenumber
       real*8    acc
