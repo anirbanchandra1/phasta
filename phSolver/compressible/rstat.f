@@ -73,8 +73,7 @@ c
           Forin  = (/ Force(1,i), Force(2,i), Force(3,i), HFlux(i) /)
           if (numpe > 1) then
             call MPI_REDUCE ( Forin(1),  Forout(1), 4, MPI_DOUBLE_PRECISION,
-     &                                   MPI_SUM, master, 
-     &                                   MPI_COMM_WORLD,ierr)
+     &                        MPI_SUM, master, MPI_COMM_WORLD,ierr)
             Force(1:3,i) = Forout(1:3)
             HFlux(i) = Forout(4)
           endif
@@ -338,8 +337,7 @@ c
           Forin = (/ Force(1,i), Force(2,i), Force(3,i), HFlux(i) /)
           if (numpe > 1) then
             call MPI_REDUCE (Forin(1), Forout(1), 4, MPI_DOUBLE_PRECISION,
-     &                                   MPI_SUM, master, 
-     &                                   MPI_COMM_WORLD,ierr)
+     &                          MPI_SUM, master, MPI_COMM_WORLD,ierr)
             Force(1:3,i) = Forout(1:3)
             HFlux(i) = Forout(4)
           endif
