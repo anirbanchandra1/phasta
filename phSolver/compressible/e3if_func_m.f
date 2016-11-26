@@ -13,8 +13,8 @@ c
 c
 c... set Ai and Kij matrices for elements 0 and 1
 c
-        call set_Ai (Ai0,u0(:,1),u0(:,2),u0(:,3),um0(:,1),um0(:,2),um0(:,3),rho0,T0,h0,cp0,alfaP0,betaT0)
-        call set_Ai (Ai1,u1(:,1),u1(:,2),u1(:,3),um1(:,1),um1(:,2),um1(:,3),rho1,T1,h1,cp1,alfaP1,betaT1)
+        call set_Ai (A0_0,Ai0,u0(:,1),u0(:,2),u0(:,3),um0(:,1),um0(:,2),um0(:,3),rho0,T0,h0,cp0,alfaP0,betaT0)
+        call set_Ai (A0_1,Ai1,u1(:,1),u1(:,2),u1(:,3),um1(:,1),um1(:,2),um1(:,3),rho1,T1,h1,cp1,alfaP1,betaT1)
 c
         allocate(rmu0(npro),rlm0(npro),rlm2mu0(npro),con0(npro))
         allocate(rmu1(npro),rlm1(npro),rlm2mu1(npro),con1(npro))
@@ -30,21 +30,48 @@ c
 c
       end subroutine e3if_mtrx
 c
-      subroutine set_Ai (Ai,u1,u2,u3,um1,um2,um3,
+      subroutine set_Ai (A0, Ai,u1,u2,u3,um1,um2,um3,
      &                  rho,T,h,cp,alfaP,betaT)
 c
+        real*8, dimension(:,:,:), intent(out):: A0
         real*8, dimension(:,:,:,:), intent(out) :: Ai
         real*8, dimension(:), intent(in) :: u1,u2,u3,um1,um2,um3
         real*8, dimension(:), intent(in) :: rho,T,h,cp,alfaP,betaT
 c
-        real*8, dimension(npro) :: drdp,drdT,e2p,e3p,e4p,rk
+        real*8, dimension(npro) :: drdp,drdT,e1p,e2p,e3p,e4p,rk
 c
         drdp = rho * betaT
         drdT = -rho * alfap
         rk   = pt50 * (u1*u1 + u2*u2 + u3*u3)
-        e2p  = drdp * (h + rk)  - alfap * T + one
+        e1p  = drdp * (h + rk)  - alfap * T
+        e2p  = e1p + one
         e3p  = rho * ( h + rk)
         e4p  = drdT * (h + rk) + rho * cp
+c
+        A0 = zero
+c
+        A0(:,1,1) = drdp
+        A0(:,1,5) = drdT
+c
+        A0(:,2,1) = drdp*u1
+        A0(:,2,2) = rho
+        A0(:,2,5) = drdT*u1
+c
+        A0(:,3,1) = drdp*u2
+        A0(:,3,3) = rho
+        A0(:,3,5) = drdT*u2
+c
+        A0(:,4,1) = drdp*u3
+        A0(:,4,4) = rho
+        A0(:,4,5) = drdT*u3
+c
+        A0(:,5,1) = e1p
+        A0(:,5,2) = rho*u1
+        A0(:,5,3) = rho*u2
+        A0(:,5,4) = rho*u3
+        A0(:,5,5) = e4p
+c
+        Ai = zero       
 c
         Ai(:,1,1,1) = drdp * (u1 - um1)
         Ai(:,1,1,2) = rho

@@ -255,6 +255,8 @@ c
           real*8 :: etot, diff_flux(nsd,nflow), dTdx0
           real*8 :: kappa0(nsd), kappa1(nsd), k0,k1 ! mean curvature
 c
+          real*8 :: alpha,jump_u(5)
+c
           do iel = 1,npro
 c
             call calc_conv_flux(fconv0,rho0(iel),u0(iel,:),um0(iel,:),pres0(iel),ei0(iel))
@@ -301,6 +303,22 @@ c      endif
 c
             ri0(iel,16:20) = ri0(iel,16:20) + 0.5 * ( f0n0(1:5) + f1n0(1:5) )
             ri1(iel,16:20) = ri1(iel,16:20) + 0.5 * ( f1n1(1:5) + f0n1(1:5) )
+c
+c... Here is the additional stability terms from the Lax-Friedrichs flux calculations
+c
+            alpha_LF(iel) = max(abs(dot_product(u0(iel,:)-um0(iel,:),nv0(iel,:))-c0(iel)),
+     &                  abs(dot_product(u1(iel,:)-um1(iel,:),nv1(iel,:))-c1(iel)))
+            alpha = alpha_LF(iel)
+c
+            jump_u(1) = rho0(iel) - rho1(iel)
+            jump_u(2) = rho0(iel)*u0(iel,1) - rho1(iel)*u1(iel,1)
+            jump_u(3) = rho0(iel)*u0(iel,2) - rho1(iel)*u1(iel,2)
+            jump_u(4) = rho0(iel)*u0(iel,3) - rho1(iel)*u1(iel,3)
+            jump_u(5) = rho0(iel)*(ei0(iel)+pt50*dot_product(u0(iel,:),u0(iel,:))) 
+     &                - rho1(iel)*(ei1(iel)+pt50*dot_product(u1(iel,:),u1(iel,:)))
+c
+c            ri0(iel,16:20) = ri0(iel,16:20) + pt50*alpha*jump_u(1:5)
+c            ri1(iel,16:20) = ri1(iel,16:20) - pt50*alpha*jump_u(1:5)
 c
 C... Do we account for surface tension in jump?
 c
