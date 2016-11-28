@@ -1,4 +1,4 @@
-       subroutine timeDependBCElas(x, iBC, BC, umeshold)
+       subroutine timeDependBCElas(x, iBC, BC, BC_flow, umeshold)
 c
 c-----------------------------------------------------------------
 c
@@ -11,7 +11,7 @@ c
       real*8    x(numnp,nsd)
       real*8    disp(numnp,nsd)
       real*8    umeshold(numnp,nsd)
-      dimension iBC(nshg),        BC(nshg,3)
+      dimension iBC(nshg),        BC(nshg,3), BC_flow(nshg,3)
       integer   casenumber
       real*8    acc
       real*8    totalForce(3),    objMass
@@ -68,6 +68,11 @@ c.... 0.004225 = 0.065^2
             BC(i,1)   = umeshold(i,1) + acc * Delt(1)
             BC(i,2)   = zero
             BC(i,3)   = zero
+
+c.... >>> hard-coding update flow velocity boundry condition on mortar surfaces
+            BC_flow(i,1:3) = BC(i,1:3)
+c.... <<< hard-coding
+
           endif ! end if inside box
         enddo ! end loop numnp
       endif  ! end case 2
