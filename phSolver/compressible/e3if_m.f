@@ -255,7 +255,7 @@ c
           real*8 :: etot, diff_flux(nsd,nflow), dTdx0
           real*8 :: kappa0(nsd), kappa1(nsd), k0,k1 ! mean curvature
 c
-          real*8 :: alpha,jump_u(5)
+          real*8 :: alpha,jump_u(5),climit
 c
           do iel = 1,npro
 c
@@ -301,12 +301,19 @@ c        write(*,10) 'f1: ',f1(1,:)
 c       write(*,*) 'stiff1: ',prop1(1)%stiff(15,15)
 c      endif
 c
-            ri0(iel,16:20) = ri0(iel,16:20) + 0.5 * ( f0n0(1:5) + f1n0(1:5) )
-            ri1(iel,16:20) = ri1(iel,16:20) + 0.5 * ( f1n1(1:5) + f0n1(1:5) )
+c            ri0(iel,16:20) = ri0(iel,16:20) + pt50 * ( f0n0(1:5) + f1n0(1:5) )
+c            ri1(iel,16:20) = ri1(iel,16:20) + pt50 * ( f1n1(1:5) + f0n1(1:5) )
+c...UPWIND????
+c   Flow is in n0 direction...
+c
+      ri0(iel,16:20) = ri0(iel,16:20) + f0n0(1:5)
+      ri1(iel,16:20) = ri1(iel,16:20) + f0n1(1:5)
+c
 c
 c... Here is the additional stability terms from the Lax-Friedrichs flux calculations
 c
-            alpha_LF(iel) = max(abs(dot_product(u0(iel,:)-um0(iel,:),nv0(iel,:))-c0(iel)),
+            climit = zero
+            alpha_LF(iel) = climit * max(abs(dot_product(u0(iel,:)-um0(iel,:),nv0(iel,:))-c0(iel)),
      &                  abs(dot_product(u1(iel,:)-um1(iel,:),nv1(iel,:))-c1(iel)))
             alpha = alpha_LF(iel)
 c
@@ -340,14 +347,6 @@ c              ri1(iel,17:19) = ri1(iel,17:19) + pt50 * surface_tension_coeff * 
 c
             endif
 c
-c...UPWIND????
-c   Flow is in n0 direction...
-c
-c      ri0(iel,16:20) = ri0(iel,16:20) + f0n0(1:5)
-c      ri1(iel,16:20) = ri1(iel,16:20) + f0n1(1:5)
-c
-c       write(*,500) myrank,iel,ri0(iel,16:20)
-c        write(*,500) myrank,iel,ri1(iel,16:20)
           enddo
 c
 10    format(a,5e24.16)

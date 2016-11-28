@@ -103,12 +103,12 @@ c
                 do isd = 1,nsd
                   egmass00(:,il,jl) = egmass00(:,il,jl) - pt50*shp0(:,i) * (
      &                    AiNa0(:,isd,iflow,jflow) - KijNaj0(:,isd,iflow,jflow)
-     &            -   s * KijNajC0(:,isd,iflow,jflow))*n0(:,isd)
+     &            +   s * KijNajC0(:,isd,iflow,jflow))*n0(:,isd)
      &            * WdetJ0
                 enddo
-                egmass00(:,il,jl) = egmass00(:,il,jl) + 
-     &            ( e*this_mu(:,iflow,jflow)/length_h * ctc(:,iflow,jflow)
-c     &            + pt50 * alpha_LF * A0_0(:,iflow,jflow)
+                egmass00(:,il,jl) = egmass00(:,il,jl) - (
+     &              pt50 * alpha_LF * A0_0(:,iflow,jflow)
+     &            + e*this_mu(:,iflow,jflow)/length_h * ctc(:,iflow,jflow)
      &            ) * shp0(:,i) * WdetJ0
 c
               enddo
@@ -126,20 +126,14 @@ c
                 jl = j0 + jflow
 c
                 do isd = 1,nsd
-                  egmass01(:,il,jl) = egmass01(:,il,jl) - pt50*shp0(:,i) * (
-     &                    AiNa1(:,isd,iflow,jflow) - KijNaj1(:,isd,iflow,jflow)
-     &            +   s * KijNajC0(:,isd,iflow,jflow))*n1(:,isd)
+                  egmass01(:,il,jl) = egmass01(:,il,jl) - pt50 * (
+     &             (AiNa1(:,isd,iflow,jflow) - KijNaj1(:,isd,iflow,jflow))*n0(:,isd)*shp0(:,i)
+     &            -   s * KijNajC0(:,isd,iflow,jflow)*n1(:,isd)*shp1(:,i))
      &            * WdetJ0
-c                  egmass01(:,il,jl) = egmass01(:,il,jl) - (
-c     &              pt50 * shp0(:,i) * ( AiNa1(:,isd,iflow,jflow) 
-c     &                                - KijNaj1(:,isd,iflow,jflow) ) * n0(:,isd) 
-c     &            + pt50 * s * KijNajC0(:,isd,iflow,jflow)*n1(:,isd)
-c     &            - e*this_mu(:,iflow,jflow)/length_h * ctc(:,iflow,jflow)*shp0(:,i)
-c     &              ) * WdetJ0
                 enddo
-                egmass01(:,il,jl) = egmass01(:,il,jl) + 
-     &            ( e*this_mu(:,iflow,jflow)/length_h * ctc(:,iflow,jflow)
-c     &            - pt50 * alpha_LF * A0_1(:,iflow,jflow)
+                egmass01(:,il,jl) = egmass01(:,il,jl) - (
+     &            - pt50 * alpha_LF * A0_1(:,iflow,jflow)
+     &            - e*this_mu(:,iflow,jflow)/length_h * ctc(:,iflow,jflow)
      &            ) * shp0(:,i) * WdetJ0
 c
               enddo
