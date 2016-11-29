@@ -267,6 +267,7 @@ c
 c.... common /inpdat/   : time sequence input data
 c
 c epstol (MAXTS)  : tolerance for GMRES solvers
+c etolelas        : tolerance for Mesh Elas solvers
 c Delt   (MAXTS)  : global time step
 c CFLfl  (MAXTS)  : CFL number for fluid flow
 c CFLsl  (MAXTS)  : CFL number for structural heating
@@ -287,11 +288,12 @@ c
         integer, dimension(MAXTS) :: nstep, niter, impl, loctim
         integer, dimension(6) :: LHSupd
         real*8, dimension(6) :: epstol
+        real*8  :: etolelas
         real*8, dimension(MAXTS) :: Delt, CFLfl, CFLsl, rhoinf, rhoinfS, rhoinf_B
         real*8, dimension(MAXTS,2) :: deltol
-        common /inpdat/ epstol,  Delt,    CFLfl,
-     &                  CFLsl,   nstep,   niter,
-     &                  impl,    rhoinf,  rhoinfS,
+        common /inpdat/ epstol,  etolelas, Delt,    CFLfl,
+     &                  CFLsl,   nstep,    niter,
+     &                  impl,    rhoinf,   rhoinfS,
      &                  rhoinf_B,
      &                  LHSupd,  loctim,  deltol, 
      &                  leslib,     svLSFlag,   svLSType
