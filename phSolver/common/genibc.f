@@ -67,8 +67,6 @@ c
             endif
           enddo
         endif
-        deallocate(iBCtmp)
-
 c
 c.... for deformable wall case update iBC from iBCB information
 c
@@ -90,7 +88,8 @@ c
           deallocate(iBCpart)
        endif
 
-       
+c.... deallocate iBCtmp even there are no BC's on this partition
+      deallocate(iBCtmp)
           
 c
 c.... return
