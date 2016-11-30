@@ -720,6 +720,7 @@ int input_fform(phSolver::Input& inp)
     solpar.Kspace = inp.GetValue("Number of Krylov Vectors per GMRES Sweep");
     inpdat.LHSupd[0] = inp.GetValue("Number of Solves per Left-hand-side Formation");
     inpdat.epstol[0] = inp.GetValue("Tolerance on Momentum Equations");
+    inpdat.etolelas = inp.GetValue("Tolerance on Mesh Elasticity Equations");
     incomp.prestol = inp.GetValue("Tolerance on ACUSIM Pressure Projection"); 
     incomp.minIters = inp.GetValue("Minimum Number of Iterations per Nonlinear Iteration");
     incomp.maxIters = inp.GetValue("Maximum Number of Iterations per Nonlinear Iteration");

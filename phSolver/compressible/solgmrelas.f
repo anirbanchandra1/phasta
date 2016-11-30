@@ -109,9 +109,6 @@ c
 c
 c.... set up tolerance of the Hessenbergs problem
 c
-c.... DEBUGGING   
-c    
-      etolelas = 1e-12
       epsnrm = etolelas * unorm
 c
 c.... ------------------------>  GMRES Loop  <-------------------------

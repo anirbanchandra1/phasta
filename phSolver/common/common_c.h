@@ -441,6 +441,7 @@ extern "C" {
   extern struct { 
     double epstol[6];  /* 1+ max number of scalars  (beginning of the
                           end of time sequences) */
+    double etolelas;
     double Delt[MAXTS];
     double CFLfl[MAXTS];
     double CFLsl[MAXTS];

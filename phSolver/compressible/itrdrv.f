@@ -336,6 +336,15 @@ c============ Start the loop of time steps============================c
         deltaInlInv=one/(0.125*0.0254)
         do 2000 istp = 1, nstp
 c
+c.... only used for prescribing time-dependent mesh-elastic BC
+c.... comp3_elas and DG interface share the same iBC, thus, this
+c     call will replace the interface vel with prescribed value
+c     when using Force-driven as Mesh Elas Model in solver.inp
+          if (elasModel .eq. 1) then
+            call timeDependBCElas(x, iBC, BC(:,ndof+2:ndof+4),
+     &                            BC(:,3:5), umeshold)
+          endif
+c
         if(iramp.eq.1) 
      &        call BCprofileScale(vbc_prof,BC,yold)
 
@@ -623,7 +632,7 @@ c.... comp3_elas and DG interface share the same iBC, thus, this
 c     call will replace the interface vel with prescribed value
 c     when using Force-driven as Mesh Elas Model in solver.inp
                    if (elasModel .eq. 1) then
-                     call timeDependBCElas(x, iBC, BC(:,ndof+2:ndof+4),
+                     call timeDependBCElas(x, iBC, BC(:,ndof+2:ndof+4), BC(:,3:5),
      &                                     umeshold)
                    endif
 c
