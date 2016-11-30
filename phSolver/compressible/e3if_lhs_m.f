@@ -131,10 +131,8 @@ c
 c     &            + pt50 * A0_0(:,iflow,jflow)*alpha_LF*shp0(:,j)
      &            + pt50 * (A0_0(:,iflow,jflow)+A0_1(:,iflow,jflow))*alpha_LF*shp0(:,j)
 c     &            +   s * KijNajC0(:,isd,iflow,jflow))*n0(:,isd)
+     &            + e*this_mu(:,iflow,jflow)/length_h * ctc(:,iflow,jflow) * shp0(:,j)
      &          ) * shp0(:,i) * WdetJ0
-c                egmass00(:,il,jl) = egmass00(:,il,jl) - (
-c     &            + e*this_mu(:,iflow,jflow)/length_h * ctc(:,iflow,jflow)
-c     &            ) * shp0(:,i) * WdetJ0
               enddo
             enddo
 c
@@ -166,10 +164,8 @@ c
 c     &            - pt50 * A0_1(:,iflow,jflow)*alpha_LF*shp1(:,j)
      &            - pt50 * (A0_0(:,iflow,jflow)+A0_1(:,iflow,jflow))*alpha_LF*shp1(:,j)
 c     &            +   s * KijNajC0(:,isd,iflow,jflow))*n0(:,isd)
+     &            - e*this_mu(:,iflow,jflow)/length_h * ctc(:,iflow,jflow) * shp1(:,j)
      &          ) * shp0(:,i) * WdetJ0
-cc                egmass00(:,il,jl) = egmass00(:,il,jl) - (
-cc     &            + e*this_mu(:,iflow,jflow)/length_h * ctc(:,iflow,jflow)
-cc     &            ) * shp0(:,i) * WdetJ0
               enddo
             enddo
 c
