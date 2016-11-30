@@ -51,8 +51,8 @@ c
          do i = 1, ndofBC2
             where (nBC(:) .ne. 0) BCtmp(:,i) = BCinp(nBC(:),i)
          enddo
-         deallocate(BCinp)
       endif
+      deallocate(BCinp) ! even when there is no BC on this partition
             
 c
       if(any(BCtmp(:,12).ne.0)) then
