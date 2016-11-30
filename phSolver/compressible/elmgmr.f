@@ -447,8 +447,7 @@ c.... set up parameters
 c
         ires   = 1
 c
-        if (idiff==1 .or. idiff==3 .or. isurf==1) then ! global reconstruction
-                                                       ! of qdiff
+        if (idiff==1 .or. idiff==3 .or. isurf==1) then ! global reconstruction of qdiff
 c
 c loop over element blocks for the global reconstruction
 c of the diffusive flux vector, q, and lumped mass matrix, rmass
@@ -770,9 +769,6 @@ c        call calc_kappa_error(x,lcblkif(1,:),nelblif,nsd,nshg)
 c
         sum_vi_area = zero
 c
-c      print*,'[',myrank,'] BEFORE if loop2'
-c      call MPI_BARRIER (MPI_COMM_WORLD,ierr)
-c
         if_blocks: do iblk = 1, nelblif
 c
 c... set up the parameters
@@ -828,7 +824,7 @@ c
 c... set equations of state
 c
           getthmif0_ptr => getthm7_ideal_gas
-          select case (mat_eos(materif1,1))
+          select case (mat_eos(mater1,1))
           case (ieos_ideal_gas_2)
             getthmif1_ptr => getthm7_ideal_gas
           case (ieos_liquid_1)
@@ -904,8 +900,6 @@ c
           deallocate (egmassif11)
 c
         enddo if_blocks
-c      print*,'[',myrank,'] DONE if loop2'
-c      call MPI_BARRIER (MPI_COMM_WORLD,ierr)
 c
         deallocate (if_normal)
         nullify(if_normal)
