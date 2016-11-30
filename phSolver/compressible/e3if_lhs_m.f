@@ -88,8 +88,8 @@ c
         integer :: i,j,p,q,inode0,inode1,isd,jsd
         integer :: i0,j0,il,jl,iflow,jflow
         real*8 :: this_mu(npro,nflow,nflow)
-        real*8 :: AiNa0(npro), KijNaj0(npro)
-        real*8 :: AiNa1(npro), KijNaj1(npro)
+        real*8 :: AiNa0(npro), KijNaj0(npro), KijNbjCn0(npro)
+        real*8 :: AiNa1(npro), KijNaj1(npro), KijNbjCn1(npro)
 c
 c---------> ATTENTION <--------
 c  This still needs to be confirmed...
@@ -116,11 +116,13 @@ c
 c
                 AiNa0 = zero
                 KijNaj0 = zero
+                KijNbjCn0 = zero
 c
                 do isd = 1,nsd
                   AiNa0 = AiNa0 + pt50 * Ai0(:,isd,iflow,jflow) * n0(:,isd) * shp0(:,j)
+                  KijNbjCn0 = KijNbjCn0 + pt50 * s * KijNajC0(:,isd,iflow,jflow) * n0(:,isd)
                   do jsd = 1,nsd
-                    KijNaj0 = KijNaj0 + pt50 * Kij0(:,isd,jsd,iflow,jflow) * n0(:,isd) * shg0(:,j,jsd)
+                    KijNaj0 = KijNaj0 + pt50 * Kij0(:,isd,jsd,iflow,jflow) * shg0(:,j,jsd) * n0(:,isd)
                   enddo
                 enddo
 c
@@ -128,9 +130,9 @@ c
      &          ( 
      &            + AiNa0 
      &            - KijNaj0
-c     &            + pt50 * A0_0(:,iflow,jflow)*alpha_LF*shp0(:,j)
+     &            + KijNbjCn0 * shp0(:,j)
+CCc     &            + pt50 * A0_0(:,iflow,jflow)*alpha_LF*shp0(:,j)
      &            + pt50 * (A0_0(:,iflow,jflow)+A0_1(:,iflow,jflow))*alpha_LF*shp0(:,j)
-c     &            +   s * KijNajC0(:,isd,iflow,jflow))*n0(:,isd)
      &            + e*this_mu(:,iflow,jflow)/length_h * ctc(:,iflow,jflow) * shp0(:,j)
      &          ) * shp0(:,i) * WdetJ0
               enddo
@@ -149,11 +151,13 @@ c
 c
                 AiNa1 = zero
                 KijNaj1 = zero
+                KijNbjCn0 = zero
 c
                 do isd = 1,nsd
                   AiNa1 = AiNa1 + pt50 * Ai1(:,isd,iflow,jflow) * n0(:,isd) * shp1(:,j)
+                  KijNbjCn0 = KijNbjCn0 + pt50 * s * KijNajC0(:,isd,iflow,jflow) * n0(:,isd)
                   do jsd = 1,nsd
-                    KijNaj1 = KijNaj1 + pt50 * Kij1(:,isd,jsd,iflow,jflow) * n1(:,isd) * shg1(:,j,jsd)
+                    KijNaj1 = KijNaj1 + pt50 * Kij1(:,isd,jsd,iflow,jflow) * shg1(:,j,jsd) * n0(:,isd)
                   enddo
                 enddo
 c
@@ -161,9 +165,9 @@ c
      &          ( 
      &            + AiNa1
      &            - KijNaj1
-c     &            - pt50 * A0_1(:,iflow,jflow)*alpha_LF*shp1(:,j)
+     &            - KijNbjCn0 * shp1(:,j)
+CCc     &            - pt50 * A0_1(:,iflow,jflow)*alpha_LF*shp1(:,j)
      &            - pt50 * (A0_0(:,iflow,jflow)+A0_1(:,iflow,jflow))*alpha_LF*shp1(:,j)
-c     &            +   s * KijNajC0(:,isd,iflow,jflow))*n0(:,isd)
      &            - e*this_mu(:,iflow,jflow)/length_h * ctc(:,iflow,jflow) * shp1(:,j)
      &          ) * shp0(:,i) * WdetJ0
               enddo
