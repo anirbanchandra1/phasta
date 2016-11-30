@@ -808,7 +808,7 @@ c
             mater1 = materif0
             ienif1 => mienif0(iblk)%p
           case default
-            call error ('getthm  ', 'WE DO NOT SUPPORT THIS MATERIAL YET!!', materif0)
+            call error ('getthm  ', 'WE DO NOT SUPPORT THIS MATERIAL (1)', materif0)
           end select
 c
           select case (mat_eos(materif1,1))
@@ -819,7 +819,7 @@ c
             mater1 = materif1
             ienif1 => mienif1(iblk)%p
           case default
-            call error ('getthm  ', 'WE DO NOT SUPPORT THIS MATERIAL YET!!', materif1)
+            call error ('getthm  ', 'WE DO NOT SUPPORT THIS MATERIAL (2)', materif1)
           end select
 c
           if (mater0 < 0 .or. mater1 < 0) 
@@ -828,7 +828,14 @@ c
 c... set equations of state
 c
           getthmif0_ptr => getthm7_ideal_gas
-          getthmif1_ptr => getthm7_liquid_1
+          select case (mat_eos(materif1,1))
+          case (ieos_ideal_gas_2)
+            getthmif1_ptr => getthm7_ideal_gas
+          case (ieos_liquid_1)
+            getthmif1_ptr => getthm7_liquid_1
+          case default
+            call error ('getthm  ', 'WE DO NOT SUPPORT THIS MATERIAL (3)', materif1)
+          end select
 c
 c... compute and assemble the residual and tangent matrix
 c

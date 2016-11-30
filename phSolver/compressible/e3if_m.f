@@ -130,6 +130,11 @@ c
 c
           enddo  ! end of integeration points loop 
 c
+c      do iel=1,npro
+c        do n = 1,nshl0
+c          write(*,'(a,2i6,5e24.16)') 'rl0: ',iel,n,rl0(iel,n,:)
+c        enddo
+c      enddo
         end subroutine e3if
 c
         subroutine e3var(y,var,ycl,shp,shgl,shg,nshl)
@@ -255,7 +260,7 @@ c
           real*8 :: etot, diff_flux(nsd,nflow), dTdx0
           real*8 :: kappa0(nsd), kappa1(nsd), k0,k1 ! mean curvature
 c
-          real*8 :: alpha,jump_u(5),climit
+          real*8 :: alpha,jump_u(5),climit,jump_y(5),A0_jump_y(5)
 c
           do iel = 1,npro
 c
@@ -274,8 +279,8 @@ c
 c... calculate flux in normal direction...
 c
             do iflow = 1,nflow
-              f0(:,iflow) = fconv0(:,iflow) - fdiff0(:,iflow)
-              f1(:,iflow) = fconv1(:,iflow) - fdiff1(:,iflow)
+              f0(:,iflow) = fconv0(:,iflow) !- fdiff0(:,iflow)
+              f1(:,iflow) = fconv1(:,iflow) !- fdiff1(:,iflow)
               f0n0(iflow) = dot_product(f0(:,iflow),nv0(iel,:))
               f0n1(iflow) = dot_product(f0(:,iflow),nv1(iel,:))
               f1n0(iflow) = dot_product(f1(:,iflow),nv0(iel,:))
@@ -284,7 +289,7 @@ c
 c        write(*,500) myrank,iel,f0n0(:)
 c
 c
-c      if (iel == 1) then
+      if (iel == 1) then
 c        write(*,10) 'rho0, u0, p0, T0, ei0:', rho0(iel), u0(iel,1), pres0(iel), ei0(iel)
 c        write(*,10) 'conv0: ',fconv0(1,:)
 c        write(*,10) 'diff0: ',fdiff0(1,:)
@@ -299,20 +304,28 @@ c        write(*,10) 'grad_y u:', var1(iel)%grad_y(:,2)
 c        write(*,10) 'grad_y T:', var1(iel)%grad_y(:,5)
 c        write(*,10) 'f1: ',f1(1,:)
 c       write(*,*) 'stiff1: ',prop1(1)%stiff(15,15)
-c      endif
+      endif
 c
-c            ri0(iel,16:20) = ri0(iel,16:20) + pt50 * ( f0n0(1:5) + f1n0(1:5) )
-c            ri1(iel,16:20) = ri1(iel,16:20) + pt50 * ( f1n1(1:5) + f0n1(1:5) )
+c      write(*,11) 'f0n0:',iel,f0n0
+c      write(*,11) 'f1n0:',iel,f1n0
+c      write(*,11) 'f1n1:',iel,f1n1
+c      write(*,11) 'f0n1:',iel,f0n1
+            ri0(iel,16:20) = ri0(iel,16:20) + pt50 * ( f0n0(1:5) + f1n0(1:5) )
+            ri1(iel,16:20) = ri1(iel,16:20) + pt50 * ( f1n1(1:5) + f0n1(1:5) )
+c      write(*,11) 'ri0  : ',iel,ri0(iel,16:20)
+c      write(*,11) 'ri1  : ',iel,ri1(iel,16:20)
 c...UPWIND????
 c   Flow is in n0 direction...
 c
-      ri0(iel,16:20) = ri0(iel,16:20) + f0n0(1:5)
-      ri1(iel,16:20) = ri1(iel,16:20) + f0n1(1:5)
+c      ri0(iel,16:20) = ri0(iel,16:20) + f0n0(1:5)
+c      ri1(iel,16:20) = ri1(iel,16:20) + f0n1(1:5)
 c
 c
 c... Here is the additional stability terms from the Lax-Friedrichs flux calculations
 c
-            climit = zero
+c            climit = zero
+            climit = one
+c            climit = 1.e-1
             alpha_LF(iel) = climit * max(abs(dot_product(u0(iel,:)-um0(iel,:),nv0(iel,:))-c0(iel)),
      &                  abs(dot_product(u1(iel,:)-um1(iel,:),nv1(iel,:))-c1(iel)))
             alpha = alpha_LF(iel)
@@ -324,8 +337,26 @@ c
             jump_u(5) = rho0(iel)*(ei0(iel)+pt50*dot_product(u0(iel,:),u0(iel,:))) 
      &                - rho1(iel)*(ei1(iel)+pt50*dot_product(u1(iel,:),u1(iel,:)))
 c
-c            ri0(iel,16:20) = ri0(iel,16:20) + pt50*alpha*jump_u(1:5)
-c            ri1(iel,16:20) = ri1(iel,16:20) - pt50*alpha*jump_u(1:5)
+            jump_y(1) = pres0(iel) - pres1(iel)
+            jump_y(2) = u0(iel,1) - u1(iel,1)
+            jump_y(3) = u0(iel,2) - u1(iel,2)
+            jump_y(4) = u0(iel,3) - u1(iel,3)
+            jump_y(5) = T0(iel) - T1(iel)
+c
+            A0_jump_y = zero
+c
+            do iflow = 1,nflow
+              do jflow = 1,nflow
+                A0_jump_y(iflow) = A0_jump_y(iflow) + pt50*(A0_0(iel,iflow,jflow)+A0_1(iel,iflow,jflow))*jump_y(jflow)
+              enddo 
+            enddo
+c
+c      ri0(iel,16:20) = ri0(iel,16:20) + pt50*alpha*jump_u(1:5)
+c      ri1(iel,16:20) = ri1(iel,16:20) - pt50*alpha*jump_u(1:5)
+c      write(*,11) 'ri0 a: ',iel,ri0(iel,16:20)
+c      write(*,11) 'ri1 a: ',iel,ri1(iel,16:20)
+      ri0(iel,16:20) = ri0(iel,16:20) + alpha*A0_jump_y(1:5)
+      ri1(iel,16:20) = ri1(iel,16:20) - alpha*A0_jump_y(1:5)
 c
 C... Do we account for surface tension in jump?
 c
@@ -350,6 +381,7 @@ c
           enddo
 c
 10    format(a,5e24.16)
+11    format(a,i6,5e24.16)
 20    format(a,1e24.16)
 500   format('[',i2,'] ',i3,x,5e24.16)
 c
@@ -656,6 +688,7 @@ c
             enddo
           enddo
 c
+c      write(*,'(a,5e24.16)') 'ri: ',ri(1,16:20)
           do iflow = 1,nflow
             do n = 1,nshl
               rl(:,n,iflow) = rl(:,n,iflow) + shp(:,n)*WdetJ(:) * ri(:,3*nflow+iflow)

@@ -28,6 +28,7 @@ c
           integer, dimension(:,:), pointer, intent(in)   :: ienif0, ienif1
           real*8, pointer, intent(inout) :: sum_vi_area(:,:)
           real*8, pointer, intent(in) :: if_normals(:,:)
+      integer :: i0,i1,iel,n,i
 c
 c.... create the matrix of mode signs for the hierarchic basis 
 c     functions. 
@@ -60,9 +61,25 @@ c
 c
 c.... assemble the local residual arrays
 c
+      i0 = ienif0(1,1)
+      i1 = ienif1(2,1)
+      !write(*,*) 'i0 before: ',i0,res(i0,:)
+      !write(*,10) 'i1 before: ',i1,res(i1,:)
         call local (res, rl0, ienif0, nflow, 'scatter ', nshg,nshl0,npro,ipord)
         call local (res, rl1, ienif1, nflow, 'scatter ', nshg,nshl1,npro,ipord)
-c      write(*,*) 'ienif0, res: ', ienif0(1,1), res(ienif0(1,1),:)
+      !write(*,*) 'i0 after: ',i0,res(i0,:)
+      do iel = 1,npro
+        do n = 1,nshl1
+          i0 = ienif0(iel,n)
+          i1 = ienif1(iel,n)
+           !write(*,10) 'rl0: ',n,ienif0(iel,n),rl0(iel,n,:)
+           !write(*,10) 'rl1: ',n,ienif1(iel,n),rl1(iel,n,:)
+           !write(*,10) 'i0 after: ',n,i0,res(i0,:)
+           !write(*,10) 'i1 after: ',n,i1,res(i1,:)
+        enddo
+      enddo
+      !write(*,10) 'i1 after: ',i1,res(i1,:)
+10    format(a8,2i6,5e24.16)
 c
         call local (sum_vi_area, sum_vi_area_l0, ienif0, nsd+1, 'scatter ', nshg, nshl0,npro,ipord)
         call local (sum_vi_area, sum_vi_area_l1, ienif1, nsd+1, 'scatter ', nshg, nshl1,npro,ipord)

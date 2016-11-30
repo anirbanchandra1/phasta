@@ -40,7 +40,7 @@ c
         real*8,  dimension(:,:,:), pointer :: rl0, rl1      ! residual over the element
         real*8,  dimension(:,:),   pointer :: ri0, ri1      ! residual at the integration point
 c
-        real*8, dimension(:,:,:), pointer :: A0_0,A0_1
+        real*8, dimension(:,:,:), pointer :: A0_0,A0_1,A0Na_0, A0Na_1
         real*8, dimension(:,:,:,:), pointer :: Ai0, Ai1, AiNa0, AiNa1, KijNaj0, KijNaj1, KijNajC0, KijNajC1
         real*8, dimension(:,:,:,:,:), pointer :: Kij0, Kij1
         real*8, dimension(:,:,:), pointer :: egmass00, egmass01, egmass10, egmass11
@@ -149,6 +149,8 @@ c
 c
           allocate(A0_0(npro,nflow,nflow))
           allocate(A0_1(npro,nflow,nflow))
+          allocate(A0Na_0(npro,nflow,nflow))
+          allocate(A0Na_1(npro,nflow,nflow))
           allocate(Ai0(npro,nsd,nflow,nflow))
           allocate(Ai1(npro,nsd,nflow,nflow))
           allocate(AiNa0(npro,nsd,nflow,nflow))
@@ -201,6 +203,7 @@ c
 c
           deallocate(Ai0,Ai1)
           deallocate(A0_0,A0_1)
+          deallocate(A0Na_0,A0Na_1)
           deallocate(AiNa0,AiNa1)
           deallocate(Kij0,Kij1)
           deallocate(KijNaj0,KijNaj1)
