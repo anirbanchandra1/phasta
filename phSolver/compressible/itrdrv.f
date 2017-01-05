@@ -623,7 +623,7 @@ c
                       ndofelas = nshl * nelas
 c 
                      call set_if_velocity (BC(:,ndof+2:ndof+4),  iBC, 
-     &                                umesh,    x,     ilwork,
+     &                                umesh,    disp, x,  Delt(1),   ilwork,
      &                                lcblkif,  nshg,  ndofBC,
      &                                nsd,   nelblif,  MAXBLK, nlwork )
 c
@@ -711,7 +711,8 @@ c
                      umesh = disp / Delt(1)
                      umeshold = umesh
 c
-                     call itrCorrectElas(x, disp)
+c                     call itrCorrectElas(x, disp)
+                     call itrCorrectElas(x, elasDy)
 c
                   endif ! end of switch for flow or scalar or mesh-elastic update
                endif            !end of switch between solve or update
@@ -876,13 +877,14 @@ c     &                  xdot,  'd'//char(0), numnp, nsd, lstep)
                    call write_field(
      &                  myrank,'a'//char(0),'meshQ'//char(0), 5, 
      &                  meshq, 'd'//char(0), numel, 1,   lstep)
-                   call write_field(
-     &                  myrank,'a'//char(0),'material_type'//char(0),13,
-     &                  mattype_interior, 'd',numel, 1, lstep)   
 c
       if (solid_p%is_active) call write_restart_solid
 c
                  endif
+c
+                 call write_field(
+     &               myrank,'a'//char(0),'material_type'//char(0),13,
+     &               mattype_interior, 'd',numel, 1, lstep)   
 c... end writing
                  output_mode = -1
                endif

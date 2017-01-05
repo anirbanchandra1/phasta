@@ -25,7 +25,7 @@ c
 c
       subroutine set_if_velocity 
      & (
-     &  BC, iBC, umesh, x, ilwork,
+     &  BC, iBC, umesh, disp, x, dt, ilwork,
      &  lcblkif, nshg, ndofBC, nsd, nelblif, MAXBLK, nlwork
      & )
 c
@@ -33,8 +33,9 @@ c
 c
         real*8,  intent(inout) ::  BC(nshg,3)
         integer, intent(inout) :: iBC(nshg)
-        real*8,  dimension(nshg,nsd), intent(inout)    :: umesh
+        real*8,  dimension(nshg,nsd), intent(inout)    :: umesh, disp
         real*8,  dimension(nshg,nsd), intent(in)    :: x
+        real*8, intent(in) :: dt
         integer, intent(in)    :: lcblkif(14,MAXBLK+1), ilwork(nlwork)
         integer, intent(in) :: nshg, ndofBC, nsd, nelblif, MAXBLK, nlwork
 c
@@ -59,12 +60,13 @@ c ... NOT SURE IF THIS IS THE BEST IF :
 c
           if (sum_vi_area(inode,nsd+1) > zero) then
             umesh(inode,:) = sum_vi_area(inode,:) / sum_vi_area(inode,nsd+1)
+            disp(inode,:) = umesh(inode,:)*dt
             BC(inode,:) = umesh(inode,:)
+C      write(*,100) 'AFTER: ', myrank,inode, x(inode,:), sum_vi_area(inode,:),umesh(inode,:)
           endif
-c      write(*,100) 'AFTER: ', myrank,inode, x(inode,:), sum_vi_area(inode,:),umesh(inode,:)
         enddo
 c
-100   format(a,'[',i2,'] ',i6,3f7.3,x,7e24.16)
+100   format(a,'[',i2,'] ',i6,3f7.3,x,7e14.6)
       end subroutine set_if_velocity
 c
       end module if_velocity_m
