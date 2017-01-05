@@ -99,7 +99,8 @@
 #define idg_no_vi 1
 #define idg_const_vi 2
 #define idg_vieilles_burning 3
-#define idg_cavitation 4
+#define idg_clausius_clapeyron 4
+#define idg_cavitation 5
 
 #define idg_no_ramp 1
 #define idg_linear_ramp 2
@@ -529,6 +530,7 @@ extern "C" {
     double s;
     double e;
     double h;
+    double hfg_liquid, mw_liquid, T_boil_liquid;
     double burn_rate_exp, burn_rate_coeff, burn_rate_pref;
   } dgifinp;
 

@@ -72,6 +72,8 @@ c
       end subroutine set_lhs_matrices
 c
       subroutine calc_egmass( egmass00, egmass01,
+     &                         A0_0, A0_1, Ai0, Ai1,
+     &                         Kij0, Kij1,
      &                         AiNa0_, AiNa1_, KijNaj0_, KijNaj1_,
      &                         KijNajC0, KijNajC1,
      &                         shp0, n0, n1, WdetJ0,
@@ -80,6 +82,9 @@ c
 c        
         real*8, dimension(:,:,:), intent(inout) :: egmass00, egmass01
         real*8, dimension(:,:,:,:), intent(in)  :: AiNa0_, AiNa1_, KijNaj0_, KijNaj1_, KijNajC0, KijNajC1
+        real*8, dimension(:,:,:), intent(in):: A0_0,A0_1
+        real*8, dimension(:,:,:,:), intent(in) :: Ai0, Ai1
+        real*8, dimension(:,:,:,:,:), pointer, intent(in) :: Kij0, Kij1
         real*8, dimension(:,:), intent(in) :: shp0,n0, n1
         real*8, dimension(:), intent(in) :: WdetJ0
         type(prop_t), dimension(:), pointer, intent(in) :: prop
@@ -126,7 +131,7 @@ c
                   enddo
                 enddo
 c
-                egmass00(:,il,jl) = egmass00(:,il,jl) +
+                egmass00(:,il,jl) = egmass00(:,il,jl) -
      &          ( 
      &            + AiNa0 
      &            - KijNaj0
@@ -161,7 +166,7 @@ c
                   enddo
                 enddo
 c
-                egmass01(:,il,jl) = egmass01(:,il,jl) +
+                egmass01(:,il,jl) = egmass01(:,il,jl) -
      &          ( 
      &            + AiNa1
      &            - KijNaj1

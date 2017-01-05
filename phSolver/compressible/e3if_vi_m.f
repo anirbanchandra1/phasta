@@ -15,6 +15,11 @@ c
         integer :: isd,i
         real*8 :: vimag,v1,t1,c1
         real*8 :: pvap,cprod,cdest
+c... Clausius-Clapeyron:
+        real*8, dimension(npro) :: x_vapor     ! vapor mole fraction in gas/vapor mixture
+     &,                            y_vapor     ! vapor mass fraction ...
+     &,                            rho_mix     ! mixture density
+     &,                            mw_mix      ! mixture molecular weight
 c
         select case (vi_ramping)
         case (no_ramp)
@@ -42,6 +47,10 @@ c
           vi(:,1) = burn_rate_coeff*(p/burn_rate_pref)**burn_rate_exp * n(:,1)
           vi(:,2) = burn_rate_coeff*(p/burn_rate_pref)**burn_rate_exp * n(:,2)
           vi(:,3) = burn_rate_coeff*(p/burn_rate_pref)**burn_rate_exp * n(:,3)
+c
+        case (clausius_clapeyron)
+c
+          x_vapor = exp( - hfg_liquid / Ru )
 c
         case (cavitation)
 c
@@ -71,10 +80,6 @@ c
         vi(:,1) = c1*(vi(:,1) + u(:,1))
         vi(:,2) = c1*(vi(:,2) + u(:,2))
         vi(:,3) = c1*(vi(:,3) + u(:,3))
-c        vi(:,1) = c1 * (vi(:,1) + pt50 * (u0(:,1)+u1(:,1)))
-c        vi(:,2) = c1 * (vi(:,2) + pt50 * (u0(:,2)+u1(:,2)))
-c        vi(:,3) = c1 * (vi(:,3) + pt50 * (u0(:,3)+u1(:,3)))
-c      write(*,*) (norm2(vi(i,:)),i=1,npro)
 c
       end subroutine calc_vi
 c

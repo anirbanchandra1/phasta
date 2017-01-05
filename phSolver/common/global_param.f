@@ -46,6 +46,8 @@ c
 c
       integer, parameter :: MAXMAT  = 6, MAXPROP = 10
 c
+      real*8, parameter :: Ru = 8.314d0    ! Universal gas constant [J/mol.K]
+c
       end module global_const_m
 c
 c----------------------------------------------------------------------
@@ -350,12 +352,18 @@ c
         use iso_c_binding
         implicit none
         integer, parameter :: no_ramp = 1, linear_ramp = 2
-        integer, parameter :: no_vi = 1, const_vi = 2, vieilles_burning=3, cavitation=4
+        integer, parameter :: no_vi = 1, 
+     &                        const_vi = 2, 
+     &                        vieilles_burning=3, 
+     &                        clausius_clapeyron=4,
+     &                        cavitation=5
         integer(c_int) :: phase_change_model, vi_ramping
         real(c_double) :: ramp_time, vi_mag, dgif_alpha, dgif_beta, dgif_s, dgif_e, dgif_h
         real(c_double) :: burn_rate_exp, burn_rate_coeff, burn_rate_pref
+        real(c_double) :: hfg_liquid, mw_liquid, T_boil_liquid
         common /dgifinp/ phase_change_model,vi_ramping,
      &                   ramp_time,vi_mag,dgif_s,dgif_e,dgif_h,
+     &                   hfg_liquid, mw_liquid, T_boil_liquid,
      &                   burn_rate_exp, burn_rate_coeff, burn_rate_pref
       end module dgifinp_m
 c

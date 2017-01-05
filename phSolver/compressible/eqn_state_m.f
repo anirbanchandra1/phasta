@@ -17,7 +17,7 @@ c
 c
         mw    = mat_prop(mater,iprop_ideal_gas_mw, 1)
         gamma = mat_prop(mater,iprop_ideal_gas_gamma,1)
-        Rgas  = 8314.0d0/mw
+        Rgas  = Ru/mw*1.0d3
         gamma1 = gamma - one
 c
         rho = pres / (Rgas*T)

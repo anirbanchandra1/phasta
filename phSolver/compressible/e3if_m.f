@@ -81,7 +81,24 @@ c
             call calc_stiff(prop0, var0, mater0)
             call calc_stiff(prop1, var1, mater1)
 c
+c ... Interface flux 
+c
             call e3if_flux
+c
+c ... Interface velocity calculations...
+c
+c            if     (mat_eos(mater0,1) == ieos_ideal_gas) then
+              call calc_vi(pres0,nv0,u1)
+c            elseif (mat_eos(mater1,1) == ieos_ideal_gas) then
+c              call calc_vi(pres1,nv1,u0)
+c            else
+c              call error ('wrong mater: ', 'calc vi', 0)
+c            endif
+c
+c            call flux_jump
+c
+            call calc_vi_area_node(sum_vi_area_l0,shp0,WdetJif0,nshl0)
+            call calc_vi_area_node(sum_vi_area_l1,shp1,WdetJif1,nshl1)
 c
             call calc_cmtrx
             call calc_y_jump
@@ -99,11 +116,17 @@ c
 c
               call set_lhs_matrices
 c
-             call calc_egmass(egmass00,egmass01,AiNa0,AiNa1,KijNaj0,KijNaj1,KijNajC0,KijNajC1,
-     &         shp0,nv0,nv1,WdetJif0,prop0,nshl0,nshl1)
+             call calc_egmass(egmass00,egmass01,
+     &                         A0_0, A0_1, Ai0, Ai1,
+     &                         Kij0, Kij1,
+     &                         AiNa0,AiNa1,KijNaj0,KijNaj1,KijNajC0,KijNajC1,
+     &                         shp0,nv0,nv1,WdetJif0,prop0,nshl0,nshl1)
 
-             call calc_egmass(egmass11,egmass10,AiNa1,AiNa0,KijNaj1,KijNaj0,KijNajC1,KijNajC0,
-     &         shp1,nv1,nv0,WdetJif1,prop1,nshl1,nshl0)
+             call calc_egmass(egmass11,egmass10,
+     &                         A0_1, A0_0, Ai1, Ai0,
+     &                         Kij1, Kij0,
+     &                         AiNa1,AiNa0,KijNaj1,KijNaj0,KijNajC1,KijNajC0,
+     &                         shp1,nv1,nv0,WdetJif1,prop1,nshl1,nshl0)
 
 c      call calc_egmass_(egmass00,AiNa0,KijNaj0,KijNaj0,KijNajC0,shp0,shp1,nv0,nv1,WdetJif0,nshl0,nshl1)
 c      call calc_egmass_(egmass01,AiNa1,KijNaj0,KijNaj1,KijNajC1,shp0,shp1,nv0,nv1,WdetJif0,nshl0,nshl1)
@@ -114,19 +137,6 @@ c
 c
             call e3if_wmlt(rl0, ri0, shp0, shg0, WdetJif0, nshl0)
             call e3if_wmlt(rl1, ri1, shp1, shg1, WdetJif1, nshl1)
-c
-c ... Interface velocity calculations...
-c
-c            if     (mat_eos(mater0,1) == ieos_ideal_gas) then
-              call calc_vi(pres0,nv0,u1)
-c            elseif (mat_eos(mater1,1) == ieos_ideal_gas) then
-c              call calc_vi(pres1,nv1,u0)
-c            else
-c              call error ('wrong mater: ', 'calc vi', 0)
-c            endif
-c
-            call calc_vi_area_node(sum_vi_area_l0,shp0,WdetJif0,nshl0)
-            call calc_vi_area_node(sum_vi_area_l1,shp1,WdetJif1,nshl1)
 c
           enddo  ! end of integeration points loop 
 c
@@ -323,8 +333,8 @@ c
 c
 c... Here is the additional stability terms from the Lax-Friedrichs flux calculations
 c
-c            climit = zero
-            climit = one
+            climit = zero
+c            climit = one
 c            climit = 1.e-1
             alpha_LF(iel) = climit * max(abs(dot_product(u0(iel,:)-um0(iel,:),nv0(iel,:))-c0(iel)),
      &                  abs(dot_product(u1(iel,:)-um1(iel,:),nv1(iel,:))-c1(iel)))
@@ -386,6 +396,38 @@ c
 500   format('[',i2,'] ',i3,x,5e24.16)
 c
         end subroutine e3if_flux
+c
+        subroutine flux_jump
+c
+          real*8, dimension(npro) :: vi0,vi1,etot0,etot1
+c
+          vi0 = + (vi(:,1)-um0(:,1))*nv0(:,1)
+     &          + (vi(:,2)-um0(:,2))*nv0(:,2)
+     &          + (vi(:,3)-um0(:,3))*nv0(:,3)
+c
+          vi1 = + (vi(:,1)-um1(:,1))*nv1(:,1)
+     &          + (vi(:,2)-um1(:,2))*nv1(:,2)
+     &          + (vi(:,3)-um1(:,3))*nv1(:,3)
+c
+c      write(*,*) 'vi0:',vi0
+c      write(*,*) 'vi1:',vi1
+c
+          etot0 = ei0 + pt50 * (u0(:,1)*u0(:,1)+u0(:,2)*u0(:,2)+u0(:,3)*u0(:,3))
+          etot1 = ei1 + pt50 * (u1(:,1)*u1(:,1)+u1(:,2)*u1(:,2)+u1(:,3)*u1(:,3))
+c
+          ri0(:,16) = ri0(:,16) + vi0*rho0
+          ri0(:,17) = ri0(:,17) + vi0*rho0*u0(:,1)
+          ri0(:,18) = ri0(:,18) + vi0*rho0*u0(:,2)
+          ri0(:,19) = ri0(:,19) + vi0*rho0*u0(:,3)
+          ri0(:,20) = ri0(:,20) + vi0*rho0*etot0
+c
+          ri1(:,16) = ri1(:,16) + vi1*rho1
+          ri1(:,17) = ri1(:,17) + vi1*rho1*u1(:,1)
+          ri1(:,18) = ri1(:,18) + vi1*rho1*u1(:,2)
+          ri1(:,19) = ri1(:,19) + vi1*rho1*u1(:,3)
+          ri1(:,20) = ri1(:,20) + vi1*rho1*etot1
+c
+        end subroutine flux_jump
 c
         subroutine stability_term(ri,Kij)
 c
