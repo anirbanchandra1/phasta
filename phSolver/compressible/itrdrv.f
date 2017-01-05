@@ -96,7 +96,7 @@ c.... For mesh-elastic solve
 c
        real*8  umesh(numnp,nsd),    meshq(numel),
      &         disp(numnp, nsd),    elasDy(nshg,nelas),
-     &         umeshold(numnp, nsd)
+     &         umeshold(numnp, nsd), xold(numnp,nsd)
 
        logical alive
  
@@ -166,6 +166,7 @@ c
         yold   = y
         acold  = ac
         umeshold = umesh
+        xold   = x
 
 !Blower Setup
        call BC_init(Delt, lstep, BC)  !Note: sets BC_enable
@@ -700,7 +701,8 @@ c
 c
 c.... call itrCorrectElas ... and then itrBCElas ...
 c
-                     call itrCorrectElas(disp, elasDy)
+c                     call itrCorrectElas(disp, elasDy)
+                     call itrCorrectElas(xold, x, disp, elasDy)
 c
                      umesh = disp / Delt(1)
 c 
@@ -708,11 +710,10 @@ c
      &                              BC(:,ndof+2:ndof+5),
      &                              iper,   ilwork        )
 c
-                     umesh = disp / Delt(1)
+c                     umesh = disp / Delt(1)
                      umeshold = umesh
 c
 c                     call itrCorrectElas(x, disp)
-                     call itrCorrectElas(x, elasDy)
 c
                   endif ! end of switch for flow or scalar or mesh-elastic update
                endif            !end of switch between solve or update
@@ -736,6 +737,7 @@ c
             endif          
 c
             call itrUpdate( yold,  acold,   y,    ac)
+            call itrUpdateElas ( xold, x)
 c
             call itrBC (y,ac, iBC, BC, iper, ilwork, umesh)
 c
