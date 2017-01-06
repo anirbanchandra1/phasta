@@ -60,7 +60,6 @@ c ... NOT SURE IF THIS IS THE BEST IF :
 c
           if (sum_vi_area(inode,nsd+1) > zero) then
             umesh(inode,:) = sum_vi_area(inode,:) / sum_vi_area(inode,nsd+1)
-            disp(inode,:) = umesh(inode,:)*dt
             BC(inode,:) = umesh(inode,:)
 C      write(*,100) 'AFTER: ', myrank,inode, x(inode,:), sum_vi_area(inode,:),umesh(inode,:)
           endif

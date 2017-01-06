@@ -3,13 +3,14 @@ c
 c    Predict solution at time n+1
 c
 c-----------------------------------------------------------------------
-      subroutine itrPredictElas (disp)
+      subroutine itrPredictElas (disp,umesh,dt)
       
       include "common.h"
       
-      real*8   disp(nshg,nelas)
+      real*8   disp(nshg,nelas),umesh(numnp,nsd),dt
 c
-      disp = zero
+c      disp = zero
+      disp = umesh*dt
 c
       return
       end

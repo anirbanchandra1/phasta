@@ -425,7 +425,7 @@ c
 c
 c....   need itrPredict equivalent for 'disp'
 c
-               call itrPredictElas(disp)
+               call itrPredictElas(disp,umesh,Delt(1))
             endif
 c
 c
