@@ -2,6 +2,7 @@
 c
         use dgifinp_m
         use e3if_param_m
+        use matdat_def_m
 c
         implicit none
 c
@@ -50,7 +51,14 @@ c
 c
         case (clausius_clapeyron)
 c
-          x_vapor = exp( - hfg_liquid / Ru )
+          x_vapor = exp( - hfg_liquid / Ru * (one/T0 - one/T_boil_liquid) )
+          mw_mix  = x_vapor*MW_liquid + (one-x_vapor)*mat_prop(mater0,iprop_ideal_gas_mw, 1)
+          rho_mix = pres0 / (Ru/mw_mix*1.d3*T0)
+c
+          vi(:,1) = (rho1*u1(:,1) - rho_mix*u0(:,1)) / (rho1 - rho_mix)
+          vi(:,2) = (rho1*u1(:,2) - rho_mix*u0(:,2)) / (rho1 - rho_mix)
+          vi(:,3) = (rho1*u1(:,3) - rho_mix*u0(:,3)) / (rho1 - rho_mix)
+      print*, vi(:,1)
 c
         case (cavitation)
 c
