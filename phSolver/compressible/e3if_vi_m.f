@@ -52,13 +52,24 @@ c
         case (clausius_clapeyron)
 c
           x_vapor = exp( - hfg_liquid / Ru * (one/T0 - one/T_boil_liquid) )
+          !x_vapor = min(1.d-1,exp( - hfg_liquid / Ru * (one/T0 - one/T_boil_liquid) ))
           mw_mix  = x_vapor*MW_liquid + (one-x_vapor)*mat_prop(mater0,iprop_ideal_gas_mw, 1)
           rho_mix = pres0 / (Ru/mw_mix*1.d3*T0)
 c
-          vi(:,1) = (rho1*u1(:,1) - rho_mix*u0(:,1)) / (rho1 - rho_mix)
-          vi(:,2) = (rho1*u1(:,2) - rho_mix*u0(:,2)) / (rho1 - rho_mix)
-          vi(:,3) = (rho1*u1(:,3) - rho_mix*u0(:,3)) / (rho1 - rho_mix)
-      print*, vi(:,1)
+          vi(:,1) = - (rho1*(u1(:,1)-um1(:,1)) - rho_mix*(u0(:,1)-um0(:,1))) / (rho1 - rho_mix)
+          vi(:,2) = - (rho1*(u1(:,2)-um1(:,2)) - rho_mix*(u0(:,2)-um0(:,2))) / (rho1 - rho_mix)
+          vi(:,3) = - (rho1*(u1(:,3)-um1(:,3)) - rho_mix*(u0(:,3)-um0(:,3))) / (rho1 - rho_mix)
+      print*,'npro:',npro
+      print*, 'x_vapor: ',x_vapor
+      print*, 'mw_mix:  ',mw_mix
+      print*, 'rho1*u1: ',rho1*(u1(:,1)-um1(:,1))
+      print*, 'rho_mix: ',rho_mix*(u0(:,1)-um0(:,1))
+      print*, 'u0(:,1): ',u0(:,1)
+      print*, 'u1(:,1): ',u1(:,1)
+      print*, 'um0(:,1):',um0(:,1)
+      print*, 'um1(:,1):',um1(:,1)
+      print*, 'vi(1):   ',vi(:,1)
+      print*, 'vi(2):   ',vi(:,2)
 c
         case (cavitation)
 c

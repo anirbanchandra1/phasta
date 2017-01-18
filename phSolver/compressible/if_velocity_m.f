@@ -61,7 +61,7 @@ c
           if (sum_vi_area(inode,nsd+1) > zero) then
             umesh(inode,:) = sum_vi_area(inode,:) / sum_vi_area(inode,nsd+1)
             BC(inode,:) = umesh(inode,:)
-C      write(*,100) 'AFTER: ', myrank,inode, x(inode,:), sum_vi_area(inode,:),umesh(inode,:)
+c      write(*,100) 'AFTER: ', myrank,inode, x(inode,:), sum_vi_area(inode,:),umesh(inode,:)
           endif
         enddo
 c

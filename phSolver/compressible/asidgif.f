@@ -61,25 +61,48 @@ c
 c
 c.... assemble the local residual arrays
 c
-      i0 = ienif0(1,1)
-      i1 = ienif1(2,1)
-      !write(*,*) 'i0 before: ',i0,res(i0,:)
-      !write(*,10) 'i1 before: ',i1,res(i1,:)
+c      i0=88
+c      do iel = 1,npro
+c        do n = 1,nshl0
+c          if(ienif0(iel,n) .ne. i0) cycle
+c          write(*,10) 'x0: ',iel,n,ienif0(iel,n),xl0(iel,n,:)
+c        enddo
+c        do n = 1,nshl1
+c          if(ienif0(iel,n) .ne. i0) cycle
+c          write(*,10) 'x1: ',iel,n,ienif1(iel,n),xl1(iel,n,:)
+c        enddo
+c      enddo
+c      do iel = 1,npro
+c        do n = 1,nshl0
+c          if(ienif0(iel,n) .ne. i0) cycle
+c          write(*,10) 'rl0: ',iel,n,ienif0(iel,n),rl0(iel,n,:)
+c        enddo
+c      enddo
+c      do iel = 1,npro
+c        do n = 1,nshl1
+c          if(ienif0(iel,n) .ne. i0) cycle
+c          write(*,10) 'rl1: ',iel,n,ienif1(iel,n),rl1(iel,n,:)
+c        enddo
+c      enddo
+c      do iel = 1,npro
+c        do n = 1,nshl0
+c          if(ienif0(iel,n) .ne. i0) cycle
+c          write(*,10) 'i0 before: ',iel,n,ienif0(iel,n),res(ienif0(iel,n),:)
+c        enddo
+c      enddo
         call local (res, rl0, ienif0, nflow, 'scatter ', nshg,nshl0,npro,ipord)
         call local (res, rl1, ienif1, nflow, 'scatter ', nshg,nshl1,npro,ipord)
-      !write(*,*) 'i0 after: ',i0,res(i0,:)
-      do iel = 1,npro
-        do n = 1,nshl1
-          i0 = ienif0(iel,n)
-          i1 = ienif1(iel,n)
-           !write(*,10) 'rl0: ',n,ienif0(iel,n),rl0(iel,n,:)
-           !write(*,10) 'rl1: ',n,ienif1(iel,n),rl1(iel,n,:)
-           !write(*,10) 'i0 after: ',n,i0,res(i0,:)
-           !write(*,10) 'i1 after: ',n,i1,res(i1,:)
-        enddo
-      enddo
-      !write(*,10) 'i1 after: ',i1,res(i1,:)
-10    format(a8,2i6,5e24.16)
+c      do iel = 1,npro
+c        do n = 1,nshl0
+c          write(*,10) 'i0 after: ',iel,n,ienif0(iel,n),res(ienif0(iel,n),:)
+c        enddo
+c      enddo
+c      do iel = 1,npro
+c        do n = 1,nshl1
+c          write(*,10) 'i1 after: ',iel,n,ienif1(iel,n),res(ienif1(iel,n),:)
+c        enddo
+c      enddo
+10    format(a8,3i6,5e24.16)
 c
         call local (sum_vi_area, sum_vi_area_l0, ienif0, nsd+1, 'scatter ', nshg, nshl0,npro,ipord)
         call local (sum_vi_area, sum_vi_area_l1, ienif1, nsd+1, 'scatter ', nshg, nshl1,npro,ipord)

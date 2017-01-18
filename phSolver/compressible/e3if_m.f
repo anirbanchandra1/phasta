@@ -39,6 +39,10 @@ c
           sum_vi_area_l1 = zero
 c
           do intp = 1, nqpt
+c      print*, intp,shpif0(:,intp)
+c      print*, intp,shpif1(:,intp)
+c      print*, 'qwtif0: ',intp,qwtif0(intp)
+c      print*, 'qwtif1: ',intp,qwtif1(intp)
 c
             ri0 = zero
             ri1 = zero
