@@ -59,17 +59,17 @@ c
           vi(:,1) = - (rho1*(u1(:,1)-um1(:,1)) - rho_mix*(u0(:,1)-um0(:,1))) / (rho1 - rho_mix)
           vi(:,2) = - (rho1*(u1(:,2)-um1(:,2)) - rho_mix*(u0(:,2)-um0(:,2))) / (rho1 - rho_mix)
           vi(:,3) = - (rho1*(u1(:,3)-um1(:,3)) - rho_mix*(u0(:,3)-um0(:,3))) / (rho1 - rho_mix)
-      print*,'npro:',npro
-      print*, 'x_vapor: ',x_vapor
-      print*, 'mw_mix:  ',mw_mix
-      print*, 'rho1*u1: ',rho1*(u1(:,1)-um1(:,1))
-      print*, 'rho_mix: ',rho_mix*(u0(:,1)-um0(:,1))
-      print*, 'u0(:,1): ',u0(:,1)
-      print*, 'u1(:,1): ',u1(:,1)
-      print*, 'um0(:,1):',um0(:,1)
-      print*, 'um1(:,1):',um1(:,1)
-      print*, 'vi(1):   ',vi(:,1)
-      print*, 'vi(2):   ',vi(:,2)
+c      print*,'npro:',npro
+c      print*, 'x_vapor: ',x_vapor
+c      print*, 'mw_mix:  ',mw_mix
+c      print*, 'rho1*u1: ',rho1*(u1(:,1)-um1(:,1))
+c      print*, 'rho_mix: ',rho_mix*(u0(:,1)-um0(:,1))
+c      print*, 'u0(:,1): ',u0(:,1)
+c      print*, 'u1(:,1): ',u1(:,1)
+c      print*, 'um0(:,1):',um0(:,1)
+c      print*, 'um1(:,1):',um1(:,1)
+c      print*, 'vi(1):   ',vi(:,1)
+c      print*, 'vi(2):   ',vi(:,2)
 c
         case (cavitation)
 c
