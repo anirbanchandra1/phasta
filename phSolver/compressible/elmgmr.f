@@ -830,7 +830,7 @@ c
           case (ieos_liquid_1)
             getthmif1_ptr => getthm7_liquid_1
           case default
-            call error ('getthm  ', 'WE DO NOT SUPPORT THIS MATERIAL (3)', materif1)
+            call error ('getthm  ', 'WE DO NOT SUPPORT THIS MATERIAL (3)', mater1)
           end select
 c
 c... compute and assemble the residual and tangent matrix
