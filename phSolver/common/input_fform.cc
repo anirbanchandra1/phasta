@@ -572,10 +572,11 @@ int input_fform(phSolver::Input& inp)
       dgifinp.burn_rate_exp   = (double)inp.GetValue("Burn Rate Exponent alpha");
       dgifinp.burn_rate_coeff = (double)inp.GetValue("Burn Rate Coefficient beta");
       dgifinp.burn_rate_pref  = (double)inp.GetValue("Burn Rate Reference Pressure");}
-    else if (sbuf == "Clausius-Clapyeron") {
-      dgifinp.hfg_liquid  = (double)inp.GetValue("Enthalpy of Vaporization");
-      dgifinp.mw_liquid  = (double)inp.GetValue("Molecular Weight of Liquid");
+    else if (sbuf == "Clausius-Clapeyron") {
+      dgifinp.hfg_liquid     = (double)inp.GetValue("Enthalpy of Vaporization");
+      dgifinp.mw_liquid      = (double)inp.GetValue("Molecular Weight of Liquid");
       dgifinp.T_boil_liquid  = (double)inp.GetValue("Boiling Temperature");}
+      
 
     dgifinp.s = (double)inp.GetValue("DG Interface Stability Factor");
     dgifinp.e = (double)inp.GetValue("DG Interface Kinematic Condition epsilon");

@@ -867,6 +867,9 @@ c
           call e3if_geom_malloc
           call e3if_malloc
 c
+c      do i=1,nshg
+c        print*, i,res(i,:)
+c      enddo
           call asidgif
      &    (
      &      res,
