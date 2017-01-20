@@ -50,5 +50,21 @@ c        endif
 c
       end subroutine getdiff
 c
-      subroutine getdiffsclr
-      end subroutine getdiffsclr
+      subroutine getDiffSclr(rmu, rlm, rlm2mu, con, npro, mater)
+c
+        use number_def_m
+        use matdat_def_m
+        use sclrs_m
+c
+        implicit none
+c
+        integer, intent(in) :: npro, mater
+        real*8, dimension(npro), intent(out) :: rmu,rlm,rlm2mu,con
+c
+c
+        rmu = scdiff(isclr)
+c
+        rlm = -pt66 * rmu
+        rlm2mu = rlm + two * rmu
+c
+      end subroutine getdiffSclr

@@ -429,8 +429,11 @@ c
      &                        xlb,     lnode,
      &                        u1,      u2,      u3,
      &                        g1yti,   g2yti,   g3yti,   WdetJb,
-     &                        bnorm,   T,       rho,     cp,      rou,
-     &                        Sclr,    SclrF)
+     &                        bnorm,
+c     &                        T,       rho,     cp,
+     &                        rou,
+c     &                        Sclr,
+     &                        SclrF)
 c
 c----------------------------------------------------------------------
 c
@@ -461,6 +464,8 @@ c Zdenek Johan, Summer 1990.  (Modified from e2bvar.f)
 c Zdenek Johan, Winter 1991.  (Fortran 90)
 c----------------------------------------------------------------------
 c
+        use e3Sclr_param_m
+c
         include "common.h"
 c
         dimension ycl(npro,nshl,ndof),        BCB(npro,nshlb,ndBCB),
@@ -470,11 +475,12 @@ c
      &            g1yti(npro),               g2yti(npro),
      &            g3yti(npro),
      &            WdetJb(npro),              bnorm(npro,nsd),
-     &            pres(npro),                T(npro),
+c     &            pres(npro),
+c     &            T(npro),
      &            u1(npro),                  u2(npro),
-     &            u3(npro),                  rho(npro),
-     &            ei(npro),                  cp(npro),
-     &            rk(npro),                  Sclr(npro),
+     &            u3(npro),
+c     &            rho(npro),                ei(npro),                  cp(npro),
+c     &            rk(npro),                 Sclr(npro),
      &            rou(npro),
      &            SclrF(npro)
 c
@@ -484,10 +490,10 @@ c
      &            temp3(npro),               gl1yti(npro),
      &            gl2yti(npro),              gl3yti(npro)
 c
-        dimension h(npro),                   cv(npro),
-     &            alfap(npro),               betaT(npro),
-     &            gamb(npro),                c(npro),
-     &            tmp(npro),                 v1(npro,nsd),   
+c        dimension h(npro),                   cv(npro),
+c     &            alfap(npro),               betaT(npro),
+c     &            gamb(npro),                c(npro)
+        dimension tmp(npro),                 v1(npro,nsd),   
      &            v2(npro,nsd)
 c
 c.... ------------------->  integration variables  <--------------------
@@ -521,13 +527,14 @@ c
 c
 c.... get the thermodynamic properties
 c
-        ithm = 6
-        if (Navier .eq. 1) ithm = 7
-        call getthm (pres,            T,                  Sclr,
-     &               rk,              rho,                ei,
-     &               h,               tmp,                cv,
-     &               cp,              alfap,              betaT,
-     &               gamb,            c)
+c        ithm = 6
+c        if (Navier .eq. 1) ithm = 7
+c        call getthm (pres,            T,                  Sclr,
+c     &               rk,              rho,                ei,
+c     &               h,               tmp,                cv,
+c     &               cp,              alfap,              betaT,
+c     &               gamb,            c)
+        call getthm7_ptr
 c
        if (iconvsclr.eq.2) rho=one
 c

@@ -61,33 +61,34 @@ c
 c
 c.... assemble the local residual arrays
 c
-c      i0=88
 c      do iel = 1,npro
 c        do n = 1,nshl0
-c          if(ienif0(iel,n) .ne. i0) cycle
 c          write(*,10) 'x0: ',iel,n,ienif0(iel,n),xl0(iel,n,:)
 c        enddo
+c      enddo
+c      do iel = 1,npro
 c        do n = 1,nshl1
-c          if(ienif0(iel,n) .ne. i0) cycle
 c          write(*,10) 'x1: ',iel,n,ienif1(iel,n),xl1(iel,n,:)
 c        enddo
 c      enddo
 c      do iel = 1,npro
 c        do n = 1,nshl0
-c          if(ienif0(iel,n) .ne. i0) cycle
 c          write(*,10) 'rl0: ',iel,n,ienif0(iel,n),rl0(iel,n,:)
 c        enddo
 c      enddo
 c      do iel = 1,npro
 c        do n = 1,nshl1
-c          if(ienif0(iel,n) .ne. i0) cycle
 c          write(*,10) 'rl1: ',iel,n,ienif1(iel,n),rl1(iel,n,:)
 c        enddo
 c      enddo
 c      do iel = 1,npro
 c        do n = 1,nshl0
-c          if(ienif0(iel,n) .ne. i0) cycle
 c          write(*,10) 'i0 before: ',iel,n,ienif0(iel,n),res(ienif0(iel,n),:)
+c        enddo
+c      enddo
+c      do iel = 1,npro
+c        do n = 1,nshl1
+c          write(*,10) 'i1 before: ',iel,n,ienif1(iel,n),res(ienif1(iel,n),:)
 c        enddo
 c      enddo
         call local (res, rl0, ienif0, nflow, 'scatter ', nshg,nshl0,npro,ipord)
@@ -95,8 +96,8 @@ c      enddo
 c      do iel = 1,npro
 c        do n = 1,nshl0
 c          write(*,10) 'i0 after: ',iel,n,ienif0(iel,n),res(ienif0(iel,n),:)
-c        enddo
-c      enddo
+c       enddo
+c     enddo
 c      do iel = 1,npro
 c        do n = 1,nshl1
 c          write(*,10) 'i1 after: ',iel,n,ienif1(iel,n),res(ienif1(iel,n),:)

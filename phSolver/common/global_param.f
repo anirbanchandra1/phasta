@@ -462,3 +462,12 @@ c
      &                  fgraph, ftime, fconserv
       end module mioname_m
 c
+      module sclrs_m
+        use iso_c_binding
+        implicit none
+        real(c_double) :: scdiff(5), tdecay 
+        integer(c_int) :: nsclr,isclr,nsolt
+     &,                   nosource,consrv_sclr_conv_vel
+        common /sclrs/ scdiff,tdecay,nsclr,isclr,nsolt,nosource,
+     &            consrv_sclr_conv_vel
+      end module sclrs_m

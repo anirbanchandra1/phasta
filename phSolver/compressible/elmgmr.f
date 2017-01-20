@@ -1060,6 +1060,8 @@ c Chris Whiting, Winter 1998.     (Matrix EBE-GMRES)
 c----------------------------------------------------------------------
 c
         use pointer_data
+        use eqn_state_m
+        use e3Sclr_param_m
 c
         include "common.h"
         include "mpif.h"
@@ -1184,7 +1186,7 @@ c
           iorder = lcblk(4,iblk)
           nenl   = lcblk(5,iblk)   ! no. of vertices per element
           nshl   = lcblk(10,iblk)
-          mattyp = lcblk(7,iblk)
+          mater  = lcblk(7,iblk)
           ndofl  = lcblk(8,iblk)
           nsymdl = lcblk(9,iblk)
           npro   = lcblk(1,iblk+1) - iel 
@@ -1200,6 +1202,17 @@ c
           tmpshgl(:,1:nshl,:) = shgl(lcsyst,:,1:nshl,:)
 
           allocate (elDwl(npro))
+c
+          select case (mat_eos(mater,1))
+          case (ieos_ideal_gas,ieos_ideal_gas_2)
+            getthm7_ptr => getthm7_ideal_gas
+          case (ieos_liquid_1)
+            getthm7_ptr => getthm7_liquid_1
+          case default
+            call error ('getthm  ', 'wrong material', mater)
+          end select
+c
+          call e3Sclr_malloc
 c
           call AsIGMRSclr(y,                   
      &                    ac,
@@ -1220,6 +1233,9 @@ c
           deallocate ( elDwl )
           deallocate ( tmpshp )
           deallocate ( tmpshgl )
+c
+          call e3Sclr_mfree
+c
 c.... end of interior element loop
 c
        enddo
@@ -1243,7 +1259,7 @@ c
           iorder = lcblkb(4,iblk)
           nenl   = lcblkb(5,iblk)  ! no. of vertices per element
           nenbl  = lcblkb(6,iblk)  ! no. of vertices per bdry. face
-          mattyp = lcblkb(7,iblk)
+          mater  = lcblkb(7,iblk)
           ndofl  = lcblkb(8,iblk)
           nshl   = lcblkb(9,iblk)
           nshlb  = lcblkb(10,iblk)
@@ -1261,6 +1277,17 @@ c
           tmpshpb(1:nshl,:) = shpb(lcsyst,1:nshl,:)
           tmpshglb(:,1:nshl,:) = shglb(lcsyst,:,1:nshl,:)
 c
+          select case (mat_eos(mater ,1))
+          case (ieos_ideal_gas,ieos_ideal_gas_2)
+            getthm7_ptr => getthm7_ideal_gas
+          case (ieos_liquid_1)
+            getthm7_ptr => getthm7_liquid_1
+          case default
+            call error ('getthm  ', 'wrong material', mater )
+          end select
+c
+          call e3Sclr_malloc
+c
           call AsBMFGSclr (y,                  x,
      &                     tmpshpb,
      &                     tmpshglb, 
@@ -1270,6 +1297,8 @@ c
 c
           deallocate ( tmpshpb )
           deallocate ( tmpshglb )
+c
+          call e3Sclr_mfree
 
 c.... end of boundary element loop
 c

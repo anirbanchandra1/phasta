@@ -86,7 +86,22 @@ c
 c
 c.... assemble the residual and modified residual
 c
+c      if (mater .eq. 1) then
+c      do iel=1,npro
+c        do n = 1,nshl
+c          write(*,100),'iel,n,ien,rl:',iel,n,ien(iel,n),rl(iel,n,:)
+c        enddo
+c      enddo
+c      endif
         call local (res,    rl,     ien,    nflow,  'scatter ')
+c      if (mater .eq. 1) then
+c      do iel=1,npro
+c        do n = 1,nshl
+c          write(*,100),'iel,n,ien,res:',iel,n,ien(iel,n),res(ien(iel,n),:)
+c        enddo
+c      enddo
+c      endif
+100   format(a,2i4,x,i6,x,5e24.16)
 c
         if ( ierrcalc .eq. 1 ) then
            call local (rerr, rerrl,  ien, 6, 'scatter ')

@@ -501,13 +501,15 @@ c
 c
 c.... calculate the integraton variables
 c
-        call e3bvarSclr (ycl,            BCB,
+        call e3bvarSclr (ycl,    BCB,
      &                   shape,         shdrv,        
-     &                   xlb,           lnode,         u1,
-     &                   u2,            u3,            g1yti,
-     &                   g2yti,         g3yti,         WdetJb,
-     &                   bnorm,         T,             rho,
-     &                   cp,            rou,           Sclr,
+     &                   xlb,     lnode,
+     &                   u1,      u2,      u3,
+     &                   g1yti,   g2yti,   g3yti,   WdetJb,
+     &                   bnorm,
+c     &                   T,       rho,     cp,
+     &                   rou,
+c     &                   Sclr,
      &                   F)
 c.......********************modification for Ilset=2**********************
           if (ilset.eq.2 .and. isclr.eq.2) then !we are redistancing level-sets
@@ -591,8 +593,9 @@ c
 c.... get the material properties
 c
 
-        call getDiffSclr (T,          cp,         rmu,
-     &                    rlm,        rlm2mu,     con, rho, Sclr)
+c        call getDiffSclr (T,          cp,         rmu,
+c     &                    rlm,        rlm2mu,     con, rho, Sclr)
+        call getDiffSclr(rmu, rlm, rlm2mu, con, npro, mater)
 
 c
 c.... ----------> DiffFlux for Scalar Variable  <--------

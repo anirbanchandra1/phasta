@@ -532,11 +532,13 @@ int input_fform(phSolver::Input& inp)
     }
     vec.erase(vec.begin(),vec.end());
 
+/*
     vec = inp.GetValue("Viscosity");
     for(i=0; i< levlset.iLSet +1 ; i++){
       matdat.datmat[i][1][0] = vec[i];
     }
     vec.erase(vec.begin(),vec.end());
+ */
 
 //      vec = inp.GetValue("Specific Heat");
     for(i=0; i< levlset.iLSet +1 ; i++){

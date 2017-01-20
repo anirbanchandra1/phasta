@@ -58,14 +58,16 @@ c
 c
 c ... NOT SURE IF THIS IS THE BEST IF :
 c
-          if (sum_vi_area(inode,nsd+1) > zero) then
+          if (abs(sum_vi_area(inode,nsd+1)) > zero) then
             umesh(inode,:) = sum_vi_area(inode,:) / sum_vi_area(inode,nsd+1)
             BC(inode,:) = umesh(inode,:)
 c      write(*,100) 'AFTER: ', myrank,inode, x(inode,:), sum_vi_area(inode,:),umesh(inode,:)
+c      write(*,200) 'AFTER: ', myrank,inode, umesh(inode,:)
           endif
         enddo
 c
 100   format(a,'[',i2,'] ',i6,3f7.3,x,7e14.6)
+200   format(a,'[',i2,'] ',i6,3e14.6)
       end subroutine set_if_velocity
 c
       end module if_velocity_m

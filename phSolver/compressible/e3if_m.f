@@ -329,10 +329,10 @@ c      write(*,11) 'f0n1:',iel,f0n1
 c      write(*,11) 'ri0  : ',iel,ri0(iel,16:20)
 c      write(*,11) 'ri1  : ',iel,ri1(iel,16:20)
 c...UPWIND????
-c   Flow is in n0 direction...
+c   upwind flux is in n1 direction...
 c
-c      ri0(iel,16:20) = ri0(iel,16:20) + f0n0(1:5)
-c      ri1(iel,16:20) = ri1(iel,16:20) + f0n1(1:5)
+CC      ri0(iel,16:20) = ri0(iel,16:20) + f1n0(1:5)
+CC      ri1(iel,16:20) = ri1(iel,16:20) + f1n1(1:5)
 c
 c
 c... Here is the additional stability terms from the Lax-Friedrichs flux calculations

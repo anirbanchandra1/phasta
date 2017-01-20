@@ -30,6 +30,7 @@ c
       use workfc_m
       use mio_m
       use mioname_m
+      use sclrs_m
 
 	IMPLICIT REAL*8 (a-h,o-z)
 c
@@ -37,7 +38,6 @@ c the common block nomodule holds all the things which have been removed
 c from different modules
      
         integer seqsize, stepseq
-        integer consrv_sclr_conv_vel
         integer spongecontinuity, spongemomentum1, spongemomentum2
         integer spongeenergy, spongemomentum3
         integer*8 nshgt,minowned, maxowned
@@ -88,8 +88,6 @@ c from different modules
         common /spebcvr/ irscale, intpres, plandist,
      &            thetag, ds, tolerence, radcyl, rbltin, rvscal
 
-        common /sclrs/ scdiff(5),tdecay,nsclr,isclr,nsolt,nosource,
-     &            consrv_sclr_conv_vel
 c 
 c.... common blocks
 c

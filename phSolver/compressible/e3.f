@@ -436,16 +436,20 @@ c.... calculate the integration variables
 c
         ttim(8) = ttim(8) - tmr()
 c
-        call e3ivarSclr(ycl,              acl,        acti,
-     &                  shape,           shdrv,      xl,
-     &                  T,               cp,
-     &                  dxidx,           Sclr,        
-     &                  Wdetj,           vort,       gVnrm,
-     &                  g1yti,           g2yti,      g3yti,
-     &                  rho,             rmu,        con,
-     &                  rk,              u1,         u2,
-     &                  u3,              shg,        dwl,
-     &                  dist2w)
+        call e3ivarSclr (ycl,       acl,      acti,     
+     &                         shape,    shdrv,     xl,      
+c     &                         T,        cp,
+     &                         dxidx,
+c     &                        Sclr,               
+     &                         WdetJ,    vort,     gVnrm, 
+     &                         g1yti,    g2yti,    g3yti,
+c     &                         rho,
+     &                         rmu,      con,
+c     &                         rk,
+     &                         u1,       u2,       u3,
+     &                         shg,      dwl,
+     &                         dist2w)
+c
         ttim(8) = ttim(8) + tmr()
 
 c

@@ -21,6 +21,7 @@ c... Clausius-Clapeyron:
      &,                            y_vapor     ! vapor mass fraction ...
      &,                            rho_mix     ! mixture density
      &,                            mw_mix      ! mixture molecular weight
+     &,                            vap_rate
 c
         select case (vi_ramping)
         case (no_ramp)
@@ -56,20 +57,31 @@ c
           mw_mix  = x_vapor*MW_liquid + (one-x_vapor)*mat_prop(mater0,iprop_ideal_gas_mw, 1)
           rho_mix = pres0 / (Ru/mw_mix*1.d3*T0)
 c
-          vi(:,1) = - (rho1*(u1(:,1)-um1(:,1)) - rho_mix*(u0(:,1)-um0(:,1))) / (rho1 - rho_mix)
-          vi(:,2) = - (rho1*(u1(:,2)-um1(:,2)) - rho_mix*(u0(:,2)-um0(:,2))) / (rho1 - rho_mix)
-          vi(:,3) = - (rho1*(u1(:,3)-um1(:,3)) - rho_mix*(u0(:,3)-um0(:,3))) / (rho1 - rho_mix)
+          vap_rate = ( rho1   *(u1(:,1)*nv1(:,1)+u1(:,2)*nv1(:,2)+u1(:,3)*nv1(:,3))
+     &               + rho_mix*(u0(:,1)*nv0(:,1)+u0(:,2)*nv0(:,2)+u0(:,3)*nv0(:,3)) )
+     &             / ( rho1 - rho_mix) 
+c
+          vi(:,1) = vap_rate * nv1(:,1)
+          vi(:,2) = vap_rate * nv1(:,2)
+          vi(:,3) = vap_rate * nv1(:,3)
+c
 c      print*,'npro:',npro
 c      print*, 'x_vapor: ',x_vapor
 c      print*, 'mw_mix:  ',mw_mix
-c      print*, 'rho1*u1: ',rho1*(u1(:,1)-um1(:,1))
-c      print*, 'rho_mix: ',rho_mix*(u0(:,1)-um0(:,1))
+c      print*, 'rho1:    ',rho1
+c      print*, 'rho_mix: ',rho_mix
+c      print*, 'vap_rate:',vap_rate
 c      print*, 'u0(:,1): ',u0(:,1)
 c      print*, 'u1(:,1): ',u1(:,1)
 c      print*, 'um0(:,1):',um0(:,1)
 c      print*, 'um1(:,1):',um1(:,1)
-c      print*, 'vi(1):   ',vi(:,1)
+      print*, 'vi(1):   ',vi(:,1)
 c      print*, 'vi(2):   ',vi(:,2)
+c      print*, 'vi(3):   ',vi(:,3)
+C
+c... NOTE: we don't add liquid velocity because it's already there...
+c
+      return
 c
         case (cavitation)
 c

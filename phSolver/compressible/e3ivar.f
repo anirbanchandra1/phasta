@@ -534,13 +534,16 @@ c       endif
        end
         subroutine e3ivarSclr (ycl,       acl,      acti,     
      &                         shape,    shgl,     xl,      
-     &                         T,        cp,
-     &                         dxidx,    Sclr,               
+c     &                         T,        cp,
+     &                         dxidx,
+c     &                        Sclr,               
      &                         WdetJ,    vort,     gVnrm, 
      &                         g1yti,    g2yti,    g3yti,
-     &                         rho,      rmu,      con,
-     &                         rk,       u1,       u2,
-     &                         u3,       shg,      dwl,
+c     &                         rho,
+     &                         rmu,      con,
+c     &                         rk,
+     &                         u1,       u2,       u3,
+     &                         shg,      dwl,
      &                         dist2w)
 c
 c----------------------------------------------------------------------
@@ -591,6 +594,8 @@ c Zdenek Johan, Winter 1991. (Fortran 90)
 c Kenneth Jansen, Winter 1997. Primitive Variables
 c----------------------------------------------------------------------
 c
+        use e3Sclr_param_m
+c
         include "common.h"
 c
 c  passed arrays
@@ -604,18 +609,22 @@ c
      &            g2yi(npro,nflow),           g3yi(npro,nflow),
      &            shg(npro,nshl,nsd),        dxidx(npro,nsd,nsd),
      &            WdetJ(npro),
-     &            rho(npro),                 pres(npro),
-     &            T(npro),                   ei(npro),
-     &            h(npro),                   alfap(npro),
-     &            betaT(npro),               cp(npro),                  
-     &            rk(npro),
+c     &            rho(npro),                 pres(npro),
+c     &            T(npro),
+c     &            ei(npro),
+c     &            h(npro),                   alfap(npro),
+c     &            betaT(npro),
+c     &            cp(npro),                  
+c     &            rk(npro),
      &            u1(npro),                  u2(npro),
      &            u3(npro),                  divqi(npro,nflow-1),
-     &            ql(npro,nshl,(nflow-1)*nsd),Sclr(npro),
+     &            ql(npro,nshl,(nflow-1)*nsd),
+c     &            Sclr(npro),
      &            dwl(npro,nenl),            
      &            dist2w(npro),              
      &            vort(npro),                gVnrm(npro),
      &            rmu(npro),                 con(npro),
+     &            rlm(npro),                 rlm2mu(npro),
      &            g1yti(npro),
      &            g2yti(npro),               g3yti(npro)
 c
@@ -684,16 +693,19 @@ c
 c.... get the thermodynamic and material properties
 c
         ithm = 7
-        call getthm (pres,            T,               Sclr, 
-     &               rk,              rho,             tmp,
-     &               tmp,             tmp,             tmp,
-     &               cp,              tmp,             tmp,
-     &               tmp,             tmp)
+C        call getthm (pres,            T,               Sclr, 
+C     &               rk,              rho,             tmp,
+C     &               tmp,             tmp,             tmp,
+C     &               cp,              tmp,             tmp,
+C     &               tmp,             tmp)
+c
+        call getthm7_ptr
 c
         if (iconvsclr.eq.2) rho=one
 c
-        call getDiffSclr(T,            cp,          rmu,
-     &                   tmp,          tmp,         con, rho, Sclr)
+c        call getDiffSclr(T,            cp,          rmu,
+c     &                   tmp,          tmp,         con, rho, Sclr)
+         call getDiffSclr(rmu, rlm, rlm2mu, con, npro, mater)
 
         ttim(27) = ttim(27) + tmr()
 
