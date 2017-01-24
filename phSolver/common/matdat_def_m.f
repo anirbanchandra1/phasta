@@ -10,7 +10,8 @@ c
      &,            mat_eos(MAXMAT,MAXTS)
         integer, parameter :: ieos_ideal_gas = 1
      &,                       ieos_ideal_gas_2 = 2
-     &,                       ieos_liquid_1  = 3
+     &,                       ieos_ideal_gas_mixture = 3
+     &,                       ieos_liquid_1  = 4
      &,                       ieos_solid_1   = 10
 c
         integer, parameter :: iprop_ideal_gas_mw     = 1  ! molecular weight

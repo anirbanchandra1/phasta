@@ -11,7 +11,7 @@ c
         integer :: ivisc, icond
 c
         select case (mat_eos(mater,1))
-        case (ieos_ideal_gas,ieos_ideal_gas_2)
+        case (ieos_ideal_gas,ieos_ideal_gas_2,ieos_ideal_gas_mixture)
           ivisc = iprop_gas_visc
           icond = iprop_gas_cond
         case (ieos_liquid_1)

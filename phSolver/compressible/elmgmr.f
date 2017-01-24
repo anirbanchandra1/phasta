@@ -307,6 +307,7 @@ c
         use eqn_state_m
         use e3_solid_m
         use probe_m
+        use ifbc_def_m
 c
         include "common.h"
         include "mpif.h"
@@ -430,7 +431,6 @@ c
         real*8, allocatable :: EGmass(:,:,:)
 c
         real*8, dimension(:,:,:), allocatable :: egmassif00,egmassif01,egmassif10,egmassif11
-        real*8, pointer :: if_normal(:,:)
         real*8 :: length
 c
         integer, pointer, dimension(:,:) :: ienif0,ienif1
@@ -552,6 +552,9 @@ c
           case (ieos_ideal_gas,ieos_ideal_gas_2)
             getthm6_ptr => getthm6_ideal_gas
             getthm7_ptr => getthm7_ideal_gas
+          case (ieos_ideal_gas_mixture)
+            getthm6_ptr => getthm6_ideal_gas_mixture
+            getthm7_ptr => getthm7_ideal_gas_mixture
           case (ieos_liquid_1)
             getthm6_ptr => getthm6_liquid_1
             getthm7_ptr => getthm7_liquid_1
@@ -643,6 +646,9 @@ c
           case (ieos_ideal_gas,ieos_ideal_gas_2)
             getthm6_ptr => getthm6_ideal_gas
             getthm7_ptr => getthm7_ideal_gas
+          case (ieos_ideal_gas_mixture)
+            getthm6_ptr => getthm6_ideal_gas_mixture
+            getthm7_ptr => getthm7_ideal_gas_mixture
           case (ieos_liquid_1)
             getthm6_ptr => getthm6_liquid_1
             getthm7_ptr => getthm7_liquid_1
@@ -686,7 +692,6 @@ c... loop over the interface element blocks
 c    The first loop is for interface outward normal vector calculations on the interface
 c    The second loop is for residual calculations...
 c
-        allocate(if_normal(nshg,nsd))
         if (surface_tension_flag .eq. 1)  then
           allocate(if_kappa(nshg,nsd+1))
           if_kappa = zero
@@ -797,7 +802,7 @@ c
           mater1 = -1
 c
           select case (mat_eos(materif0,1))
-          case (ieos_ideal_gas)
+          case (ieos_ideal_gas,ieos_ideal_gas_mixture)
             mater0 = materif0
             ienif0 => mienif0(iblk)%p
           case (ieos_liquid_1,ieos_ideal_gas_2)
@@ -808,7 +813,7 @@ c
           end select
 c
           select case (mat_eos(materif1,1))
-          case (ieos_ideal_gas)
+          case (ieos_ideal_gas,ieos_ideal_gas_mixture)
             mater0 = materif1
             ienif0 => mienif1(iblk)%p
           case (ieos_liquid_1,ieos_ideal_gas_2)
@@ -823,7 +828,15 @@ c
 c
 c... set equations of state
 c
-          getthmif0_ptr => getthm7_ideal_gas
+          select case (mat_eos(mater0,1))
+          case (ieos_ideal_gas)
+            getthmif0_ptr => getthm7_ideal_gas
+          case (ieos_ideal_gas_mixture)
+            getthmif0_ptr => getthm7_ideal_gas_mixture
+          case default
+            call error ('getthm  ', 'WE DO NOT SUPPORT THIS MATERIAL (3)', mater1)
+          end select
+c
           select case (mat_eos(mater1,1))
           case (ieos_ideal_gas_2)
             getthmif1_ptr => getthm7_ideal_gas
@@ -904,8 +917,6 @@ c
 c
         enddo if_blocks
 c
-        deallocate (if_normal)
-        nullify(if_normal)
         if (associated(if_kappa)) then
           deallocate (if_kappa)
           nullify(if_kappa)
@@ -1206,6 +1217,8 @@ c
           select case (mat_eos(mater,1))
           case (ieos_ideal_gas,ieos_ideal_gas_2)
             getthm7_ptr => getthm7_ideal_gas
+          case (ieos_ideal_gas_mixture)
+            getthm7_ptr => getthm7_ideal_gas_mixture
           case (ieos_liquid_1)
             getthm7_ptr => getthm7_liquid_1
           case default
@@ -1280,6 +1293,8 @@ c
           select case (mat_eos(mater ,1))
           case (ieos_ideal_gas,ieos_ideal_gas_2)
             getthm7_ptr => getthm7_ideal_gas
+          case (ieos_ideal_gas_mixture)
+            getthm7_ptr => getthm7_ideal_gas_mixture
           case (ieos_liquid_1)
             getthm7_ptr => getthm7_liquid_1
           case default

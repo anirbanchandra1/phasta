@@ -19,8 +19,9 @@ c
         integer :: nqpt
         integer :: mater0, mater1, mater
         real*8, dimension(:), pointer :: rho, pres, T, cp, rk
-        real*8, dimension(:), pointer :: ei, p, h, cv,
-     &                             alphaP, betaT, gamb, c
+        real*8, dimension(:), pointer :: ei, p, h, cv
+     &,                                  alphaP, betaT, gamb, c
+     &,                                  vap_frac
         procedure(getthm2), pointer :: getthm6_ptr, getthm7_ptr
         procedure(e3_malloc), pointer :: e3_malloc_ptr
         procedure(e3_mfree), pointer :: e3_mfree_ptr
@@ -39,17 +40,12 @@ c
           allocate(betat(npro))
           allocate(gamb(npro))
           allocate(c(npro))
+          allocate(vap_frac(npro))
         end subroutine e3_malloc
         subroutine e3_mfree
           deallocate(rho,pres,T,cp,rk)
-          allocate(ei(npro))
-          allocate(p(npro))
-          allocate(h(npro))
-          allocate(cv(npro))
-          allocate(alphap(npro))
-          allocate(betat(npro))
-          allocate(gamb(npro))
-          allocate(c(npro))
+          deallocate(ei,p,h,cv,alphap,betat,gamb,c)
+          deallocate(vap_frac)
         end subroutine e3_mfree
       end module e3_param_m
 c

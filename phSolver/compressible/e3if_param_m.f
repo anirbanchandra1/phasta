@@ -52,6 +52,7 @@ c
      &,                                  T0,    T1       ! temperature
      &,                                  ei0,   ei1      ! internal energy
      &,                                  c0,    c1       ! speed of sound
+     &,                                  vap_frac1       ! mass fraction of vaporized liquid
      &,                                  alpha_LF
         real*8, dimension(:,:), pointer :: u0, u1, um0, um1
 c
@@ -131,6 +132,7 @@ c
           allocate(rk0(npro),h0(npro),cp0(npro),alfaP0(npro),betaT0(npro))
           allocate(rk1(npro),h1(npro),cp1(npro),alfaP1(nprO),betaT1(npro))
           allocate(c0(npro), c1(npro))
+          allocate(vap_frac1(npro))
           allocate(alpha_LF(npro))
 c
           allocate(qpt0(npro),qpt1(npro))
@@ -188,6 +190,7 @@ c
           deallocate(rk0,h0,cp0,alfaP0,betaT0)
           deallocate(rk1,h1,cp1,alfaP1,betaT1)
           deallocate(c0,c1)
+          deallocate(vap_frac1)
           deallocate(alpha_LF)
 c
           do i = 1,npro

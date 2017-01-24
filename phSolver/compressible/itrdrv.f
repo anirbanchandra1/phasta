@@ -38,9 +38,9 @@ c
       use turbSA
       use wallData
       use fncorpmod
-      use if_velocity_m
       use solid_m
       use probe_m
+      use ifbc_m
 c
         include "common.h"
         include "mpif.h"
@@ -214,6 +214,7 @@ c.... we may not need this anymore, since we have them in readnblk.
 c          umesh = zero
         endif
         call init_sum_vi_area(nshg,nsd)
+        call ifbc_malloc
 c
 c..........................................
         rerr = zero
@@ -694,6 +695,10 @@ c
                            call solvecon (y,    x,      iBC,  BC, 
      &                                    iper, ilwork, shp,  shgl)
 c
+c ... update BC array for scalar and mesh elas boundary conditions on the interfaces ...
+c 
+                           call ifbc_set
+c
                         endif   ! end of volume constraint calculations
                      endif
                      call itrBCSclr (  y,  ac,  iBC,  BC, iper, ilwork)
@@ -973,6 +978,7 @@ c         tcorewc2 = secs(0.0)
  3000 continue !end of NTSEQ loop
 c
         call destruct_sum_vi_area
+        call ifbc_mfree
 c     
 c.... ---------------------->  Post Processing  <----------------------
 c     

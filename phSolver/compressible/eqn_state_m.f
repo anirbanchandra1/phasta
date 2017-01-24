@@ -4,6 +4,7 @@ c
         use number_def_m
         use matdat_def_m
         use mmatpar_m
+        use dgifinp_m
 c
         implicit none
 c
@@ -38,6 +39,35 @@ c
         if (associated(c)) c =  sqrt( gamma * Rgas * T )
 c
       end subroutine getthm7_ideal_gas
+c
+      subroutine getthm6_ideal_gas_mixture
+c
+        real*8, dimension(npro) :: mw,rgas
+c
+        mw  = vap_frac*MW_liquid + (one-vap_frac)*mat_prop(mater0,iprop_ideal_gas_mw, 1)
+c
+        gamma = mat_prop(mater,iprop_ideal_gas_gamma,1)
+        Rgas  = Ru/mw*1.0d3
+        gamma1 = gamma - one
+c
+        rho = pres / (Rgas*T)
+        ei  = T * Rgas / gamma1
+c
+      end subroutine getthm6_ideal_gas_mixture
+c
+      subroutine getthm7_ideal_gas_mixture
+c
+        call getthm6_ideal_gas
+c
+        h   = T * Rgas / gamma1 * gamma
+        cp  = Rgas*gamma / gamma1
+        alphaP = one / T
+        betaT  = one / pres
+        if (associated(cv)) cv  = Rgas / gamma1
+        if (associated(gamb)) gamb = gamma1
+        if (associated(c)) c =  sqrt( gamma * Rgas * T )
+c
+      end subroutine getthm7_ideal_gas_mixture
 c
       function rho_ideal_gas(p,R,T) result(rho)
         implicit none
@@ -131,6 +161,7 @@ c
         betaT => betaT0
         c     => c0
         mater = mater0
+        vap_frac => vap_frac1
 c
         call getthmif0_ptr
 c

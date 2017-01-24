@@ -28,6 +28,7 @@ void populate_eos_map
 (map<string,int>& eos_map)
 {
   eos_map.insert(map<string,int>::value_type("ideal_gas", ieos_ideal_gas));
+  eos_map.insert(map<string,int>::value_type("ideal_gas_mixture", ieos_ideal_gas_mixture));
   eos_map.insert(map<string,int>::value_type("ideal_gas_2", ieos_ideal_gas_2));
   eos_map.insert(map<string,int>::value_type("liquid_1",  ieos_liquid_1));
   eos_map.insert(map<string,int>::value_type("solid_1",  ieos_solid_1));
