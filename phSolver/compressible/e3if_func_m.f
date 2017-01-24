@@ -6,6 +6,79 @@ c
 c
       contains
 c
+        subroutine get_var(npro,nshl,p,u,T,y,shp,var)
+c
+          integer, intent(in) :: npro,nshl
+          real*8, dimension(npro), intent(out) :: p,T
+          real*8, dimension(npro,nsd), intent(out) :: u
+          real*8, dimension(npro,nshl,nflow), intent(in) :: y
+          real*8, dimension(npro,nshl), intent(in) :: shp
+          type(var_t), dimension(:), pointer, intent(inout) :: var
+c
+          integer :: iel
+c
+          do iel = 1,npro
+            p(iel)   = sum_qpt(nshl,y(iel,:,1),shp(iel,:))
+            u(iel,1) = sum_qpt(nshl,y(iel,:,2),shp(iel,:))
+            u(iel,2) = sum_qpt(nshl,y(iel,:,3),shp(iel,:))
+            u(iel,3) = sum_qpt(nshl,y(iel,:,4),shp(iel,:))
+            T(iel)   = sum_qpt(nshl,y(iel,:,5),shp(iel,:))
+          enddo
+c
+          var%p    = p
+          var%u(1) = u(:,1)
+          var%u(2) = u(:,2)
+          var%u(3) = u(:,3)
+          var%T    = T
+c
+        end subroutine get_var
+c
+        subroutine get_vapor_fraction0
+c
+          integer :: n
+c
+          vap_frac0 = zero
+c
+          do n = 1,nshl0
+            vap_frac0 = vap_frac0 + shp0(:,n)*ycl0(:,n,ndof)
+          enddo
+c
+        end subroutine get_vapor_fraction0
+c
+        subroutine get_mesh_velocity(um,umeshl,shp,npro,nshl)
+c
+          integer, intent(in) :: npro, nshl
+          real*8, dimension(npro,nsd), intent(out) :: um
+          real*8, dimension(npro,nshl,nsd), intent(in)  :: umeshl
+          real*8, dimension(npro,nshl), intent(in) :: shp
+c
+          integer :: n, isd
+c
+           um = zero
+c
+           do isd = 1,nsd
+             do n = 1, nshl
+                um(:,isd) = um(:,isd) + shp(:,n)*umeshl(:,n,isd)
+             enddo
+           enddo
+c
+        end subroutine get_mesh_velocity
+c       
+        real*8 function sum_qpt(nshl,y,shp)
+c
+c...      y(int)=SUM_{a=1}^nshl (N_a(int) Ya)
+c
+          integer :: n,nshl
+          real*8  :: y(nshl),shp(nshl)
+c
+          sum_qpt = zero
+c
+          do n = 1,nshl
+            sum_qpt = sum_qpt + shp(n)*y(n)
+          enddo
+c
+        end function sum_qpt
+c
       subroutine e3if_mtrx
 c
         real*8, dimension(:), pointer :: rmu0, rlm0, rlm2mu0, con0

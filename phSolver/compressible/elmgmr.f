@@ -299,6 +299,7 @@ c
         use e3_param_m
         use e3if_param_m
         use e3if_geom_m
+        use e3if_func_m
         use solid_data_m
         use e3_solid_func_m
         use timedataC
@@ -337,7 +338,6 @@ c
           end subroutine e3if_setparam2
           subroutine asidgif_geom
      &    (
-     &     if_normal,
      &     x,shpif0,shpif1,shgif0,shgif1,
      &     qwtif0, qwtif1,
      &     ienif0, ienif1
@@ -347,7 +347,6 @@ c
             use e3if_geom_m
             use if_global_m
             implicit none
-            real*8, dimension(:,:), pointer, intent(inout) :: if_normal
             real*8, intent(in) :: x(nshg,nsd)
             real*8, dimension(nshl0,nqpt),intent(in)   :: shpif0
             real*8, dimension(nshl1,nqpt),intent(in)   :: shpif1
@@ -362,8 +361,7 @@ c
      &     y,        x,       umesh,
      &     shpif0,   shpif1,  shgif0,  shgif1,
      &     qwtif0,   qwtif1,
-     &     ienif0,   ienif1,
-     &     sum_vi_area, if_normal
+     &     ienif0,   ienif1
      &    )
             use hierarchic_m
             use local_m
@@ -381,8 +379,6 @@ c
             real*8, dimension(nqpt), intent(in) :: qwtif0, qwtif1
             real*8, dimension(nshg, nsd), intent(inout) :: umesh
             integer, dimension(:,:), pointer, intent(in)   :: ienif0, ienif1
-            real*8, pointer, intent(inout) :: sum_vi_area(:,:)
-            real*8, pointer, intent(in) :: if_normal(:,:)
           end subroutine asidgif
           subroutine fillsparse_if
      &    ( lhsk,
@@ -730,7 +726,6 @@ c
 c
           call asidgif_geom
      &   (
-     &    if_normal,
      &    x,
      &    shpif0(lcsyst0,1:nshl0,:), 
      &    shpif1(lcsyst1,1:nshl1,:), 
@@ -773,6 +768,7 @@ c
 c        call calc_kappa_error(x,lcblkif(1,:),nelblif,nsd,nshg)
 c
         sum_vi_area = zero
+        ifbc = zero
 c
         if_blocks: do iblk = 1, nelblif
 c
@@ -831,8 +827,10 @@ c
           select case (mat_eos(mater0,1))
           case (ieos_ideal_gas)
             getthmif0_ptr => getthm7_ideal_gas
+            get_vap_frac0 => e3if_empty
           case (ieos_ideal_gas_mixture)
             getthmif0_ptr => getthm7_ideal_gas_mixture
+            get_vap_frac0 => get_vapor_fraction0
           case default
             call error ('getthm  ', 'WE DO NOT SUPPORT THIS MATERIAL (3)', mater1)
           end select
@@ -892,8 +890,7 @@ c      enddo
      &      shgif0(lcsyst0,1:nsd,1:nshl0,:),
      &      shgif1(lcsyst1,1:nsd,1:nshl1,:),
      &      qwtif0(lcsyst0,:), qwtif1(lcsyst1,:),
-     &      ienif0, ienif1,
-     &      sum_vi_area, if_normal
+     &      ienif0, ienif1
      &    )
 c
           if (lhs .eq. 1) then

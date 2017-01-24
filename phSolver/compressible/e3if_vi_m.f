@@ -52,9 +52,8 @@ c
 c
         case (clausius_clapeyron)
 c
-          x_vapor = exp( - hfg_liquid / Ru * (one/T0 - one/T_boil_liquid) )
-          !x_vapor = min(1.d-1,exp( - hfg_liquid / Ru * (one/T0 - one/T_boil_liquid) ))
-          mw_mix  = x_vapor*MW_liquid + (one-x_vapor)*mat_prop(mater0,iprop_ideal_gas_mw, 1)
+          vap_frac0 = exp( - hfg_liquid / Ru * (one/T0 - one/T_boil_liquid) )
+          mw_mix  = vap_frac0*MW_liquid + (one-vap_frac0)*mat_prop(mater0,iprop_ideal_gas_mw, 1)
           rho_mix = pres0 / (Ru/mw_mix*1.d3*T0)
 c
           vap_rate = ( rho1   *(u1(:,1)*nv1(:,1)+u1(:,2)*nv1(:,2)+u1(:,3)*nv1(:,3))
@@ -66,7 +65,7 @@ c
           vi(:,3) = vap_rate * nv1(:,3)
 c
 c      print*,'npro:',npro
-c      print*, 'x_vapor: ',x_vapor
+c      print*, 'vap_frac0:',vap_frac0
 c      print*, 'mw_mix:  ',mw_mix
 c      print*, 'rho1:    ',rho1
 c      print*, 'rho_mix: ',rho_mix
@@ -75,7 +74,7 @@ c      print*, 'u0(:,1): ',u0(:,1)
 c      print*, 'u1(:,1): ',u1(:,1)
 c      print*, 'um0(:,1):',um0(:,1)
 c      print*, 'um1(:,1):',um1(:,1)
-      print*, 'vi(1):   ',vi(:,1)
+c      print*, 'vi(1):   ',vi(:,1)
 c      print*, 'vi(2):   ',vi(:,2)
 c      print*, 'vi(3):   ',vi(:,3)
 C
@@ -134,5 +133,12 @@ c          sum_vi_area_l(:,n,nsd+1) = sum_vi_area_l(:,n,nsd+1) + shp(:,n)*WdetJi
         enddo
 c
       end subroutine calc_vi_area_node
+c
+      subroutine calc_vapor_frac_node
+        integer :: n
+        do n = 1,nshl0
+          ifbc_l0(:,n,ivapor_frac) = ifbc_l0(:,n,ivapor_frac) + shp0(:,n)*area(:)*vap_frac0
+        enddo
+      end subroutine calc_vapor_frac_node
 c
       end module e3if_vi_m

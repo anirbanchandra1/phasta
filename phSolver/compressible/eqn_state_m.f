@@ -161,7 +161,7 @@ c
         betaT => betaT0
         c     => c0
         mater = mater0
-        vap_frac => vap_frac1
+        vap_frac => vap_frac0
 c
         call getthmif0_ptr
 c

@@ -38,6 +38,8 @@ c
           sum_vi_area_l0 = zero
           sum_vi_area_l1 = zero
 c
+          ifbc_l0 = zero
+c
           do intp = 1, nqpt
 c      print*, intp,shpif0(:,intp)
 c      print*, intp,shpif1(:,intp)
@@ -89,20 +91,7 @@ c ... Interface flux
 c
             call e3if_flux
 c
-c ... Interface velocity calculations...
-c
-c            if     (mat_eos(mater0,1) == ieos_ideal_gas) then
-              call calc_vi(pres0,nv0,u1)
-c            elseif (mat_eos(mater1,1) == ieos_ideal_gas) then
-c              call calc_vi(pres1,nv1,u0)
-c            else
-c              call error ('wrong mater: ', 'calc vi', 0)
-c            endif
-c
 c            call flux_jump
-c
-            call calc_vi_area_node(sum_vi_area_l0,shp0,WdetJif0,nshl0)
-            call calc_vi_area_node(sum_vi_area_l1,shp1,WdetJif1,nshl1)
 c
             call calc_cmtrx
             call calc_y_jump
@@ -141,6 +130,21 @@ c
 c
             call e3if_wmlt(rl0, ri0, shp0, shg0, WdetJif0, nshl0)
             call e3if_wmlt(rl1, ri1, shp1, shg1, WdetJif1, nshl1)
+c
+c ... Interface velocity calculations...
+c
+c            if     (mat_eos(mater0,1) == ieos_ideal_gas) then
+              call calc_vi(pres0,nv0,u1)
+c            elseif (mat_eos(mater1,1) == ieos_ideal_gas) then
+c              call calc_vi(pres1,nv1,u0)
+c            else
+c              call error ('wrong mater: ', 'calc vi', 0)
+c            endif
+c
+            call calc_vi_area_node(sum_vi_area_l0,shp0,WdetJif0,nshl0)
+            call calc_vi_area_node(sum_vi_area_l1,shp1,WdetJif1,nshl1)
+c
+            call calc_vapor_frac_node
 c
           enddo  ! end of integeration points loop 
 c
@@ -193,77 +197,14 @@ c
           call get_var(npro,nshl0,pres0,u0,T0,ycl0,shp0,var0)
           call get_var(npro,nshl1,pres1,u1,T1,ycl1,shp1,var1)
 c
+          call get_vap_frac0
+c
           call get_mesh_velocity(um0,umeshl0,shp0,npro,nshl0)
           call get_mesh_velocity(um1,umeshl1,shp1,npro,nshl1)
 c
-c          call getthm(rho0, ei0, pres0, T0, npro, mater0
-c     &,               h0, tmp, cp0, alfaP0, betaT0, tmp, tmp)
-c          call getthm(rho1, ei1, pres1, T1, npro, mater1
-c     &,               h1, tmp, cp1, alfaP1, betaT1, tmp, tmp)
            call getthmif
 c
         end subroutine e3if_var
-c
-        subroutine get_var(npro,nshl,p,u,T,y,shp,var)
-c
-          integer, intent(in) :: npro,nshl
-          real*8, dimension(npro), intent(out) :: p,T
-          real*8, dimension(npro,nsd), intent(out) :: u
-          real*8, dimension(npro,nshl,nflow), intent(in) :: y
-          real*8, dimension(npro,nshl), intent(in) :: shp
-          type(var_t), dimension(:), pointer, intent(inout) :: var
-c
-          integer :: iel
-c
-          do iel = 1,npro
-            p(iel)   = sum_qpt(nshl,y(iel,:,1),shp(iel,:))
-            u(iel,1) = sum_qpt(nshl,y(iel,:,2),shp(iel,:))
-            u(iel,2) = sum_qpt(nshl,y(iel,:,3),shp(iel,:))
-            u(iel,3) = sum_qpt(nshl,y(iel,:,4),shp(iel,:))
-            T(iel)   = sum_qpt(nshl,y(iel,:,5),shp(iel,:))
-          enddo
-c
-          var%p    = p
-          var%u(1) = u(:,1)
-          var%u(2) = u(:,2)
-          var%u(3) = u(:,3)
-          var%T    = T
-c
-        end subroutine get_var
-c
-        subroutine get_mesh_velocity(um,umeshl,shp,npro,nshl)
-c
-          integer, intent(in) :: npro, nshl
-          real*8, dimension(npro,nsd), intent(out) :: um
-          real*8, dimension(npro,nshl,nsd), intent(in)  :: umeshl
-          real*8, dimension(npro,nshl), intent(in) :: shp
-c
-          integer :: n, isd
-c
-           um = zero
-c
-           do isd = 1,nsd
-             do n = 1, nshl
-                um(:,isd) = um(:,isd) + shp(:,n)*umeshl(:,n,isd)
-             enddo
-           enddo
-c
-        end subroutine get_mesh_velocity
-c       
-        real*8 function sum_qpt(nshl,y,shp)
-c
-c...      y(int)=SUM_{a=1}^nshl (N_a(int) Ya)
-c
-          integer :: n,nshl
-          real*8  :: y(nshl),shp(nshl)
-c
-          sum_qpt = zero
-c
-          do n = 1,nshl
-            sum_qpt = sum_qpt + shp(n)*y(n)
-          enddo
-c
-        end function sum_qpt
 c
         subroutine e3if_flux
 c

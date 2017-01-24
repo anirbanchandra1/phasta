@@ -671,6 +671,9 @@ c Elaine-SPEBC
                         call genscale(y, x, iBC)
 c                       call itrBC (y,  ac,  iBC,  BC, iper, ilwork)
                      endif
+c
+                     call ifbc_set(bc,ilwork,nlwork)
+c
                   else if(iupdate.lt.10) then         ! update scalar
                      isclr=iupdate !unless
                      if(iupdate.eq.nsclr+1) isclr=0
@@ -694,12 +697,10 @@ c ... applying the volume constraint
 c
                            call solvecon (y,    x,      iBC,  BC, 
      &                                    iper, ilwork, shp,  shgl)
+                        endif   ! end of volume constraint calculations
 c
 c ... update BC array for scalar and mesh elas boundary conditions on the interfaces ...
 c 
-                           call ifbc_set
-c
-                        endif   ! end of volume constraint calculations
                      endif
                      call itrBCSclr (  y,  ac,  iBC,  BC, iper, ilwork)
                   else if(iupdate.eq.10) then        ! update mesh-elastic

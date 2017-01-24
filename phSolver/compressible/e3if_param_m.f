@@ -8,13 +8,18 @@ c
         use conpar_m
         use genpar_m
         use propar_m
+        use ifbc_def_m
 c
         implicit none
 c
         abstract interface
           subroutine calc_vi2
           end subroutine calc_vi2
+          subroutine e3ifvar
+          end subroutine e3ifvar
         end interface
+c
+        procedure(e3ifvar), pointer :: get_vap_frac0
 c
         integer, dimension(:,:),   pointer :: sgn0, sgn1
 c
@@ -28,6 +33,7 @@ c
         real*8,  dimension(:),     pointer :: kappa0, kappa1
         real*8,  dimension(:,:,:), pointer :: sum_vi_area_l0, sum_vi_area_l1
         real*8,  dimension(:,:,:), pointer :: if_normal_l0, if_normal_l1,if_kappa_l0,if_kappa_l1
+        real*8,  dimension(:,:,:), pointer :: ifbc_l0,ifbc_l1
         real*8,  dimension(:,:,:), pointer :: cmtrx,ctc     ! kinematic continuity matrix C
         real*8,  dimension(:,:),   pointer :: shp0, shp1    ! element shape function at quadrature point
         real*8,  dimension(:,:,:), pointer :: shgl0, shgl1  ! element shape function gradient at a quadrature point
@@ -52,7 +58,7 @@ c
      &,                                  T0,    T1       ! temperature
      &,                                  ei0,   ei1      ! internal energy
      &,                                  c0,    c1       ! speed of sound
-     &,                                  vap_frac1       ! mass fraction of vaporized liquid
+     &,                                  vap_frac0       ! mass fraction of vaporized liquid
      &,                                  alpha_LF
         real*8, dimension(:,:), pointer :: u0, u1, um0, um1
 c
@@ -111,6 +117,8 @@ c
           allocate(vi(npro,nsd))
           allocate(sum_vi_area_l0(npro,nshl0,nsd+1))
           allocate(sum_vi_area_l1(npro,nshl1,nsd+1))
+          allocate(ifbc_l0(npro,nshl0,nifbc))
+          allocate(ifbc_l1(npro,nshl1,nifbc))
           allocate(cmtrx(npro,nflow,nflow))
           allocate(ctc(npro,nflow,nflow))
           allocate(acl0(npro,nshl0,ndof))
@@ -132,7 +140,7 @@ c
           allocate(rk0(npro),h0(npro),cp0(npro),alfaP0(npro),betaT0(npro))
           allocate(rk1(npro),h1(npro),cp1(npro),alfaP1(nprO),betaT1(npro))
           allocate(c0(npro), c1(npro))
-          allocate(vap_frac1(npro))
+          allocate(vap_frac0(npro))
           allocate(alpha_LF(npro))
 c
           allocate(qpt0(npro),qpt1(npro))
@@ -176,6 +184,7 @@ c
           deallocate(umeshl0,umeshl1)
           deallocate(vi)
           deallocate(sum_vi_area_l0,sum_vi_area_l1)
+          deallocate(ifbc_l0,ifbc_l1)
           deallocate(cmtrx)
           deallocate(ctc)
           deallocate(acl0,acl1)
@@ -190,7 +199,7 @@ c
           deallocate(rk0,h0,cp0,alfaP0,betaT0)
           deallocate(rk1,h1,cp1,alfaP1,betaT1)
           deallocate(c0,c1)
-          deallocate(vap_frac1)
+          deallocate(vap_frac0)
           deallocate(alpha_LF)
 c
           do i = 1,npro
@@ -220,5 +229,9 @@ c
           deallocate(kappa0,kappa1)
 c
         end subroutine e3if_mfree
+c
+        subroutine e3if_empty
+          return
+        end subroutine e3if_empty
 c
       end module e3if_param_m

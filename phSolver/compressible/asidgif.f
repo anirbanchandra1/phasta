@@ -4,8 +4,7 @@
      &   y,        x,       umesh,
      &   shpif0,   shpif1,  shgif0,  shgif1,
      &   qwtif0,   qwtif1,
-     &   ienif0,   ienif1,
-     &   sum_vi_area, if_normals
+     &   ienif0,   ienif1
      & )  
           use hierarchic_m
           use local_m
@@ -26,8 +25,6 @@ c
           real*8, dimension(nsd,nshl1,nqpt), intent(in)  :: shgif1
           real*8, dimension(nqpt), intent(in) :: qwtif0, qwtif1
           integer, dimension(:,:), pointer, intent(in)   :: ienif0, ienif1
-          real*8, pointer, intent(inout) :: sum_vi_area(:,:)
-          real*8, pointer, intent(in) :: if_normals(:,:)
       integer :: i0,i1,iel,n,i
 c
 c.... create the matrix of mode signs for the hierarchic basis 
@@ -49,8 +46,8 @@ c
         call localx(umesh, umeshl0,  ienif0, nsd, 'gather  ', nshg, nenl0, npro)
         call localx(umesh, umeshl1,  ienif1, nsd, 'gather  ', nshg, nenl1, npro)
 c
-        call localx(if_normals, if_normal_l0,  ienif0, nsd, 'gather  ', nshg, nenl0, npro)
-        call localx(if_normals, if_normal_l1,  ienif1, nsd, 'gather  ', nshg, nenl1, npro)
+        call localx(if_normal, if_normal_l0,  ienif0, nsd, 'gather  ', nshg, nenl0, npro)
+        call localx(if_normal, if_normal_l1,  ienif1, nsd, 'gather  ', nshg, nenl1, npro)
 c
         if (associated(if_kappa)) then
           call localx(if_kappa, if_kappa_l0,  ienif0, nsd, 'gather  ', nshg, nenl0, npro)
@@ -107,5 +104,7 @@ c      enddo
 c
         call local (sum_vi_area, sum_vi_area_l0, ienif0, nsd+1, 'scatter ', nshg, nshl0,npro,ipord)
         call local (sum_vi_area, sum_vi_area_l1, ienif1, nsd+1, 'scatter ', nshg, nshl1,npro,ipord)
+c
+        call local (ifbc, ifbc_l0, ienif0, nifbc, 'scatter ', nshg, nshl0, npro, ipord)
 c
       end subroutine asidgif
