@@ -280,7 +280,7 @@ c_______________________________________________________________
         subroutine ElmGMRs (y,         ac,        x,         
      &                     shp,       shgl,      iBC,
      &                     BC,        shpb,      shglb,
-     &                     shpif0,    shpif1,    shgif0,   shgif1,
+     &                     shpif, shpif0, shpif1, shgif, shgif0, shgif1,
      &                     res,       rmes,      BDiag,
      &                     iper,      ilwork,    lhsK,  
      &                     col,       row,       rerr,     umesh)
@@ -312,7 +312,11 @@ c
 c
         include "common.h"
         include "mpif.h"
-c#define DEBUG
+#define debug 0
+c
+#if debug==1 
+      integer imax(5),idbg
+#endif
 c
         interface 
           subroutine e3if_setparam
@@ -339,7 +343,7 @@ c
           subroutine asidgif_geom
      &    (
      &     x,shpif0,shpif1,shgif0,shgif1,
-     &     qwtif0, qwtif1,
+     &     qwtif, qwtif0, qwtif1,
      &     ienif0, ienif1
      & )
             use hierarchic_m
@@ -352,7 +356,7 @@ c
             real*8, dimension(nshl1,nqpt),intent(in)   :: shpif1
             real*8, dimension(nsd,nshl0,nqpt), intent(in) :: shgif0
             real*8, dimension(nsd,nshl1,nqpt), intent(in) :: shgif1
-            real*8, intent(in) :: qwtif0(nqpt), qwtif1(nqpt)
+            real*8, intent(in) :: qwtif(nqpt), qwtif0(nqpt), qwtif1(nqpt)
             integer, dimension(:,:), pointer, intent(in)   :: ienif0, ienif1
           end subroutine asidgif_geom
           subroutine asidgif
@@ -360,7 +364,7 @@ c
      &     res,
      &     y,        x,       umesh,
      &     shpif0,   shpif1,  shgif0,  shgif1,
-     &     qwtif0,   qwtif1,
+     &     qwtif, qwtif0,   qwtif1,
      &     ienif0,   ienif1
      &    )
             use hierarchic_m
@@ -376,7 +380,7 @@ c
             real*8, dimension(nshl1,nqpt),intent(in)   :: shpif1
             real*8, dimension(nsd,nshl0,nqpt), intent(in)  :: shgif0
             real*8, dimension(nsd,nshl1,nqpt), intent(in)  :: shgif1
-            real*8, dimension(nqpt), intent(in) :: qwtif0, qwtif1
+            real*8, dimension(nqpt), intent(in) :: qwtif, qwtif0, qwtif1
             real*8, dimension(nshg, nsd), intent(inout) :: umesh
             integer, dimension(:,:), pointer, intent(in)   :: ienif0, ienif1
           end subroutine asidgif
@@ -385,14 +389,15 @@ c
      &      ienif0,ienif1,
      &      col,row,
      &      egmass,
-     &      npro, nedof,
+     &      npro,
+     &      nedof0, nedof1,
      &      nflow,nshg,nnz,nnz_tot)
             implicit none
             real*8, intent(inout) :: lhsK(nflow*nflow,nnz_tot)
             integer, dimension(:,:), pointer, intent(in) :: ienif0,ienif1
             integer, intent(in) :: col(nshg+1), row(nnz*nshg)
-            real*8, intent(in) :: egmass(npro,nedof,nedof)
-            integer, intent(in) :: nflow,nshg,nnz,nnz_tot,npro,nedof
+            real*8, intent(in) :: egmass(npro,nedof0,nedof1)
+            integer, intent(in) :: nflow,nshg,nnz,nnz_tot,npro,nedof0,nedof1
           end subroutine fillsparse_if
         end interface
 c
@@ -411,8 +416,8 @@ c
      &            shgl(MAXTOP,nsd,maxsh,MAXQPT), 
      &            shpb(MAXTOP,maxsh,MAXQPT),
      &            shglb(MAXTOP,nsd,maxsh,MAXQPT) 
-        real*8, dimension(maxtopif,    maxsh,maxqpt) :: shpif0, shpif1
-        real*8, dimension(maxtopif,nsd,maxsh,maxqpt) :: shgif0, shgif1
+        real*8, dimension(maxtop,    maxsh,maxqpt) :: shpif, shpif0, shpif1
+        real*8, dimension(maxtop,nsd,maxsh,maxqpt) :: shgif, shgif0, shgif1
 c
         dimension qres(nshg, idflx),     rmass(nshg)
 c
@@ -429,6 +434,7 @@ c
         real*8, dimension(:,:,:), allocatable :: egmassif00,egmassif01,egmassif10,egmassif11
         real*8 :: length
 c
+        integer :: nedof0,nedof1
         integer, pointer, dimension(:,:) :: ienif0,ienif1
 c
         ttim(80) = ttim(80) - secs(0.0)
@@ -598,6 +604,7 @@ c.... end of interior element loop
 c
        enddo
 c
+c
 c.... -------------------->   boundary elements   <--------------------
 c
 c.... loop over the boundary elements
@@ -680,6 +687,12 @@ c
 c
         enddo   !end of boundary element loop
 c
+#if debug==1
+      imax = maxloc(res,1)
+      idbg = imax(1)
+      write(*,'(a22,i6,5e24.16)') 'ELMGMR: after boundary',idbg,res(idbg,:)
+#endif
+c
       ttim(80) = ttim(80) + secs(0.0)
 c
 c.... -------------------->   interface elements   <--------------------
@@ -708,9 +721,10 @@ c
           nenl1   = lcblkif(7, iblk)    ! number of vertices per element1
           mater0  = lcblkif(9, iblk)
           mater1  = lcblkif(10,iblk)
-          nshl0   = lcblkif(13,iblk)
-          nshl1   = lcblkif(14,iblk)
-          ngaussif = nintif0(lcsyst0)   ! or nintif1(lcsyst1)? should be the same!
+          nshl0   = lcblkif(iblkif_nshl0,iblk)
+          nshl1   = lcblkif(iblkif_nshl1,iblk)
+          itpid   = lcblkif(iblkif_topology,iblk)
+          ngaussif = nintif(itpid)
 c
           call e3if_setparam
      &    (
@@ -727,11 +741,11 @@ c
           call asidgif_geom
      &   (
      &    x,
-     &    shpif0(lcsyst0,1:nshl0,:), 
-     &    shpif1(lcsyst1,1:nshl1,:), 
-     &    shgif0(lcsyst0,1:nsd,1:nshl0,:),
-     &    shgif1(lcsyst1,1:nsd,1:nshl1,:),
-     &    qwtif0(lcsyst0,:), qwtif1(lcsyst1,:),
+     &    shpif(lcsyst0,1:nshl0,:), 
+     &    shpif(lcsyst1,1:nshl1,:), 
+     &    shgif(lcsyst0,1:nsd,1:nshl0,:),
+     &    shgif(lcsyst1,1:nsd,1:nshl1,:),
+     &    qwtif(itpid,:), qwtif(lcsyst0,:), qwtif(lcsyst1,:),
      &    ienif0, ienif1
      & )
 c
@@ -782,62 +796,72 @@ c
           lcsyst0 = lcblkif(3, iblk)    ! element0 type
           lcsyst1 = lcblkif(4, iblk)    ! element1 type
           iorder  = lcblkif(5, iblk)    ! polynomial order
-          nshl0   = lcblkif(13,iblk)
-          nshl1   = lcblkif(14,iblk)
+          nshl0   = lcblkif(iblkif_nshl0,iblk)
+          nshl1   = lcblkif(iblkif_nshl1,iblk)
+          itpid   = lcblkif(iblkif_topology,iblk)
           materif0  = lcblkif(9, iblk)
           materif1  = lcblkif(10,iblk)
           ndof    = lcblkif(11,iblk)
           nsymdl  = lcblkif(12,iblk)    ! ???
           npro    = lcblkif(1,iblk+1) - iel
           inum    = iel + npro - 1
-          ngaussif = nintif0(lcsyst0)   ! or nintif1(lcsyst1)? should be the same!
+          ngaussif = nintif(itpid)
 c
 c... setup material blocks such that 0 is vapor and 1 is liquid/solid
 c
           mater0 = -1
           mater1 = -1
 c
-          select case (mat_eos(materif0,1))
-          case (ieos_ideal_gas,ieos_ideal_gas_mixture)
+CC          select case (mat_eos(materif0,1))
+CC          case (ieos_ideal_gas,ieos_ideal_gas_mixture)
             mater0 = materif0
             ienif0 => mienif0(iblk)%p
-          case (ieos_liquid_1,ieos_ideal_gas_2)
-            mater1 = materif0
-            ienif1 => mienif0(iblk)%p
-          case default
-            call error ('getthm  ', 'WE DO NOT SUPPORT THIS MATERIAL (1)', materif0)
-          end select
+CC          case (ieos_liquid_1,ieos_ideal_gas_2)
+CC            mater1 = materif0
+CC            ienif1 => mienif0(iblk)%p
+CC          case default
+CC            call error ('getthm  ', 'WE DO NOT SUPPORT THIS MATERIAL (1)', materif0)
+CC          end select
 c
-          select case (mat_eos(materif1,1))
-          case (ieos_ideal_gas,ieos_ideal_gas_mixture)
-            mater0 = materif1
-            ienif0 => mienif1(iblk)%p
-          case (ieos_liquid_1,ieos_ideal_gas_2)
+CC          select case (mat_eos(materif1,1))
+CC          case (ieos_ideal_gas,ieos_ideal_gas_mixture)
+CC            mater0 = materif1
+CC            ienif0 => mienif1(iblk)%p
+CC          case (ieos_liquid_1,ieos_ideal_gas_2)
             mater1 = materif1
             ienif1 => mienif1(iblk)%p
-          case default
-            call error ('getthm  ', 'WE DO NOT SUPPORT THIS MATERIAL (2)', materif1)
-          end select
+CC          case default
+CC            call error ('getthm  ', 'WE DO NOT SUPPORT THIS MATERIAL (2)', materif1)
+CC          end select
 c
-          if (mater0 < 0 .or. mater1 < 0) 
-     &      call error ('elmgmr  ', 'failed setting up mater0,1', 0)
+CC          if (mater0 < 0 .or. mater1 < 0) 
+CC     &      call error ('elmgmr  ', 'failed setting up mater0,1', 0)
 c
 c... set equations of state
 c
+          get_vap_frac0 => e3if_empty
+c
           select case (mat_eos(mater0,1))
-          case (ieos_ideal_gas)
+          case (ieos_ideal_gas,ieos_ideal_gas_2)
             getthmif0_ptr => getthm7_ideal_gas
-            get_vap_frac0 => e3if_empty
           case (ieos_ideal_gas_mixture)
             getthmif0_ptr => getthm7_ideal_gas_mixture
             get_vap_frac0 => get_vapor_fraction0
+          case (ieos_liquid_1)
+            getthmif0_ptr => getthm7_liquid_1
           case default
             call error ('getthm  ', 'WE DO NOT SUPPORT THIS MATERIAL (3)', mater1)
           end select
 c
+c          get_vap_frac1 => e3if_empty
+c
           select case (mat_eos(mater1,1))
-          case (ieos_ideal_gas_2)
+          case (ieos_ideal_gas,ieos_ideal_gas_2)
             getthmif1_ptr => getthm7_ideal_gas
+          case (ieos_ideal_gas_mixture)
+c            getthmif1_ptr => getthm7_ideal_gas_mixture
+c            get_vap_frac1 => get_vapor_fraction1
+            call error ('getthm  ', 'WE DO NOT SUPPORT THIS MATERIAL (3)', mater1)
           case (ieos_liquid_1)
             getthmif1_ptr => getthm7_liquid_1
           case default
@@ -847,10 +871,12 @@ c
 c... compute and assemble the residual and tangent matrix
 c
           if (lhs .eq. 1) then
-            allocate (egmassif00(npro,nflow*nshl0,nflow*nshl0))
-            allocate (egmassif01(npro,nflow*nshl0,nflow*nshl1))
-            allocate (egmassif10(npro,nflow*nshl1,nflow*nshl0))
-            allocate (egmassif11(npro,nflow*nshl1,nflow*nshl1))
+            nedof0 = nflow*nshl0
+            nedof1 = nflow*nshl1
+            allocate (egmassif00(npro,nedof0,nedof0))
+            allocate (egmassif01(npro,nedof0,nedof1))
+            allocate (egmassif10(npro,nedof1,nedof0))
+            allocate (egmassif11(npro,nedof1,nedof1))
             egmassif00 = zero
             egmassif01 = zero
             egmassif10 = zero
@@ -885,11 +911,11 @@ c      enddo
      &    (
      &      res,
      &      y, x, umesh,
-     &      shpif0(lcsyst0,1:nshl0,:), 
-     &      shpif1(lcsyst1,1:nshl1,:), 
-     &      shgif0(lcsyst0,1:nsd,1:nshl0,:),
-     &      shgif1(lcsyst1,1:nsd,1:nshl1,:),
-     &      qwtif0(lcsyst0,:), qwtif1(lcsyst1,:),
+     &      shpif(lcsyst0,1:nshl0,:), 
+     &      shpif(lcsyst1,1:nshl1,:), 
+     &      shgif(lcsyst0,1:nsd,1:nshl0,:),
+     &      shgif(lcsyst1,1:nsd,1:nshl1,:),
+     &      qwtif(itpid,:), qwtif(lcsyst0,:), qwtif(lcsyst1,:),
      &      ienif0, ienif1
      &    )
 c
@@ -897,10 +923,10 @@ c
 c
 c.... Fill-up the global sparse LHS mass matrix
 c
-            call fillsparse_if( lhsk,ienif0,ienif0,col,row,egmassif00,npro,nedof,nflow,nshg,nnz,nnz_tot)
-            call fillsparse_if( lhsk,ienif1,ienif0,col,row,egmassif10,npro,nedof,nflow,nshg,nnz,nnz_tot)
-            call fillsparse_if( lhsk,ienif0,ienif1,col,row,egmassif01,npro,nedof,nflow,nshg,nnz,nnz_tot)
-            call fillsparse_if( lhsk,ienif1,ienif1,col,row,egmassif11,npro,nedof,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if(lhsk,ienif0,ienif0,col,row,egmassif00,npro,nedof0,nedof0,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if(lhsk,ienif1,ienif0,col,row,egmassif10,npro,nedof1,nedof0,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if(lhsk,ienif0,ienif1,col,row,egmassif01,npro,nedof0,nedof1,nflow,nshg,nnz,nnz_tot)
+            call fillsparse_if(lhsk,ienif1,ienif1,col,row,egmassif11,npro,nedof1,nedof1,nflow,nshg,nnz,nnz_tot)
 c
           endif
 c
@@ -913,6 +939,10 @@ c
           deallocate (egmassif11)
 c
         enddo if_blocks
+c
+#if debug==1
+      write(*,'(a22,i6,5e24.16)') 'ELMGMR: after interface',idbg,res(idbg,:)
+#endif
 c
         if (associated(if_kappa)) then
           deallocate (if_kappa)

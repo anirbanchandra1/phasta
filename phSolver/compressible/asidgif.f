@@ -3,7 +3,7 @@
      &   res,
      &   y,        x,       umesh,
      &   shpif0,   shpif1,  shgif0,  shgif1,
-     &   qwtif0,   qwtif1,
+     &   qwtif, qwtif0,   qwtif1,
      &   ienif0,   ienif1
      & )  
           use hierarchic_m
@@ -23,9 +23,11 @@ c
           real*8, dimension(nshl1,nqpt),intent(in)   :: shpif1
           real*8, dimension(nsd,nshl0,nqpt), intent(in)  :: shgif0
           real*8, dimension(nsd,nshl1,nqpt), intent(in)  :: shgif1
-          real*8, dimension(nqpt), intent(in) :: qwtif0, qwtif1
+          real*8, dimension(nqpt), intent(in) :: qwtif, qwtif0, qwtif1
           integer, dimension(:,:), pointer, intent(in)   :: ienif0, ienif1
-      integer :: i0,i1,iel,n,i
+      integer :: i0,i1,iel,n,i,npro_,imin(5),imax(5)
+c
+#define debug 0
 c
 c.... create the matrix of mode signs for the hierarchic basis 
 c     functions. 
@@ -56,51 +58,72 @@ c
 c
         call e3if(shpif0,shpif1,shgif0,shgif1,qwtif0,qwtif1)
 c
+#if debug==1
+      npro_ = npro
+      imin = minloc(res,1)
+      imax = maxloc(res,1)
+c      i = 198
+c      i = imax(1)
+      i = imin(1)
+      do iel = 1,npro_
+        do n = 1,nshl0
+          if (ienif0(iel,n) .ne. i) cycle
+          write(*,10) 'x0: ',iel,n,ienif0(iel,n),xl0(iel,n,:)
+        enddo
+      enddo
+      do iel = 1,npro_
+        do n = 1,nshl1
+          if (ienif1(iel,n) .ne. i) cycle
+          write(*,10) 'x1: ',iel,n,ienif1(iel,n),xl1(iel,n,:)
+        enddo
+      enddo
+      do iel = 1,npro_
+        do n = 1,nshl0
+          if (ienif0(iel,n) .ne. i) cycle
+          write(*,20) 'res before: ',ienif0(iel,n),res(ienif0(iel,n),:)
+        enddo
+      enddo
+      do iel = 1,npro_
+        do n = 1,nshl1
+          if (ienif1(iel,n) .ne. i) cycle
+          write(*,20) 'res before: ',ienif1(iel,n),res(ienif1(iel,n),:)
+        enddo
+      enddo
+#endif
+c
 c.... assemble the local residual arrays
 c
-c      do iel = 1,npro
-c        do n = 1,nshl0
-c          write(*,10) 'x0: ',iel,n,ienif0(iel,n),xl0(iel,n,:)
-c        enddo
-c      enddo
-c      do iel = 1,npro
-c        do n = 1,nshl1
-c          write(*,10) 'x1: ',iel,n,ienif1(iel,n),xl1(iel,n,:)
-c        enddo
-c      enddo
-c      do iel = 1,npro
-c        do n = 1,nshl0
-c          write(*,10) 'rl0: ',iel,n,ienif0(iel,n),rl0(iel,n,:)
-c        enddo
-c      enddo
-c      do iel = 1,npro
-c        do n = 1,nshl1
-c          write(*,10) 'rl1: ',iel,n,ienif1(iel,n),rl1(iel,n,:)
-c        enddo
-c      enddo
-c      do iel = 1,npro
-c        do n = 1,nshl0
-c          write(*,10) 'i0 before: ',iel,n,ienif0(iel,n),res(ienif0(iel,n),:)
-c        enddo
-c      enddo
-c      do iel = 1,npro
-c        do n = 1,nshl1
-c          write(*,10) 'i1 before: ',iel,n,ienif1(iel,n),res(ienif1(iel,n),:)
-c        enddo
-c      enddo
         call local (res, rl0, ienif0, nflow, 'scatter ', nshg,nshl0,npro,ipord)
         call local (res, rl1, ienif1, nflow, 'scatter ', nshg,nshl1,npro,ipord)
-c      do iel = 1,npro
-c        do n = 1,nshl0
-c          write(*,10) 'i0 after: ',iel,n,ienif0(iel,n),res(ienif0(iel,n),:)
-c       enddo
-c     enddo
-c      do iel = 1,npro
-c        do n = 1,nshl1
-c          write(*,10) 'i1 after: ',iel,n,ienif1(iel,n),res(ienif1(iel,n),:)
-c        enddo
-c      enddo
-10    format(a8,3i6,5e24.16)
+c
+#if debug==1
+      do iel = 1,npro_
+        do n = 1,nshl0
+          if (ienif0(iel,n) .ne. i) cycle
+          write(*,10) 'rl0: ',iel,n,ienif0(iel,n),rl0(iel,n,:)
+        enddo
+      enddo
+      do iel = 1,npro_
+        do n = 1,nshl1
+          if (ienif1(iel,n) .ne. i) cycle
+          write(*,10) 'rl1: ',iel,n,ienif1(iel,n),rl1(iel,n,:)
+        enddo
+      enddo
+      do iel = 1,npro_
+        do n = 1,nshl0
+          if (ienif0(iel,n) .ne. i) cycle
+          write(*,20) 'res after: ',ienif0(iel,n),res(ienif0(iel,n),:)
+        enddo
+      enddo
+      do iel = 1,npro_
+        do n = 1,nshl1
+          if (ienif1(iel,n) .ne. i) cycle
+          write(*,20) 'res after: ',ienif1(iel,n),res(ienif1(iel,n),:)
+        enddo
+      enddo
+10    format(a12,3i6,5e24.16)
+20    format(a12,1i6,5e24.16)
+#endif
 c
         call local (sum_vi_area, sum_vi_area_l0, ienif0, nsd+1, 'scatter ', nshg, nshl0,npro,ipord)
         call local (sum_vi_area, sum_vi_area_l1, ienif1, nsd+1, 'scatter ', nshg, nshl1,npro,ipord)

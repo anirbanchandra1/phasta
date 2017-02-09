@@ -357,6 +357,13 @@ c
            enddo
         endif
 c
+        if (nSclr > 0 .and. mat_eos(mater,1).eq.ieos_ideal_gas_mixture) then
+          vap_frac = zero
+          do n = 1,nshlb
+            vap_frac = vap_frac + shpb(:,n)*ycl(:,n,ndof)
+          end do
+        end if
+c
 c-----> SOLID CALCULATIONS <------------
 c
       if(mat_eos(mater,1).eq.ieos_solid_1) then

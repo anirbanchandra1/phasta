@@ -43,13 +43,12 @@ c
 
         ! Get the total number of different interior topologies in the whole domain. 
         ! Try to read from a field. If the field does not exist, scan the geombc file.
-C<--- BEGIN HARD CODE
-        itpblktot=1  ! hardwired to monotopology for now
-C        call phio_readheader(fhandle,
-C     &   c_char_'total number of boundary tpblocks' // char(0),
-C     &   c_loc(itpblktot), ione, dataInt, iotype)
-C<--- END HARD CODE
-
+C
+C        itpblktot=1  ! hardwired to monotopology for now
+        call phio_readheader(fhandle,
+     &   c_char_'number of boundary tpblocks' // char(0),
+     &   c_loc(itpblktot), ione, dataInt, iotype)
+C
         if (itpblktot == -1) then 
           ! The field 'total number of different boundary tpblocks' was not found in the geombc file.
           ! Scan all the geombc file for the 'connectivity interior' fields to get this information.
@@ -84,16 +83,29 @@ C<--- END HARD CODE
         mattyp=0
         ndofl = ndof
 
-        iblk_loop: do iblk = 1, itpblktot
+C        iblk_loop: do iblk = 1, itpblktot
+        iblk_loop: do iblk = 1, maxtop
+c
            writeLock=0;
             if(input_mode.ge.1)then
                write (fname2,"('connectivity boundary',i1)") iblk
             else
+             select case (iblk)
+             case (itp_tet)
                write (fname2,"('connectivity boundary linear tetrahedron')")
+             case (itp_wedge)
+               write (fname2,C_CHAR_"('connectivity boundary linear wedge')")
+             case (itp_wedge_quad)
+               write (fname2,"('connectivity boundary linear wedge quadface')")
+             case default
+               cycle iblk_loop
+             end select
             endif
            
            ! Synchronization for performance monitoring, as some parts do not include some topologies
 C           call MPI_Barrier(MPI_COMM_WORLD,ierr) 
+           intfromfile(:)=-1
+CC           call phio_readheader(fhandle, trim(fname2)//C_NULL_CHAR,
            call phio_readheader(fhandle, fname2 // char(0),
      &      c_loc(intfromfile), ieight, dataInt, iotype)
            neltp =intfromfile(1)
@@ -105,9 +117,9 @@ C           call MPI_Barrier(MPI_COMM_WORLD,ierr)
            lcsyst=intfromfile(7)
            numnbc=intfromfile(8)
 
-           if (neltp==0) then
+           if (neltp<0) then
               writeLock=1;
-      cycle iblk_loop
+              cycle iblk_loop
            endif
 
            allocate (ientp(neltp,nshl))
@@ -128,10 +140,18 @@ c.... Read the boundary material type
 c
            if(input_mode.gt.1)then
              write (fname2,"('material type boundary linear tetrahedron',i1)") iblk
-           else
-             write( fname2,"('material type boundary linear tetrahedron')")
+           else 
+             select case (iblk)
+             case (itp_tet)
+               write (fname2,"('material type boundary linear tetrahedron')") 
+             case (itp_wedge)
+               write (fname2,"('material type boundary linear wedge')") 
+             case (itp_wedge_quad)
+               write (fname2,"('material type boundary linear wedge quadface')") 
+             end select
            endif
 C           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
+           intfromfile(:)=-1
            call phio_readheader(fhandle, fname2 // char(0),
      &      c_loc(intfromfile), ione, dataInt, iotype)
            call phio_readdatablock(fhandle, fname2 // char(0),
@@ -143,9 +163,17 @@ C           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
             if(input_mode.ge.1)then
                write (fname2,"('nbc codes',i1)") iblk
             else
+             select case (iblk)
+             case (itp_tet)
                write (fname2,"('nbc codes linear tetrahedron')")
+             case (itp_wedge)
+               write (fname2,"('nbc codes linear wedge')")
+             case (itp_wedge_quad)
+               write (fname2,"('nbc codes linear wedge quadface')")
+             end select
             endif
-
+c
+           intfromfile(:)=-1
            call phio_readheader(fhandle, fname2 // char(0),
      &      c_loc(intfromfile), ieight, dataInt, iotype)
            iiBCBtpsiz=neltp*ndiBCB
@@ -158,9 +186,17 @@ C           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
             if(input_mode.ge.1)then
                write (fname2,"('nbc values',i1)") iblk
             else
+             select case (iblk)
+             case (itp_tet)
                write (fname2,"('nbc values linear tetrahedron')")
+             case (itp_wedge)
+               write (fname2,"('nbc values linear wedge')")
+             case (itp_wedge_quad)
+               write (fname2,"('nbc values linear wedge quadface')")
+             end select
             endif
-
+c
+           intfromfile(:) = -1
            call phio_readheader(fhandle, fname2 // char(0),
      &      c_loc(intfromfile), ieight, dataInt, iotype)
            BCBtp    = zero

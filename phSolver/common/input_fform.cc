@@ -903,7 +903,7 @@ int input_fform(phSolver::Input& inp)
 
     intdat.intg[0][0]=inp.GetValue("Quadrature Rule on Interior");
     intdat.intg[0][1]=inp.GetValue("Quadrature Rule on Boundary");
-    intdat.intg[0][2]=inp.GetValue("Quadrature Rule on interface");
+    intdat.intg[0][2]=inp.GetValue("Quadrature Rule on Interface");
     genpar.ibksiz = inp.GetValue("Number of Elements Per Block");
 
     ((string)inp.GetValue("Turn Off Source Terms for Scalars") 

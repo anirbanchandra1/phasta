@@ -42,9 +42,14 @@ c
 c
       subroutine getthm6_ideal_gas_mixture
 c
-        real*8, dimension(npro) :: mw,rgas
+        integer :: iel
+        real*8, dimension(npro) :: mw,rgas,y
 c
-        mw  = vap_frac*MW_liquid + (one-vap_frac)*mat_prop(mater0,iprop_ideal_gas_mw, 1)
+        y = vap_frac
+        y = max(zero,y)
+        y = min(one, y)
+c
+        mw  = y*MW_liquid + (one-y)*mat_prop(mater,iprop_ideal_gas_mw, 1)
 c
         gamma = mat_prop(mater,iprop_ideal_gas_gamma,1)
         Rgas  = Ru/mw*1.0d3
@@ -57,7 +62,20 @@ c
 c
       subroutine getthm7_ideal_gas_mixture
 c
-        call getthm6_ideal_gas
+        real*8, dimension(npro) :: mw,rgas,y
+c
+        y = vap_frac
+        y = max(zero,y)
+        y = min(one, y)
+c
+        mw  = y*MW_liquid + (one-y)*mat_prop(mater,iprop_ideal_gas_mw, 1)
+c
+        gamma = mat_prop(mater,iprop_ideal_gas_gamma,1)
+        Rgas  = Ru/mw*1.0d3
+        gamma1 = gamma - one
+c
+        rho = pres / (Rgas*T)
+        ei  = T * Rgas / gamma1
 c
         h   = T * Rgas / gamma1 * gamma
         cp  = Rgas*gamma / gamma1

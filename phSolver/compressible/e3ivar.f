@@ -263,6 +263,12 @@ c
            enddo
         endif
 c
+        if (nSclr > 0 .and. mat_eos(mater,1).eq.ieos_ideal_gas_mixture) then
+          vap_frac = zero
+          do n = 1,nshl
+            vap_frac = vap_frac + shape(:,n)*ycl(:,n,isclr+5)
+          end do
+        end if
 c
 c-----> SOLID CALCULATIONS <------------
 c
@@ -379,7 +385,7 @@ c
               Sclr = Sclr + shape(:,n) * ycl(:,n,isc)
            enddo
         endif
-
+c
         ithm = 7
 c         call getthm(rho, ei, pres, T, npro, mater
 c     &,              h,   cv, cp,   alfap, betaT, tmp,  tmp)

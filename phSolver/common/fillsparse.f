@@ -236,7 +236,8 @@ c
      &    ienif0,ienif1,
      &    col,row,
      &    egmass,
-     &    npro, nedof,
+     &    npro,
+     &    nedof0, nedof1,
      &    nflow,nshg,nnz,nnz_tot)
 c
         use workfc_m
@@ -246,8 +247,8 @@ c
         real*8, intent(inout) :: lhsK(nflow*nflow,nnz_tot)
         integer, dimension(:,:), pointer, intent(in) :: ienif0,ienif1
         integer, intent(in) :: col(nshg+1), row(nnz*nshg)
-        real*8, intent(in) :: egmass(npro,nedof,nedof)
-        integer, intent(in) :: nflow,nshg,nnz,nnz_tot, npro, nedof
+        real*8, intent(in) :: egmass(npro,nedof0,nedof1)
+        integer, intent(in) :: nflow,nshg,nnz,nnz_tot, npro, nedof0, nedof1
 c
         integer :: e,a,b,i,c,n,r,s,k,g,t,f
         integer :: nshl0,nshl1

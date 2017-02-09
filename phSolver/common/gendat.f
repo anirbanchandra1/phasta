@@ -1,7 +1,7 @@
         subroutine gendat (y,       ac,       x,      iBC,     BC,
      &                     iper,    ilwork,
      &                     shp,     shgl,    shpb,    shglb,
-     &                     shpif0,  shpif1,  shgif0,  shgif1,
+     &                     shpif, shpif0,  shpif1,  shgif, shgif0,  shgif1,
      &                     ifath,   velbar,   nsons ) 
 c
 c----------------------------------------------------------------------
@@ -34,10 +34,10 @@ c
 c
 c.... shape function declarations
 c     
-        real*8, dimension(maxtop,  maxsh,maxqpt), intent(out) :: shp, shpb
-        real*8, dimension(maxtopif,maxsh,maxqpt), intent(out) :: shpif0, shpif1
-        real*8, dimension(maxtop,  nsd,maxsh,maxqpt), intent(out) :: shgl, shglb
-        real*8, dimension(maxtopif,nsd,maxsh,maxqpt), intent(out) :: shgif0, shgif1
+        real*8, dimension(maxtop,maxsh,maxqpt), intent(out) :: shp, shpb
+        real*8, dimension(maxtop,maxsh,maxqpt), intent(out) :: shpif, shpif0, shpif1
+        real*8, dimension(maxtop,nsd,maxsh,maxqpt), intent(out) :: shgl, shglb
+        real*8, dimension(maxtop,nsd,maxsh,maxqpt), intent(out) :: shgif, shgif0, shgif1
 c
 c  stuff for dynamic model s.w.avg and wall model
 c
@@ -229,7 +229,7 @@ c.... ---------------------->  Interface Elements  <--------------------
 c
 c... calculate interface element shape functions
 c
-        call genshpif (shpif0, shpif1, shgif0, shgif1)
+        call genshpif (shpif, shpif0, shpif1, shgif, shgif0, shgif1)
 c
 c
 c.... --------------------->  Initial Conditions  <--------------------

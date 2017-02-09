@@ -402,7 +402,6 @@ extern "C" {
     int nenbl;
     int intind;
     int mattyp;
-    int iftpid[MAXBLK]; // Interface toplogical id. Holds the e0, e1 configuaration.
   } elmpar ;
 
   extern struct { 

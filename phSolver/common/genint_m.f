@@ -1,45 +1,59 @@
       module genint_m
 c
-        integer, dimension(4), parameter :: nint_tri (4) = (/1,3,6,12/)
+        integer, dimension(4), parameter :: nint_tet (4) = (/1,4,16,29/)
         integer, dimension(5), parameter :: nint_quad(5) = (/1,4,9,16,25/)
+c
+        integer, dimension(4), parameter :: nint_tri (4) = (/1,3,6,12/)
 c
         contains
 c
         subroutine genint_if
 c
-          include "common.h"
+          use number_def_m
+          use intpt_m
+          use intdat_m
 c
-          integer :: iblk, id
+          implicit none
 c
-c... loop over interface blocks and generate 
-c    quadrature rules for each...
+          integer :: itp,ierr
+          real*8, allocatable :: tmpQptif(:,:), tmpQwtif(:)
 c
-          do iblk = 1, nelblif
+c ... Tet
 c
-            id = iftpid(iblk) 
+          nintif = nint_tri(intg(3,1))
 c
-            select case (id)
-            case (1)
+          allocate(tmpQptif(4,nintif(nint_tri(intg(3,1)))))
+          allocate(tmpQwtif(nintif(nint_tri(intg(3,1)))))
 c
-              nshapeif = (ipord+1)*(ipord+2)/2
+          itp = itp_tet
 c
-              nintif0(id) = nint_tri(intg(3,1))
-              nintif1(id) = nint_tri(intg(3,1))
-
-              call symtri (nintif0(id), Qptif0(id,:,:), Qwtif0(id,:), nerr)
-              call symtri (nintif1(id), Qptif1(id,:,:), Qwtif1(id,:), nerr)
+          call symtri(nintif(itp),tmpQptif,tmpQwtif,ierr) 
+c
+          Qptif (itp,1:4,1:nintif(itp)) = tmpQptif(1:4,1:nintif(itp))
+          Qwtif (itp,1:nintif(itp))     = tmpQwtif(1:nintif(itp))
 c
 c.... adjust quadrature weights to be consistent with the
 c     design of tau. 
 c
-              Qwtif0 = two * Qwtif0
-              Qwtif1 = two * Qwtif1
+          Qwtif(itp,:)  = two*Qwtif(itp,:)
 c
-            case default
-              call error ('genint_if ', 'elem Cat', id)
-            end select
+c ... Wedge
 c
-          enddo
+          itp = itp_wedge
+c
+          call symtri(nintif(itp),tmpQptif,tmpQwtif,ierr) 
+c
+          Qptif(itp,1:2,2:nintif(3)) = tmpQptif(1:2,1:nintif(3)-1)
+          Qptif(itp,1:2,1) = tmpQptif(1:2,nintif(3))
+c     
+c     wedges want the third entry to be zeta=-1 (not t=1-r-s)
+c     4th entry not used
+c     
+          Qptif(itp,3:4,1:nintif(3)) = -1
+c$$$       Qptb(3,1:4,1:nintb(3)) = tmpQptb(1:4,1:nintb(3))
+          Qwtif(itp,1:nintif(3)) = tmpQwtif(1:nintif(3))
+c
+          deallocate(tmpQptif,tmpQwtif)
 c
         end subroutine genint_if
 c

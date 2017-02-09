@@ -32,8 +32,8 @@ c
      &            shgl(MAXTOP,nsd,maxsh,MAXQPT), 
      &            shpb(MAXTOP,maxsh,MAXQPT),
      &            shglb(MAXTOP,nsd,maxsh,MAXQPT) 
-        real*8, dimension(maxtopif,    maxsh,maxqpt) :: shpif0, shpif1
-        real*8, dimension(maxtopif,nsd,maxsh,maxqpt) :: shgif0, shgif1
+        real*8, dimension(maxtop,    maxsh,maxqpt) :: shpif0, shpif1, shpif
+        real*8, dimension(maxtop,nsd,maxsh,maxqpt) :: shgif0, shgif1, shgif
 c
 c  stuff for dynamic model s.w.avg and wall model
 c
@@ -62,7 +62,7 @@ c
      &               iBC,            BC,
      &               point2iper,     point2ilwork,   shp,
      &               shgl,           shpb,           shglb,
-     &               shpif0,         shpif1,         shgif0,         shgif1,
+     &               shpif, shpif0, shpif1, shgif, shgif0, shgif1,
      &               point2ifath,    velbar,         point2nsons )
         call setper(nshg)
         call perprep(iBC,point2iper,nshg)
@@ -227,7 +227,7 @@ c
      &               iBC,            BC,
      &               point2iper,     point2ilwork,   shp,
      &               shgl,           shpb,           shglb,
-     &               shpif0,         shpif1,         shgif0,         shgif1,
+     &               shpif, shpif0, shpif1, shgif, shgif0, shgif1,
      &               point2ifath,    velbar,         point2nsons ) 
 c
 c.... return

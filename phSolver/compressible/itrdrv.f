@@ -3,7 +3,7 @@
      &                   iBC,       BC,         
      &                   iper,      ilwork,     shp,       
      &                   shgl,      shpb,       shglb,
-     &                   shpif0,    shpif1,     shgif0,     shgif1,
+     &                   shpif, shpif0, shpif1, shgif, shgif0, shgif1,
      &                   ifath,     velbar,     nsons ) 
 c
 c----------------------------------------------------------------------
@@ -60,8 +60,8 @@ c
      &            shgl(MAXTOP,nsd,maxsh,MAXQPT), 
      &            shpb(MAXTOP,maxsh,MAXQPT),
      &            shglb(MAXTOP,nsd,maxsh,MAXQPT) 
-        real*8, dimension(maxtopif,    maxsh,maxqpt) :: shpif0, shpif1
-        real*8, dimension(maxtopif,nsd,maxsh,maxqpt) :: shgif0, shgif1
+        real*8, dimension(maxtop,    maxsh,maxqpt) :: shpif, shpif0, shpif1
+        real*8, dimension(maxtop,nsd,maxsh,maxqpt) :: shgif, shgif0, shgif1
         real*8   almit, alfit, gamit
         dimension ifath(numnp),    velbar(nfath,ndof),  nsons(nfath)
         real*8 rerr(nshg,10),ybar(nshg,ndof+8) ! 8 is for avg. of square as uu, vv, ww, pp, TT, uv, uw, and vw
@@ -510,7 +510,7 @@ c                        write(*,*) 'lhs=',lhs
      &                       iper,          ilwork,
      &                       shp,           shgl,
      &                       shpb,          shglb,         
-     &                       shpif0,        shpif1,        shgif0,        shgif1,
+     &                       shpif, shpif0, shpif1, shgif, shgif0, shgif1,
      &                       solinc,        rerr,          umesh)
 c
 c                     call set_if_velocity (BC(:,ndof+2:ndof+4),  iBC, 
@@ -672,7 +672,9 @@ c Elaine-SPEBC
 c                       call itrBC (y,  ac,  iBC,  BC, iper, ilwork)
                      endif
 c
-                     call ifbc_set(bc,ilwork,nlwork)
+                     if (nsclr > 0) then
+                       call ifbc_set(bc,ilwork,nlwork)
+                     endif
 c
                   else if(iupdate.lt.10) then         ! update scalar
                      isclr=iupdate !unless
@@ -978,6 +980,7 @@ c         tcorewc2 = secs(0.0)
 
  3000 continue !end of NTSEQ loop
 c
+      print*, "DONE"
         call destruct_sum_vi_area
         call ifbc_mfree
 c     

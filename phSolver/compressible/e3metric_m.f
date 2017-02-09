@@ -8,23 +8,41 @@ c
 c
       contains
 c
-      subroutine e3metric(shg,shgl,xl,WdetJ,qwt)
+      subroutine e3metric(shg,shgl,xl)
 c
         implicit none
 c
         real*8, dimension(:,:,:), pointer, intent(out) :: shg
         real*8, dimension(:,:,:), pointer, intent(in)  :: xl, shgl
-        real*8, dimension(:), pointer, optional, intent(out)  :: WdetJ
-        real*8, optional, intent(in) :: qwt
 c
         real*8, dimension(:,:,:), allocatable  :: dxdxi, dxidx
         real*8, dimension(npro)  :: tmp
 c
-        integer :: n, nshl, err0,err1
+        integer :: n, nshl, err0,err1,nenl
 c
         allocate(dxdxi(npro,nsd,nsd),dxidx(npro,nsd,nsd))
 c
-        call calc_deform_grad(dxdxi,xl,shgl)
+c
+c.... compute the deformation gradient
+c
+      dxdxi = zero
+      nenl = size(xl,2)
+c
+       do n = 1, nenl
+          dxdxi(:,1,1) = dxdxi(:,1,1) + xl(:,n,1) * shgl(:,1,n)
+          dxdxi(:,1,2) = dxdxi(:,1,2) + xl(:,n,1) * shgl(:,2,n)
+          dxdxi(:,1,3) = dxdxi(:,1,3) + xl(:,n,1) * shgl(:,3,n)
+          dxdxi(:,2,1) = dxdxi(:,2,1) + xl(:,n,2) * shgl(:,1,n)
+          dxdxi(:,2,2) = dxdxi(:,2,2) + xl(:,n,2) * shgl(:,2,n)
+          dxdxi(:,2,3) = dxdxi(:,2,3) + xl(:,n,2) * shgl(:,3,n)
+          dxdxi(:,3,1) = dxdxi(:,3,1) + xl(:,n,3) * shgl(:,1,n)
+          dxdxi(:,3,2) = dxdxi(:,3,2) + xl(:,n,3) * shgl(:,2,n)
+          dxdxi(:,3,3) = dxdxi(:,3,3) + xl(:,n,3) * shgl(:,3,n)
+c      write(*,10) n,xl(1,n,1:3),shgl(1,1:3,n)
+       enddo
+10    format('n,xl,shgl:',i4,6e24.16)
+c
+C$C        call calc_deform_grad(dxdxi,xl,shgl)
 c
 c.... compute the inverse of deformation gradient
 c
@@ -52,14 +70,6 @@ c
      &                - dxdxi(:,1,1) * dxdxi(:,3,2)) * tmp
        dxidx(:,3,3) = (dxdxi(:,1,1) * dxdxi(:,2,2) 
      &                - dxdxi(:,1,2) * dxdxi(:,2,1)) * tmp
-c
-       if (present(WdetJ) .or. present(qwt))  then
-         if (present(WdetJ) .and. present(qwt)) then
-           WdetJ = qwt / tmp
-         else
-           call error ('e3metric_m:  ', 'both WdetJ and qwt should be present', qwt)
-         endif
-       endif
 c
 c.... compute the global gradient of shape-functions
 c

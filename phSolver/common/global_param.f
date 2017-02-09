@@ -17,36 +17,40 @@ c  The two types of face topology are  1= tri, 2=quad
 c
         integer, parameter     :: MAXTOP = 6, MAXSURF=1000
 c
+        integer, parameter     :: itp_tet          = 1
+     &,                           itp_hex          = 2
+     &,                           itp_wedge        = 3
+     &,                           itp_wedge_tri    = 3
+     &,                           itp_wedge_quad   = 4
+     &,                           itp_pyramid      = 5
+     &,                           itp_pyramid_quad = 5
+     &,                           itp_pyramid_tri  = 6
+     &,                           itp_tri     = 1
+     &,                           itp_quad    = 2
+c
 c
 c...  The twelve different topological interface region are:
 c
-        integer, parameter     :: MAXTOPIF = 12
+        integer, parameter     :: MAXTOPIF = 4
 c
 c  sharing a tri face:
 c
 c  1= tet-tet 
-c  2= tet-pyramid
-c  3= tet-wedge
-c  4= pyramid-pyramid
-c  5= pyramid-wedge
-c  6= wedge-wedge
+c  2= tet-wedge
+c  3= wedge-tet
+c  4= wedge-wedge
 c
-c  sharing a quad face:
+        integer, parameter     :: itpif_tet_tet     = 1
+     &,                           itpif_tet_wedge   = 2
+     &,                           itpif_wedge_tet   = 3
+     &,                           itpif_wedge_wedge = 4
 c
-c  7= pyramid-pyramid
-c  8= pyramid-wedge
-c  9= pyramid-hex
-c  10= wedge-wedge
-c  11= wedge-hex
-c  12= hex-hex
+        integer, parameter :: MAXQPT = 125
+        integer, parameter :: MAXTS = 100
 c
+        integer, parameter :: MAXMAT  = 6, MAXPROP = 10
 c
-      integer, parameter :: MAXQPT = 125
-      integer, parameter :: MAXTS = 100
-c
-      integer, parameter :: MAXMAT  = 6, MAXPROP = 10
-c
-      real*8, parameter :: Ru = 8.314d0    ! Universal gas constant [J/mol.K]
+        real*8, parameter :: Ru = 8.314d0    ! Universal gas constant [J/mol.K]
 c
       end module global_const_m
 c
@@ -155,7 +159,6 @@ c nenbl         : number of boundary element nodes
 c intind        : integration data index
 c nintg         : number of integration points
 c mattyp        : material type ( = 0 for fluid; = 1 for solid )
-c iftpid(MAXBLK): holds the interface topological combination
 c
       module elmpar_m
         use iso_c_binding
@@ -166,13 +169,12 @@ c
      &                  ndofl,  nsymdl, nenl,   nfacel,
      &                  nenl0,  nenl1,  lcsyst0, lcsyst1,
      &                  nenbl,  intind, mattyp,
-     &                  mattyp0, mattyp1, 
-     &                  iftpid(MAXBLK)
+     &                  mattyp0, mattyp1
+     &,                 itpid                              ! element topology id
         common /elmpar/ lelCat, lcsyst, iorder, nenb,   
      &                  nelblk, nelblb, nelblif,
      &                  ndofl,  nsymdl, nenl,   nfacel,
-     &                  nenbl,  intind, mattyp,
-     &                  iftpid
+     &                  nenbl,  intind, mattyp
       end module elmpar_m
 c
 c----------------------------------------------------------------------
@@ -186,14 +188,33 @@ c
       module blkdat_m
         use global_const_m
         implicit none
-        integer, parameter :: i_mattype = 7
+        integer, parameter :: iblk_mattype  = 7
+     &,                       iblkif_nshl0    = 13
+     &,                       iblkif_nshl1    = 14
+     &,                       iblkif_topology = 15
         integer :: lcblk  (10,MAXBLK+1),
      &             lcblkb (10,MAXBLK+1),
-     &             lcblkif(14,MAXBLK+1)
+     &             lcblkif(15,MAXBLK+1)
       end module blkdat_m
 c
 c----------------------------------------------------------------------
 c
+c.... common /intdat/   : integration data
+c
+c intg  (2,MAXTS) : integration parameters
+c intpt (3)       : integration pointers
+c intptb(3)       : integration pointers of boundary elements
+c
+      module intdat_m
+        use iso_c_binding
+        use global_const_m
+        implicit none
+        integer(c_int) :: intg(3,MAXTS)
+        integer :: intpt(3), intptb(3)
+        common /intdat/ intg,intpt,intptb
+      end module intdat_m
+c
+c----------------------------------------------------------------------
       module intpt_m
         use global_const_m
         implicit none
@@ -202,10 +223,11 @@ c.... hierarchic basis functions
 c
         real*8 :: Qpt (MAXTOP ,4,MAXQPT), Qwt (MAXTOP ,MAXQPT), 
      &            Qptb(MAXTOP,4,MAXQPT),  Qwtb(MAXTOP,MAXQPT), 
-     &            Qptif0(MAXTOPIF,4,MAXQPT), Qwtif0(MAXTOPIF,MAXQPT),
-     &            Qptif1(MAXTOPIF,4,MAXQPT), Qwtif1(MAXTOPIF,MAXQPT)
+     &            Qptif (MAXTOP,4,MAXQPT), Qwtif (MAXTOP,MAXQPT),
+     &            Qptif0(MAXTOP,4,MAXQPT), Qwtif0(MAXTOP,MAXQPT),
+     &            Qptif1(MAXTOP,4,MAXQPT), Qwtif1(MAXTOP,MAXQPT)
         integer ::    nint(MAXTOP),           nintb(MAXTOP),
-     &                nintif0(MAXTOPIF),       nintif1(MAXTOPIF),
+     &                nintif(MAXTOPIF),
      &                ngauss,                 ngaussb,        ngaussif,
      &                intp,
      &                maxnint

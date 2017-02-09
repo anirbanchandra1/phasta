@@ -87,7 +87,7 @@ c
 c
           blocks_loop: do iblk = 1, nelblk
 c
-            mattype = lcblk(i_mattype,iblk)
+            mattype = lcblk(iblk_mattype,iblk)
             lcsyst = lcblk(3,iblk)
             ngauss = nint(lcsyst)
             npro = lcblk(1,iblk+1) - lcblk(1,iblk)
@@ -127,7 +127,7 @@ c
 c
           boundary_blocks_loop: do iblk = 1, nelblb
 c
-            mattype = lcblkb(i_mattype,iblk)
+            mattype = lcblkb(iblk_mattype,iblk)
             lcsyst = lcblkb(3,iblk)
             ngauss = nintb(lcsyst)
             npro = lcblkb(1,iblk+1) - lcblkb(1,iblk)
@@ -219,7 +219,7 @@ c
           b_len = 0
           blocks_loop: do iblk = 1, nelblk
 c
-            mattype = lcblk(i_mattype,iblk)
+            mattype = lcblk(iblk_mattype,iblk)
             lcsyst = lcblk(3,iblk)
             ngauss = nint(lcsyst)
             npro = lcblk(1,iblk+1) - lcblk(1,iblk)

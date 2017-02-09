@@ -40,7 +40,7 @@ c
           call calc_primitive(dui,shp_qpt)
           call getthm6_ptr
           call calc_conservative(dui)
-          call e3metric(shg_qpt,shgl_qpt,xl,WdetJ,qwt(lcsyst,intp))
+          call e3metric(shg_qpt,shgl_qpt,xl)
 c
 c... multiply by weight
 c

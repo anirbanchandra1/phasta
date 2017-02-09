@@ -367,7 +367,7 @@ c
      &                   res,       BDiag,     HBrg,      eBrg,
      &                   yBrg,      Rcos,      Rsin,      iper,      ilwork,
      &                   shp,       shgl,      shpb,      shglb,
-     &                   shpif0,    shpif1,    shgif0,    shgif1,
+     &                   shpif, shpif0, shpif1, shgif, shgif0, shgif1,
      &                   Dy,        rerr,      umesh)
 c
 c----------------------------------------------------------------------
@@ -428,8 +428,8 @@ c
      &          shgl(MAXTOP,nsd,maxsh,MAXQPT), 
      &          shpb(MAXTOP,maxsh,MAXQPT),
      &          shglb(MAXTOP,nsd,maxsh,MAXQPT) 
-      real*8, dimension(maxtopif,    maxsh,maxqpt) :: shpif0, shpif1
-      real*8, dimension(maxtopif,nsd,maxsh,maxqpt) :: shgif0, shgif1
+      real*8, dimension(maxtop,    maxsh,maxqpt) :: shpif, shpif0, shpif1
+      real*8, dimension(maxtop,nsd,maxsh,maxqpt) :: shgif, shgif0, shgif1
       real*8    rerr(nshg,10)
 c      
 c     
@@ -449,7 +449,7 @@ c
       call ElmGMRs(y,             ac,            x,
      &             shp,           shgl,          iBC,
      &             BC,            shpb,          shglb,         
-     &             shpif0,        shpif1,        shgif0,   shgif1,
+     &             shpif, shpif0, shpif1, shgif, shgif0, shgif1,
      &             res,           rmes,          BDiag,         
      &             iper,          ilwork,        lhsK,          
      &             col,           row,           rerr,

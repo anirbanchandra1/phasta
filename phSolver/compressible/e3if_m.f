@@ -28,9 +28,16 @@ c
           integer :: intp
       integer :: iel,isd,n
       real*8 ::sum0,sumg0
+#define debug 0
 c
 c      write(*,*) 'In e3if...'
 c
+c      do n = 1,nshl0
+c        write(*,33) n,shpif0(n,1),shgif0(1:3,n,1)
+c      enddo
+c      write(*,34) sum(shpif0(1:nshl0,1)),sum(shgif0(1,1:nshl0,1)),sum(shgif0(2,1:nshl0,1)),sum(shgif0(3,1:nshl0,1))
+33    format('n,shpif0,shgif0',i4,4e24.16)
+34    format('sum: shpif0,shgif0',4e24.16)
 c
           rl0 = zero
           rl1 = zero
@@ -41,16 +48,9 @@ c
           ifbc_l0 = zero
 c
           do intp = 1, nqpt
-c      print*, intp,shpif0(:,intp)
-c      print*, intp,shpif1(:,intp)
-c      print*, 'qwtif0: ',intp,qwtif0(intp)
-c      print*, 'qwtif1: ',intp,qwtif1(intp)
 c
             ri0 = zero
             ri1 = zero
-c
-            call calc_normal_vectors(nv0,area,WdetJif0,xl0,qwtif0,lcsyst0,intp,npro)
-            call calc_normal_vectors(nv1,area,WdetJif1,xl1,qwtif1,lcsyst1,intp,npro)
 c
 c... do not include this quadrature point, if Det. .eq. 0
 c
@@ -65,6 +65,18 @@ c
             call  getshp(shp1, shgl1, shpif1, shgif1, sgn1, npro, nsd, nshl1, nqpt, nenl1, intp, ipord)
 c      call getshp_if(shp0,shp1,shgl0,shgl1,shpif0,shpif1,shgif0,shgif1,xl0,xl1,npro,nsd,nshl0,nqpt,nenl0,intp)
 c
+c... Element Metrics
+c
+            call e3metric(shg0,shgl0,xl0)
+            call e3metric(shg1,shgl1,xl1)
+c      print*, 'shg0: ',shg0(1,:,1)
+c      print*, 'shg1: ',shg1(1,:,1)
+c
+c... Normal Vectors
+c
+            call calc_normal_vectors(nv0,area,WdetJif0,xl0,qwtif0,itpid,lcsyst0,intp,npro)
+            call calc_normal_vectors(nv1,area,WdetJif1,xl1,qwtif1,itpid,lcsyst1,intp,npro)
+c
 c... calculate the integration varibles
 c
             call e3if_var
@@ -75,11 +87,6 @@ c... calculate the contribution of the jump in the fluxes, across the interface
 c
       prop0%mater = mater0
       prop1%mater = mater1
-c
-c... Element Metrics
-c
-            call e3metric(shg0,shgl0,xl0)
-            call e3metric(shg1,shgl1,xl1)
 c
             call e3var(y0, var0, ycl0, shp0, shgl0, shg0, nshl0) 
             call e3var(y1, var1, ycl1, shp1, shgl1, shg1, nshl1) 
@@ -130,16 +137,29 @@ c
 c
             call e3if_wmlt(rl0, ri0, shp0, shg0, WdetJif0, nshl0)
             call e3if_wmlt(rl1, ri1, shp1, shg1, WdetJif1, nshl1)
+c      do iel = 1,npro
+c        write(*,10) 'E3IF: ri0: ',iel,ri0(iel,16:20)
+c        write(*,10) 'E3IF: ri1: ',iel,ri1(iel,16:20)
+c      enddo
+c      do iel = 1,1
+c        do n = 1,nshl0
+c          write(*,10) 'E3IF: rl0: ',n,rl0(iel,n,:)
+c        enddo
+c      enddo
+c      do iel = 1,1
+c        do n = 1,nshl1
+c          write(*,10) 'E3IF: rl1: ',n,rl1(iel,n,:)
+c        enddo
+c      enddo
+c      do iel = 1,8
+c        write(*,10) 'WdetJ0,1: ',iel, WdetJif0(iel),WdetJif1(iel)
+c      enddo
+c      write(*,10) 'qwtif0,1: ',iel, qwtif0(intp),qwtif1(intp)
+10    format(a,i6,5e24.16)
 c
 c ... Interface velocity calculations...
 c
-c            if     (mat_eos(mater0,1) == ieos_ideal_gas) then
-              call calc_vi(pres0,nv0,u1)
-c            elseif (mat_eos(mater1,1) == ieos_ideal_gas) then
-c              call calc_vi(pres1,nv1,u0)
-c            else
-c              call error ('wrong mater: ', 'calc vi', 0)
-c            endif
+            call calc_vi(pres0,u1)
 c
             call calc_vi_area_node(sum_vi_area_l0,shp0,WdetJif0,nshl0)
             call calc_vi_area_node(sum_vi_area_l1,shp1,WdetJif1,nshl1)
@@ -148,11 +168,6 @@ c
 c
           enddo  ! end of integeration points loop 
 c
-c      do iel=1,npro
-c        do n = 1,nshl0
-c          write(*,'(a,2i6,5e24.16)') 'rl0: ',iel,n,rl0(iel,n,:)
-c        enddo
-c      enddo
         end subroutine e3if
 c
         subroutine e3var(y,var,ycl,shp,shgl,shg,nshl)
@@ -178,8 +193,12 @@ c
               var(:)%grad_y(1,ivar) = var(:)%grad_y(1,ivar) + ycl(:,n,ivar)*shg(:,n,1)
               var(:)%grad_y(2,ivar) = var(:)%grad_y(2,ivar) + ycl(:,n,ivar)*shg(:,n,2)
               var(:)%grad_y(3,ivar) = var(:)%grad_y(3,ivar) + ycl(:,n,ivar)*shg(:,n,3)
+c      if (ivar==1) then
+c        write(*,10) 'node, shg, ycl, grad',n,shg(1,n,1:3),ycl(1,n,ivar),var(1)%grad_y(1:3,ivar)
+c      endif
             enddo
           enddo
+10    format(a,i4,7e24.16)
 
           return
 c
@@ -217,7 +236,7 @@ c
 c
           real*8 :: alpha,jump_u(5),climit,jump_y(5),A0_jump_y(5)
 c
-          do iel = 1,npro
+          element_loop: do iel = 1,npro
 c
             call calc_conv_flux(fconv0,rho0(iel),u0(iel,:),um0(iel,:),pres0(iel),ei0(iel))
             call calc_conv_flux(fconv1,rho1(iel),u1(iel,:),um1(iel,:),pres1(iel),ei1(iel))
@@ -244,36 +263,42 @@ c
 c        write(*,500) myrank,iel,f0n0(:)
 c
 c
-      if (iel == 1) then
-c        write(*,10) 'rho0, u0, p0, T0, ei0:', rho0(iel), u0(iel,1), pres0(iel), ei0(iel)
+c      if (iel == 1) then
+c        write(*,10) 'rho0, u0, p0, T0:', rho0(iel), u0(iel,1), pres0(iel), ei0(iel)
 c        write(*,10) 'conv0: ',fconv0(1,:)
 c        write(*,10) 'diff0: ',fdiff0(1,:)
-c        write(*,10) 'grad_y u:', var0(iel)%grad_y(:,2)
-c        write(*,10) 'grad_y T:', var0(iel)%grad_y(:,5)
+c        write(*,11) 'grad_y u 0:', iel, var0(iel)%grad_y(:,2)
+c        write(*,11) 'grad_y T 0:', iel, var0(iel)%grad_y(:,5)
 c        write(*,10) 'f0: ',f0(1,:)
-c       write(*,*) 'stiff0: ',prop0(1)%stiff(15,15)
+c        write(*,*) 'stiff0: ',prop0(1)%stiff(15,15)
 c        write(*,10) 'rho1, u1, p1, ei1:', rho1(iel), u1(iel,1), pres1(iel), ei1(iel)
 c        write(*,10) 'conv1: ',fconv1(1,:)
 c        write(*,10) 'diff1: ',fdiff1(1,:)
-c        write(*,10) 'grad_y u:', var1(iel)%grad_y(:,2)
-c        write(*,10) 'grad_y T:', var1(iel)%grad_y(:,5)
+c        write(*,11) 'grad_y u 1:', iel, var1(iel)%grad_y(:,2)
+c        write(*,11) 'grad_y T 1:', iel, var1(iel)%grad_y(:,5)
 c        write(*,10) 'f1: ',f1(1,:)
-c       write(*,*) 'stiff1: ',prop1(1)%stiff(15,15)
-      endif
+c        write(*,*) 'stiff1: ',prop1(1)%stiff(15,15)
+c        write(*,11) 'f0n0:',iel,f0n0
+c        write(*,11) 'f1n0:',iel,f1n0
+c        write(*,11) 'f1n1:',iel,f1n1
+c        write(*,11) 'f0n1:',iel,f0n1
+c      endif
 c
-c      write(*,11) 'f0n0:',iel,f0n0
-c      write(*,11) 'f1n0:',iel,f1n0
-c      write(*,11) 'f1n1:',iel,f1n1
-c      write(*,11) 'f0n1:',iel,f0n1
             ri0(iel,16:20) = ri0(iel,16:20) + pt50 * ( f0n0(1:5) + f1n0(1:5) )
             ri1(iel,16:20) = ri1(iel,16:20) + pt50 * ( f1n1(1:5) + f0n1(1:5) )
-c      write(*,11) 'ri0  : ',iel,ri0(iel,16:20)
-c      write(*,11) 'ri1  : ',iel,ri1(iel,16:20)
-c...UPWIND????
-c   upwind flux is in n1 direction...
 c
-CC      ri0(iel,16:20) = ri0(iel,16:20) + f1n0(1:5)
-CC      ri1(iel,16:20) = ri1(iel,16:20) + f1n1(1:5)
+#if debug==1
+      if (iel == 1) then
+        write(*,11) 'ri0  : ',iel,ri0(iel,16:20)
+        write(*,11) 'ri1  : ',iel,ri1(iel,16:20)
+      endif
+#endif
+c
+            cycle element_loop
+c...UPWIND????
+c
+C      ri0(iel,16:20) = ri0(iel,16:20) + f1n0(1:5)
+C      ri1(iel,16:20) = ri1(iel,16:20) + f1n1(1:5)
 c
 c
 c... Here is the additional stability terms from the Lax-Friedrichs flux calculations
@@ -333,7 +358,7 @@ c              ri1(iel,17:19) = ri1(iel,17:19) + pt50 * surface_tension_coeff * 
 c
             endif
 c
-          enddo
+          enddo element_loop
 c
 10    format(a,5e24.16)
 11    format(a,i6,5e24.16)
@@ -675,7 +700,6 @@ c
             enddo
           enddo
 c
-c      write(*,'(a,5e24.16)') 'ri: ',ri(1,16:20)
           do iflow = 1,nflow
             do n = 1,nshl
               rl(:,n,iflow) = rl(:,n,iflow) + shp(:,n)*WdetJ(:) * ri(:,3*nflow+iflow)

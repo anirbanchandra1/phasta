@@ -58,8 +58,8 @@ c
 c
 c... calculate normal vectors at the integration point...
 c
-            call calc_normal_vectors(nv0,area,WdetJif0,xl0,qwtif0,lcsyst0,intp,npro)
-            call calc_normal_vectors(nv1,area,WdetJif1,xl1,qwtif1,lcsyst1,intp,npro)
+            call calc_normal_vectors(nv0,area,WdetJif0,xl0,qwtif0,itpid,lcsyst0,intp,npro)
+            call calc_normal_vectors(nv1,area,WdetJif1,xl1,qwtif1,itpid,lcsyst1,intp,npro)
 c
             call  getshp(shp0, shgl0, shpif0, shgif0, sgn0, npro, nsd, nshl0, nqpt, nenl0, intp, ipord)
             call  getshp(shp1, shgl1, shpif1, shgif1, sgn1, npro, nsd, nshl1, nqpt, nenl1, intp, ipord)
@@ -93,13 +93,13 @@ c     &                               + shp(:,n)*nv(:,isd)*WdetJif(:)
 c
         end subroutine collect_weighted_normals
 c
-        subroutine calc_normal_vectors(nv,area,WdetJ,xl,qwt,lcsyst,intp,npro)
+        subroutine calc_normal_vectors(nv,area,WdetJ,xl,qwt,itpid,lcsyst,intp,npro)
 c
           real*8, dimension(:,:), pointer, intent(out) :: nv
           real*8, dimension(:),   pointer, intent(out) :: area, WdetJ
           real*8, dimension(:,:,:), pointer, intent(in) :: xl
           real*8, dimension(nqpt),           intent(in) :: qwt
-          integer, intent(in) :: lcsyst,intp,npro
+          integer, intent(in) :: itpid,lcsyst,intp,npro
 c
           real*8 :: temp_len(npro)
           real*8, dimension(npro, nsd) :: v1, v2, temp_normal
@@ -117,8 +117,14 @@ c
             v2(:,isd) = xl(:,3,isd) - xl(:,1,isd)
           enddo
 c
-          select case (lcsyst)
-          case (1)
+          select case (itpid)
+          case (
+     &          itpif_tet_tet
+     &,         itpif_tet_wedge
+     &,         itpif_wedge_tet
+     &,         itpif_wedge_wedge
+     &         )
+    
 c
             temp_normal(:,1) = + v1(:,2)*v2(:,3) - v1(:,3)*v2(:,2)
             temp_normal(:,2) = - v1(:,1)*v2(:,3) + v1(:,3)*v2(:,1)
@@ -129,24 +135,30 @@ c
      &                       + temp_normal(:,3)*temp_normal(:,3))
 c
           case default
-c            write(err_msg,'(a,i1)') 'lcsyst ',lcsyst
             call error ('calc_normal_vectors ', err_msg, 0)
           end select
 c
-          do iel = 1,npro
-            temp_len(iel) = sqrt(dot_product(temp_normal(iel,1:3),temp_normal(iel,1:3)))
-            nv(iel,1:nsd) = temp_normal(iel,1:nsd) / temp_len(iel)
-          enddo
+          temp_len = sqrt(temp_normal(:,1)*temp_normal(:,1)
+     &                   +temp_normal(:,2)*temp_normal(:,2)
+     &                   +temp_normal(:,3)*temp_normal(:,3))
 c
-c... also calculate WdetJ here...
 c
-          select case (lcsyst)
-          case (1)
+          nv(:,1)  = temp_normal(:,1) / temp_len
+          nv(:,2)  = temp_normal(:,2) / temp_len
+          nv(:,3)  = temp_normal(:,3) / temp_len
+c
+c... Wedge normal direction needs a flip
+c
+          if     (lcsyst == itp_tet)   then
+c
             WdetJ = qwt(intp) * temp_len * pt25
-          case default
-            write(err_msg,'(a,i1)') 'lcsyst ',lcsyst
-            call error ('calc WdetJif ', err_msg, 0)
-          end select
+c
+          elseif (lcsyst == itp_wedge) then
+c
+            nv = -nv
+            WdetJ = (1 - Qwt(intp)) *temp_len * pt25
+c
+          endif
 c
         end subroutine calc_normal_vectors
 c

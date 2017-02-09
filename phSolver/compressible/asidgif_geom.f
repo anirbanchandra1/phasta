@@ -1,7 +1,7 @@
       subroutine asidgif_geom 
      & (
      &  x,shpif0,shpif1,shgif0,shgif1,
-     &  qwtif0, qwtif1,
+     &  qwtif, qwtif0, qwtif1,
      &  ienif0, ienif1
      & )
 c
@@ -17,7 +17,7 @@ c
         real*8, dimension(nshl1,nqpt),intent(in)   :: shpif1
         real*8, dimension(nsd,nshl0,nqpt), intent(in) :: shgif0
         real*8, dimension(nsd,nshl1,nqpt), intent(in) :: shgif1
-        real*8, intent(in) :: qwtif0(nqpt), qwtif1(nqpt)
+        real*8, intent(in) :: qwtif(nqpt), qwtif0(nqpt), qwtif1(nqpt)
         integer, dimension(:,:), pointer, intent(in)   :: ienif0, ienif1
 c
       integer :: iel,inode,n
@@ -30,7 +30,7 @@ c
         call localx(x, xl0,  ienif0, nsd, 'gather  ', nshg, nenl0, npro)
         call localx(x, xl1,  ienif1, nsd, 'gather  ', nshg, nenl1, npro)
 c
-        call calc_if_normals(xl0,xl1,shpif0,shpif1,shgif0,shgif1,qwtif0,qwtif1)
+        call calc_if_normals(xl0,xl1,shpif0,shpif1,shgif0,shgif1,qwtif,qwtif)
 c
         call local (if_normal, if_normal_l0, ienif0, nsd, 'scatter ', nshg, nshl0,npro,ipord)
         call local (if_normal, if_normal_l1, ienif1, nsd, 'scatter ', nshg, nshl1,npro,ipord)
