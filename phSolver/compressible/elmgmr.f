@@ -312,7 +312,7 @@ c
 c
         include "common.h"
         include "mpif.h"
-#define debug 0
+#define debug 1
 c
 #if debug==1 
       integer imax(5),idbg
@@ -799,50 +799,26 @@ c
           nshl0   = lcblkif(iblkif_nshl0,iblk)
           nshl1   = lcblkif(iblkif_nshl1,iblk)
           itpid   = lcblkif(iblkif_topology,iblk)
-          materif0  = lcblkif(9, iblk)
-          materif1  = lcblkif(10,iblk)
+          mater0  = lcblkif(9, iblk)
+          mater1  = lcblkif(10,iblk)
           ndof    = lcblkif(11,iblk)
           nsymdl  = lcblkif(12,iblk)    ! ???
           npro    = lcblkif(1,iblk+1) - iel
           inum    = iel + npro - 1
           ngaussif = nintif(itpid)
 c
-c... setup material blocks such that 0 is vapor and 1 is liquid/solid
+c... remember that the 0 side goes to the first material in the solver.inp
+c...           and the 1 side goes to the second material in the solver.inp
 c
-          mater0 = -1
-          mater1 = -1
-c
-CC          select case (mat_eos(materif0,1))
-CC          case (ieos_ideal_gas,ieos_ideal_gas_mixture)
-            mater0 = materif0
             ienif0 => mienif0(iblk)%p
-CC          case (ieos_liquid_1,ieos_ideal_gas_2)
-CC            mater1 = materif0
-CC            ienif1 => mienif0(iblk)%p
-CC          case default
-CC            call error ('getthm  ', 'WE DO NOT SUPPORT THIS MATERIAL (1)', materif0)
-CC          end select
-c
-CC          select case (mat_eos(materif1,1))
-CC          case (ieos_ideal_gas,ieos_ideal_gas_mixture)
-CC            mater0 = materif1
-CC            ienif0 => mienif1(iblk)%p
-CC          case (ieos_liquid_1,ieos_ideal_gas_2)
-            mater1 = materif1
             ienif1 => mienif1(iblk)%p
-CC          case default
-CC            call error ('getthm  ', 'WE DO NOT SUPPORT THIS MATERIAL (2)', materif1)
-CC          end select
-c
-CC          if (mater0 < 0 .or. mater1 < 0) 
-CC     &      call error ('elmgmr  ', 'failed setting up mater0,1', 0)
 c
 c... set equations of state
 c
           get_vap_frac0 => e3if_empty
 c
           select case (mat_eos(mater0,1))
-          case (ieos_ideal_gas,ieos_ideal_gas_2)
+          case (ieos_ideal_gas)
             getthmif0_ptr => getthm7_ideal_gas
           case (ieos_ideal_gas_mixture)
             getthmif0_ptr => getthm7_ideal_gas_mixture
@@ -856,7 +832,7 @@ c
 c          get_vap_frac1 => e3if_empty
 c
           select case (mat_eos(mater1,1))
-          case (ieos_ideal_gas,ieos_ideal_gas_2)
+          case (ieos_ideal_gas)
             getthmif1_ptr => getthm7_ideal_gas
           case (ieos_ideal_gas_mixture)
 c            getthmif1_ptr => getthm7_ideal_gas_mixture

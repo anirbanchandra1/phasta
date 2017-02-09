@@ -103,27 +103,25 @@ c           call MPI_Barrier(MPI_COMM_WORLD,ierr)
      &      c_loc(intfromfile), inine, dataInt, iotype)
 c
            neltp  = intfromfile(1)       ! number of pair of elements in this block
-           nenl0  = intfromfile(2)       ! number of nodes in element 0
-           nenl1  = intfromfile(3)       ! number of nodes in element 1
+           tmpnenl0  = intfromfile(2)       ! number of nodes in element 0
+           tmpnenl1  = intfromfile(3)       ! number of nodes in element 1
            ipordl = intfromfile(4)       ! polynomial order
-           nshl0  = intfromfile(5)
-           nshl1  = intfromfile(6)
+           tmpnshl0  = intfromfile(5)
+           tmpnshl1  = intfromfile(6)
            nnface = intfromfile(7)       ! number of nodes on the interface
-           lcsyst0= intfromfile(8)       ! element type 0
-           lcsyst1= intfromfile(9)       ! element type 1
+           tmplcsyst0= intfromfile(8)       ! element type 0
+           tmplcsyst1= intfromfile(9)       ! element type 1
 c
            if (neltp<0) then
               writeLock=1;
               cycle iblk_loop
            endif
 c
-          allocate(ienif0tmp(neltp,nshl0))
-          allocate(ienif1tmp(neltp,nshl1))
 c
 c... reads all the connectivity data in one array
 c
-           iientpsiz = neltp*(nshl0+nshl1)
-           allocate (ientp(neltp,(nshl0+nshl1)))
+           iientpsiz = neltp*(tmpnshl0+tmpnshl1)
+           allocate (ientp(neltp,(tmpnshl0+tmpnshl1)))
            call phio_readdatablock(fhandle,fname2 // char(0),
      &      c_loc(ientp), iientpsiz, dataInt, iotype)
 c
@@ -156,41 +154,53 @@ c           call MPI_Barrier(MPI_COMM_WORLD,ierr)
            call phio_readdatablock(fhandle,fname2 // char(0),
      &      c_loc(mattypeif), imattypesiz, dataInt, iotype)
 c
+c ... material tag first always takes mattype0 and ienif0
+c
+          mattype0 = 1
+          mattype1 = 2
+c
+          if     (mattypeif(1,1) == mat_tag(1,1)) then
+            nshl0 = tmpnshl0
+            nshl1 = tmpnshl1
+            lcsyst0 = tmplcsyst0
+            lcsyst1 = tmplcsyst1
+            nenl0 = tmpnenl0
+            nenl1 = tmpnenl1
+          elseif (mattypeif(1,2) == mat_tag(1,1)) then
+            nshl0 = tmpnshl1
+            nshl1 = tmpnshl0
+            lcsyst0 = tmplcsyst1
+            lcsyst1 = tmplcsyst0
+            nenl0 = tmpnenl1
+            nenl1 = tmpnenl0
+          else
+            write(*,*) 'ERROR: in genbkif. material type is wrong!'
+            call error ('genbkif  ', '', 0)
+          endif
+c
+          allocate(ienif0tmp(neltp,nshl0))
+          allocate(ienif1tmp(neltp,nshl1))
+c
           if(writeLock==0) then
 c
 c... make blocks of elements
 c
-          material_loop: do imat = 1,2
-c
-            iptr = 1
+          iptr = 1
 c
           blocks_loop:   do n = 1, neltp, ibksz
 c
-            ipro = 0
             npro = 0
+c
             do
-              if (mattypeif(iptr,imat) == mat_tag(1,1)) then
-                npro = npro + 1
-                ienif0tmp(npro,1:nshl0) = ientp(iptr,1:nshl0)
-                ienif1tmp(npro,1:nshl1) = ientp(iptr,nshl0+1:nshl0+nshl1)
-              endif
+              npro = npro + 1
+              ienif0tmp(npro,1:nshl0) = ientp(iptr,1:nshl0)
+              ienif1tmp(npro,1:nshl1) = ientp(iptr,nshl0+1:nshl0+nshl1)
               iptr = iptr + 1
               if (npro == ibksz .or. iptr > neltp) exit
             enddo
 c
-            if (npro == 0) cycle material_loop
-c
-            select case (imat)
-            case (1)
-              mattype0 = 1
-              mattype1 = 2
-            case (2)
-              mattype0 = 2
-              mattype1 = 1
-            end select
-c
-c      write(*,11) imat, iel, lcsyst0, lcsyst1,nshl0,nshl1, mattype0, mattype1
-11    format('imat, iel, lcsyst0, lcsyst1, nshl0, nshl1, mattype0, mattype1: ',8i4)
+c      write(*,11) iel, lcsyst0, lcsyst1,nshl0,nshl1, mattype0, mattype1
+11    format(' iel, lcsyst0, lcsyst1, nshl0, nshl1, mattype0, mattype1: ',7i4)
 c
             nelblif = nelblif + 1
             lcblkif(1,nelblif) = iel
@@ -221,7 +231,6 @@ c
             iel = iel + npro
 c
           enddo blocks_loop
-          enddo material_loop
           endif
 c
           deallocate(ientp)
