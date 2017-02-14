@@ -622,7 +622,6 @@ c
 c
                       lhs = 1  
                       iprec=lhs
-                      ndofelas = nshl * nelas
 c 
                      call set_if_velocity (BC(:,ndof+2:ndof+4),  iBC, 
      &                                umesh,    disp, x,  Delt(1),   ilwork,

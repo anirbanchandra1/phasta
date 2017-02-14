@@ -72,7 +72,7 @@ c
           ngauss = nint(lcsyst)
 c
 c.... compute and assemble the residual and tangent matrix
-c     ndofelas = nshl * nelas
+          ndofelas = nshl * nelas
 c
           allocate (Estiff(npro,ndofelas,ndofelas))
           allocate (tmpshp(nshl,MAXQPT))
