@@ -647,9 +647,10 @@ c.... call to SolGMRElas ... For mesh-elastic solve
 c
                      call SolGMRElas (x,        disp,      iBC,    BC,
      &                                colm,     rowp,      meshq,
-     &                                hBrg,     eBrg, 
-     &                                yBrg,     Rcos,      Rsin,     iper, 
-     &                                ilwork,   shp,       shgl,     elasDy)
+     &                                hBrg,     eBrg,
+     &                                yBrg,     Rcos,      Rsin,     iper,
+     &                                ilwork,   shp,   shgl,  shpb, shglb,
+     &                                elasDy)
 c
                   endif  ! end of switch for flow or scalar or mesh-elastic solve
 c     

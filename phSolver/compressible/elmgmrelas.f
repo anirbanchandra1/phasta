@@ -1,5 +1,6 @@
         subroutine ElmGMRElas (x,     disp,    shp,       shgl,  
-     &                         iBC,   BC,      elasres,   elasBDiag,
+     &                         iBC,   BC,      shpb,      shglb,
+     &                         elasres,   elasBDiag,
      &                         iper,  ilwork,  elaslhsK,  
      &                         col,   row,     meshq)
 c
@@ -22,15 +23,19 @@ c
      &          meshq(numel),
      &          meshV(numel)
 c
-        dimension x(numnp,nsd),        disp(numnp,nsd),              
-     &            iBC(nshg),
-     &            BC(nshg,ndofBC),      
+        dimension gcnormal(nshg, nsd)
+c
+        dimension x(numnp,nsd),        disp(numnp,nsd),
+     &            xtmp(numnp,nsd),     iBC(nshg),
+     &            BC(nshg,ndofBC),
      &            elasres(nshg,nelas),
      &            elasBDiag(nshg,nelas,nelas),
      &            iper(nshg)
 c
-        dimension shp(MAXTOP,maxsh,MAXQPT),  
-     &            shgl(MAXTOP,nsd,maxsh,MAXQPT) 
+        dimension shp(MAXTOP,maxsh,MAXQPT),
+     &            shgl(MAXTOP,nsd,maxsh,MAXQPT),
+     &            shpb(MAXTOP,maxsh,MAXQPT),
+     &            shglb(MAXTOP,nsd,maxsh,MAXQPT)
 c
         dimension ilwork(nlwork)
 c
@@ -38,6 +43,51 @@ c
 c
         real*8, allocatable :: tmpshp(:,:), tmpshgl(:,:,:)
         real*8, allocatable :: Estiff(:,:,:)
+c
+c.... ------------------->   layer base elements   <-------------------
+c
+c.... calculate the normal of each growth curve based on new boundary positions
+c
+        xtmp = x + disp
+        gcnormal = zero
+c
+c.... loop over the boundary elements
+c
+        do iblk = 1, nelblb
+c
+c.... set up the parameters
+c
+          iel    = lcblkb(1,iblk)
+          lelCat = lcblkb(2,iblk)
+          lcsyst = lcblkb(3,iblk)
+          iorder = lcblkb(4,iblk)
+          nenl   = lcblkb(5,iblk)  ! no. of vertices per element
+          nenbl  = lcblkb(6,iblk)  ! no. of vertices per bdry. face
+          nshl   = lcblkb(9,iblk)
+          nshlb  = lcblkb(10,iblk)
+          mattyp = lcblkb(7,iblk)
+          ndofl  = lcblkb(8,iblk)
+          npro   = lcblkb(1,iblk+1) - iel
+c
+          if(lcsyst.eq.3) lcsyst=nenbl ! may not be necessary
+          ngaussb = nintb(lcsyst)
+c
+c.... only collect wedge_tri for now
+c
+          if(lcsyst.ne.3) cycle
+c
+c.... compute and assemble non-unit normal
+c
+          call calc_gc_normal (xtmp,             shpb(lcsyst,1:nshl,:),
+     &                         mienb(iblk)%p,    miBCB(iblk)%p,
+     &                         gcnormal)
+c
+        enddo ! end loop the boundary elements
+c
+c.... loop over the interface elements
+c
+
+
 c
 c.... -------------------->   interior elements   <--------------------
 c
