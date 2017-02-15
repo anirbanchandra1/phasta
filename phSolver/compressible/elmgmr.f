@@ -312,7 +312,7 @@ c
 c
         include "common.h"
         include "mpif.h"
-#define debug 1
+#define debug 0
 c
 #if debug==1 
       integer imax(5),idbg

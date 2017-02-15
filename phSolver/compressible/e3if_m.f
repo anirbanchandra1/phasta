@@ -106,9 +106,17 @@ c
             call stability_term(ri0,Kij0)
             call stability_term(ri1,Kij1)
 c
-            call kinematic_conditions(ri0,y0,y1,prop0)
-            call kinematic_conditions(ri1,y1,y0,prop1)
-c            call kinematic_condition
+c ... kinematic condition term:
+c     set the mu coeff to the max of the 0,1 materials 
+c
+            mu(:,1) = zero
+            mu(:,2) = max(prop0%stiff(3,3),prop1%stiff(3,3)) ! maximum of the two viscositiy values
+            mu(:,3) = max(prop0%stiff(3,3),prop1%stiff(3,3)) ! maximum of the two viscositiy values
+            mu(:,4) = max(prop0%stiff(3,3),prop1%stiff(3,3)) ! maximum of the two viscositiy values
+            mu(:,5) = max(prop0%stiff(5,5),prop1%stiff(5,5)) ! maximum of the two thermal conductivity values
+c
+            call kinematic_condition(ri0,y0,y1)
+            call kinematic_condition(ri1,y1,y0)
 c
 c...LHS calculations...
 c
@@ -221,7 +229,7 @@ c
           call get_mesh_velocity(um0,umeshl0,shp0,npro,nshl0)
           call get_mesh_velocity(um1,umeshl1,shp1,npro,nshl1)
 c
-           call getthmif
+          call getthmif
 c
         end subroutine e3if_var
 c
@@ -429,11 +437,10 @@ c
 c
         end subroutine stability_term
 c
-        subroutine kinematic_conditions(ri,y0,y1,prop)
+        subroutine kinematic_condition(ri,y0,y1)
 c
            real*8, dimension(:,:), intent(inout) :: ri
            real*8, dimension(:,:), intent(in) :: y0,y1
-           type(prop_t), dimension(:), pointer, intent(in) :: prop
 c
            integer :: iflow,jflow,isd
            real*8 :: this_sum(npro)
@@ -447,153 +454,12 @@ c
                  this_sum = this_sum + ctc(:,iflow,jflow)*(y0(:,jflow)-y1(:,jflow))
                enddo
 c
-c               ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*mu/h * this_sum
-               select case(iflow)
-               case(2:4)
-                 ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*prop%stiff(3,3)/length_h * this_sum  ! for mu
-               case(5)
-                 ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*prop%stiff(5,5)/length_h * this_sum  ! for kappa
-               end select
+               ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*mu(:,iflow)/length_h * this_sum
 c
              enddo
            enddo
 c
-        end subroutine kinematic_conditions
-c
-        subroutine kinematic_condition
-c
-          integer :: iflow,jflow,isd,jsd
-          real*8, dimension(npro,nflow) :: cy0,cy1
-          real*8, dimension(npro,nsd,nflow) :: cy_jump 
-          real*8, dimension(npro) :: Kij_CY_i0, Kij_CY_i1, CWCY0, CWCY1
-c
-          do iflow = 1,nflow
-c
-            cy0(:,iflow) = zero
-            cy1(:,iflow) = zero
-c
-            do jflow = 1,nflow
-              cy0(:,iflow) = cy0(:,iflow) + cmtrx(:,iflow,jflow)*var0(:)%y(jflow)
-              cy1(:,iflow) = cy1(:,iflow) + cmtrx(:,iflow,jflow)*var1(:)%y(jflow)
-            enddo
-c
-            do isd = 1,nsd
-              cy_jump(:,isd,iflow) = cy0(:,iflow)*nv0(:,isd) + cy1(:,iflow)*nv1(:,isd)
-            enddo
-c
-          enddo
-c
-          do iflow = 1,nflow
-c
-            CWCY0 = zero
-            CWCY1 = zero
-c
-            do isd = 1,nsd
-c
-              Kij_CY_i0 = zero
-              Kij_CY_i1 = zero
-c
-              do jflow = 1,nflow
-                do jsd = 1,nsd
-c
-                  Kij_CY_i0 = Kij_CY_i0 + Kij0(:,isd,jsd,iflow,jflow)*cy_jump(:,jsd,jflow)
-                  Kij_CY_i1 = Kij_CY_i1 + Kij1(:,isd,jsd,iflow,jflow)*cy_jump(:,jsd,jflow)
-c
-                  CWCY0 = CWCY0 + cmtrx(:,iflow,jflow)*nv0(:,jsd)*cy_jump(:,jsd,jflow)
-                  CWCY1 = CWCY1 + cmtrx(:,iflow,jflow)*nv1(:,jsd)*cy_jump(:,jsd,jflow)
-c
-                enddo
-              enddo
-c
-              ri0(:,nflow*(isd-1)+iflow) = ri0(:,nflow*(isd-1)+iflow) + pt50 * s * Kij_CY_i0
-              ri1(:,nflow*(isd-1)+iflow) = ri1(:,nflow*(isd-1)+iflow) + pt50 * s * Kij_CY_i1
-c
-            enddo
-c
-            ri0(:,3*nflow+iflow) = ri0(:,3*nflow+iflow) + e*mu/length_h * CWCY0
-            ri1(:,3*nflow+iflow) = ri1(:,3*nflow+iflow) + e*mu/length_h * CWCY1
-c
-          enddo
-c
         end subroutine kinematic_condition
-c
-        subroutine kinematic_condition_old
-c
-          integer :: i,j,isd,jsd
-          real*8 :: cy_jump(npro,nsd,nflow)
-     &,             cy0(npro),cy1(npro)
-          real*8, dimension(npro) :: kij_cy0, kij_cy1, cwcy0, cwcy1
-c
-c... calc jump in C*Y
-c
-          do i = 1,nflow
-c
-            cy0(:) = zero
-            cy1(:) = zero
-c
-            do j = 1,nflow
-              cy0 = cy0 + cmtrx(:,i,j)*var0(:)%y(j)
-              cy1 = cy1 + cmtrx(:,i,j)*var1(:)%y(j)
-            enddo
-c
-            do isd = 1,nsd
-              cy_jump(:,isd,i) = cy0 * nv0(:,isd) + cy1 * nv1(:,isd)
-            enddo
-c
-          enddo
-c
-c      write(*,*) 'cy_jump 1: ',cy_jump(1,1,:)
-c      write(*,*) 'cy_jump 2: ',cy_jump(1,2,:)
-c      write(*,*) 'cy_jump 3: ',cy_jump(1,3,:)
-c
-c... Multiply by diffusion matrix and add to RHS residual...
-c
-          do i = 1, nflow
-c
-            cwcy0 = zero
-            cwcy1 = zero
-c
-            do isd = 1, nsd
-c
-c...another set of loops for matrix operation...
-c
-              kij_cy0 = zero
-              kij_cy1 = zero
-c
-              do j = 1, nflow
-                do jsd = 1, nsd
-c
-                  Kij_cy0 = Kij_cy0 + Kij0(:,isd,jsd,i,j)*cy_jump(:,jsd,j)
-                  Kij_cy1 = Kij_cy1 + Kij1(:,isd,jsd,i,j)*cy_jump(:,jsd,j)
-c
-                  cwcy0 = cwcy0 + cmtrx(:,i,j)*nv0(:,jsd)*cy_jump(:,jsd,j)
-                  cwcy1 = cwcy1 + cmtrx(:,i,j)*nv1(:,jsd)*cy_jump(:,jsd,j)
-c
-                enddo
-              enddo
-c
-              ri0(:,nflow*(isd-1)+i) = ri0(:,nflow*(isd-1)+i) + pt50 * s * kij_cy0
-              ri1(:,nflow*(isd-1)+i) = ri1(:,nflow*(isd-1)+i) + pt50 * s * kij_cy1
-c
-c      if (i == 5 .and. isd == 1) then
-c        write(*,*) 'i, isd, kij_cy0: ',i,isd,kij_cy0(1)
-c        write(*,*) 'i, isd, kij_cy1: ',i,isd,kij_cy1(1)
-c      endif
-c
-            enddo
-c
-            ri0(:,nflow*3+i) = ri0(:,nflow*3+i) + e*mu/length_h * cwcy0
-            ri1(:,nflow*3+i) = ri1(:,nflow*3+i) + e*mu/length_h * cwcy1
-c
-c      write(*,*) 'i, cwcy0: ',i,cwcy0(1)
-c      write(*,*) 'i, cwcy1: ',i,cwcy1(1)
-c
-          enddo
-c
-c      write(*,20) 'kij_cy0, kij_cy1:', kij_cy0(1), kij_cy1(1)
-20    format(a,2e24.16)
-c
-        end subroutine kinematic_condition_old
 c
         subroutine calc_cmtrx
 c

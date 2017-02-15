@@ -33,6 +33,7 @@ c
 c
           use dgifinp_m
           use e3if_param_m
+          use matdat_def_m
 c
           implicit none
 c
@@ -56,6 +57,8 @@ c
           s = dgif_s
           e = dgif_e
           length_h = dgif_h
+c
+          
 c
           lhs_dg = lhs
 c
