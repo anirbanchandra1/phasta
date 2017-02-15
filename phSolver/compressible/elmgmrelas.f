@@ -21,7 +21,7 @@ c
         real*8  elaslhsK(nelas*nelas,nnz_tot),
      &          meshq(numel),
      &          meshV(numel)
-c        
+c
         dimension x(numnp,nsd),        disp(numnp,nsd),              
      &            iBC(nshg),
      &            BC(nshg,ndofBC),      
@@ -34,6 +34,8 @@ c
 c
         dimension ilwork(nlwork)
 c
+        integer errorcount(2)
+c
         real*8, allocatable :: tmpshp(:,:), tmpshgl(:,:,:)
         real*8, allocatable :: Estiff(:,:,:)
 c
@@ -45,6 +47,7 @@ c
 c.... initialize the arrays
 c
         elasres = zero
+        errorcount = zero
         if (lhs. eq. 1)    elaslhsK  = zero
         if (iprec .ne. 0)  elasBDiag = zero
 c
@@ -69,7 +72,7 @@ c
           ngauss = nint(lcsyst)
 c
 c.... compute and assemble the residual and tangent matrix
-c     ndofelas = nshl * nelas
+          ndofelas = nshl * nelas
 c
           allocate (Estiff(npro,ndofelas,ndofelas))
           allocate (tmpshp(nshl,MAXQPT))
@@ -82,7 +85,7 @@ c
 c.... Shape measure. Calculate the shape quality
 c
           call shpMeasure(x, mien(iblk)%p, meshq(iel:iel+npro-1),
-     &                                     meshV(iel:iel+npro-1) ) 
+     &                    meshV(iel:iel+npro-1), errorcount )
 c
           call AsIGMRElas (x,             disp,
      &                     tmpshp,        tmpshgl,    
@@ -108,6 +111,11 @@ c
 c.... end of interior element loop
 c
        enddo
+c
+      if (errorcount(1) .lt. 0 .or. errorcount(2) .lt. 0) then
+        write(*,*) errorcount(1), " elements Meshq larger than one; ",
+     &             errorcount(2), " elements Meshq smaller than zero."
+      endif
 c
       if(iabc==1) then               ! are there any axisym BCs
           call rotabc(elasres(1,2), iBC,  'in ')
