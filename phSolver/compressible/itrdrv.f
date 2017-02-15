@@ -709,19 +709,14 @@ c
 c
 c.... call itrCorrectElas ... and then itrBCElas ...
 c
-c                     call itrCorrectElas(disp, elasDy)
                      call itrCorrectElas(xold, x, disp, elasDy)
 c
-                     umesh = disp / Delt(1)
-c 
                      call itrBCElas(umesh,  disp,  iBC, 
      &                              BC(:,ndof+2:ndof+5),
      &                              iper,   ilwork        )
 c
-c                     umesh = disp / Delt(1)
+                     umesh = disp / Delt(1)
                      umeshold = umesh
-c
-c                     call itrCorrectElas(x, disp)
 c
                   endif ! end of switch for flow or scalar or mesh-elastic update
                endif            !end of switch between solve or update
