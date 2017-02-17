@@ -2,7 +2,8 @@
      &                       col,     row,     meshq,
      &                       HBrg,    eBrg,
      &                       yBrg,    Rcos,    Rsin,   iper,    ilwork,
-     &                       shp,     shgl,    shpb,   shglb,   Dy)
+     &                       shp,     shgl,    shpb,   shglb,
+     &                       shpif0,  shpif1,  Dy)
 c
 c----------------------------------------------------------------------
 c
@@ -43,11 +44,13 @@ c
       dimension Dy(nshg,nelas),  
      &          temp(nshg,nelas),
      &          uBrg(nshg,nelas,Kspace+1)
-c        
+c
       dimension shp(MAXTOP,maxsh,MAXQPT),
      &          shgl(MAXTOP,nsd,maxsh,MAXQPT),
      &          shpb(MAXTOP,maxsh,MAXQPT),
      &          shglb(MAXTOP,nsd,maxsh,MAXQPT)
+c
+      real*8, dimension(maxtop,    maxsh,maxqpt) :: shpif0, shpif1
 c
 c.... *******************>> Element Data Formation <<******************
 c
@@ -56,6 +59,7 @@ c     diagonal preconditioner
 c
       call ElmGMRElas (x,     disp,    shp,       shgl,
      &                 iBC,   BC,      shpb,      shglb,
+     &                 shpif0,    shpif1,
      &                 elasres,   elasBDiag,
      &                 iper,  ilwork,  elaslhsK,
      &                 col,   row,     meshq)

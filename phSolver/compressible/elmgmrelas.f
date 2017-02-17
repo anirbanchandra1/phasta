@@ -1,7 +1,8 @@
-        subroutine ElmGMRElas (x,     disp,    shp,       shgl,  
+        subroutine ElmGMRElas (x,     disp,    shp,       shgl,
      &                         iBC,   BC,      shpb,      shglb,
+     &                         shpif0,    shpif1,
      &                         elasres,   elasBDiag,
-     &                         iper,  ilwork,  elaslhsK,  
+     &                         iper,  ilwork,  elaslhsK,
      &                         col,   row,     meshq)
 c
 c----------------------------------------------------------------------
@@ -37,6 +38,8 @@ c
      &            shpb(MAXTOP,maxsh,MAXQPT),
      &            shglb(MAXTOP,nsd,maxsh,MAXQPT)
 c
+        real*8, dimension(maxtop,    maxsh,maxqpt) :: shpif0, shpif1
+c
         dimension ilwork(nlwork)
 c
         integer errorcount(2)
@@ -53,7 +56,7 @@ c
 c
 c.... loop over the boundary elements
 c
-        do iblk = 1, nelblb
+        boundary_blocks: do iblk = 1, nelblb
 c
 c.... set up the parameters
 c
@@ -82,12 +85,70 @@ c
      &                         mienb(iblk)%p,    miBCB(iblk)%p,
      &                         gcnormal)
 c
-        enddo ! end loop the boundary elements
+        enddo boundary_blocks ! end loop the boundary elements
 c
 c.... loop over the interface elements
 c
+        interface_blocks: do iblk = 1, nelblif
+c
+          iel     = lcblkif(1, iblk)
+          npro    = lcblkif(1,iblk+1) - iel
+          lcsyst0 = lcblkif(3, iblk)    ! element0 type
+          lcsyst1 = lcblkif(4, iblk)    ! element1 type
+          ipord   = lcblkif(5, iblk)    ! polynomial order
+          nenl0   = lcblkif(6, iblk)    ! number of vertices per element0
+          nenl1   = lcblkif(7, iblk)    ! number of vertices per element1
+          mater0  = lcblkif(9, iblk)
+          mater1  = lcblkif(10,iblk)
+          nshl0   = lcblkif(iblkif_nshl0,iblk)
+          nshl1   = lcblkif(iblkif_nshl1,iblk)
+          itpid   = lcblkif(iblkif_topology,iblk)
+          ngaussif = nintif(itpid)
+c
+c.... the 0 side
+c
+          lcsyst = lcsyst0
+          nenl = nenl0
+          nshl = nshl0
 
+c          if(lcsyst.eq.3) lcsyst=nenbl ! may not be necessary
+          ngaussb = nintb(lcsyst)
+c
+c.... only collect wedge_tri for now
+c
+          if(lcsyst.ne.3) cycle
+c
+c.... compute and assemble non-unit normal
+c
+          call calc_gc_normal (xtmp,            shpif0(lcsyst,1:nshl,:),
+     &                         mienif0(iblk)%p, miBCB(iblk)%p,
+     &                         gcnormal)
+c
+c.... end of the 0 side
+c
+c
+c.... the 1 side
+c
+          lcsyst = lcsyst1
+          nenl = nenl1
+          nshl = nshl1
 
+c          if(lcsyst.eq.3) lcsyst=nenbl ! may not be necessary
+          ngaussb = nintb(lcsyst)
+c
+c.... only collect wedge_tri for now
+c
+          if(lcsyst.ne.3) cycle
+c
+c.... compute and assemble non-unit normal
+c
+          call calc_gc_normal (xtmp,            shpif1(lcsyst,1:nshl,:),
+     &                         mienif1(iblk)%p, miBCB(iblk)%p,
+     &                         gcnormal)
+c
+c.... end of the 0 side
+c
+        enddo interface_blocks ! end loop the interface elements
 c
 c.... -------------------->   interior elements   <--------------------
 c

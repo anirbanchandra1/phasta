@@ -650,7 +650,7 @@ c
      &                                hBrg,     eBrg,
      &                                yBrg,     Rcos,      Rsin,     iper,
      &                                ilwork,   shp,   shgl,  shpb, shglb,
-     &                                elasDy)
+     &                                shpif0,   shpif1,       elasDy)
 c
                   endif  ! end of switch for flow or scalar or mesh-elastic solve
 c     
