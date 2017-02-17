@@ -45,6 +45,14 @@ c
      &,                           itpif_wedge_tet   = 3
      &,                           itpif_wedge_wedge = 4
 c
+        integer, dimension(MAXTOP,MAXTOP), parameter :: iftp_map = 
+     &                reshape( (/itpif_tet_tet,itpif_tet_wedge,-1,-1,-1,-1,
+     &                  -1,-1,-1,-1,-1,-1,
+     &                  itpif_wedge_tet,-1,itpif_wedge_wedge,-1,-1,-1,
+     &                  -1,-1,-1,-1,-1,-1,
+     &                  -1,-1,-1,-1,-1,-1,
+     &                  -1,-1,-1,-1,-1,-1/) , (/MAXTOP,MAXTOP/) )
+c
         integer, parameter :: MAXQPT = 125
         integer, parameter :: MAXTS = 100
 c

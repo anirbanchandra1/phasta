@@ -83,23 +83,24 @@ C
         mattyp=0
         ndofl = ndof
 
-C        iblk_loop: do iblk = 1, itpblktot
-        iblk_loop: do iblk = 1, maxtop
+        iblk_loop: do iblk = 1, itpblktot
+c        iblk_loop: do iblk = 1, maxtop
 c
            writeLock=0;
             if(input_mode.ge.1)then
                write (fname2,"('connectivity boundary',i1)") iblk
             else
-             select case (iblk)
-             case (itp_tet)
-               write (fname2,"('connectivity boundary linear tetrahedron')")
-             case (itp_wedge)
-               write (fname2,C_CHAR_"('connectivity boundary linear wedge')")
-             case (itp_wedge_quad)
-               write (fname2,"('connectivity boundary linear wedge quadface')")
-             case default
-               cycle iblk_loop
-             end select
+c             select case (iblk)
+c             case (itp_tet)
+c               write (fname2,"('connectivity boundary linear tetrahedron')")
+c             case (itp_wedge)
+c               write (fname2,C_CHAR_"('connectivity boundary linear wedge')")
+c             case (itp_wedge_quad)
+c               write (fname2,"('connectivity boundary linear wedge quadface')")
+c             case default
+c               cycle iblk_loop
+c             end select
+      write (fname2,"('connectivity boundary?')")
             endif
            
            ! Synchronization for performance monitoring, as some parts do not include some topologies
@@ -116,6 +117,7 @@ CC           call phio_readheader(fhandle, trim(fname2)//C_NULL_CHAR,
            nenbl =intfromfile(6)
            lcsyst=intfromfile(7)
            numnbc=intfromfile(8)
+      write(*,*) ' BKB: iblk, intfromfile:',iblk,intfromfile(1:8) 
 
            if (neltp<0) then
               writeLock=1;
@@ -141,19 +143,21 @@ c
            if(input_mode.gt.1)then
              write (fname2,"('material type boundary linear tetrahedron',i1)") iblk
            else 
-             select case (iblk)
-             case (itp_tet)
-               write (fname2,"('material type boundary linear tetrahedron')") 
-             case (itp_wedge)
-               write (fname2,"('material type boundary linear wedge')") 
-             case (itp_wedge_quad)
-               write (fname2,"('material type boundary linear wedge quadface')") 
-             end select
+c             select case (iblk)
+c             case (itp_tet)
+c               write (fname2,"('material type boundary linear tetrahedron')") 
+c             case (itp_wedge)
+c               write (fname2,"('material type boundary linear wedge')") 
+c             case (itp_wedge_quad)
+c               write (fname2,"('material type boundary linear wedge quadface')") 
+c             end select
+      write (fname2,"('material type boundary?')") 
            endif
 C           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
            intfromfile(:)=-1
            call phio_readheader(fhandle, fname2 // char(0),
      &      c_loc(intfromfile), ione, dataInt, iotype)
+      write(*,*) ' BKB: iblk, intfromfile:',iblk,intfromfile(1:8) 
            call phio_readdatablock(fhandle, fname2 // char(0),
      &      c_loc(mattype), intfromfile(1), dataInt, iotype)
 c     
@@ -163,14 +167,15 @@ C           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
             if(input_mode.ge.1)then
                write (fname2,"('nbc codes',i1)") iblk
             else
-             select case (iblk)
-             case (itp_tet)
-               write (fname2,"('nbc codes linear tetrahedron')")
-             case (itp_wedge)
-               write (fname2,"('nbc codes linear wedge')")
-             case (itp_wedge_quad)
-               write (fname2,"('nbc codes linear wedge quadface')")
-             end select
+c             select case (iblk)
+c             case (itp_tet)
+c               write (fname2,"('nbc codes linear tetrahedron')")
+c             case (itp_wedge)
+c               write (fname2,"('nbc codes linear wedge')")
+c             case (itp_wedge_quad)
+c               write (fname2,"('nbc codes linear wedge quadface')")
+c             end select
+      write (fname2,"('nbc codes?')")
             endif
 c
            intfromfile(:)=-1
@@ -186,14 +191,15 @@ C           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
             if(input_mode.ge.1)then
                write (fname2,"('nbc values',i1)") iblk
             else
-             select case (iblk)
-             case (itp_tet)
-               write (fname2,"('nbc values linear tetrahedron')")
-             case (itp_wedge)
-               write (fname2,"('nbc values linear wedge')")
-             case (itp_wedge_quad)
-               write (fname2,"('nbc values linear wedge quadface')")
-             end select
+c             select case (iblk)
+c             case (itp_tet)
+c               write (fname2,"('nbc values linear tetrahedron')")
+c             case (itp_wedge)
+c               write (fname2,"('nbc values linear wedge')")
+c             case (itp_wedge_quad)
+c               write (fname2,"('nbc values linear wedge quadface')")
+c             end select
+      write (fname2,"('nbc values?')")
             endif
 c
            intfromfile(:) = -1

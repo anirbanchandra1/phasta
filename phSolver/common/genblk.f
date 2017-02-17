@@ -59,8 +59,7 @@ C
             if(input_mode.ge.1) then
               write (fname2,"('connectivity interior',i1)") iblk
             else
-              write (fname2,"('connectivity interior linear tetrahedron')") 
-!              write (fname2,"('connectivity interior?')") 
+              write (fname2,"('connectivity interior?')") 
             endif
 
             !write(*,*) 'rank, fname2',myrank, trim(adjustl(fname2))
@@ -80,22 +79,23 @@ C
         ndofl = ndof
         nsymdl = nsymdf
 
-C        iblk_loop: do iblk = 1, itpblktot
-        iblk_loop: do iblk = 1, maxtop
+        iblk_loop: do iblk = 1, itpblktot
+c        iblk_loop: do iblk = 1, maxtop
 c
            writeLock=0;
 c
            if(input_mode.ge.1) then
              write (fname2,"('connectivity interior',i1)") iblk
            else
-             select case (iblk)
-             case (itp_tet)
-               write (fname2,"('connectivity interior linear tetrahedron')") 
-             case (itp_wedge)
-               write (fname2,"('connectivity interior linear wedge')") 
-             case default
-               cycle iblk_loop
-             end select
+c             select case (iblk)
+c             case (itp_tet)
+c               write (fname2,"('connectivity interior linear tetrahedron')") 
+c            case (itp_wedge)
+c              write (fname2,"('connectivity interior linear wedge')") 
+c            case default
+c               cycle iblk_loop
+c             end select
+      write (fname2,"('connectivity interior?')") 
            endif
 
            ! Synchronization for performance monitoring, as some parts do not include some topologies
@@ -110,6 +110,7 @@ C           call MPI_Barrier(MPI_COMM_WORLD,ierr)
            ijunk  =intfromfile(5)
            ijunk  =intfromfile(6)
            lcsyst =intfromfile(7)
+      write(*,*) ' BLK: iblk, intfromfile:',iblk,intfromfile(1:7) 
 C
            if (neltp<0) then
               writeLock=1;
@@ -127,12 +128,13 @@ c
            if(input_mode.ge.1) then
              write(fname2,"('material type interior',i1)") iblk
            else
-             select case (iblk)
-             case (itp_tet)
-               write (fname2,"('material type interior linear tetrahedron')") 
-             case (itp_wedge)
-               write (fname2,"('material type interior linear wedge')") 
-             end select
+c             select case (iblk)
+c             case (itp_tet)
+c               write (fname2,"('material type interior linear tetrahedron')") 
+c             case (itp_wedge)
+c               write (fname2,"('material type interior linear wedge')") 
+c             end select
+      write (fname2,"('material type interior?')") 
            endif
 c
 C           call MPI_Barrier(MPI_COMM_WORLD,ierr) 
