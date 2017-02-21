@@ -3,7 +3,7 @@
      &                   iBC,       BC,         
      &                   iper,      ilwork,     shp,       
      &                   shgl,      shpb,       shglb,
-     &                   shpif, shpif0, shpif1, shgif, shgif0, shgif1,
+     &                   shpif,     shgif,
      &                   ifath,     velbar,     nsons ) 
 c
 c----------------------------------------------------------------------
@@ -60,8 +60,8 @@ c
      &            shgl(MAXTOP,nsd,maxsh,MAXQPT), 
      &            shpb(MAXTOP,maxsh,MAXQPT),
      &            shglb(MAXTOP,nsd,maxsh,MAXQPT) 
-        real*8, dimension(maxtop,    maxsh,maxqpt) :: shpif, shpif0, shpif1
-        real*8, dimension(maxtop,nsd,maxsh,maxqpt) :: shgif, shgif0, shgif1
+        real*8, dimension(maxtop,    maxsh,maxqpt) :: shpif
+        real*8, dimension(maxtop,nsd,maxsh,maxqpt) :: shgif
         real*8   almit, alfit, gamit
         dimension ifath(numnp),    velbar(nfath,ndof),  nsons(nfath)
         real*8 rerr(nshg,10),ybar(nshg,ndof+8) ! 8 is for avg. of square as uu, vv, ww, pp, TT, uv, uw, and vw
@@ -510,7 +510,7 @@ c                        write(*,*) 'lhs=',lhs
      &                       iper,          ilwork,
      &                       shp,           shgl,
      &                       shpb,          shglb,         
-     &                       shpif, shpif0, shpif1, shgif, shgif0, shgif1,
+     &                       shpif,         shgif,
      &                       solinc,        rerr,          umesh)
 c
 c                     call set_if_velocity (BC(:,ndof+2:ndof+4),  iBC, 

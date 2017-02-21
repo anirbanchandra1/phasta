@@ -1,12 +1,10 @@
-      module global_const_m
 c
-        use iso_c_binding
-c
-        implicit none
-c
-c.... parameters  IF YOU CHANGE THES YOU HAVE TO CHANGE THEM IN
+c.... NOTE:  IF YOU CHANGE ANY OF THESE, YOU HAVE TO CHANGE THEM IN
 c                  common_c.h ALSO
 c
+      module global_const_m
+        use iso_c_binding
+        implicit none
         integer, parameter     :: MAXBLK = 50000
         integer, parameter     :: MAXSH = 32, NSD = 3 , NSDSQ = 9
 c
@@ -27,7 +25,6 @@ c
      &,                           itp_pyramid_tri  = 6
      &,                           itp_tri     = 1
      &,                           itp_quad    = 2
-c
 c
 c...  The twelve different topological interface region are:
 c
