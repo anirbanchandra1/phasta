@@ -100,10 +100,10 @@ c---------> ATTENTION <--------
 c  This still needs to be confirmed...
 c
       this_mu = zero
-      this_mu(:,2,2) = prop%stiff(3,3) ! mu
-      this_mu(:,3,3) = prop%stiff(3,3) ! "
-      this_mu(:,4,4) = prop%stiff(3,3) ! "
-      this_mu(:,5,5) = prop%stiff(5,5) ! kappa
+      this_mu(:,2,2) = mu(:,2) ! mu
+      this_mu(:,3,3) = mu(:,3) ! "
+      this_mu(:,4,4) = mu(:,4) ! "
+      this_mu(:,5,5) = mu(:,5) ! kappa
 c
 c---------> END ATTANETION <-----
 c
@@ -134,11 +134,11 @@ c
                 egmass00(:,il,jl) = egmass00(:,il,jl)
      &          - ( 
      &            + AiNa0 
-cc     &            - KijNaj0
-cc     &            + KijNbjCn0 * shp0(:,j)
+     &            - KijNaj0
+     &            + KijNbjCn0 * shp0(:,j)
 CCc     &            + pt50 * A0_0(:,iflow,jflow)*alpha_LF*shp0(:,j)
 cc     &            + pt50 * (A0_0(:,iflow,jflow)+A0_1(:,iflow,jflow))*alpha_LF*shp0(:,j)
-cc     &            + e*this_mu(:,iflow,jflow)/length_h * ctc(:,iflow,jflow) * shp0(:,j)
+     &            + e*this_mu(:,iflow,jflow)/length_h * ctc(:,iflow,jflow) * shp0(:,j)
      &            ) * shp0(:,i) * WdetJ0
               enddo
             enddo
@@ -169,11 +169,11 @@ c
                 egmass01(:,il,jl) = egmass01(:,il,jl)
      &          - ( 
      &            + AiNa1
-cc     &            - KijNaj1
-cc     &            - KijNbjCn0 * shp1(:,j)
+     &            - KijNaj1
+     &            - KijNbjCn0 * shp1(:,j)
 CCc     &            - pt50 * A0_1(:,iflow,jflow)*alpha_LF*shp1(:,j)
 cc     &            - pt50 * (A0_0(:,iflow,jflow)+A0_1(:,iflow,jflow))*alpha_LF*shp1(:,j)
-cc     &            - e*this_mu(:,iflow,jflow)/length_h * ctc(:,iflow,jflow) * shp1(:,j)
+     &            - e*this_mu(:,iflow,jflow)/length_h * ctc(:,iflow,jflow) * shp1(:,j)
      &            ) * shp0(:,i) * WdetJ0
               enddo
             enddo
@@ -183,126 +183,5 @@ c
         enddo
 c
       end subroutine calc_egmass
-c
-      subroutine calc_egmass_(egmass,AiNa1,KijNaj0,KijNaj1,KijNajC0,shp0,shp1,n0,n1,WdetJ,nshl0,nshl1)
-c
-        real*8, dimension(:,:,:), intent(inout) :: egmass
-        real*8, dimension(:,:,:,:), intent(in) :: AiNa1,KijNaj0,KijNaj1,KijNajC0
-        real*8, dimension(:,:), intent(in) :: shp0,shp1,n0,n1
-        real*8, dimension(:), intent(in) :: WdetJ
-        integer, intent(in) :: nshl0,nshl1
-c
-        integer :: i,j,p,q,inode0,inode1,isd
-        integer :: i0,j0,il,jl,iflow,jflow
-c
-c... loop through the columns
-c
-        do j = 1, nshl1
-          j0 = nflow*(j - 1)
-c
-          do i = 1,nshl0
-            i0 = nflow*(i - 1)
-c
-            do jflow = 1,nflow
-              do iflow = 1,nflow
-c
-                il = i0 + iflow
-                jl = j0 + jflow
-c
-                do isd = 1,nsd
-c
-                  egmass(:,il,jl) = egmass(:,il,jl) + (
-     &                pt50 * shp0(:,i) * ( 
-     &                AiNa1  (:,isd,iflow,jflow) - KijNaj1(:,isd,iflow,jflow)) * n0(:,isd)
-     &             + pt50 * s * KijNajC0(:,isd,iflow,jflow)*n1(:,isd)
-     &             + e*mu/length_h * ctc(:,iflow,jflow)*shp0(:,i)*n0(:,isd)*shp1(:,j)*n1(:,isd)
-     &            ) * WdetJ
-c
-                enddo
-              enddo
-            enddo
-          enddo
-        enddo
-c              
-      return
-c
-      end subroutine calc_egmass_
-c
-      subroutine calc_egmass_2(egmass,AiNa1,KijNaj0,KijNaj1,KijNajC0,shp0,shp1,n0,n1,WdetJ,nshl0,nshl1)
-c
-        real*8, dimension(:,:,:), intent(inout) :: egmass
-        real*8, dimension(:,:,:,:), intent(in) :: AiNa1,KijNaj0,KijNaj1,KijNajC0
-        real*8, dimension(:,:), intent(in) :: shp0,shp1,n0,n1
-        real*8, dimension(:), intent(in) :: WdetJ
-        integer, intent(in) :: nshl0,nshl1
-c
-        integer :: i,j,p,q,inode0,inode1,isd
-        integer :: i0,j0,il,jl,iflow,jflow
-c
-c... loop through the columns
-c
-        do j = 1, nshl1
-          j0 = nflow*(j - 1)
-c
-          do i = 1,nshl0
-            i0 = nflow*(i - 1)
-c
-            do jflow = 1,nflow
-              do iflow = 1,nflow
-c
-                il = i0 + iflow
-                jl = j0 + jflow
-c
-                do isd = 1,nsd
-c
-                  egmass(:,il,jl) = egmass(:,il,jl) + (
-     &              - pt50 * shp0(:,i) * ( 
-c     &                AiNa1  (:,isd,iflow,jflow)
-     &              + KijNaj1(:,isd,iflow,jflow)
-     &              ) * n0(:,isd)
-c     &             + pt50 * s * KijNajC0(:,isd,iflow,jflow)*n1(:,isd)
-c     &             + e*mu/h * ctc(:,iflow,jflow)*shp0(:,i)*n0(:,isd)*shp1(:,j)*n1(:,isd)
-     &            ) * WdetJ
-c
-                enddo
-              enddo
-            enddo
-          enddo
-        enddo
-c              
-      return
-c
-      end subroutine calc_egmass_2
-c
-      subroutine calc_egmass_old(egmass,AiNa1,KijNaj0,KijNaj1,KijNajC0,shp0,shp1,n0,n1,WdetJ,nshl0,nshl1)
-c
-        real*8, dimension(:,:,:), intent(inout) :: egmass
-        real*8, dimension(:,:,:,:), intent(in) :: AiNa1,KijNaj0,KijNaj1,KijNajC0
-        real*8, dimension(:,:), intent(in) :: shp0,shp1,n0,n1
-        real*8, dimension(:), intent(in) :: WdetJ
-        integer, intent(in) :: nshl0,nshl1
-c
-        integer :: i,j,p,q,inode0,inode1,isd
-        integer :: i0,j0,il,jl,iflow,jflow
-c
-        do inode1 = 1, nshl1
-          q = nflow * (inode1 - 1) 
-c
-          do inode0 = 1, nshl0
-            p = nflow * (inode0 - 1)
-c
-            do isd = 1,nsd
-              egmass(:,p,q) = egmass(:,p,q) + (
-     &              pt50 * shp0(:,inode0) * (AiNa1(:,isd,p,q)+KijNaj1(:,isd,p,q))*n0(:,isd)
-     &            + pt50 * s * KijNajC0(:,isd,p,q)*n1(:,isd)
-     &            + e*mu/length_h * ctc(:,p,q)*shp0(:,inode0)*n0(:,isd)*shp1(:,inode1)*n1(:,isd)
-     &            )*WdetJ
-            enddo
-c
-          enddo
-c
-        enddo
-c
-      end subroutine calc_egmass_old
 c
       end module e3if_lhs_m

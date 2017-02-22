@@ -76,24 +76,26 @@ c
         ndofl  = ndof
         nsymdl = nsymdf      ! ????
 c
-        iblk_loop: do iblk = 1, maxtopif
+c        iblk_loop: do iblk = 1, maxtopif
+        iblk_loop: do iblk = 1, itpblktot
 c
            writeLock=0;
            if(input_mode.ge.1) then
              write (fname2,"('connectivity interface',i1)") iblk
            else
-             select case (iblk)
-             case (itpif_tet_tet)
-               write (fname2,"('connectivity interface linear tetrahedron tetrahedron')") 
-             case (itpif_wedge_tet)
-               write (fname2,"('connectivity interface linear wedge tetrahedron')") 
-             case (itpif_tet_wedge)
-               write (fname2,"('connectivity interface linear tetrahedron wedge')") 
-             case (itpif_wedge_wedge)
-               write (fname2,"('connectivity interface linear wedge wedge')") 
-             case default
-               cycle iblk_loop
-             end select
+c             select case (iblk)
+c             case (itpif_tet_tet)
+c               write (fname2,"('connectivity interface linear tetrahedron tetrahedron')") 
+c             case (itpif_wedge_tet)
+c               write (fname2,"('connectivity interface linear wedge tetrahedron')") 
+c             case (itpif_tet_wedge)
+c               write (fname2,"('connectivity interface linear tetrahedron wedge')") 
+c             case (itpif_wedge_wedge)
+c               write (fname2,"('connectivity interface linear wedge wedge')") 
+c             case default
+c               cycle iblk_loop
+c             end select
+      write (fname2,"('connectivity interface?')") 
            endif
 c
            ! Synchronization for performance monitoring, as some parts do not include some topologies
@@ -111,6 +113,7 @@ c
            nnface = intfromfile(7)       ! number of nodes on the interface
            tmplcsyst0= intfromfile(8)       ! element type 0
            tmplcsyst1= intfromfile(9)       ! element type 1
+      write(*,*) 'BKIF: iblk, intfromfile: ',iblk,intfromfile(1:9)
 c
            if (neltp<0) then
               writeLock=1;
@@ -133,16 +136,17 @@ c
            if(input_mode.ge.1) then
              write(fname2,"('material type interface',i1)") iblk
            else
-             select case (iblk)
-             case (itpif_tet_tet)
-               write(fname2,"('material type interface linear tetrahedron tetrahedron')")
-             case (itpif_wedge_tet)
-               write(fname2,"('material type interface linear wedge tetrahedron')")
-             case (itpif_tet_wedge)
-               write(fname2,"('material type interface linear tetrahedron wedge')")
-             case (itpif_wedge_wedge)
-               write(fname2,"('material type interface linear wedge wedge')")
-             end select
+c             select case (iblk)
+c             case (itpif_tet_tet)
+c               write(fname2,"('material type interface linear tetrahedron tetrahedron')")
+c             case (itpif_wedge_tet)
+c               write(fname2,"('material type interface linear wedge tetrahedron')")
+c             case (itpif_tet_wedge)
+c               write(fname2,"('material type interface linear tetrahedron wedge')")
+c             case (itpif_wedge_wedge)
+c               write(fname2,"('material type interface linear wedge wedge')")
+c             end select
+      write(fname2,"('material type interface?')")
            endif
 c
 c           call MPI_Barrier(MPI_COMM_WORLD,ierr) 
@@ -193,8 +197,13 @@ c
 c
             do
               npro = npro + 1
-              ienif0tmp(npro,1:nshl0) = ientp(iptr,1:nshl0)
-              ienif1tmp(npro,1:nshl1) = ientp(iptr,nshl0+1:nshl0+nshl1)
+              if     (mattypeif(1,1) == mat_tag(1,1)) then
+                ienif0tmp(npro,1:nshl0) = ientp(iptr,1:nshl0)
+                ienif1tmp(npro,1:nshl1) = ientp(iptr,nshl0+1:nshl0+nshl1)
+              elseif (mattypeif(1,2) == mat_tag(1,1)) then
+                ienif0tmp(npro,1:nshl0) = ientp(iptr,nshl1+1:nshl1+nshl0)
+                ienif1tmp(npro,1:nshl1) = ientp(iptr,1:nshl1)
+              endif
               iptr = iptr + 1
               if (npro == ibksz .or. iptr > neltp) exit
             enddo
@@ -217,7 +226,8 @@ c            lcblkif(2,nelblif) = iopen   ! ??? see genblk.f
             lcblkif(12,nelblif) = nsymdl ! ????
             lcblkif(iblkif_nshl0,nelblif) = nshl0
             lcblkif(iblkif_nshl1,nelblif) = nshl1
-            lcblkif(iblkif_topology,nelblif) = iblk
+            lcblkif(iblkif_topology,nelblif) = iftp_map(lcsyst0,lcsyst1)
+      write(*,*) 'IF TOPOLOGY: ',iftp_map(lcsyst0,lcsyst1)
 c
 c... allocate memory for stack arrays
 c

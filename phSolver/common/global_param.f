@@ -1,12 +1,10 @@
-      module global_const_m
 c
-        use iso_c_binding
-c
-        implicit none
-c
-c.... parameters  IF YOU CHANGE THES YOU HAVE TO CHANGE THEM IN
+c.... NOTE:  IF YOU CHANGE ANY OF THESE, YOU HAVE TO CHANGE THEM IN
 c                  common_c.h ALSO
 c
+      module global_const_m
+        use iso_c_binding
+        implicit none
         integer, parameter     :: MAXBLK = 50000
         integer, parameter     :: MAXSH = 32, NSD = 3 , NSDSQ = 9
 c
@@ -28,7 +26,6 @@ c
      &,                           itp_tri     = 1
      &,                           itp_quad    = 2
 c
-c
 c...  The twelve different topological interface region are:
 c
         integer, parameter     :: MAXTOPIF = 4
@@ -44,6 +41,14 @@ c
      &,                           itpif_tet_wedge   = 2
      &,                           itpif_wedge_tet   = 3
      &,                           itpif_wedge_wedge = 4
+c
+        integer, dimension(MAXTOP,MAXTOP), parameter :: iftp_map = 
+     &                reshape( (/itpif_tet_tet,itpif_tet_wedge,-1,-1,-1,-1,
+     &                  -1,-1,-1,-1,-1,-1,
+     &                  itpif_wedge_tet,-1,itpif_wedge_wedge,-1,-1,-1,
+     &                  -1,-1,-1,-1,-1,-1,
+     &                  -1,-1,-1,-1,-1,-1,
+     &                  -1,-1,-1,-1,-1,-1/) , (/MAXTOP,MAXTOP/) )
 c
         integer, parameter :: MAXQPT = 125
         integer, parameter :: MAXTS = 100

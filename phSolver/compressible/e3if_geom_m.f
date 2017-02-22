@@ -117,14 +117,8 @@ c
             v2(:,isd) = xl(:,3,isd) - xl(:,1,isd)
           enddo
 c
-          select case (itpid)
-          case (
-     &          itpif_tet_tet
-     &,         itpif_tet_wedge
-     &,         itpif_wedge_tet
-     &,         itpif_wedge_wedge
-     &         )
-    
+          select case (lcsyst)
+          case (itp_tet,itp_wedge_tri)
 c
             temp_normal(:,1) = + v1(:,2)*v2(:,3) - v1(:,3)*v2(:,2)
             temp_normal(:,2) = - v1(:,1)*v2(:,3) + v1(:,3)*v2(:,1)

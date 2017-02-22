@@ -67,10 +67,8 @@ c
 c
         integer :: istep
         real*8 :: time,deltat
-c
-!        real*8, parameter :: s = 1.0d0, e = 1.0d-3, h = 1.d-2, mu = 1.d1 ! single phase cases
-!        real*8, parameter :: s = 1.0d0, e = 1.0d-1, h = 1.d-2, mu = 1.d0
-        real*8 :: s, e, length_h, mu
+        real*8 :: s, e, length_h  
+        real*8, pointer :: mu(:,:)
 c
         integer :: lhs_dg
 c
@@ -174,6 +172,8 @@ c
 c
           allocate(kappa0(npro),kappa1(npro))
 c
+          allocate(mu(npro,nflow))
+c
         end subroutine e3if_malloc
 c
         subroutine e3if_mfree
@@ -227,6 +227,8 @@ c
           nullify(egmass11)
 c
           deallocate(kappa0,kappa1)
+c
+          deallocate(mu)
 c
         end subroutine e3if_mfree
 c

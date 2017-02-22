@@ -280,7 +280,7 @@ c_______________________________________________________________
         subroutine ElmGMRs (y,         ac,        x,         
      &                     shp,       shgl,      iBC,
      &                     BC,        shpb,      shglb,
-     &                     shpif, shpif0, shpif1, shgif, shgif0, shgif1,
+     &                     shpif,     shgif,
      &                     res,       rmes,      BDiag,
      &                     iper,      ilwork,    lhsK,  
      &                     col,       row,       rerr,     umesh)
@@ -312,7 +312,7 @@ c
 c
         include "common.h"
         include "mpif.h"
-#define debug 1
+#define debug 0
 c
 #if debug==1 
       integer imax(5),idbg
@@ -416,8 +416,8 @@ c
      &            shgl(MAXTOP,nsd,maxsh,MAXQPT), 
      &            shpb(MAXTOP,maxsh,MAXQPT),
      &            shglb(MAXTOP,nsd,maxsh,MAXQPT) 
-        real*8, dimension(maxtop,    maxsh,maxqpt) :: shpif, shpif0, shpif1
-        real*8, dimension(maxtop,nsd,maxsh,maxqpt) :: shgif, shgif0, shgif1
+        real*8, dimension(maxtop,    maxsh,maxqpt) :: shpif
+        real*8, dimension(maxtop,nsd,maxsh,maxqpt) :: shgif
 c
         dimension qres(nshg, idflx),     rmass(nshg)
 c
