@@ -652,7 +652,7 @@ c
      &                                hBrg,     eBrg,    yBrg,
      &                                Rcos,     Rsin,    iper,   ilwork,
      &                                shp,      shgl,    shpb,   shglb,
-     &                                shpif,    shpif0,  shpif1, elasDy, gcnormal)
+     &                                shpif,    elasDy,  gcnormal)
 c
                   endif  ! end of switch for flow or scalar or mesh-elastic solve
 c     
@@ -711,11 +711,15 @@ c
 c
 c.... call itrCorrectElas ... and then itrBCElas ...
 c
-                     call itrCorrectElas(xold, x, disp, elasDy)
+c                     call itrCorrectElas(xold, x, disp, elasDy)
+c
+                     disp = disp + elasDy
 c
                      call itrBCElas(umesh,  disp,  iBC, 
      &                              BC(:,ndof+2:ndof+5),
      &                              iper,   ilwork        )
+c
+                     x = xold + disp
 c
                      umesh = disp / Delt(1)
                      umeshold = umesh

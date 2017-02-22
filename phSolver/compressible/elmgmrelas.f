@@ -1,7 +1,6 @@
         subroutine ElmGMRElas (x,       disp,    shp,     shgl,
      &                         iBC,     BC,      shpb,    shglb,
-     &                         shpif,   shpif0,  shpif1,
-     &                         elasres,   elasBDiag,
+     &                         shpif,   elasres, elasBDiag,
      &                         iper,    ilwork,  elaslhsK,
      &                         col,     row,     meshq, gcnormal)
 c
@@ -38,7 +37,7 @@ c
      &            shpb(MAXTOP,maxsh,MAXQPT),
      &            shglb(MAXTOP,nsd,maxsh,MAXQPT)
 c
-        real*8, dimension(maxtop,    maxsh,maxqpt) :: shpif, shpif0, shpif1
+        real*8, dimension(maxtop,    maxsh,maxqpt) :: shpif
 c
         dimension ilwork(nlwork)
 c
