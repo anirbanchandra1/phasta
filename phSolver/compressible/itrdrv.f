@@ -98,8 +98,10 @@ c
      &         disp(numnp, nsd),    elasDy(nshg,nelas),
      &         umeshold(numnp, nsd), xold(numnp,nsd)
 
+       dimension gcnormal(nshg, nsd) ! For debugging
+
        logical alive
- 
+
         integer iTurbWall(nshg) 
         real*8 yInlet(3), yInletg(3)
         integer imapped, imapInlet(nshg)  !for now, used for setting Blower conditions
@@ -645,12 +647,12 @@ c
 c
 c.... call to SolGMRElas ... For mesh-elastic solve
 c
-                     call SolGMRElas (x,        disp,      iBC,    BC,
-     &                                colm,     rowp,      meshq,
-     &                                hBrg,     eBrg,
-     &                                yBrg,     Rcos,      Rsin,     iper,
-     &                                ilwork,   shp,   shgl,  shpb, shglb,
-     &                                shpif0,   shpif1,       elasDy)
+                     call SolGMRElas (x,        disp,    iBC,    BC,
+     &                                colm,     rowp,    meshq,
+     &                                hBrg,     eBrg,    yBrg,
+     &                                Rcos,     Rsin,    iper,   ilwork,
+     &                                shp,      shgl,    shpb,   shglb,
+     &                                shpif,    shpif0,  shpif1, elasDy, gcnormal)
 c
                   endif  ! end of switch for flow or scalar or mesh-elastic solve
 c     
@@ -887,10 +889,14 @@ c     &                  xdot,  'd'//char(0), numnp, nsd, lstep)
                    call write_field(
      &                  myrank,'a'//char(0),'meshQ'//char(0), 5, 
      &                  meshq, 'd'//char(0), numel, 1,   lstep)
+c.... for debugging
+                   call write_field(
+     &                  myrank,  'a'//char(0),'gcnormal'//char(0), 8,
+     &                  gcnormal,'d'//char(0), numnp, nsd, lstep)
+c.... for debugging
+                 endif
 c
       if (solid_p%is_active) call write_restart_solid
-c
-                 endif
 c
                  call write_field(
      &               myrank,'a'//char(0),'material_type'//char(0),13,
@@ -918,11 +924,16 @@ c     &                xdot,  'd'//char(0), numnp, nsd, lstep)
                  call write_field(
      &                myrank,'a'//char(0),'meshQ'//char(0), 5, 
      &                meshq, 'd'//char(0), numel, 1,   lstep)
+c.... for debugging
+                 call write_field(
+     &                myrank,  'a'//char(0),'gcnormal'//char(0), 8,
+     &                gcnormal,'d'//char(0), numnp, nsd, lstep)
+c.... for debugging
                endif
 c
                   call write_field(
      &              myrank,'a'//char(0),'material_type'//char(0),13,
-     &              mattype_interior, 'd',numel, 1, lstep)   
+     &              mattype_interior, 'd',numel, 1, lstep)
 c
                if (solid_p%is_active)
      &           call write_restart_solid

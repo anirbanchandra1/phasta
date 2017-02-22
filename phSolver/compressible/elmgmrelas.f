@@ -1,9 +1,9 @@
-        subroutine ElmGMRElas (x,     disp,    shp,       shgl,
-     &                         iBC,   BC,      shpb,      shglb,
-     &                         shpif0,    shpif1,
+        subroutine ElmGMRElas (x,       disp,    shp,     shgl,
+     &                         iBC,     BC,      shpb,    shglb,
+     &                         shpif,   shpif0,  shpif1,
      &                         elasres,   elasBDiag,
-     &                         iper,  ilwork,  elaslhsK,
-     &                         col,   row,     meshq)
+     &                         iper,    ilwork,  elaslhsK,
+     &                         col,     row,     meshq, gcnormal)
 c
 c----------------------------------------------------------------------
 c
@@ -38,7 +38,7 @@ c
      &            shpb(MAXTOP,maxsh,MAXQPT),
      &            shglb(MAXTOP,nsd,maxsh,MAXQPT)
 c
-        real*8, dimension(maxtop,    maxsh,maxqpt) :: shpif0, shpif1
+        real*8, dimension(maxtop,    maxsh,maxqpt) :: shpif, shpif0, shpif1
 c
         dimension ilwork(nlwork)
 c
@@ -120,7 +120,7 @@ c
 c
 c.... compute and assemble non-unit normal
 c
-          call calc_gc_normal (xtmp,            shpif0(lcsyst,1:nshl,:),
+          call calc_gc_normal (xtmp,            shpif(lcsyst,1:nshl,:),
      &                         mienif0(iblk)%p, miBCB(iblk)%p,
      &                         gcnormal)
 c
@@ -142,13 +142,23 @@ c
 c
 c.... compute and assemble non-unit normal
 c
-          call calc_gc_normal (xtmp,            shpif1(lcsyst,1:nshl,:),
+          call calc_gc_normal (xtmp,            shpif(lcsyst,1:nshl,:),
      &                         mienif1(iblk)%p, miBCB(iblk)%p,
      &                         gcnormal)
 c
-c.... end of the 0 side
+c.... end of the 1 side
 c
         enddo interface_blocks ! end loop the interface elements
+c
+c.... communication
+c
+        if (numpe > 1) then
+          call commu (gcnormal  , ilwork, nsd  , 'in ')
+          call MPI_BARRIER (MPI_COMM_WORLD,ierr)
+          call commu (gcnormal  , ilwork, nsd  , 'out ')
+        endif
+c
+c.... end calculation of growth curve normal
 c
 c.... -------------------->   interior elements   <--------------------
 c
@@ -178,7 +188,7 @@ c
           mattyp = lcblk(7,iblk)
           ndofl  = lcblk(8,iblk)
           nsymdl = lcblk(9,iblk)
-          npro   = lcblk(1,iblk+1) - iel 
+          npro   = lcblk(1,iblk+1) - iel
           inum   = iel + npro - 1
           ngauss = nint(lcsyst)
 c
