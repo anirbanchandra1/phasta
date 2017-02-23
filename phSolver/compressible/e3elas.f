@@ -1,24 +1,24 @@
-        subroutine e3Elas (xl,        displ,   meshq,    meshV, 
-     &                     shp,       shgl,    sgn, 
-     &                     Estiff,    Eforce,  elasBDiagl ) 
-c                                                                       
+        subroutine e3Elas (xl,        displ,   meshq,    meshV,
+     &                     shp,       shgl,    sgn,
+     &                     Estiff,    Eforce,  elasBDiagl )
+c
 c----------------------------------------------------------------------
 c
 c This routine compute the stiffness of the mesh-elastic equation:
 c    stiffness * displacement = force
 c
-c input: 
+c input:
 c    xl(npro,nenl,nsd):     local coordinates of the vertices
-c    elasCo(2):             two coefficients used to modify elastic parameters 
+c    elasCo(2):             two coefficients used to modify elastic parameters
 c                           to adjust the stiffness of this element
 c    displ(npro,nenl,nsd):  local displacement of the vertices
-c    shgl(nsd,nshl,ngauss): element local grad-shape-function N_{a,xi} 
+c    shgl(nsd,nshl,ngauss): element local grad-shape-function N_{a,xi}
 c
 c output:
 c    Estiff(npro,nshl*nelas,nshl*nelas): element stiffness matrix (LHS)
 c    Eforce(npro,nshl,nelas):            element force matrix (RHS)
 c                                        the predicted solustion is zero
-c    elasBDiagl(npro,nshl,nelas):        block-preconditioner (Jacobi)                        
+c    elasBDiagl(npro,nshl,nelas):        block-preconditioner (Jacobi)
 c----------------------------------------------------------------------
 c
         include "common.h"
@@ -28,7 +28,7 @@ c
      &            shgl(nsd,nshl,ngauss),   shg(npro,nshl,nsd),
      &            shdrv(npro,nsd,nshl),    shape(npro,nshl)
 c
-C        dimension dxidxelas(npro,nsd,nsd), WdetJelas(npro) 
+C        dimension dxidxelas(npro,nsd,nsd), WdetJelas(npro)
 c
         dimension Estiff(npro,ndofelas,ndofelas),
      &            Eforce(npro,nshl,nelas),
@@ -54,7 +54,13 @@ c
         youngMod(:) = datelas(1,1) / meshV(:)
         poisnRat(:) = datelas(1,2)
 c
-        lamda(:) = youngMod(:) * poisnRat(:) / 
+c.... enlarge the stiffness for wedge elements
+c
+        if (lcsyst .eq. 3) then ! wedge
+          youngMod(:) = 10 * youngMod(:) ! 10 is randomly chosen
+        endif
+c
+        lamda(:) = youngMod(:) * poisnRat(:) /
      &         (1.0+poisnRat(:)) / (1.0-2.0*poisnRat(:))
         mu(:)    = youngMod(:) / 2.0 / (1.0+poisnRat(:))
 c
@@ -72,7 +78,7 @@ c
         call e3metric (xl, shdrv, dxidxelas, shg, WdetJelas)
 c
 c.... loop over vertices in the element
-c 
+c
         do i = 1,nenl
           do j = 1,nenl
             Kelas = zero
@@ -91,7 +97,7 @@ c
      &               +   shg(:,i,3) * shg(:,j,1) * mu(:)    )
             Kelas(:,2,1) = WdetJelas(:)
      &               * ( shg(:,i,2) * shg(:,j,1) * lamda(:)
-     &               +   shg(:,i,1) * shg(:,j,2) * mu(:)    ) 
+     &               +   shg(:,i,1) * shg(:,j,2) * mu(:)    )
             Kelas(:,2,2) = WdetJelas(:)
      &               * ( shg(:,i,1) * shg(:,j,1) * mu(:)
      &               +   shg(:,i,3) * shg(:,j,3) * mu(:)
@@ -103,7 +109,7 @@ c
      &               * ( shg(:,i,3) * shg(:,j,1) * lamda(:)
      &               +   shg(:,i,1) * shg(:,j,3) * mu(:)    )
             Kelas(:,3,2) = WdetJelas(:)
-     &               * ( shg(:,i,3) * shg(:,j,2) * lamda(:) 
+     &               * ( shg(:,i,3) * shg(:,j,2) * lamda(:)
      &               +   shg(:,i,2) * shg(:,j,3) * mu(:)    )
             Kelas(:,3,3) = WdetJelas(:)
      &               * ( shg(:,i,1) * shg(:,j,1) * mu(:)
@@ -111,41 +117,41 @@ c
      &               +   shg(:,i,3) * shg(:,j,3) * (lamda(:) + 2*mu(:)))
 c
 c... Form the element stiffness matrix
-c           
-            Estiff(:,3*(i-1)+1,3*(j-1)+1) = 
+c
+            Estiff(:,3*(i-1)+1,3*(j-1)+1) =
      &      Estiff(:,3*(i-1)+1,3*(j-1)+1) + Kelas(:,1,1)
-            Estiff(:,3*(i-1)+1,3*(j-1)+2) = 
+            Estiff(:,3*(i-1)+1,3*(j-1)+2) =
      &      Estiff(:,3*(i-1)+1,3*(j-1)+2) + Kelas(:,1,2)
-            Estiff(:,3*(i-1)+1,3*(j-1)+3) = 
+            Estiff(:,3*(i-1)+1,3*(j-1)+3) =
      &      Estiff(:,3*(i-1)+1,3*(j-1)+3) + Kelas(:,1,3)
-            Estiff(:,3*(i-1)+2,3*(j-1)+1) = 
+            Estiff(:,3*(i-1)+2,3*(j-1)+1) =
      &      Estiff(:,3*(i-1)+2,3*(j-1)+1) + Kelas(:,2,1)
-            Estiff(:,3*(i-1)+2,3*(j-1)+2) = 
+            Estiff(:,3*(i-1)+2,3*(j-1)+2) =
      &      Estiff(:,3*(i-1)+2,3*(j-1)+2) + Kelas(:,2,2)
-            Estiff(:,3*(i-1)+2,3*(j-1)+3) = 
+            Estiff(:,3*(i-1)+2,3*(j-1)+3) =
      &      Estiff(:,3*(i-1)+2,3*(j-1)+3) + Kelas(:,2,3)
-            Estiff(:,3*(i-1)+3,3*(j-1)+1) = 
+            Estiff(:,3*(i-1)+3,3*(j-1)+1) =
      &      Estiff(:,3*(i-1)+3,3*(j-1)+1) + Kelas(:,3,1)
-            Estiff(:,3*(i-1)+3,3*(j-1)+2) = 
+            Estiff(:,3*(i-1)+3,3*(j-1)+2) =
      &      Estiff(:,3*(i-1)+3,3*(j-1)+2) + Kelas(:,3,2)
-            Estiff(:,3*(i-1)+3,3*(j-1)+3) = 
+            Estiff(:,3*(i-1)+3,3*(j-1)+3) =
      &      Estiff(:,3*(i-1)+3,3*(j-1)+3) + Kelas(:,3,3)
 c
 c.... Form the element force vector
 c
             Eforce(:,i,1) = Eforce(:,i,1)
-     &                     - Kelas(:,1,1)*displ(:,j,1) 
+     &                     - Kelas(:,1,1)*displ(:,j,1)
      &                     - Kelas(:,1,2)*displ(:,j,2)
      &                     - Kelas(:,1,3)*displ(:,j,3)
             Eforce(:,i,2) = Eforce(:,i,2)
-     &                     - Kelas(:,2,1)*displ(:,j,1) 
+     &                     - Kelas(:,2,1)*displ(:,j,1)
      &                     - Kelas(:,2,2)*displ(:,j,2)
      &                     - Kelas(:,2,3)*displ(:,j,3)
             Eforce(:,i,3) = Eforce(:,i,3)
-     &                     - Kelas(:,3,1)*displ(:,j,1) 
+     &                     - Kelas(:,3,1)*displ(:,j,1)
      &                     - Kelas(:,3,2)*displ(:,j,2)
      &                     - Kelas(:,3,3)*displ(:,j,3)
-c          
+c
           enddo
         enddo
 c
@@ -154,7 +160,7 @@ c
         deallocate ( dxidxelas )
         deallocate ( WdetJelas )
         deallocate ( Kelas )
-c 
+c
 c.... return
 c
       return

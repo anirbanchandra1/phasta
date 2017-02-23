@@ -1,7 +1,8 @@
-        subroutine ElmGMRElas (x,     disp,    shp,       shgl,  
-     &                         iBC,   BC,      elasres,   elasBDiag,
-     &                         iper,  ilwork,  elaslhsK,  
-     &                         col,   row,     meshq)
+        subroutine ElmGMRElas (x,       disp,    shp,     shgl,
+     &                         iBC,     BC,      shpb,    shglb,
+     &                         shpif,   elasres, elasBDiag,
+     &                         iper,    ilwork,  elaslhsK,
+     &                         col,     row,     meshq, gcnormal)
 c
 c----------------------------------------------------------------------
 c
@@ -22,15 +23,21 @@ c
      &          meshq(numel),
      &          meshV(numel)
 c
-        dimension x(numnp,nsd),        disp(numnp,nsd),              
-     &            iBC(nshg),
-     &            BC(nshg,ndofBC),      
+        dimension gcnormal(nshg, nsd)
+c
+        dimension x(numnp,nsd),        disp(numnp,nsd),
+     &            xtmp(numnp,nsd),     iBC(nshg),
+     &            BC(nshg,ndofBC),
      &            elasres(nshg,nelas),
      &            elasBDiag(nshg,nelas,nelas),
      &            iper(nshg)
 c
-        dimension shp(MAXTOP,maxsh,MAXQPT),  
-     &            shgl(MAXTOP,nsd,maxsh,MAXQPT) 
+        dimension shp(MAXTOP,maxsh,MAXQPT),
+     &            shgl(MAXTOP,nsd,maxsh,MAXQPT),
+     &            shpb(MAXTOP,maxsh,MAXQPT),
+     &            shglb(MAXTOP,nsd,maxsh,MAXQPT)
+c
+        real*8, dimension(maxtop,    maxsh,maxqpt) :: shpif
 c
         dimension ilwork(nlwork)
 c
@@ -38,6 +45,119 @@ c
 c
         real*8, allocatable :: tmpshp(:,:), tmpshgl(:,:,:)
         real*8, allocatable :: Estiff(:,:,:)
+c
+c.... ------------------->   layer base elements   <-------------------
+c
+c.... calculate the normal of each growth curve based on new boundary positions
+c
+        xtmp = x + disp
+        gcnormal = zero
+c
+c.... loop over the boundary elements
+c
+        boundary_blocks: do iblk = 1, nelblb
+c
+c.... set up the parameters
+c
+          iel    = lcblkb(1,iblk)
+          lelCat = lcblkb(2,iblk)
+          lcsyst = lcblkb(3,iblk)
+          iorder = lcblkb(4,iblk)
+          nenl   = lcblkb(5,iblk)  ! no. of vertices per element
+          nenbl  = lcblkb(6,iblk)  ! no. of vertices per bdry. face
+          nshl   = lcblkb(9,iblk)
+          nshlb  = lcblkb(10,iblk)
+          mattyp = lcblkb(7,iblk)
+          ndofl  = lcblkb(8,iblk)
+          npro   = lcblkb(1,iblk+1) - iel
+c
+          if(lcsyst.eq.3) lcsyst=nenbl ! may not be necessary
+          ngaussb = nintb(lcsyst)
+c
+c.... only collect wedge_tri for now
+c
+          if(lcsyst.ne.3) cycle
+c
+c.... compute and assemble non-unit normal
+c
+          call calc_gc_normal (xtmp,             shpb(lcsyst,1:nshl,:),
+     &                         mienb(iblk)%p,    miBCB(iblk)%p,
+     &                         gcnormal)
+c
+        enddo boundary_blocks ! end loop the boundary elements
+c
+c.... loop over the interface elements
+c
+        interface_blocks: do iblk = 1, nelblif
+c
+          iel     = lcblkif(1, iblk)
+          npro    = lcblkif(1,iblk+1) - iel
+          lcsyst0 = lcblkif(3, iblk)    ! element0 type
+          lcsyst1 = lcblkif(4, iblk)    ! element1 type
+          ipord   = lcblkif(5, iblk)    ! polynomial order
+          nenl0   = lcblkif(6, iblk)    ! number of vertices per element0
+          nenl1   = lcblkif(7, iblk)    ! number of vertices per element1
+          mater0  = lcblkif(9, iblk)
+          mater1  = lcblkif(10,iblk)
+          nshl0   = lcblkif(iblkif_nshl0,iblk)
+          nshl1   = lcblkif(iblkif_nshl1,iblk)
+          itpid   = lcblkif(iblkif_topology,iblk)
+          ngaussif = nintif(itpid)
+c
+c.... the 0 side
+c
+          lcsyst = lcsyst0
+          nenl = nenl0
+          nshl = nshl0
+
+c          if(lcsyst.eq.3) lcsyst=nenbl ! may not be necessary
+          ngaussb = nintb(lcsyst)
+c
+c.... only collect wedge_tri for now
+c
+          if(lcsyst.ne.3) cycle
+c
+c.... compute and assemble non-unit normal
+c
+          call calc_gc_normal (xtmp,            shpif(lcsyst,1:nshl,:),
+     &                         mienif0(iblk)%p, miBCB(iblk)%p,
+     &                         gcnormal)
+c
+c.... end of the 0 side
+c
+c
+c.... the 1 side
+c
+          lcsyst = lcsyst1
+          nenl = nenl1
+          nshl = nshl1
+
+c          if(lcsyst.eq.3) lcsyst=nenbl ! may not be necessary
+          ngaussb = nintb(lcsyst)
+c
+c.... only collect wedge_tri for now
+c
+          if(lcsyst.ne.3) cycle
+c
+c.... compute and assemble non-unit normal
+c
+          call calc_gc_normal (xtmp,            shpif(lcsyst,1:nshl,:),
+     &                         mienif1(iblk)%p, miBCB(iblk)%p,
+     &                         gcnormal)
+c
+c.... end of the 1 side
+c
+        enddo interface_blocks ! end loop the interface elements
+c
+c.... communication
+c
+        if (numpe > 1) then
+          call commu (gcnormal  , ilwork, nsd  , 'in ')
+          call MPI_BARRIER (MPI_COMM_WORLD,ierr)
+          call commu (gcnormal  , ilwork, nsd  , 'out ')
+        endif
+c
+c.... end calculation of growth curve normal
 c
 c.... -------------------->   interior elements   <--------------------
 c
@@ -67,7 +187,7 @@ c
           mattyp = lcblk(7,iblk)
           ndofl  = lcblk(8,iblk)
           nsymdl = lcblk(9,iblk)
-          npro   = lcblk(1,iblk+1) - iel 
+          npro   = lcblk(1,iblk+1) - iel
           inum   = iel + npro - 1
           ngauss = nint(lcsyst)
 c

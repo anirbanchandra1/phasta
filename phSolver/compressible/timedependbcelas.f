@@ -77,6 +77,29 @@ c.... <<< hard-coding
         enddo ! end loop numnp
       endif  ! end case 2
 c
+c.... Update BC value based on geom and iBC
+c.... rotate + trans + shrink
+c
+      if ( casenumber .eq. 3 ) then
+        do i = 1,numnp
+          if ( (ibits(iBC(i),14,3) .eq. 7) .and.
+     &         (abs(x(i,1)) .lt. 0.2) .and.
+     &         (abs(x(i,2)) .lt. 0.2) .and.
+     &         (abs(x(i,3)) .lt. 0.2) ) then
+c
+            disp(i,1) = -0.005 * (x(i,1)) !+ 0.02
+     &                + (x(i,1)) * (cos(pi/600) - 1.0)
+     &                - (x(i,2)) *  sin(pi/600)
+            disp(i,2) = !-0.005 * (x(i,2)) !+ 0.01
+     &                + (x(i,2)) * (cos(pi/600) - 1.0)
+     &                + (x(i,1)) *  sin(pi/600)
+            disp(i,3) = -0.005 * x(i,3)
+c
+            BC(i,:)   = disp(i,:) / Delt(1)
+          endif ! end if inside box
+        enddo ! end loop numnp
+      endif  ! end case 3
+c
       return
       end
 c

@@ -33,6 +33,11 @@ c
       return
       end
 
+c-----------------------------------------------------------------------
+c
+c    Update solution at end of time step
+c
+c-----------------------------------------------------------------------
       subroutine itrUpdateElas (xold, x)
       
       include "common.h"

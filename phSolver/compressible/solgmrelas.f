@@ -1,8 +1,9 @@
-      subroutine SolGMRElas (x,        disp,      iBC,    BC,   
-     &                       col,      row,       meshq,
-     &                       HBrg,     eBrg, 
-     &                       yBrg,     Rcos,      Rsin,   iper, 
-     &                       ilwork,   shp,       shgl,   Dy)
+      subroutine SolGMRElas (x,       disp,    iBC,     BC,
+     &                       col,     row,     meshq,
+     &                       HBrg,    eBrg,    yBrg,
+     &                       Rcos,    Rsin,    iper,    ilwork,
+     &                       shp,     shgl,    shpb,    shglb,
+     &                       shpif,   Dy,      gcnormal)
 c
 c----------------------------------------------------------------------
 c
@@ -43,19 +44,25 @@ c
       dimension Dy(nshg,nelas),  
      &          temp(nshg,nelas),
      &          uBrg(nshg,nelas,Kspace+1)
-c        
-      dimension shp(MAXTOP,maxsh,MAXQPT),  
-     &          shgl(MAXTOP,nsd,maxsh,MAXQPT) 
-c     
+c
+      dimension shp(MAXTOP,maxsh,MAXQPT),
+     &          shgl(MAXTOP,nsd,maxsh,MAXQPT),
+     &          shpb(MAXTOP,maxsh,MAXQPT),
+     &          shglb(MAXTOP,nsd,maxsh,MAXQPT)
+c
+      real*8, dimension(maxtop,    maxsh,maxqpt) :: shpif
+c
+      dimension gcnormal(nshg, nsd)
 c.... *******************>> Element Data Formation <<******************
 c
 c.... form the LHS matrices, the residual vector, and the block
 c     diagonal preconditioner
 c
-      call ElmGMRElas (x,     disp,    shp,       shgl, 
-     &                 iBC,   BC,      elasres,   elasBDiag,
-     &                 iper,  ilwork,  elaslhsK,  
-     &                 col,   row,     meshq)
+      call ElmGMRElas (x,       disp,    shp,     shgl,
+     &                 iBC,     BC,      shpb,    shglb,
+     &                 shpif,   elasres, elasBDiag,
+     &                 iper,    ilwork,  elaslhsK,
+     &                 col,     row,     meshq, gcnormal)
 c
 c.... **********************>>    EBE - GMRES    <<********************
 c
