@@ -28,6 +28,7 @@ c
           integer :: intp
       integer :: iel,isd,n
       real*8 ::sum0,sumg0
+      real*8, allocatable :: tmpmu0(:,:),tmpmu1(:,:)
 #define debug 0
 c
 c      write(*,*) 'In e3if...'
@@ -109,11 +110,45 @@ c
 c ... kinematic condition term:
 c     set the mu coeff to the max of the 0,1 materials 
 c
-            mu(:,1) = zero
-            mu(:,2) = max(prop0%stiff(3,3),prop1%stiff(3,3)) ! maximum of the two viscositiy values
-            mu(:,3) = max(prop0%stiff(3,3),prop1%stiff(3,3)) ! maximum of the two viscositiy values
-            mu(:,4) = max(prop0%stiff(3,3),prop1%stiff(3,3)) ! maximum of the two viscositiy values
-            mu(:,5) = max(prop0%stiff(5,5),prop1%stiff(5,5)) ! maximum of the two thermal conductivity values
+      allocate(tmpmu0(npro,nflow),tmpmu1(npro,nflow))
+c
+      select case (mat_eos(mater0,1))
+      case (ieos_ideal_gas,ieos_ideal_gas_mixture,ieos_liquid_1)
+        tmpmu0(:,1) = zero
+        tmpmu0(:,2) = prop0%stiff(3,3)
+        tmpmu0(:,3) = prop0%stiff(3,3)
+        tmpmu0(:,4) = prop0%stiff(3,3)
+        tmpmu0(:,5) = prop0%stiff(5,5)
+      case (ieos_solid_1)
+C
+C Yu please fill this out
+c
+      case default
+        call error ('getthm  ', 'wrong material', mater)
+      end select
+c
+      select case (mat_eos(mater1,1))
+      case (ieos_ideal_gas,ieos_ideal_gas_mixture,ieos_liquid_1)
+        tmpmu1(:,1) = zero
+        tmpmu1(:,2) = prop1%stiff(3,3)
+        tmpmu1(:,3) = prop1%stiff(3,3)
+        tmpmu1(:,4) = prop1%stiff(3,3)
+        tmpmu1(:,5) = prop1%stiff(5,5)
+      case (ieos_solid_1)
+C
+C Yu please fill this out
+c
+      case default
+        call error ('getthm  ', 'wrong material', mater)
+      end select
+c
+      mu(:,1) = zero
+      mu(:,2) = max(tmpmu0(:,2),tmpmu1(:,2))
+      mu(:,3) = max(tmpmu0(:,3),tmpmu1(:,3))
+      mu(:,4) = max(tmpmu0(:,4),tmpmu1(:,4))
+      mu(:,5) = max(tmpmu0(:,5),tmpmu1(:,5))
+c
+      deallocate(tmpmu0,tmpmu1)
 c
             call kinematic_condition(ri0,y0,y1)
             call kinematic_condition(ri1,y1,y0)
