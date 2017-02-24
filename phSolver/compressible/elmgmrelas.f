@@ -71,12 +71,12 @@ c
           ndofl  = lcblkb(8,iblk)
           npro   = lcblkb(1,iblk+1) - iel
 c
-          if(lcsyst.eq.3) lcsyst=nenbl ! may not be necessary
+          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
           ngaussb = nintb(lcsyst)
 c
-c.... only collect wedge_tri for now
+c.... collect wedge_tri or surfID option is on
 c
-          if(lcsyst.ne.3) cycle
+          if((lcsyst.ne.itp_wedge_tri) .and. (useBLbaseSrfID.eq.0)) cycle
 c
 c.... compute and assemble non-unit normal
 c
@@ -110,12 +110,12 @@ c
           nenl = nenl0
           nshl = nshl0
 
-c          if(lcsyst.eq.3) lcsyst=nenbl ! may not be necessary
+c          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
           ngaussb = nintb(lcsyst)
 c
-c.... only collect wedge_tri for now
+c.... collect wedge_tri or surfID option is on
 c
-          if(lcsyst.ne.3) cycle
+          if((lcsyst.ne.itp_wedge_tri) .and. (useBLbaseSrfID.eq.0)) cycle
 c
 c.... compute and assemble non-unit normal
 c
@@ -132,12 +132,12 @@ c
           nenl = nenl1
           nshl = nshl1
 
-c          if(lcsyst.eq.3) lcsyst=nenbl ! may not be necessary
+c          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
           ngaussb = nintb(lcsyst)
 c
-c.... only collect wedge_tri for now
+c.... collect wedge_tri or surfID option is on
 c
-          if(lcsyst.ne.3) cycle
+          if((lcsyst.ne.itp_wedge_tri) .and. (useBLbaseSrfID.eq.0)) cycle
 c
 c.... compute and assemble non-unit normal
 c

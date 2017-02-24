@@ -19,6 +19,7 @@
 #define memstats FortranCInterface_GLOBAL_(memstats,MEMSTATS)
 #define spebcvr FortranCInterface_GLOBAL_(spebcvr,SPEBCVR)
 #define aerfrc FortranCInterface_GLOBAL_(aerfrc,AERFRC)
+#define laymesh FortranCInterface_GLOBAL_(laymesh,LAYMESH)
 #define astore FortranCInterface_GLOBAL_(astore,ASTORE)
 #define conpar FortranCInterface_GLOBAL_(conpar,CONPAR)
 #define ctrlvari FortranCInterface_GLOBAL_(ctrlvari,CTRLVARI)
@@ -247,6 +248,11 @@ extern "C" {
     int isrfIM;
     int irankfilesforce[MAXSURF+1];
   } aerfrc ;
+
+  extern struct {
+    int useBLbaseSrfID;
+	int BLbaseSrfID;
+  } laymesh ;
 
   extern struct { 
     double a[100000];

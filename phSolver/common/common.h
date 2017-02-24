@@ -106,6 +106,8 @@ c
      &                  nsrflist(0:MAXSURF), isrfIM,
      &                  irankfilesforce(0:MAXSURF)
 c
+        common /laymesh/ useBLbaseSrfID, BLbaseSrfID
+c
         common /astore/ a(100000)
 c
         common /mbndnod/ mnodeb(9,8,3)
@@ -215,6 +217,10 @@ c.... common /aerfrc/   : aerodynamic forces
 c
 c Force(3)      : components of the aerodynamic forces
 c HFlux         : total heat flux
+c
+c----------------------------------------------------------------------
+c
+c.... common /laymesh/   : surf ID option for layered mesh base
 c
 c----------------------------------------------------------------------
 c
