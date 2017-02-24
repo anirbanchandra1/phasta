@@ -711,11 +711,9 @@ c
 c
 c.... call itrCorrectElas ... and then itrBCElas ...
 c
-c                     call itrCorrectElas(xold, x, disp, elasDy)
+                     call itrCorrectElas(disp, elasDy)
 c
-                     disp = disp + elasDy
-c
-                     call itrBCElas(umesh,  disp,  iBC, 
+                     call itrBCElas(umesh,  disp,  iBC,
      &                              BC(:,ndof+2:ndof+5),
      &                              iper,   ilwork        )
 c

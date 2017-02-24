@@ -94,6 +94,16 @@ c
          Wfactor(:) = one / (two*temp(:))
        endif
 c
+c.... collect wedge tri and surf ID = BLbaseSrfID
+c
+       if ((useBLbaseSrfID .eq. 1) .and. (lcsyst .ne. itp_wedge_tri)) then
+         do inode = 1,npro
+           if (iBCB(inode,2) .ne. BLbaseSrfID) then
+             Wfactor(inode) = zero
+           endif
+         enddo
+       endif
+c
 c.... loop through the integration points
 c
         do intp = 1, ngaussb

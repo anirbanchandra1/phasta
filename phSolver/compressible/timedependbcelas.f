@@ -44,7 +44,7 @@ c
       if ( casenumber .eq. 2 ) then
         totalForce(:) = zero
         objMass = 15.0 ! kg
-c.... bcase force to all processors
+c.... bcast force to all processors
         if (numpe > 1) then
           do j = 1, nsrfCM
             Forin  = (/ Force(1,j), Force(2,j), Force(3,j) /)
