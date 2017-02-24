@@ -37,7 +37,8 @@ c
 c
         subroutine ifbc_set
      &  (
-     &    BC
+     &    y
+     &,   BC
      &,   ilwork
      &,   nlwork
      &  )
@@ -50,6 +51,7 @@ c
 c
           include "mpif.h"
 c
+          real*8, intent(inout) :: y(nshg,ndof)
           real*8,  intent(inout) ::  BC(nshg,ndofbc)
           integer, intent(in)    :: ilwork(nlwork)
           integer, intent(in)    :: nlwork
@@ -71,31 +73,23 @@ c
           do iblk = 1,nelblif
 c
             npro  = lcblkif(1,iblk+1) - lcblkif(1,iblk)
-            materif0  = lcblkif(9, iblk)
-            materif1  = lcblkif(10, iblk)
 c
-            if     ( mat_eos(materif0,1) .eq. ieos_ideal_gas 
-     &        .or.   mat_eos(materif0,1) .eq. ieos_ideal_gas_mixture ) then
-              ienif0 => mienif0(iblk)%p
-              ienif1 => mienif1(iblk)%p
-            elseif ( mat_eos(materif1,1) .eq. ieos_ideal_gas 
-     &        .or.   mat_eos(materif1,1) .eq. ieos_ideal_gas_mixture ) then
-              ienif0 => mienif1(iblk)%p
-              ienif1 => mienif0(iblk)%p
-            else
-              call error ('ifbc  ', 'ERROR:',materif0)
-            endif
+            ienif0 => mienif0(iblk)%p
+            ienif1 => mienif1(iblk)%p
 c
             do iel = 1,npro
-              do n = 1,nshl0
+c              do n = 1,nshl0
+              do n = 1,3  ! only triangles on the surface
                 i0 = ienif0(iel,n)
                 i1 = ienif1(iel,n)
 c
 c... set vapor fraction
 c
       isclr = 1
-                BC(i0,6+isclr) = ifbc(i0,ivapor_frac)/sum_vi_area(i0,nsd+1)
-                !BC(i1,6+isclr) = one
+c                BC(i0,6+isclr) = ifbc(i0,ivapor_frac)/sum_vi_area(i0,nsd+1)
+c                BC(i1,6+isclr) = one
+      y(i0,5+isclr) = ifbc(i0,ivapor_frac)/sum_vi_area(i0,nsd+1)
+      y(i1,5+isclr) = one
 c
               enddo
             enddo
