@@ -675,7 +675,7 @@ c                       call itrBC (y,  ac,  iBC,  BC, iper, ilwork)
                      endif
 c
                      if (nsclr > 0) then
-                       call ifbc_set(bc,ilwork,nlwork)
+                       call ifbc_set(y,bc,ilwork,nlwork)
                      endif
 c
                   else if(iupdate.lt.10) then         ! update scalar
