@@ -204,7 +204,8 @@ c
 c
 c.... Shape measure. Calculate the shape quality
 c
-          call shpMeasure(x, mien(iblk)%p, meshq(iel:iel+npro-1),
+          call shpMeasure(x, mien(iblk)%p, tmpshp, tmpshgl,
+     &                    meshq(iel:iel+npro-1),
      &                    meshV(iel:iel+npro-1), errorcount )
 c
           call AsIGMRElas (x,             disp,
