@@ -264,7 +264,8 @@ c
           call get_mesh_velocity(um0,umeshl0,shp0,npro,nshl0)
           call get_mesh_velocity(um1,umeshl1,shp1,npro,nshl1)
 c
-          call getthmif
+          call getthmif0
+          call getthmif1
 c
         end subroutine e3if_var
 c
