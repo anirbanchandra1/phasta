@@ -360,8 +360,7 @@ c.... first layer thickness
       ione=1
       call phio_readheader(fhandle,
      & c_char_'first layer thickness' // char(0),
-     & c_loc(intfromfile),ione, dataDbl, iotype)
-      numgc = intfromfile(1)
+     & c_loc(numgc),ione, dataDbl, iotype)
       if ( numgc > 0 ) then
         allocate( tmpBLDbl(numgc) )
         allocate( BLflt(numgc) )
@@ -377,7 +376,7 @@ c.... first layer thickness
          BLflt = tmpBLDbl
          deallocate( tmpBLDbl )
       else  ! sometimes a partition has no BL
-         BLflt = 1.2 ! 0 for debugging
+         BLflt = 0
          deallocate( tmpBLDbl )
       endif
 c
@@ -385,8 +384,7 @@ c.... growth ratio
       ione=1
       call phio_readheader(fhandle,
      & c_char_'growth ratio' // char(0),
-     & c_loc(intfromfile),ione, dataDbl, iotype)
-      numgc = intfromfile(1)
+     & c_loc(numgc),ione, dataDbl, iotype)
       if ( numgc > 0 ) then
         allocate( tmpBLDbl(numgc) )
         allocate( BLgr(numgc) )
@@ -410,8 +408,7 @@ c.... total number of layers
       ione=1
       call phio_readheader(fhandle,
      & c_char_'total number of layers' // char(0),
-     & c_loc(intfromfile),ione, dataInt, iotype)
-      numgc = intfromfile(1)
+     & c_loc(numgc),ione, dataInt, iotype)
       if ( numgc > 0 ) then
         allocate( tmpBLInt(numgc) )
         allocate( BLtnl(numgc) )
@@ -435,8 +432,7 @@ c.... growth curve connectivity
       ione=1
       call phio_readheader(fhandle,
      & c_char_'growth curve connectivity' // char(0),
-     & c_loc(intfromfile),ione, dataInt, iotype)
-      numgcnp = intfromfile(1)
+     & c_loc(numgcnp),ione, dataInt, iotype)
       if ( numgcnp > 0 ) then
         allocate( tmpBLlist(numgcnp) )
         allocate( BLlist(numgcnp) )

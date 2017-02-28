@@ -106,6 +106,7 @@ c
      &                  nsrflist(0:MAXSURF), isrfIM,
      &                  irankfilesforce(0:MAXSURF)
 c
+        integer, target :: numgc, numgcnp
         common /laymesh/ numgc, numgcnp, useBLbaseSrfID, BLbaseSrfID
 c
         common /astore/ a(100000)

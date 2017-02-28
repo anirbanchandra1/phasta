@@ -12,8 +12,8 @@ c
 c----------------------------------------------------------------------
 c
          use pointer_data
-c         use timedata
          use timedataC
+         use readarrays ! read BLflt, BLgr, BLtnl, BLlist
 c
         include "common.h"
         include "mpif.h"
@@ -158,6 +158,24 @@ c
         endif
 c
 c.... end calculation of growth curve normal
+c
+c.... ---------------->   Re-position layered mesh   <-----------------
+c
+c.... loop over growth curves
+c
+c.... use BLlist and BLtnl
+c
+c.... loop over vertices on this growth curve
+c
+c.... use BLflt and BLgr to calculate new positions
+c
+c.... assign iBC and BC arrays
+c
+c.... end loop vertices on this growth curve
+c
+c.... end loop growth curves
+c
+c.... end re-position layered mesh
 c
 c.... -------------------->   interior elements   <--------------------
 c
