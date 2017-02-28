@@ -236,4 +236,31 @@ c
           return
         end subroutine e3if_empty
 c
+        subroutine e3if_setparam_0
+          rho  => rho0
+          ei   => ei0
+          pres => pres0
+          T    => T0
+          h    => h0
+          cp   => cp0
+          alphaP => alfaP0
+          betaT => betaT0
+          c     => c0
+          mater = mater0
+          vap_frac => vap_frac0
+        end subroutine e3if_setparam_0
+c
+        subroutine e3if_setparam_1
+          rho  => rho1
+          ei   => ei1
+          pres => pres1
+          T    => T1
+          h    => h1
+          cp   => cp1
+          alphaP => alfaP1
+          betaT => betaT1
+          c     => c1
+          mater = mater1
+        end subroutine e3if_setparam_1
+c
       end module e3if_param_m

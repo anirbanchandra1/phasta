@@ -165,37 +165,24 @@ c
 c
       end subroutine getthm7_solid_1
 c
-      subroutine getthmif
-c
+      subroutine getthmif0
         use e3if_param_m
-c
-        rho  => rho0
-        ei   => ei0
-        pres => pres0
-        T    => T0
-        h    => h0
-        cp   => cp0
-        alphaP => alfaP0
-        betaT => betaT0
-        c     => c0
-        mater = mater0
-        vap_frac => vap_frac0
-c
+        call e3if_setparam_0
         call getthmif0_ptr
+      end subroutine getthmif0
 c
-        rho  => rho1
-        ei   => ei1
-        pres => pres1
-        T    => T1
-        h    => h1
-        cp   => cp1
-        alphaP => alfaP1
-        betaT => betaT1
-        c     => c1
-        mater = mater1
-c
+      subroutine getthmif1
+        use e3if_param_m
+        call e3if_setparam_1
         call getthmif1_ptr
+      end subroutine getthmif1
 c
-      end subroutine getthmif
+      subroutine getthmif_solid_0
+c
+      end subroutine getthmif_solid_0
+c
+      subroutine getthmif_solid_1
+c
+      end subroutine getthmif_solid_1
 c
       end module eqn_state_m
