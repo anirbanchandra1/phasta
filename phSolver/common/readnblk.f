@@ -30,7 +30,7 @@ c
 
       real*8, allocatable  :: BLflt(:)
       real*8, allocatable  :: BLgr(:)
-      integer, allocatable :: BLtnl(:)
+      integer, allocatable :: BLtnv(:)
       integer, allocatable :: BLlist(:)
       end module
 
@@ -407,24 +407,24 @@ c
 c.... total number of layers
       ione=1
       call phio_readheader(fhandle,
-     & c_char_'total number of layers' // char(0),
+     & c_char_'total number of vertices' // char(0),
      & c_loc(numgc),ione, dataInt, iotype)
       if ( numgc > 0 ) then
         allocate( tmpBLInt(numgc) )
-        allocate( BLtnl(numgc) )
+        allocate( BLtnv(numgc) )
       else
         allocate( tmpBLInt(1) )
-        allocate( BLtnl(1) )
+        allocate( BLtnv(1) )
       endif
       call phio_readdatablock(fhandle,
-     & c_char_'total number of layers' // char(0),
+     & c_char_'total number of vertices' // char(0),
      & c_loc(tmpBLInt), numgc, dataInt, iotype)
 
       if ( numgc > 0 ) then
-         BLtnl = tmpBLInt
+         BLtnv = tmpBLInt
          deallocate( tmpBLInt )
       else  ! sometimes a partition has no BL
-         BLtnl = 0
+         BLtnv = 0
          deallocate( tmpBLInt )
       endif
 c
