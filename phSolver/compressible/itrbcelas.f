@@ -7,8 +7,8 @@ c
 c input:
 c  disp   (nshg,nelas)  : mesh-elastic displacement 
 c  iBC    (nshg)        : Boundary Condition Code
-c  BC     (nshg,3)      : boundary condition constraint parameters
-c                         pass only 3 componenets to this subroutine
+c  BC     (nshg,4)      : boundary condition constraint parameters
+c                         pass only 4 componenets to this subroutine
 c
 c output:
 c  disp   (nshg,nelas)  : Adjusted mesh displacement value(s) corresponding

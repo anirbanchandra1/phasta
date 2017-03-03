@@ -106,7 +106,8 @@ c
      &                  nsrflist(0:MAXSURF), isrfIM,
      &                  irankfilesforce(0:MAXSURF)
 c
-        common /laymesh/ useBLbaseSrfID, BLbaseSrfID
+        integer, target :: numgc, numgcnp
+        common /laymesh/ numgc, numgcnp, useBLbaseSrfID, BLbaseSrfID
 c
         common /astore/ a(100000)
 c
@@ -220,7 +221,12 @@ c HFlux         : total heat flux
 c
 c----------------------------------------------------------------------
 c
-c.... common /laymesh/   : surf ID option for layered mesh base
+c.... common /laymesh/   : layered mesh
+c
+c numgc           : number of growth curves
+c numgcnp         : total number of nodal points of all growth curves
+c useBLbaseSrfID  : use the surf ID to identify layer base
+c BLbaseSrfID     : the surf ID of layer base
 c
 c----------------------------------------------------------------------
 c

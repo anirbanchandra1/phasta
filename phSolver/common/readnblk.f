@@ -27,11 +27,15 @@ c
       integer, allocatable :: point2iper(:)
       integer, target, allocatable :: point2ifath(:)
       integer, target, allocatable :: point2nsons(:)
-      
+
+      real*8, allocatable  :: BLflt(:)
+      real*8, allocatable  :: BLgr(:)
+      integer, allocatable :: BLtnv(:)
+      integer, allocatable :: BLlist(:)
       end module
 
       subroutine readnblk
-      use iso_c_binding 
+      use iso_c_binding
       use readarrays
       use fncorpmod
       use phio
@@ -46,10 +50,12 @@ c
       real*8, target, allocatable :: uread(:,:), xnread(:,:)
       real*8, target, allocatable :: xdotoldread(:,:), umeshread(:,:)
       real*8, target, allocatable :: BCinpread(:,:)
+      real*8, target, allocatable :: tmpBLDbl(:)
       real*8 :: iotime
       integer, target, allocatable :: iperread(:), iBCtmpread(:)
       integer, target, allocatable :: ilworkread(:), nBCread(:)
       integer, target, allocatable :: fncorpread(:)
+      integer, target, allocatable :: tmpBLInt(:), tmpBLlist(:)
       integer fncorpsize
       character*10 cname2, cname2nd
       character*8 mach2
@@ -347,6 +353,106 @@ c         endif
          deallocate(BCinpread)
          BCinp=0
       endif
+c
+c--------------------- read the layered mesh parameters ------------------
+c
+c.... first layer thickness
+      ione=1
+      call phio_readheader(fhandle,
+     & c_char_'first layer thickness' // char(0),
+     & c_loc(numgc),ione, dataDbl, iotype)
+      if ( numgc > 0 ) then
+        allocate( tmpBLDbl(numgc) )
+        allocate( BLflt(numgc) )
+      else
+        allocate( tmpBLDbl(1) )
+        allocate( BLflt(1) )
+      endif
+      call phio_readdatablock(fhandle,
+     & c_char_'first layer thickness' // char(0),
+     & c_loc(tmpBLDbl), numgc, dataDbl, iotype)
+
+      if ( numgc > 0 ) then
+         BLflt = tmpBLDbl
+         deallocate( tmpBLDbl )
+      else  ! sometimes a partition has no BL
+         BLflt = 0
+         deallocate( tmpBLDbl )
+      endif
+c
+c.... growth ratio
+      ione=1
+      call phio_readheader(fhandle,
+     & c_char_'growth ratio' // char(0),
+     & c_loc(numgc),ione, dataDbl, iotype)
+      if ( numgc > 0 ) then
+        allocate( tmpBLDbl(numgc) )
+        allocate( BLgr(numgc) )
+      else
+        allocate( tmpBLDbl(1) )
+        allocate( BLgr(1) )
+      endif
+      call phio_readdatablock(fhandle,
+     & c_char_'growth ratio' // char(0),
+     & c_loc(tmpBLDbl), numgc, dataDbl, iotype)
+
+      if ( numgc > 0 ) then
+         BLgr = tmpBLDbl
+         deallocate( tmpBLDbl )
+      else  ! sometimes a partition has no BL
+         BLgr = 0
+         deallocate( tmpBLDbl )
+      endif
+c
+c.... total number of layers
+      ione=1
+      call phio_readheader(fhandle,
+     & c_char_'total number of vertices' // char(0),
+     & c_loc(numgc),ione, dataInt, iotype)
+      if ( numgc > 0 ) then
+        allocate( tmpBLInt(numgc) )
+        allocate( BLtnv(numgc) )
+      else
+        allocate( tmpBLInt(1) )
+        allocate( BLtnv(1) )
+      endif
+      call phio_readdatablock(fhandle,
+     & c_char_'total number of vertices' // char(0),
+     & c_loc(tmpBLInt), numgc, dataInt, iotype)
+
+      if ( numgc > 0 ) then
+         BLtnv = tmpBLInt
+         deallocate( tmpBLInt )
+      else  ! sometimes a partition has no BL
+         BLtnv = 0
+         deallocate( tmpBLInt )
+      endif
+c
+c.... growth curve connectivity
+      ione=1
+      call phio_readheader(fhandle,
+     & c_char_'growth curve connectivity' // char(0),
+     & c_loc(numgcnp),ione, dataInt, iotype)
+      if ( numgcnp > 0 ) then
+        allocate( tmpBLlist(numgcnp) )
+        allocate( BLlist(numgcnp) )
+      else
+        allocate( tmpBLlist(1) )
+        allocate( BLlist(1) )
+      endif
+      call phio_readdatablock(fhandle,
+     & c_char_'growth curve connectivity' // char(0),
+     & c_loc(tmpBLlist), numgcnp, dataInt, iotype)
+
+      if ( numgcnp > 0 ) then
+         BLlist = tmpBLlist
+         deallocate( tmpBLlist )
+      else  ! sometimes a partition has no BL
+         BLlist = 0
+         deallocate( tmpBLlist )
+      endif
+c
+c------------------ end read the layered mesh parameters ------------------
 c
 c.... read periodic boundary conditions
 c
