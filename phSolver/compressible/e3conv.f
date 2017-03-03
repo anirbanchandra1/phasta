@@ -392,9 +392,12 @@ c
 !
         subroutine e3convSclr (g1yti,   g2yti,   g3yti,
      &                         A1t,     A2t,     A3t, 
-     &                         rho,     u1,      Sclr,
-     &                         u2,      u3,      rLyti,   
-     &                         rti,     rmti,    EGmasst,
+     &                         u1,      u2,      u3,      
+     &                         um1,     um2,     um3,      
+     &                         divum, 
+     &                         rho,     Sclr,
+     &                         rLyti,   rti,     rmti,    
+     &                         EGmasst,
      &                         shg,     shape,   WdetJ)
 !
 !----------------------------------------------------------------------
@@ -444,6 +447,7 @@ c
      &            rmti(npro,nsd+1),       EGmasst(npro,nshape,nshape),
      &            shg(npro,nshl,nsd),     shape(npro,nshl),
      &            WdetJ(npro)
+        real*8, dimension(npro), intent(in) :: um1, um2, um3, divum
 !
 !  local arrays  
 !
@@ -458,17 +462,28 @@ c
 !.... calculate integrated by part contribution of Euler flux (Galerkin)
 !     
            if (iconvsclr.eq.2) then ! convective form
-!     
+c
+      write(*,*) ' ERROR: The convective form of Scalar eqn is not yet correct for ALE'
+      write(*,*) '        Please use conservative form'
+      call error('e3convSclr','iconvsclr',1)
+c     
               rti(:, 4) = rti(:,4) + ( u1) * g1yti(:)
      &                             + ( u2) * g2yti(:)
      &                             + ( u3) * g3yti(:) 
-!     
+c     
            else                 ! conservative form     
-!     
-              rti(:, 1) = rti(:,1) + (- u1) * rho * Sclr
-              rti(:, 2) = rti(:,2) + (- u2) * rho * Sclr
-              rti(:, 3) = rti(:,3) + (- u3) * rho * Sclr
-!     
+c     
+
+c      write(*,*) 'um1:',um1
+c      write(*,*) 'um2:',um2
+c      write(*,*) 'um3:',um3
+c      write(*,*) 'div:',divum
+              rti(:,1) = rti(:,1) + (- u1 + um1) * rho * Sclr
+              rti(:,2) = rti(:,2) + (- u2 + um2) * rho * Sclr
+              rti(:,3) = rti(:,3) + (- u3 + um3) * rho * Sclr
+c
+              rti(:,4) = rti(:,4) + divum * rho * Sclr
+c     
            endif
 
 !      flops = flops + 28*npro

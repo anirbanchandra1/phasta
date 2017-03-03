@@ -144,7 +144,8 @@ c
      &                         x,       elDwl,
      &                         shp,     shgl,      ien,     
      &                         mater,   rest,      rmest,    
-     &                         qrest,   EGmasst,   Diag)
+     &                         qrest,   EGmasst,   Diag,
+     &                         umesh)
 c
 c----------------------------------------------------------------------
 c
@@ -175,6 +176,11 @@ c
 c        
         dimension EGmasst(npro,nshape, nshape)
         real*8    elDwl(npro)
+c
+        real*8, dimension(numnp,nsd), intent(in) :: umesh
+c
+        real*8, dimension(npro,nshl,nsd) :: uml
+c
 c.... create the matrix of mode signs for the hierarchic basis 
 c     functions. 
 c
@@ -186,6 +192,7 @@ c
         call localy (y,       ycl,      ien,    ndof,  'gather  ')
         call localy (ac,      acl,     ien,    ndof,  'gather  ')
         call localx (x,       xl,      ien,    nsd,   'gather  ')
+        call local (umesh,  uml,    ien,    nsd,    'gather  ')
 c       call local (qrest,   qtl,     ien,    1,     'gather  ')
         if (iRANS .lt. 0) then
            call localx (d2wall,   dwl,     ien,    1,     'gather  ')
@@ -202,7 +209,8 @@ c
      &               dwl,    elDwl,   shp,
      &               sgn,    shgl,    xl,
      &               rtl,    rmtl,
-     &               qtl,    EGmasst )
+     &               qtl,    EGmasst,
+     &               uml )
 
         ttim(31) = ttim(31) + tmr()
 c

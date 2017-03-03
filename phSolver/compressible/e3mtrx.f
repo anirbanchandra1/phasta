@@ -312,6 +312,7 @@ c
 c
         subroutine e3mtrxSclr (rho,   
      &                         u1,     u2,   u3,
+     &                         um1,    um2,  um3,
      &                         A0t,    A1t,    
      &                         A2t,    A3t  )
 c
@@ -351,16 +352,23 @@ c
      &            A1t(npro),       A2t(npro),
      &            A3t(npro)
 c
+        real*8, dimension(npro), intent(in) :: um1,um2,um3
+c
         if (iconvsclr.eq.2) then  !convective form
+c
+      write(*,*) ' ERROR: The convective form of Scalar eqn is not yet correct for ALE'
+      write(*,*) '        Please use conservative form'
+      call error('e3convSclr','iconvsclr',1)
+c     
            A0t(:) = one
            A1t(:) = u1(:)
            A2t(:) = u2(:)
            A3t(:) = u3(:)
         else                    !conservative form
-           A0t(:) = rho(:)
-           A1t(:) = rho(:)*u1(:)
-           A2t(:) = rho(:)*u2(:)
-           A3t(:) = rho(:)*u3(:)
+           A0t = rho
+           A1t = rho * (u1 - um1)
+           A2t = rho * (u2 - um2)
+           A3t = rho * (u3 - um3)
         endif
 
 c

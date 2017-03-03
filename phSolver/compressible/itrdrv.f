@@ -616,7 +616,8 @@ c
      &                    yBrg,          Rcos,      Rsin,
      &                    iper,          ilwork,
      &                    shp,           shgl,
-     &                    shpb,          shglb, solinc(1,isclr+5))
+     &                    shpb,          shglb, solinc(1,isclr+5),
+     &                    umesh )
 c'    
                   endif  ! endif usingPETSc for scalar
 c

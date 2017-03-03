@@ -323,7 +323,8 @@ c
      &                    shp,         sgn,
      &                    shgl,        xl, 
      &                    rtl,         rmtl,
-     &                    qtl,         EGmasst)
+     &                    qtl,         EGmasst,
+     &                    uml)
 c                                                                      
 c----------------------------------------------------------------------
 c
@@ -403,6 +404,9 @@ c
      &            shape(npro,nshl),        shdrv(npro,nsd,nshl)
         real*8    elDwl(npro)
 c
+        real*8, dimension(npro,nshl,nsd), intent(in) :: uml
+        real*8, dimension(npro) :: um1, um2, um3, divum
+c
         ttim(6) = ttim(6) - tmr()
 c
 c.... loop through the integration points
@@ -447,8 +451,10 @@ c     &                         rho,
      &                         rmu,      con,
 c     &                         rk,
      &                         u1,       u2,       u3,
+     &                         um1,      um2,      um3,
      &                         shg,      dwl,
-     &                         dist2w)
+     &                         dist2w,
+     &                         uml,      divum)
 c
         ttim(8) = ttim(8) + tmr()
 
@@ -472,6 +478,7 @@ c
         ttim(9) = ttim(9) - tmr()
         call e3mtrxSclr (rho,
      &                   u1,            u2,         u3,
+     &                   um1,           um2,        um3,
      &                   A0t,           A1t,
      &                   A2t,           A3t)
         ttim(9) = ttim(9) + tmr()
@@ -481,9 +488,12 @@ c
         ttim(14) = ttim(14) - tmr()
         call e3convSclr (g1yti,        g2yti,       g3yti,
      &                   A1t,          A2t,         A3t,
-     &                   rho,          u1,          Sclr,
-     &                   u2,           u3,          rLyti,
-     &                   rti,          rmti,        EGmasst,
+     &                   u1,           u2,          u3, 
+     &                   um1,          um2,         um3, 
+     &                   divum, 
+     &                   rho,          Sclr,
+     &                   rLyti,        rti,          rmti,
+     &                   EGmasst,
      &                   shg,          shape,       WdetJ)
         ttim(14) = ttim(14) + tmr()
 c

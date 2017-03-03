@@ -759,7 +759,8 @@ c
      &                        yBrg,     Rcos,     Rsin,    iper,
      &                        ilwork,
      &                        shp,      shgl,
-     &                        shpb,     shglb,  Dyt)
+     &                        shpb,     shglb,  Dyt,
+     &                        umesh )
 c
 c----------------------------------------------------------------------
 c
@@ -816,6 +817,8 @@ c
      &            shpb(MAXTOP,maxsh,MAXQPT),
      &            shglb(MAXTOP,nsd,maxsh,MAXQPT)
         real*8    elDw(numel) 
+c
+        real*8, dimension(numnp,nsd), intent(in) :: umesh
 c     
 c.... *******************>> Element Data Formation <<******************
 c
@@ -829,7 +832,8 @@ c
      &                  shpb,          shglb,
      &                  rest,
      &                  rmest,         Diag,       iper,      
-     &                  ilwork,        EGmasst)
+     &                  ilwork,        EGmasst, 
+     &                  umesh)
 c
 c.... **********************>>    EBE - GMRES    <<********************
 c
