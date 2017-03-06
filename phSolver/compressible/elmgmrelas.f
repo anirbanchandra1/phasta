@@ -195,28 +195,8 @@ c
 c
 c.... assign iBC and BC arrays
 c
-            if (btest(iBC(basevID),14)) then
-              iBC(vID) = ibset(iBC(vID), 14)
-            else
-              iBC(vID) = ibclr(iBC(vID), 14)
-            endif
-c
-            if (btest(iBC(basevID),15)) then
-              iBC(vID) = ibset(iBC(vID), 15)
-            else
-              iBC(vID) = ibclr(iBC(vID), 15)
-            endif
-c
-            if (btest(iBC(basevID),16)) then
-              iBC(vID) = ibset(iBC(vID), 16)
-            else
-              iBC(vID) = ibclr(iBC(vID), 16)
-            endif
-c
-c.... if we prescribe velocity on two directions, we may have some
-c       trouble with the following line. just for now.
-c
-            BC(vID, ndof+2:ndof+4) = disp(vID,:) / Delt(1)
+            call assign_bl_bc( disp, iBC, BC(:,ndof+2:ndof+5),
+     &                         basevID, vID )
 c
 c.... end loop vertices on this growth curve
 c
