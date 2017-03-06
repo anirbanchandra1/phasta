@@ -297,8 +297,8 @@ c
 c... calculate flux in normal direction...
 c
             do iflow = 1,nflow
-              f0(:,iflow) = fconv0(:,iflow) !- fdiff0(:,iflow)
-              f1(:,iflow) = fconv1(:,iflow) !- fdiff1(:,iflow)
+              f0(:,iflow) = fconv0(:,iflow) - fdiff0(:,iflow)
+              f1(:,iflow) = fconv1(:,iflow) - fdiff1(:,iflow)
               f0n0(iflow) = dot_product(f0(:,iflow),nv0(iel,:))
               f0n1(iflow) = dot_product(f0(:,iflow),nv1(iel,:))
               f1n0(iflow) = dot_product(f1(:,iflow),nv0(iel,:))

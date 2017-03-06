@@ -398,7 +398,6 @@ c ........Get the material properties
 c
          call getdiff(rmu, rlm, rlm2mu, con, npro, mater)
 c
-c
 c.... u^m_{i,i} divum at integral point
 c
        divum = zero
@@ -549,8 +548,10 @@ c     &                         rho,
      &                         rmu,      con,
 c     &                         rk,
      &                         u1,       u2,       u3,
+     &                         um1,      um2,      um3,
      &                         shg,      dwl,
-     &                         dist2w)
+     &                         dist2w,
+     &                         uml,      divum)
 c
 c----------------------------------------------------------------------
 c
@@ -636,6 +637,9 @@ c     &            Sclr(npro),
 c
 
         dimension tmp(npro),                  dxdxi(npro,nsd,nsd)
+c
+        real*8, dimension(npro, nshl, nsd), intent(in) :: uml
+        real*8, dimension(npro), intent(Out) :: um1, um2, um3, divum
 c
         ttim(20) = ttim(20) - tmr()
 c
@@ -793,7 +797,16 @@ c
 c ***********************************************************
 
        ttim(7) = ttim(7) + tmr()
-      
+c
+c.... u^m_{i,i} divum at integral point
+c
+       divum = zero
+c
+        do isd = 1,nsd
+          do n = 1,nshl
+            divum = divum + shg(:,n,isd) * uml(:,n,isd)
+          enddo
+        enddo
 c
 c.... return
 c
