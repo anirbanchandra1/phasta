@@ -184,8 +184,8 @@ c
           igr  = BLgr(ngc)  ! growth ratio for this growth curve
           basevID = BLlist(listconuter + 1)
           tmp  = sqrt( gcnormal(basevID,1)**2
-                     + gcnormal(basevID,2)**2
-                     + gcnormal(basevID,3)**2 )
+     &               + gcnormal(basevID,2)**2
+     &               + gcnormal(basevID,3)**2 )
           inormal = gcnormal(basevID,:) / tmp
 c
 c.... loop over vertices on this growth curve
