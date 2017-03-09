@@ -113,6 +113,24 @@ c
 c
 c----------------------------------------------------------------------
 c
+c.... common /laymesh/   : layered mesh
+c
+c numgc           : number of growth curves
+c numgcnp         : total number of nodal points of all growth curves
+c useBLbaseSrfID  : use the surf ID to identify layer base
+c BLbaseSrfID     : the surf ID of layer base
+c
+      module laymesh_m
+        use iso_c_binding
+        implicit none
+        integer(c_int), target :: numgc,          numgcnp,
+     &                            useBLbaseSrfID, BLbaseSrfID
+        common /laymesh/ numgc,          numgcnp,
+     &                   useBLbaseSrfID, BLbaseSrfID
+      end module laymesh_m
+c
+c----------------------------------------------------------------------
+c
 c.... common /timdat/   : time data
 c
 c time          : current run time

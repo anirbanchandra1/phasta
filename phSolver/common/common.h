@@ -14,6 +14,7 @@ c
       use dgifinp_m
       use global_const_m
       use conpar_m
+	  use laymesh_m
       use timdat_m
       use elmpar_m
       use blkdat_m
@@ -105,9 +106,6 @@ c
      &                  HFlux(MAXSURF),    nsrfCM,
      &                  nsrflist(0:MAXSURF), isrfIM,
      &                  irankfilesforce(0:MAXSURF)
-c
-        integer, target :: numgc, numgcnp
-        common /laymesh/ numgc, numgcnp, useBLbaseSrfID, BLbaseSrfID
 c
         common /astore/ a(100000)
 c
@@ -218,15 +216,6 @@ c.... common /aerfrc/   : aerodynamic forces
 c
 c Force(3)      : components of the aerodynamic forces
 c HFlux         : total heat flux
-c
-c----------------------------------------------------------------------
-c
-c.... common /laymesh/   : layered mesh
-c
-c numgc           : number of growth curves
-c numgcnp         : total number of nodal points of all growth curves
-c useBLbaseSrfID  : use the surf ID to identify layer base
-c BLbaseSrfID     : the surf ID of layer base
 c
 c----------------------------------------------------------------------
 c

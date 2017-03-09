@@ -44,7 +44,9 @@ c.... compute the normal to the boundary. This is achieved by taking
 c     the cross product of two vectors in the plane of the 2-d
 c     boundary face.
 c
-       if(lcsyst.eq.1) then   ! set to curl into element all others out
+c.... set curl to be outward for all types of elememt
+c
+       if(lcsyst.eq.1) then
          ipt2=2
          ipt3=3
        elseif(lcsyst.eq.2) then

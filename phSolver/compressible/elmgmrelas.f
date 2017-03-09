@@ -43,7 +43,7 @@ c
 c
         integer errorcount(2)
 c
-        integer listcounter, ngc, itnv, basevID, nv, vID, vID2
+        integer listcounter, ngc, itnv, basevID, nv, vID, vID2, ioffset
         real*8  iflt, igr
         dimension inormal(nsd)
 c
@@ -168,6 +168,7 @@ c
 c.... loop over growth curves
 c
         listconuter = 0
+        ioffset = 1 ! the ID starts from 1 in phasta
         do ngc = 1, numgc
           itnv = BLtnv(ngc) ! total number of vertices for this growth curve
 c
@@ -182,7 +183,7 @@ c.... prepare other paramteres
 c
           iflt = BLflt(ngc) ! first layer thickness for this growth curve
           igr  = BLgr(ngc)  ! growth ratio for this growth curve
-          basevID = BLlist(listconuter + 1)
+          basevID = BLlist(listconuter + 1) + ioffset
           tmp  = sqrt( gcnormal(basevID,1)**2
      &               + gcnormal(basevID,2)**2
      &               + gcnormal(basevID,3)**2 )
@@ -191,8 +192,8 @@ c
 c.... loop over vertices on this growth curve
 c
           do nv = 2, itnv
-            vID = BLlist(listconuter + nv)
-            vID2= BLlist(listconuter + nv - 1) ! the previous one
+            vID = BLlist(listconuter + nv) + ioffset
+            vID2= BLlist(listconuter + nv - 1) + ioffset ! the previous one
             xtmp(vID,:) = xtmp(vID2,:) + iflt * inormal(:) * igr**(nv-2)
             disp(vID,:) = xtmp(vID,:) - x(vID,:)
 c
