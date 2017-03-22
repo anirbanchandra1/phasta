@@ -414,15 +414,19 @@ c
 c
 c.... -----------------------> predictor phase <-----------------------
 c
-            call itrPredict(   yold,    acold,    y,   ac , umesh, iBC, BC, iper, ilwork)
             call itrBC (y,ac, iBC, BC, iper, ilwork, umesh)
 c
             isclr = zero
             if (nsclr.gt.zero) then
             do isclr=1,nsclr
+               call ifbc_set(y,bc,ibc,ilwork,nlwork)
+               call ifbc_set(yold,bc,ibc,ilwork,nlwork)
                call itrBCSclr (y, ac,  iBC, BC, iper, ilwork)
+               call itrBCSclr (yold, acold,  iBC, BC, iper, ilwork)
             enddo
             endif
+c
+            call itrPredict(   yold,    acold,    y,   ac , umesh, iBC, BC, iper, ilwork)
 c
             if(iALE .eq. 2) then
 c
@@ -515,10 +519,10 @@ c                        write(*,*) 'lhs=',lhs
      &                       shpif,         shgif,
      &                       solinc,        rerr,          umesh)
 c
-c                     call set_if_velocity (BC(:,ndof+2:ndof+4),  iBC, 
-c     &                                umesh,    x,     ilwork,
-c     &                                lcblkif,  nshg,  ndofBC,
-c     &                                nsd,   nelblif,  MAXBLK, nlwork )
+                     call set_if_velocity (BC(:,ndof+2:ndof+4),  iBC, 
+     &                                umesh,    disp, x,  Delt(1),   ilwork,
+     &                                nshg,  ndofBC,
+     &                                nsd,   nelblif, nlwork )
 c
                     endif
                       else if (mod(impl(1),100)/10 .eq. 2) then ! mfg solve
@@ -587,7 +591,9 @@ c
                         gami = 1
                         almi = 1
                      endif
-c     
+c
+                     call itrBCSclr (y, ac,  iBC, BC, iper, ilwork)
+c
                      lhs = 1 - min(1,mod(ifuncs(isclr+2)-1,
      &                                       LHSupd(isclr+2)))
                      iprec = lhs
@@ -626,10 +632,10 @@ c
                       lhs = 1  
                       iprec=lhs
 c 
-                     call set_if_velocity (BC(:,ndof+2:ndof+4),  iBC, 
-     &                                umesh,    disp, x,  Delt(1),   ilwork,
-     &                                lcblkif,  nshg,  ndofBC,
-     &                                nsd,   nelblif,  MAXBLK, nlwork )
+c                     call set_if_velocity (BC(:,ndof+2:ndof+4),  iBC, 
+c     &                                umesh,    disp, x,  Delt(1),   ilwork,
+c     &                                nshg,  ndofBC,
+c     &                                nsd,   nelblif, nlwork )
 c
 c.... only used for prescribing time-dependent mesh-elastic BC
 c.... comp3_elas and DG interface share the same iBC, thus, this
@@ -676,7 +682,7 @@ c                       call itrBC (y,  ac,  iBC,  BC, iper, ilwork)
                      endif
 c
                      if (nsclr > 0) then
-                       call ifbc_set(y,bc,ilwork,nlwork)
+                       call ifbc_set(y,bc,ibc,ilwork,nlwork)
                      endif
 c
                   else if(iupdate.lt.10) then         ! update scalar
@@ -703,11 +709,10 @@ c
                            call solvecon (y,    x,      iBC,  BC, 
      &                                    iper, ilwork, shp,  shgl)
                         endif   ! end of volume constraint calculations
-c
-c ... update BC array for scalar and mesh elas boundary conditions on the interfaces ...
-c 
                      endif
+c
                      call itrBCSclr (  y,  ac,  iBC,  BC, iper, ilwork)
+c
                   else if(iupdate.eq.10) then        ! update mesh-elastic
 c
 c.... call itrCorrectElas ... and then itrBCElas ...

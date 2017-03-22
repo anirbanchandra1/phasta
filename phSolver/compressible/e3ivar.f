@@ -265,6 +265,7 @@ c
 c
         if (nSclr > 0 .and. mat_eos(mater,1).eq.ieos_ideal_gas_mixture) then
           vap_frac = zero
+          isclr = 1
           do n = 1,nshl
             vap_frac = vap_frac + shape(:,n)*ycl(:,n,isclr+5)
           end do
@@ -656,6 +657,9 @@ c
        T      = zero
        Sclr   = zero
        dist2w = zero
+       um1  = zero
+       um2  = zero
+       um3  = zero
 c
        id = isclr + 5
        do n = 1, nshl 
@@ -668,6 +672,9 @@ c
           u3     = u3     + shape(:,n) * ycl( :,n,4)
           T      = T      + shape(:,n) * ycl( :,n,5)
           Sclr   = Sclr   + shape(:,n) * ycl(:,n,id)
+          um1  = um1  + shape(:,n) * uml(:,n,1)
+          um2  = um2  + shape(:,n) * uml(:,n,2)
+          um3  = um3  + shape(:,n) * uml(:,n,3)
           if (iRANS.lt.0) then
              dist2w = dist2w + shape(:,n) * dwl(:,n)
           endif

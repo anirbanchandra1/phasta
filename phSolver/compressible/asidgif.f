@@ -64,7 +64,8 @@ c
       imax = maxloc(res,1)
 c      i = 198
 c      i = imax(1)
-      i = imin(1)
+c      i = imin(1)
+      i = 97
       do iel = 1,npro_
         do n = 1,nshl0
           if (ienif0(iel,n) .ne. i) cycle

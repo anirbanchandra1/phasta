@@ -25,6 +25,7 @@ c... Clausius-Clapeyron:
      &,                            rho_mix     ! mixture density
      &,                            mw_mix      ! mixture molecular weight
      &,                            vap_rate
+     &,                            un0,un1     ! velocity in normal direction
 c
         select case (vi_ramping)
         case (no_ramp)
@@ -46,7 +47,18 @@ c
         case (no_vi)
           vi = zero
         case (const_vi)
-          vi = vi_mag * nv0
+          vi(:,1) = c1 * (vi_mag * nv0(:,1) + u1(:,1))
+          vi(:,2) = c1 * (vi_mag * nv0(:,2) + u1(:,2))
+          vi(:,3) = c1 * (vi_mag * nv0(:,3) + u1(:,3))
+c          vi(:,1) = vi_mag * nv0(:,1)
+c          vi(:,2) = vi_mag * nv0(:,2)
+c          vi(:,3) = vi_mag * nv0(:,3)
+c      write(*,100) 'vi_mag: ',vi_mag
+c      write(*,100) 'vi    : ',vi(:,1)
+c      write(*,100) 'nv0   : ',nv0(:,1)
+c      write(*,100) 'u1    : ',u1(:,1)
+100   format(a,8e16.5)
+          return
         case (vieilles_burning)
 c
           vi(:,1) = burn_rate_coeff*(p/burn_rate_pref)**burn_rate_exp * nv0(:,1)
@@ -74,14 +86,20 @@ c
      &                  + ycl0(:,n,ndof)*shg0(:,n,3)*nv1(:,3)
           enddo
 c
-          vap_rate = -rho_mix/rho1*scdiff(1)*dydn/(one - y_vapor)
+          un0 = u0(:,1)*nv0(:,1) + u0(:,2)*nv0(:,2) + u0(:,3)*nv0(:,3)
+          un1 = u1(:,1)*nv1(:,1) + u1(:,2)*nv1(:,2) + u1(:,3)*nv1(:,3)
+c
+c          vap_rate = -rho_mix/rho1*scdiff(1)*dydn/(one - y_vapor)
+      vap_rate = ((rho1*un1+rho_mix*un0)-rho_mix*scdiff(1)*dydn)/(rho1-rho_mix)
+      vap_rate = zero
 c
           vi(:,1) = vap_rate * nv0(:,1)
           vi(:,2) = vap_rate * nv0(:,2)
           vi(:,3) = vap_rate * nv0(:,3)
 c
 c      print*,'npro:',npro
-c      print*, 'y_vapor, dydn: ',y_vapor,dydn
+c      print*, 'y_vapor:',y_vapor
+c      print*, 'dydn:   ',dydn
 c      print*, 'mw_mix:  ',mw_mix
 c      print*, 'rho1:    ',rho1
 c      print*, 'rho_mix: ',rho_mix

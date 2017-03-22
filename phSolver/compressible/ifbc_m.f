@@ -39,6 +39,7 @@ c
      &  (
      &    y
      &,   BC
+     &,   iBC
      &,   ilwork
      &,   nlwork
      &  )
@@ -53,6 +54,7 @@ c
 c
           real*8, intent(inout) :: y(nshg,ndof)
           real*8,  intent(inout) ::  BC(nshg,ndofbc)
+          integer, intent(inout) :: iBC(nshg)
           integer, intent(in)    :: ilwork(nlwork)
           integer, intent(in)    :: nlwork
 c
@@ -86,10 +88,10 @@ c
 c... set vapor fraction
 c
       isclr = 1
-c                BC(i0,6+isclr) = ifbc(i0,ivapor_frac)/sum_vi_area(i0,nsd+1)
-c                BC(i1,6+isclr) = one
-      y(i0,5+isclr) = ifbc(i0,ivapor_frac)/sum_vi_area(i0,nsd+1)
-      y(i1,5+isclr) = one
+                BC(i0,6+isclr) = ifbc(i0,ivapor_frac)/sum_vi_area(i0,nsd+1)
+c                BC(i0,6+isclr) = pt50
+                BC(i1,6+isclr) = one
+c      write(*,*) 'i0, i1: ',i0,i1,iBC(i0),iBC(i1),btest(ibc(i0),6),btest(ibc(i1),6)
 c
               enddo
             enddo

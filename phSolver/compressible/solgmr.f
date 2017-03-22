@@ -325,7 +325,7 @@ c
         echeck=abs(eBrg(iKs+1))
         if (echeck .le. epsnrm) exit
 c        if(myrank.eq.master) write(*,*)'solver tolerance %satisfaction',
-c    &  (one-echeck/unorm)/(one-etol)*100
+c     &  (one-echeck/unorm)/(one-etol)*100
 c     
 c.... end of mGMRES loop
 c
@@ -671,7 +671,7 @@ c.... check for convergence
 c     
             ntotGM = ntotGM + 1
             echeck=abs(eBrg(iKs+1))
-c      if (MOD(iks,10) == 0 .AND. myrank == 0) 
+c      if (MOD(iks,1) == 0 .AND. myrank == 0) 
 c     & write(*,'(a,i2,a,i4,2(x,e24.16))')'[',myrank,']', iKs, echeck, epsnrm
             if (echeck .le. epsnrm.and. iKs .ge. minIters) exit
 
@@ -1013,6 +1013,9 @@ c
            eBrg(iKss+1)=-Rsin(iKss)*eBrg(iKss) + Rcos(iKss)*eBrg(iKss+1)
            eBrg(iKss)  = tmp
 c     
+c      if (MOD(ikss,1) == 0 .AND. myrank == 0) 
+c     & write(*,'(a,i2,a,i4,2(x,e24.16))')'[',myrank,']', iKss, abs(eBrg(iKss+1)), epsnrm
+c
 c.... check for convergence
 c     
            ercheck=eBrg(iKss+1)
@@ -1045,7 +1048,7 @@ c
 c.... flop count
 c
    !      flops = flops + (3*iKss+1)*ndof*numnp
-c
+cc
 c.... check for convergence
 c     
         if (abs(eBrg(iKss+1)) .le. epsnrm) exit

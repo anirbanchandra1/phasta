@@ -365,6 +365,8 @@ c Kenneth Jansen, Winter 1997. (Primitive Variables)
 c Chris Whiting, Winter 1998.  (LHS matrix formation)
 c----------------------------------------------------------------------
 c
+        use e3Sclr_param_m
+c
         include "common.h"
 c
         dimension ycl(npro,nshl,ndof),
@@ -378,18 +380,19 @@ c
      &            dist2w(npro),             sgn(npro,nshl),   
      &            vort(npro),               gVnrm(npro),               
      &            rmu(npro),                con(npro),
-     &            T(npro),                  cp(npro),
+c     &            T(npro),                  cp(npro),
      &            g1yti(npro),              acti(npro),
      &            g2yti(npro),              g3yti(npro),
-     &            Sclr(npro),               srcp (npro)
+c     &            Sclr(npro),
+     &            srcp (npro)
 
 c
         dimension shg(npro,nshl,nsd) 
 c
         dimension dxidx(npro,nsd,nsd),     WdetJ(npro)
 c
-        dimension rho(npro),               rk(npro),
-     &            u1(npro),                u2(npro),
+c        dimension rho(npro),               rk(npro)
+        dimension u1(npro),                u2(npro),
      &            u3(npro)   
 c      
         dimension A0t(npro),               A1t(npro),

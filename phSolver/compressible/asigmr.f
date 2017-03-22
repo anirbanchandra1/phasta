@@ -41,7 +41,8 @@ c
 c
         dimension rlsl(npro,nshl,6) 
         real*8 rerrl(npro,nshl,6), rerr(nshg,10)
-
+c
+#define debug 0
 c
 c.... create the matrix of mode signs for the hierarchic basis 
 c     functions. 
@@ -84,24 +85,36 @@ c
 
         ttim(31) = ttim(31) + secs(0.0)
 c
+#if debug==1
+      i = 97
+      do iel = 1,npro
+        do n = 1,nshl
+          if (ien(iel,n) .ne. i) cycle
+          write(*,20) 'ASIGMR res before: ',ien(iel,n),res(ien(iel,n),:)
+        enddo
+      enddo
+      do iel=1,npro
+        do n = 1,nshl
+          if (ien(iel,n) .ne. i) cycle
+          write(*,10) 'ASIGMR rl:  ',iel,n,ien(iel,n),rl(iel,n,:)
+        enddo
+      enddo
+#endif
+c
 c.... assemble the residual and modified residual
 c
-c      if (mater .eq. 1) then
-c      do iel=1,npro
-c        do n = 1,nshl
-c          write(*,100),'iel,n,ien,rl:',iel,n,ien(iel,n),rl(iel,n,:)
-c        enddo
-c      enddo
-c      endif
         call local (res,    rl,     ien,    nflow,  'scatter ')
-c      if (mater .eq. 1) then
-c      do iel=1,npro
-c        do n = 1,nshl
-c          write(*,100),'iel,n,ien,res:',iel,n,ien(iel,n),res(ien(iel,n),:)
-c        enddo
-c      enddo
-c      endif
-100   format(a,2i4,x,i6,x,5e24.16)
+c
+#if debug ==1
+      do iel = 1,npro
+        do n = 1,nshl
+          if (ien(iel,n) .ne. i) cycle
+          write(*,20) 'ASIGMR res after: ',ien(iel,n),res(ien(iel,n),:)
+        enddo
+      enddo
+#endif
+10    format(a12,3i6,5e24.16)
+20    format(a12,1i6,5e24.16)
 c
         if ( ierrcalc .eq. 1 ) then
            call local (rerr, rerrl,  ien, 6, 'scatter ')
@@ -180,6 +193,7 @@ c
         real*8, dimension(numnp,nsd), intent(in) :: umesh
 c
         real*8, dimension(npro,nshl,nsd) :: uml
+#define debugsclr 0
 c
 c.... create the matrix of mode signs for the hierarchic basis 
 c     functions. 
@@ -214,9 +228,38 @@ c
 
         ttim(31) = ttim(31) + tmr()
 c
+#if debugsclr == 1
+      i = 172
+      do iel = 1,npro
+        do n = 1,nshl
+          if (ien(iel,n) .ne. i) cycle
+          write(*,20) 'ASIGMRSclr rest before: ',ien(iel,n),rest(ien(iel,n))
+        enddo
+      enddo
+      do iel = 1,npro
+        do n = 1,nshl
+          if (ien(iel,n) .ne. i) cycle
+          write(*,10) 'ASIGMRSclr rtl:  ',iel,n,ien(iel,n),rtl(iel,n)
+        enddo
+      enddo
+#endif
+c
 c.... assemble the residual and modified residual
 c
         call local (rest,    rtl,     ien,    1,  'scatter ')
+c
+#if debugsclr == 1
+      i = 172
+      do iel = 1,npro
+        do n = 1,nshl
+          if (ien(iel,n) .ne. i) cycle
+          write(*,20) 'ASIGMRSclr rest after: ',ien(iel,n),rest(ien(iel,n))
+        enddo
+      enddo
+#endif
+c
+10    format(a18,3i6,e24.16)
+20    format(a18,1i6,e24.16)
 c
 c.... extract and assemble the Diagonal
 c

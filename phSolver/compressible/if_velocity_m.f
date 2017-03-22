@@ -3,6 +3,7 @@ c
         use workfc_m
         use number_def_m
         use pointer_data
+        use blkdat_m
 c
         implicit none
 c
@@ -15,7 +16,8 @@ c
         if (associated(sum_vi_area)) 
      &    deallocate (sum_vi_area)
         allocate (sum_vi_area(nshg,nsd+1))
-        sum_vi_area = zero
+        sum_vi_area(:,1:nsd) = zero
+        sum_vi_area(:,1+nsd) = one
       end subroutine init_sum_vi_area
 c
       subroutine destruct_sum_vi_area
@@ -26,7 +28,7 @@ c
       subroutine set_if_velocity 
      & (
      &  BC, iBC, umesh, disp, x, dt, ilwork,
-     &  lcblkif, nshg, ndofBC, nsd, nelblif, MAXBLK, nlwork
+     &  nshg, ndofBC, nsd, nelblif, nlwork
      & )
 c
         include "mpif.h"
@@ -36,8 +38,8 @@ c
         real*8,  dimension(nshg,nsd), intent(inout)    :: umesh, disp
         real*8,  dimension(nshg,nsd), intent(in)    :: x
         real*8, intent(in) :: dt
-        integer, intent(in)    :: lcblkif(14,MAXBLK+1), ilwork(nlwork)
-        integer, intent(in) :: nshg, ndofBC, nsd, nelblif, MAXBLK, nlwork
+        integer, intent(in)    :: ilwork(nlwork)
+        integer, intent(in) :: nshg, ndofBC, nsd, nelblif, nlwork
 c
         integer :: iblk, iel, npro,inode, i0, i1, n, ierr
         integer, pointer :: ienif0(:,:), ienif1(:,:)
@@ -78,6 +80,8 @@ c
               umesh(i1,:) = sum_vi_area(i1,:) / sum_vi_area(i1,nsd+1)
               BC(i0,:) = umesh(i0,:)
               BC(i1,:) = umesh(i1,:)
+C      write(*,200) 'AFTER: ', myrank,i0, umesh(i0,:)
+c      write(*,200) 'AFTER: ', myrank,i1, umesh(i1,:)
             enddo
           enddo
         enddo
