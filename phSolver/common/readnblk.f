@@ -407,7 +407,7 @@ c
 c.... total number of layers
       ione=1
       call phio_readheader(fhandle,
-     & c_char_'total number of vertices' // char(0),
+     & c_char_'number of vertices on growth curve' // char(0),
      & c_loc(numgc),ione, dataInt, iotype)
       if ( numgc > 0 ) then
         allocate( tmpBLInt(numgc) )
@@ -417,7 +417,7 @@ c.... total number of layers
         allocate( BLtnv(1) )
       endif
       call phio_readdatablock(fhandle,
-     & c_char_'total number of vertices' // char(0),
+     & c_char_'number of vertices on growth curve' // char(0),
      & c_loc(tmpBLInt), numgc, dataInt, iotype)
 
       if ( numgc > 0 ) then
@@ -431,7 +431,7 @@ c
 c.... growth curve connectivity
       ione=1
       call phio_readheader(fhandle,
-     & c_char_'growth curve connectivity' // char(0),
+     & c_char_'list of vertices on growth curve' // char(0),
      & c_loc(numgcnp),ione, dataInt, iotype)
       if ( numgcnp > 0 ) then
         allocate( tmpBLlist(numgcnp) )
@@ -441,7 +441,7 @@ c.... growth curve connectivity
         allocate( BLlist(1) )
       endif
       call phio_readdatablock(fhandle,
-     & c_char_'growth curve connectivity' // char(0),
+     & c_char_'list of vertices on growth curve' // char(0),
      & c_loc(tmpBLlist), numgcnp, dataInt, iotype)
 
       if ( numgcnp > 0 ) then

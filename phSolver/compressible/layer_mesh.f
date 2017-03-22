@@ -44,7 +44,9 @@ c.... compute the normal to the boundary. This is achieved by taking
 c     the cross product of two vectors in the plane of the 2-d
 c     boundary face.
 c
-       if(lcsyst.eq.1) then   ! set to curl into element all others out
+c.... set curl to be outward for all types of elememt
+c
+       if(lcsyst.eq.1) then
          ipt2=2
          ipt3=3
        elseif(lcsyst.eq.2) then
@@ -138,6 +140,69 @@ c.... assemble the normal vector
 c
         call local (normal,    rl,     ienb,   3,  'scatter ')
 c
+c.... end
+c
+        return
+        end
+
+c
+c----------------------------------------------------------------------
+c
+c----------------------------------------------------------------------
+c
+       subroutine assign_bl_bc ( disp,  iBC, BC, basevID, vID)
+c
+        include "common.h"
+c
+c.... please only pass mesh elas BC (:, ndof+2:ndof+5) into this subroutine
+c
+        dimension disp(numnp,nsd),  iBC(nshg), BC(nshg,4)
+c
+        integer   basevID, vID
+c
+            if (btest(iBC(basevID),14)) then
+              iBC(vID) = ibset(iBC(vID), 14)
+            else
+              iBC(vID) = ibclr(iBC(vID), 14)
+            endif
+c
+            if (btest(iBC(basevID),15)) then
+              iBC(vID) = ibset(iBC(vID), 15)
+            else
+              iBC(vID) = ibclr(iBC(vID), 15)
+            endif
+c
+            if (btest(iBC(basevID),16)) then
+              iBC(vID) = ibset(iBC(vID), 16)
+            else
+              iBC(vID) = ibclr(iBC(vID), 16)
+            endif
+c
+            BC(vID, :) = BC(basevID, :)
+c
+            select case (ibits(iBC(vID),14,3))
+            case (1) ! x1 direction
+              BC(vID, 1) = disp(vID,1) / Delt(1)
+            case (2) ! x2 direction
+              BC(vID, 2) = disp(vID,2) / Delt(1)
+            case (3) ! x1 & x2 direction
+              BC(vID, 1) = disp(vID,1) / Delt(1)
+              BC(vID, 3) = disp(vID,2) / Delt(1)
+            case (4) ! x3 direction
+              BC(vID, 3) = disp(vID,3) / Delt(1)
+            case (5) ! x1 & x3 direction
+              BC(vID, 1) = disp(vID,1) / Delt(1)
+              BC(vID, 3) = disp(vID,3) / Delt(1)
+            case (6) ! x2 & x3 direction
+              BC(vID, 1) = disp(vID,2) / Delt(1)
+              BC(vID, 3) = disp(vID,3) / Delt(1)
+            case (7) ! x1 & x2 & x3 direction
+              BC(vID, 1) = disp(vID,1) / Delt(1)
+              BC(vID, 2) = disp(vID,2) / Delt(1)
+              BC(vID, 3) = disp(vID,3) / Delt(1)
+            case DEFAULT
+              call error('assign_bl_bc','no BC on this point',vID)
+            end select
 c.... end
 c
         return
