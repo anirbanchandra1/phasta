@@ -104,8 +104,8 @@ c
             call calc_cmtrx
             call calc_y_jump
 c
-            call stability_term(ri0,Kij0)
-            call stability_term(ri1,Kij1)
+            call kinematic_condition(ri0,Kij0)
+            call kinematic_condition(ri1,Kij1)
 c
 c ... kinematic condition term:
 c     set the mu coeff to the max of the 0,1 materials 
@@ -150,8 +150,8 @@ c
 c
       deallocate(tmpmu0,tmpmu1)
 c
-            call kinematic_condition(ri0,y0,y1)
-            call kinematic_condition(ri1,y1,y0)
+CC            call dg_penalty(ri0,y0,y1)
+CC            call dg_penalty(ri1,y1,y0)
 c
 c...LHS calculations...
 c
@@ -159,22 +159,17 @@ c
 c
               call set_lhs_matrices
 c
-             call calc_egmass(egmass00,egmass01,
+              call calc_egmass(egmass00,egmass01,
      &                         A0_0, A0_1, Ai0, Ai1,
      &                         Kij0, Kij1,
      &                         AiNa0,AiNa1,KijNaj0,KijNaj1,KijNajC0,KijNajC1,
      &                         shp0,nv0,nv1,WdetJif0,prop0,nshl0,nshl1)
-
-             call calc_egmass(egmass11,egmass10,
+c
+              call calc_egmass(egmass11,egmass10,
      &                         A0_1, A0_0, Ai1, Ai0,
      &                         Kij1, Kij0,
      &                         AiNa1,AiNa0,KijNaj1,KijNaj0,KijNajC1,KijNajC0,
      &                         shp1,nv1,nv0,WdetJif1,prop1,nshl1,nshl0)
-
-c      call calc_egmass_(egmass00,AiNa0,KijNaj0,KijNaj0,KijNajC0,shp0,shp1,nv0,nv1,WdetJif0,nshl0,nshl1)
-c      call calc_egmass_(egmass01,AiNa1,KijNaj0,KijNaj1,KijNajC1,shp0,shp1,nv0,nv1,WdetJif0,nshl0,nshl1)
-c      call calc_egmass_(egmass10,AiNa0,KijNaj1,KijNaj0,KijNajC0,shp1,shp0,nv1,nv0,WdetJif1,nshl1,nshl0)
-c      call calc_egmass_(egmass11,AiNa1,KijNaj1,KijNaj1,KijNajC1,shp1,shp0,nv1,nv0,WdetJif1,nshl1,nshl0)
 c
             endif
 c
@@ -338,7 +333,6 @@ c
       endif
 #endif
 c
-            cycle element_loop
 c...UPWIND????
 c
 C      ri0(iel,16:20) = ri0(iel,16:20) + f1n0(1:5)
@@ -349,7 +343,7 @@ c... Here is the additional stability terms from the Lax-Friedrichs flux calcula
 c
             climit = zero
 c            climit = one
-c            climit = 1.e-1
+CC            climit = 1.e-1
             alpha_LF(iel) = climit * max(abs(dot_product(u0(iel,:)-um0(iel,:),nv0(iel,:))-c0(iel)),
      &                  abs(dot_product(u1(iel,:)-um1(iel,:),nv1(iel,:))-c1(iel)))
             alpha = alpha_LF(iel)
@@ -375,8 +369,8 @@ c
               enddo 
             enddo
 c
-c      ri0(iel,16:20) = ri0(iel,16:20) + pt50*alpha*jump_u(1:5)
-c      ri1(iel,16:20) = ri1(iel,16:20) - pt50*alpha*jump_u(1:5)
+CC      ri0(iel,16:20) = ri0(iel,16:20) + pt50*alpha*jump_u(1:5)
+CC      ri1(iel,16:20) = ri1(iel,16:20) - pt50*alpha*jump_u(1:5)
 c      write(*,11) 'ri0 a: ',iel,ri0(iel,16:20)
 c      write(*,11) 'ri1 a: ',iel,ri1(iel,16:20)
       ri0(iel,16:20) = ri0(iel,16:20) + alpha*A0_jump_y(1:5)
@@ -443,37 +437,48 @@ c
 c
         end subroutine flux_jump
 c
-        subroutine stability_term(ri,Kij)
+        subroutine kinematic_condition(ri,Kij)
 c
            real*8, dimension(:,:), intent(inout) :: ri
            real*8, dimension(:,:,:,:,:), intent(in) :: Kij
 c
            integer :: iflow,jflow,kflow,isd,jsd
-           real*8 :: this_sum(npro)
+           real*8 :: this_kcy(npro)
            real*8, dimension(npro,nflow,nflow,nsd,nsd) :: CKij
+           real*8,dimension(npro,nflow,nsd) :: cy_jump, kcy
 c
-           call calc_CKij(CKij,Kij)
+           do iflow = 1,nflow
+c
+             cy_jump(:,iflow,:) = zero
+c
+             do jflow = 1,nflow
+               cy_jump(:,iflow,1) = cy_jump(:,iflow,1) + cmtrx(:,iflow,jflow)*y_jump(:,jflow,1)
+               cy_jump(:,iflow,2) = cy_jump(:,iflow,2) + cmtrx(:,iflow,jflow)*y_jump(:,jflow,2)
+               cy_jump(:,iflow,3) = cy_jump(:,iflow,3) + cmtrx(:,iflow,jflow)*y_jump(:,jflow,3)
+             enddo
+c
+           enddo
 c
            do iflow = 1,nflow
              do isd = 1,nsd
 c
-               this_sum = zero
+             this_kcy = zero
 c
-               do jflow = 1,nflow
-                 do jsd = 1,nsd
-                   this_sum = this_sum + CKij(:,iflow,jflow,isd,jsd)*y_jump(:,jflow,jsd)
-                 enddo
+             do jflow = 1,nflow
+               do jsd = 1,nsd
+                 this_kcy = this_kcy + Kij(:,iflow,jflow,isd,jsd)*cy_jump(:,jflow,jsd)
                enddo
+             enddo
 c
-               ri(:,nflow*(isd-1)+iflow) = ri(:,nflow*(isd-1)+iflow) 
-     &          + pt50 * s * this_sum
+             ri(:,nflow*(isd-1)+iflow) = ri(:,nflow*(isd-1)+iflow) + pt50 * s * this_kcy
+c      write(*,*) 'KINEMATIC: ',ri(1,nflow*(isd-1)+iflow),this_kcy(1)
 c
              enddo
            enddo
 c
-        end subroutine stability_term
+        end subroutine kinematic_condition
 c
-        subroutine kinematic_condition(ri,y0,y1)
+        subroutine dg_penalty(ri,y0,y1)
 c
            real*8, dimension(:,:), intent(inout) :: ri
            real*8, dimension(:,:), intent(in) :: y0,y1
@@ -495,7 +500,7 @@ c
              enddo
            enddo
 c
-        end subroutine kinematic_condition
+        end subroutine dg_penalty
 c
         subroutine calc_cmtrx
 c
