@@ -70,7 +70,8 @@ c.... approximate the number of entries
 c
         totres = resnrm / float(nshgt)
         totres = sqrt(totres)
-       if((iter.gt.1).and.(totres.gt.10000.0*ResLast)) then !diverging
+c
+       if((istep.gt.1).and.(iter.gt.1).and.(totres.gt.10000.0*ResLast)) then !diverging
                call restar('out ',y,res) ! 'res' is used instead of 'ac'
                if(myrank.eq.0) write(*,*) 'ResLast totres', ResLast, totres
                if(myrank.eq.0) write(*,*) 'resmax', resmax
@@ -160,7 +161,7 @@ c
         totres = resnrm / float(nshgt)
         totres = sqrt(totres)
 	if((lstep.gt.0).and.(lstepLast.eq.lstep)) then
-           if(totres.gt.10000.0*ResLast) then !diverging
+           if((istep.gt.1).and.totres.gt.10000.0*ResLast) then !diverging
                lstep = lstep+1
                ac(:,5) = rest(:) ! T dot in 'ac' is filled with scl. res
                call restar('out ',y,ac)
