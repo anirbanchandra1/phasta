@@ -8,7 +8,7 @@
      & )  
 c
 c----------------------------------------
-c    aims to localize, computer and assembly
+c    aims to localize, compute and assemble
 c    the contribution of DG interface
 c----------------------------------------
           use hierarchic_m
