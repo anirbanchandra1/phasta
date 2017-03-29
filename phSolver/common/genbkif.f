@@ -1,5 +1,9 @@
       subroutine genbkif (ibksz)
 c
+c----------------------------------------
+c    aims to read data from geombc and
+c    generate the interface blocks
+c----------------------------------------
         use pointer_data
         use phio
         use iso_c_binding

@@ -8,6 +8,11 @@
       end module probe_def_m
 c
       module probe_m
+c
+c----------------------------------------
+c    aims to monitor the conservation laws over
+c    the entire domain and print out the values
+c----------------------------------------
         use probe_def_m
         use global_const_m
         use number_def_m

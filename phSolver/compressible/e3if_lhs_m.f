@@ -1,5 +1,9 @@
       module e3if_lhs_m
 c
+c----------------------------------------
+c    detail subroutines to computer the
+c    LHS for interface elements
+c----------------------------------------
         use e3if_param_m
         use e3if_func_m
 c

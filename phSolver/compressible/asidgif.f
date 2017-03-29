@@ -6,6 +6,11 @@
      &   qwtif, qwtif0,   qwtif1,
      &   ienif0,   ienif1
      & )  
+c
+c----------------------------------------
+c    aims to localize, computer and assembly
+c    the contribution of DG interface
+c----------------------------------------
           use hierarchic_m
           use local_m
           use e3if_m

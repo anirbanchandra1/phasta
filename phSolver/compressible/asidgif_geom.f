@@ -5,6 +5,11 @@
      &  ienif0, ienif1
      & )
 c
+c----------------------------------------
+c    aims to compute the geometry related
+c    values, such as normal and curvature
+c    for DG interface
+c----------------------------------------
         use hierarchic_m
         use local_m
         use e3if_geom_m

@@ -1,5 +1,9 @@
       module local_m
 c
+c----------------------------------------
+c    aims to perform a vector gather/scatter
+c    operation for DG interface
+c----------------------------------------
         use mtimer2_m
         implicit none
 c

@@ -1,5 +1,11 @@
       module e3if_m
 c
+c----------------------------------------
+c   this is the main subroutine in calculating
+c   the element level contribution for the
+c   interface. It calls many other subroutines
+c   to collect the data for both RHS and LHS
+c----------------------------------------
         use workfc_m
         use hierarchic_m
         use matdat_def_m

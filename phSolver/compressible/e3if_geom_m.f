@@ -1,5 +1,10 @@
       module e3if_geom_m
 c
+c----------------------------------------
+c    detail subroutines to compute the
+c    geometry related variables for DG
+c    interface
+c----------------------------------------
         use workfc_m
         use e3if_param_m
         use hierarchic_m

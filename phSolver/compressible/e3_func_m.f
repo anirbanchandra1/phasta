@@ -1,4 +1,10 @@
       module e3_func_m
+c
+c----------------------------------------
+c    aims to calculate the conservative
+c    and primitive variables for the
+c    interior elements
+c----------------------------------------
         use conpar_m
         use elmpar_m
         use genpar_m

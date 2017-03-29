@@ -1,5 +1,9 @@
       module genshp_m
 c
+c----------------------------------------
+c    aims to generate the shape function
+c    specially for DG interface elements
+c----------------------------------------
         use global_const_m
         use number_def_m
         use elmpar_m
