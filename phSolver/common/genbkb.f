@@ -130,7 +130,6 @@ CC           call phio_readheader(fhandle, trim(fname2)//C_NULL_CHAR,
            allocate(ientmp (ibksz,nshl))
            allocate(ibcbtmp(ibksz,ndiBCB))
            allocate(bcbtmp (ibksz,ndBCB))
-           allocate(mattype(intfromfile(1)))
            allocate(neltp_mattype(nummat))
            
            iientpsiz=neltp*nshl
@@ -157,6 +156,8 @@ C           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
            intfromfile(:)=-1
            call phio_readheader(fhandle, fname2 // char(0),
      &      c_loc(intfromfile), ione, dataInt, iotype)
+c
+           allocate(mattype(intfromfile(1)))
       write(*,*) ' BKB: iblk, intfromfile:',iblk,intfromfile(1:8) 
            call phio_readdatablock(fhandle, fname2 // char(0),
      &      c_loc(mattype), intfromfile(1), dataInt, iotype)
