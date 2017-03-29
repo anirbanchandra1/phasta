@@ -78,9 +78,11 @@ c
               i1 = ienif1(iel,n)
               umesh(i0,:) = sum_vi_area(i0,:) / sum_vi_area(i0,nsd+1)
               umesh(i1,:) = sum_vi_area(i1,:) / sum_vi_area(i1,nsd+1)
+c              BC(i0,:) = sum_vi_area(i0,:) / sum_vi_area(i0,nsd+1)
+c              BC(i1,:) = sum_vi_area(i1,:) / sum_vi_area(i1,nsd+1)
               BC(i0,:) = umesh(i0,:)
               BC(i1,:) = umesh(i1,:)
-C      write(*,200) 'AFTER: ', myrank,i0, umesh(i0,:)
+c      write(*,200) 'AFTER: ', myrank,i0, umesh(i0,:)
 c      write(*,200) 'AFTER: ', myrank,i1, umesh(i1,:)
             enddo
           enddo

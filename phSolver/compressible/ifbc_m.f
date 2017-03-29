@@ -8,6 +8,7 @@ c
 c
         integer, parameter :: nifbc = 1
         integer, parameter :: ivapor_frac = 1
+        integer, parameter :: iwt = 2
 c
         real*8, pointer :: if_normal(:,:)
         real*8, pointer :: ifbc(:,:)
@@ -27,7 +28,9 @@ c
 c
         subroutine ifbc_malloc
           allocate(if_normal(nshg,nsd))
-          allocate(ifbc(nshg,nifbc))
+          allocate(ifbc(nshg,nifbc+1))
+          ifbc(:,ivapor_frac) = zero
+          ifbc(:,iwt) = one
         end subroutine ifbc_malloc
 c
         subroutine ifbc_mfree
@@ -64,11 +67,15 @@ c
 c
           if (numpe > 1) then
             call commu (ifbc(:,ivapor_frac), ilwork, 1, 'in ')
+            call commu (ifbc(:,iwt), ilwork, 1, 'in ')
+            call commu (sum_vi_area(:,4), ilwork, 1, 'in ')
             call MPI_BARRIER (MPI_COMM_WORLD,ierr)
           endif
 c 
           if (numpe > 1) then
             call commu (ifbc(:,ivapor_frac), ilwork, 1, 'out')
+            call commu (ifbc(:,iwt), ilwork, 1, 'out ')
+            call commu (sum_vi_area(:,4), ilwork, 1, 'out')
             call MPI_BARRIER (MPI_COMM_WORLD,ierr)
           endif
 c
@@ -88,10 +95,13 @@ c
 c... set vapor fraction
 c
       isclr = 1
-                BC(i0,6+isclr) = ifbc(i0,ivapor_frac)/sum_vi_area(i0,nsd+1)
+                BC(i0,6+isclr) = ifbc(i0,ivapor_frac)/ifbc(i0,iwt)
 c                BC(i0,6+isclr) = pt50
                 BC(i1,6+isclr) = one
+                y(i0,5+isclr) = BC(i0,6+isclr)
+                y(i1,5+isclr) = BC(i1,6+isclr)
 c      write(*,*) 'i0, i1: ',i0,i1,iBC(i0),iBC(i1),btest(ibc(i0),6),btest(ibc(i1),6)
+c      write(*,*) 'i0: ',i0,ifbc(i0,ivapor_frac),ifbc(i0,iwt),BC(i0,6+isclr),btest(ibc(i0),6)
 c
               enddo
             enddo

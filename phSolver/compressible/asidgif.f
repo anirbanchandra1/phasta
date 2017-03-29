@@ -28,6 +28,7 @@ c
       integer :: i0,i1,iel,n,i,npro_,imin(5),imax(5)
 c
 #define debug 0
+#define debugifbc 1
 c
 c.... create the matrix of mode signs for the hierarchic basis 
 c     functions. 
@@ -122,13 +123,15 @@ c
           write(*,20) 'res after: ',ienif1(iel,n),res(ienif1(iel,n),:)
         enddo
       enddo
-10    format(a12,3i6,5e24.16)
-20    format(a12,1i6,5e24.16)
 #endif
 c
         call local (sum_vi_area, sum_vi_area_l0, ienif0, nsd+1, 'scatter ', nshg, nshl0,npro,ipord)
         call local (sum_vi_area, sum_vi_area_l1, ienif1, nsd+1, 'scatter ', nshg, nshl1,npro,ipord)
 c
-        call local (ifbc, ifbc_l0, ienif0, nifbc, 'scatter ', nshg, nshl0, npro, ipord)
+        call local (ifbc, ifbc_l0, ienif0, nifbc+1, 'scatter ', nshg, nshl0, npro, ipord)
+c
+10    format(a12,3i6,5e24.16)
+20    format(a12,1i6,5e24.16)
+30    format(a12,1i6,e24.16)
 c
       end subroutine asidgif
