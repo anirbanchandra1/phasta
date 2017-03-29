@@ -1,4 +1,9 @@
       module block_m
+c
+c----------------------------------------
+c    aims to query the data of each
+c    interior block
+c----------------------------------------
         use blkdat_m
         use propar_m
         use elmpar_m

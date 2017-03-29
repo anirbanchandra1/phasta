@@ -1,5 +1,9 @@
       module if_velocity_m
 c
+c----------------------------------------
+c    aims to calculate the interface
+c    velocity at the global level
+c----------------------------------------
         use workfc_m
         use number_def_m
         use pointer_data

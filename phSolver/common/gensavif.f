@@ -1,5 +1,9 @@
       subroutine gensavif (ienif0, ienif1)
 c
+c----------------------------------------
+c    aims to attach the ienif array to
+c    the pointer
+c----------------------------------------
         use mattype_m
 c
         include "common.h"

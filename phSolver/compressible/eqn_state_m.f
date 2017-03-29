@@ -1,5 +1,9 @@
       module eqn_state_m
 c
+c----------------------------------------
+c    aims to compute the equation of
+c    state
+c----------------------------------------
         use e3_param_m
         use number_def_m
         use matdat_def_m

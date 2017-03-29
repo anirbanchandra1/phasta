@@ -1,5 +1,9 @@
       module e3if_param_m
 c
+c----------------------------------------
+c    aims to allocate/deallocate the variables
+c    for the macro elements for DG interface
+c----------------------------------------
         use e3_param_m
         use number_def_m
         use pointer_data

@@ -1,5 +1,10 @@
       module e3if_func_m
 c
+c----------------------------------------
+c    detail subroutines to calculate needed
+c    variables (A0, Ai, K, y_jump) for interface
+c    elements
+c----------------------------------------
         use e3if_param_m
 c
         implicit none

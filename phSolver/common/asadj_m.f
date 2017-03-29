@@ -1,5 +1,9 @@
-      module asadj_m 
+      module asadj_m
 c
+c----------------------------------------
+c    aims to modify the sparse matrix data
+c    structure for interface
+c----------------------------------------
        implicit none
 c
       contains

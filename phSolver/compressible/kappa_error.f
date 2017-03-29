@@ -1,5 +1,9 @@
       subroutine calc_kappa_error(x,iel0,nelblkif,nsd,nshg)
 c
+c----------------------------------------
+c    aims to check the error of curvature
+c    calculation
+c----------------------------------------
         use pointer_data
         use workfc_m
         use if_global_m

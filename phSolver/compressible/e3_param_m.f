@@ -10,6 +10,11 @@ c  cp                    : specific heat at constant pressure
 c  rk                    : kinetic energy
 c
       module e3_param_m
+c
+c----------------------------------------
+c    allocate/deallocate common parameters
+c    used for DG interface only
+c----------------------------------------
         use propar_m
         implicit none
         abstract interface

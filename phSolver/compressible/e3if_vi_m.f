@@ -1,5 +1,9 @@
       module e3if_vi_m
 c
+c----------------------------------------
+c    aims to calculate the interface
+c    velocity at element level
+c----------------------------------------
         use dgifinp_m
         use e3if_param_m
         use matdat_def_m

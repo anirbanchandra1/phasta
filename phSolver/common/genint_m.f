@@ -1,5 +1,9 @@
       module genint_m
 c
+c----------------------------------------
+c    aims to generate the quadrature point
+c    specially for DG interface elements
+c----------------------------------------
         integer, dimension(4), parameter :: nint_tet (4) = (/1,4,16,29/)
         integer, dimension(5), parameter :: nint_quad(5) = (/1,4,9,16,25/)
 c

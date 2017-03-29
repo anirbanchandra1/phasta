@@ -1,5 +1,9 @@
       module e3metric_m
 c
+c----------------------------------------
+c    aims to calculate the element
+c    metrics for interface elements
+c----------------------------------------
         use workfc_m
         use global_const_m
         use propar_m

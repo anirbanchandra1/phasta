@@ -1,5 +1,9 @@
       module e3if_diff_m
 c
+c----------------------------------------
+c    aims to calculate the diffusive coefficient
+c    matrix for interface elements
+c----------------------------------------
         use e3if_param_m
 c
         implicit none
