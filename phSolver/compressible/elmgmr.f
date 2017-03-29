@@ -555,7 +555,7 @@ c
             getthm6_ptr => getthm6_ideal_gas
             getthm7_ptr => getthm7_ideal_gas
           case (ieos_ideal_gas_mixture)
-            getthm6_ptr => getthm6_ideal_gas_mixture
+            getthm6_ptr => getthm7_ideal_gas_mixture
             getthm7_ptr => getthm7_ideal_gas_mixture
           case (ieos_liquid_1)
             getthm6_ptr => getthm6_liquid_1
@@ -650,7 +650,7 @@ c
             getthm6_ptr => getthm6_ideal_gas
             getthm7_ptr => getthm7_ideal_gas
           case (ieos_ideal_gas_mixture)
-            getthm6_ptr => getthm6_ideal_gas_mixture
+            getthm6_ptr => getthm7_ideal_gas_mixture
             getthm7_ptr => getthm7_ideal_gas_mixture
           case (ieos_liquid_1)
             getthm6_ptr => getthm6_liquid_1
@@ -837,6 +837,7 @@ c
           case (ieos_ideal_gas_mixture)
 c            getthmif1_ptr => getthm7_ideal_gas_mixture
 c            get_vap_frac1 => get_vapor_fraction1
+            write(*,*) 'ERROR: Please put mixture on the 0 side (first in the input)'
             call error ('getthm  ', 'WE DO NOT SUPPORT THIS MATERIAL (3)', mater1)
           case (ieos_liquid_1)
             getthmif1_ptr => getthm7_liquid_1

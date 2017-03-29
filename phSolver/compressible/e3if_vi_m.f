@@ -15,7 +15,7 @@ c
         real*8, pointer, intent(in) :: p(:), u(:,:)
         real*8 :: vi_max
 c
-        integer :: isd,i,n
+        integer :: isd,i,n,iel
         real*8 :: vimag,v1,t1,c1
         real*8 :: pvap,cprod,cdest
 c... Clausius-Clapeyron:
@@ -27,6 +27,7 @@ c... Clausius-Clapeyron:
      &,                            vap_rate
      &,                            un0,un1     ! velocity in normal direction
 c
+#define debug 0
         select case (vi_ramping)
         case (no_ramp)
           c1 = one
@@ -86,31 +87,25 @@ c
      &                  + ycl0(:,n,ndof)*shg0(:,n,3)*nv1(:,3)
           enddo
 c
-          un0 = u0(:,1)*nv0(:,1) + u0(:,2)*nv0(:,2) + u0(:,3)*nv0(:,3)
-          un1 = u1(:,1)*nv1(:,1) + u1(:,2)*nv1(:,2) + u1(:,3)*nv1(:,3)
+          un0 = (u0(:,1)-um0(:,1))*nv0(:,1) + (u0(:,2)-um0(:,2))*nv0(:,2) + (u0(:,3)-um0(:,3))*nv0(:,3)
+          un1 = (u1(:,1)-um1(:,1))*nv1(:,1) + (u1(:,2)-um1(:,2))*nv1(:,2) + (u1(:,3)-um1(:,3))*nv1(:,3)
 c
-c          vap_rate = -rho_mix/rho1*scdiff(1)*dydn/(one - y_vapor)
-      vap_rate = ((rho1*un1+rho_mix*un0)-rho_mix*scdiff(1)*dydn)/(rho1-rho_mix)
-      vap_rate = zero
+          vap_rate = rho_mix/rho1*(-y_vapor*un0 - scdiff(1)*dydn)
+c      vap_rate = 1.e-3
 c
-          vi(:,1) = vap_rate * nv0(:,1)
-          vi(:,2) = vap_rate * nv0(:,2)
-          vi(:,3) = vap_rate * nv0(:,3)
+          vi(:,1) = c1 * (vap_rate * nv0(:,1) + u1(:,1))
+          vi(:,2) = c1 * (vap_rate * nv0(:,2) + u1(:,2))
+          vi(:,3) = c1 * (vap_rate * nv0(:,3) + u1(:,3))
+c          vi(:,1) = vap_rate * nv0(:,1)
+c          vi(:,2) = vap_rate * nv0(:,2)
+c          vi(:,3) = vap_rate * nv0(:,3)
 c
-c      print*,'npro:',npro
-c      print*, 'y_vapor:',y_vapor
-c      print*, 'dydn:   ',dydn
-c      print*, 'mw_mix:  ',mw_mix
-c      print*, 'rho1:    ',rho1
-c      print*, 'rho_mix: ',rho_mix
-c      print*, 'vap_rate:',vap_rate
-c      print*, 'u0(:,1): ',u0(:,1)
-c      print*, 'u1(:,1): ',u1(:,1)
-c      print*, 'um0(:,1):',um0(:,1)
-c      print*, 'um1(:,1):',um1(:,1)
-c      print*, 'vi(1):   ',vi(:,1)
-c      print*, 'vi(2):   ',vi(:,2)
-c      print*, 'vi(3):   ',vi(:,3)
+#if debug == 1
+      do iel = 1,npro
+        write(*,10) iel, y_vapor(iel),vap_rate(iel),vi(iel,1)
+      enddo
+10    format('E3IF_VI: iel,y_vapor,vap_rate,vi(1):',i4,3e18.6)
+#endif
 C
 c... NOTE: we don't add liquid velocity because it's already there...
 c
@@ -171,7 +166,8 @@ c
       subroutine calc_vapor_frac_node
         integer :: n
         do n = 1,nshl0
-          ifbc_l0(:,n,ivapor_frac) = ifbc_l0(:,n,ivapor_frac) + shp0(:,n)*area(:)*vap_frac0
+          ifbc_l0(:,n,ivapor_frac) = ifbc_l0(:,n,ivapor_frac) + shp0(:,n)*area*vap_frac0
+          ifbc_l0(:,n,iwt)         = ifbc_l0(:,n,iwt)         + shp0(:,n)*area
         enddo
       end subroutine calc_vapor_frac_node
 c
