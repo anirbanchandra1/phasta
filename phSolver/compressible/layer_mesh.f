@@ -1,8 +1,3 @@
-        module layer_mesh_data
-          integer layerCommuFlag
-
-        end module
-c
         subroutine calc_gc_normal ( x,       shpb,
      &                   ienb,  iBCB,  normal)
 c
@@ -155,58 +150,35 @@ c----------------------------------------------------------------------
 c
 c----------------------------------------------------------------------
 c
-       subroutine assign_bl_bc ( disp,  iBC, BC, basevID, vID)
+       subroutine setBLbc( disp, iBC, BC )
 c
         include "common.h"
 c
-c.... please only pass mesh elas BC (:, ndof+2:ndof+5) into this subroutine
+c.... please only pass mesh elas BC (i, ndof+2:ndof+5) into this subroutine
 c
-        dimension disp(numnp,nsd),  iBC(nshg), BC(nshg,4)
+        dimension disp(nsd), BC(4)
+        integer   iBC
 c
-        integer   basevID, vID
-c
-            if (btest(iBC(basevID),14)) then
-              iBC(vID) = ibset(iBC(vID), 14)
-            else
-              iBC(vID) = ibclr(iBC(vID), 14)
-            endif
-c
-            if (btest(iBC(basevID),15)) then
-              iBC(vID) = ibset(iBC(vID), 15)
-            else
-              iBC(vID) = ibclr(iBC(vID), 15)
-            endif
-c
-            if (btest(iBC(basevID),16)) then
-              iBC(vID) = ibset(iBC(vID), 16)
-            else
-              iBC(vID) = ibclr(iBC(vID), 16)
-            endif
-c
-            BC(vID, :) = BC(basevID, :)
-c
-            select case (ibits(iBC(vID),14,3))
+            select case (ibits(iBC,14,3))
             case (1) ! x1 direction
-              BC(vID, 1) = disp(vID,1) / Delt(1)
+              BC(1) = disp(1) / Delt(1)
             case (2) ! x2 direction
-              BC(vID, 2) = disp(vID,2) / Delt(1)
+              BC(2) = disp(2) / Delt(1)
             case (3) ! x1 & x2 direction
-              BC(vID, 1) = disp(vID,1) / Delt(1)
-              BC(vID, 3) = disp(vID,2) / Delt(1)
+              BC(1) = disp(1) / Delt(1)
+              BC(3) = disp(2) / Delt(1)
             case (4) ! x3 direction
-              BC(vID, 3) = disp(vID,3) / Delt(1)
+              BC(3) = disp(3) / Delt(1)
             case (5) ! x1 & x3 direction
-              BC(vID, 1) = disp(vID,1) / Delt(1)
-              BC(vID, 3) = disp(vID,3) / Delt(1)
+              BC(1) = disp(1) / Delt(1)
+              BC(3) = disp(3) / Delt(1)
             case (6) ! x2 & x3 direction
-              BC(vID, 1) = disp(vID,2) / Delt(1)
-              BC(vID, 3) = disp(vID,3) / Delt(1)
+              BC(1) = disp(2) / Delt(1)
+              BC(3) = disp(3) / Delt(1)
             case (7) ! x1 & x2 & x3 direction
-              BC(vID, 1) = disp(vID,1) / Delt(1)
-              BC(vID, 2) = disp(vID,2) / Delt(1)
-              BC(vID, 3) = disp(vID,3) / Delt(1)
-            case DEFAULT
-              call error('assign_bl_bc','no BC on this point',vID)
+              BC(1) = disp(1) / Delt(1)
+              BC(2) = disp(2) / Delt(1)
+              BC(3) = disp(3) / Delt(1)
             end select
 c.... end
 c
@@ -313,7 +285,6 @@ c
 c
             iacc   = ilwork (itkbeg + 2)
             numseg = ilwork (itkbeg + 4)
-            isgbeg = ilwork (itkbeg + 5)
             if(iacc.eq.1) then
                jdl=jdl+1  ! keep track of order of rtemp's
 c
@@ -324,11 +295,13 @@ c
                  do is = 1,numseg
                    isgbeg = ilwork (itkbeg + 3 + 2*is)
                    lenseg = ilwork (itkbeg + 4 + 2*is)
-c                 isgend = isgbeg + lenseg - 1
                    do icsg = 1,lenseg
                      icid  = isgbeg + icsg - 1
                      locFlag = global(icid,4)
                      revFlag = rtemp(3*lfront+mod(itemp,lfront),jdl)
+c
+c.... if received from a growth curve and it's not been updated
+c
                      if(revFlag .gt. 0.5 .and. locFlag .lt. 0.5) then
                        global(icid,idof) = global(icid,idof)
      &                                   + rtemp (itemp,jdl)

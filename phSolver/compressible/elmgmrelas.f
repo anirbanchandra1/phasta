@@ -14,7 +14,6 @@ c
          use pointer_data
          use timedataC
          use readarrays ! read BLflt, BLgr, BLtnv, BLlist
-         use layer_mesh_data ! cess layerCommuFlag
 c
         include "common.h"
         include "mpif.h"
@@ -205,16 +204,7 @@ c
 c.... setup flag
 c
             call iBCelas_to_dbl(iBC(basevID), flag(vID))
-c            call dbl_to_iBCelas(flag(vID), iBC(vID))
-c
-c.... assign iBC and BC arrays
-c
-c            call assign_bl_bc( disp, iBC, BC(:,ndof+2:ndof+5),
-c     &                         basevID, vID )
-c
-c.... end loop vertices on this growth curve
-c
-          enddo
+          enddo ! over this growth curve
 c
           listconuter = listconuter + itnv ! update counter
 c
@@ -254,12 +244,9 @@ c
         do i = 1, numnp
           disp(i,:) = dispCommu(i,1:3)
           flag(i)   = dispCommu(i,4)
+          call dbl_to_iBCelas(flag(i), iBC(i))
+          call setBLbc(disp(i,:), iBC(i), BC(i,ndof+2:ndof+5))
         enddo
-c
-c.... set up iBC and BC
-c
-c            call assign_bl_bc( disp, iBC, BC(:,ndof+2:ndof+5),
-c     &                         basevID, vID )
 c
 c.... -------------------->   interior elements   <--------------------
 c

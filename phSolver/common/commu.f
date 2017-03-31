@@ -31,8 +31,6 @@ c
       include "mpif.h"
       include "auxmpi.h"
 
-c      use layer_mesh_data ! access layerCommuFlag
-
       integer status(MPI_STATUS_SIZE), ierr
       integer stat(MPI_STATUS_SIZE, 2*maxtask), req(2*maxtask)
       real*8  rDelISend, rDelIRecv, rDelWaitAll

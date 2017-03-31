@@ -125,8 +125,10 @@ c
         implicit none
         integer(c_int), target :: numgc,          numgcnp,
      &                            useBLbaseSrfID, BLbaseSrfID
+        integer :: layerCommuFlag = 0
         common /laymesh/ numgc,          numgcnp,
-     &                   useBLbaseSrfID, BLbaseSrfID
+     &                   useBLbaseSrfID, BLbaseSrfID,
+     &                   layerCommuFlag
       end module laymesh_m
 c
 c----------------------------------------------------------------------
