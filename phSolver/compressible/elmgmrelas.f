@@ -14,6 +14,7 @@ c
          use pointer_data
          use timedataC
          use readarrays ! read BLflt, BLgr, BLtnv, BLlist
+         use layer_mesh_data ! cess layerCommuFlag
 c
         include "common.h"
         include "mpif.h"
@@ -31,6 +32,8 @@ c
      &            elasres(nshg,nelas),
      &            elasBDiag(nshg,nelas,nelas),
      &            iper(nshg)
+c
+        dimension flag(numnp),   dispCommu(numnp,4)
 c
         dimension shp(MAXTOP,maxsh,MAXQPT),
      &            shgl(MAXTOP,nsd,maxsh,MAXQPT),
@@ -199,10 +202,15 @@ c
             disp(vID,:) = xtmp(vID,:) - x(vID,:)
             igrexp = igrexp * igr
 c
+c.... setup flag
+c
+            call iBCelas_to_dbl(iBC(basevID), flag(vID))
+c            call dbl_to_iBCelas(flag(vID), iBC(vID))
+c
 c.... assign iBC and BC arrays
 c
-            call assign_bl_bc( disp, iBC, BC(:,ndof+2:ndof+5),
-     &                         basevID, vID )
+c            call assign_bl_bc( disp, iBC, BC(:,ndof+2:ndof+5),
+c     &                         basevID, vID )
 c
 c.... end loop vertices on this growth curve
 c
@@ -215,6 +223,43 @@ c
         enddo
 c
 c.... end re-position layered mesh
+c
+c.... -------------------->     communication     <--------------------
+c
+c.... combine disp + flag into dispCommu
+c
+        do i = 1, numnp
+          dispCommu(i,1:3) = disp(i,:)
+          dispCommu(i,4)   = flag(i)
+        enddo
+c
+c.... turn on commu flag
+c
+        layerCommuFlag = 1
+c
+c.... commu
+c
+        if (numpe > 1) then
+          call commu (dispCommu  , ilwork, 4  , 'in ')
+          call MPI_BARRIER (MPI_COMM_WORLD,ierr)
+          call commu (dispCommu  , ilwork, 4  , 'out ')
+        endif
+c
+c.... turn off commu flag
+c
+        layerCommuFlag = 0
+c
+c.... separate dispCommu into disp + flag
+c
+        do i = 1, numnp
+          disp(i,:) = dispCommu(i,1:3)
+          flag(i)   = dispCommu(i,4)
+        enddo
+c
+c.... set up iBC and BC
+c
+c            call assign_bl_bc( disp, iBC, BC(:,ndof+2:ndof+5),
+c     &                         basevID, vID )
 c
 c.... -------------------->   interior elements   <--------------------
 c

@@ -1,4 +1,9 @@
-      subroutine calc_gc_normal ( x,       shpb,
+        module layer_mesh_data
+          integer layerCommuFlag
+
+        end module
+c
+        subroutine calc_gc_normal ( x,       shpb,
      &                   ienb,  iBCB,  normal)
 c
         include "common.h"
@@ -207,4 +212,139 @@ c.... end
 c
         return
         end
+c
+c----------------------------------------------------------------------
+c
+c----------------------------------------------------------------------
+c
+       subroutine iBCelas_to_dbl(iBCelas, flag)
+c
+        real*8 flag
+        integer iBCelas
+c
+        flag = REAL(ibits(iBCelas,14,3))
+c
+c.... end
+c
+        return
+        end
+c
+c----------------------------------------------------------------------
+c
+c----------------------------------------------------------------------
+c
+       subroutine dbl_to_iBCelas(flag, iBCelas)
+c
+        real*8 flag
+        integer iBCcase, iBCelas
+c
+        iBCcase = INT(flag + 0.5)
+c
+            select case (iBCcase)
+            case (1) ! x1 direction
+              iBCelas = ibset(iBCelas, 14)
+              iBCelas = ibclr(iBCelas, 15)
+              iBCelas = ibclr(iBCelas, 16)
+            case (2) ! x2 direction
+              iBCelas = ibclr(iBCelas, 14)
+              iBCelas = ibset(iBCelas, 15)
+              iBCelas = ibclr(iBCelas, 16)
+            case (3) ! x1 & x2 direction
+              iBCelas = ibset(iBCelas, 14)
+              iBCelas = ibset(iBCelas, 15)
+              iBCelas = ibclr(iBCelas, 16)
+            case (4) ! x3 direction
+              iBCelas = ibclr(iBCelas, 14)
+              iBCelas = ibclr(iBCelas, 15)
+              iBCelas = ibset(iBCelas, 16)
+            case (5) ! x1 & x3 direction
+              iBCelas = ibset(iBCelas, 14)
+              iBCelas = ibclr(iBCelas, 15)
+              iBCelas = ibset(iBCelas, 16)
+            case (6) ! x2 & x3 direction
+              iBCelas = ibclr(iBCelas, 14)
+              iBCelas = ibset(iBCelas, 15)
+              iBCelas = ibset(iBCelas, 16)
+            case (7) ! x1 & x2 & x3 direction
+              iBCelas = ibset(iBCelas, 14)
+              iBCelas = ibset(iBCelas, 15)
+              iBCelas = ibset(iBCelas, 16)
+            case DEFAULT
+              call error('dbl_to_iBCelas','wrong BC case',vID)
+            end select
+c
+c
+c.... end
+c
+        return
+        end
+c
+c----------------------------------------------------------------------
+c
+c----------------------------------------------------------------------
+c
+       subroutine layerCommuAssembly(global, rtemp, ilwork, n)
+c
+         include "common.h"
+         include "auxmpi.h"
+c
+         dimension global(nshg,n),
+     &             rtemp(maxfront*n,maxtask),
+     &             ilwork(nlwork)
+c
+         real*8  locFlag, revFlag
+c
+         integer itkbeg, jdl, iacc, numseg, isgbeg, icsg, icid,
+     &           lenseg, itemp, lfront, j, idof
+c
+         numtask = ilwork(1)
+         itkbeg=1 ! slot in ilwork
+         jdl=0    ! slot in rtemp
+c
+         do j=1,numtask        ! loop over all tasks
+c
+c.... total number of nodes involved in this task (lfront)
+c
+            lfront = 0
+            do is = 1,numseg
+              lenseg = ilwork (itkbeg + 4 + 2*is)
+              lfront = lfront + lenseg
+            enddo
+c
+            iacc   = ilwork (itkbeg + 2)
+            numseg = ilwork (itkbeg + 4)
+            isgbeg = ilwork (itkbeg + 5)
+            if(iacc.eq.1) then
+               jdl=jdl+1  ! keep track of order of rtemp's
+c
+c.... only add the data from growth curve once
+c
+               itemp = 1
+               do idof = 1,3
+                 do is = 1,numseg
+                   isgbeg = ilwork (itkbeg + 3 + 2*is)
+                   lenseg = ilwork (itkbeg + 4 + 2*is)
+c                 isgend = isgbeg + lenseg - 1
+                   do icsg = 1,lenseg
+                     icid  = isgbeg + icsg - 1
+                     locFlag = global(icid,4)
+                     revFlag = rtemp(3*lfront+mod(itemp,lfront),jdl)
+                     if(revFlag .gt. 0.5 .and. locFlag .lt. 0.5) then
+                       global(icid,idof) = global(icid,idof)
+     &                                   + rtemp (itemp,jdl)
+                       global(icid,4) = revFlag
+                     endif
+                     itemp = itemp + 1
+                   enddo
+                 enddo
+               enddo
+            endif ! end of receive (iacc=1)
+            itkbeg = itkbeg + 4 + 2*numseg
+         enddo
+c
+c.... end
+c
+        return
+        end
+c
 

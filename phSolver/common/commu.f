@@ -30,6 +30,9 @@ c
       include "common.h"
       include "mpif.h"
       include "auxmpi.h"
+
+c      use layer_mesh_data ! access layerCommuFlag
+
       integer status(MPI_STATUS_SIZE), ierr
       integer stat(MPI_STATUS_SIZE, 2*maxtask), req(2*maxtask)
       real*8  rDelISend, rDelIRecv, rDelWaitAll
@@ -78,6 +81,8 @@ c
          kdof = 14
       elseif (n .eq. nflow*nsd ) then   !surface tension + qres
          kdof = 15
+      elseif (n .eq. 4 ) then
+         kdof = 17
       else
         call error ('commu   ','n       ',n)
       endif
@@ -257,6 +262,11 @@ c     assembled until after the waitall.  Only necessary for commu "in"
 c
 
       if(code .eq. 'in ') then
+
+         if(layerCommuFlag .eq. 1) then ! call filtered assembly
+            call layerCommuAssembly(global, rtemp, ilwork, n)
+         else  ! call normal assembly
+
          itkbeg=1
          jdl=0
          do j=1,numtask         ! time to do all the segments that needed to be
@@ -286,6 +296,9 @@ c
             endif ! end of receive (iacc=1)
             itkbeg = itkbeg + 4 + 2*numseg
          enddo
+
+         endif ! layerCommuFlag
+
       endif  ! commu "in"
       return
       end

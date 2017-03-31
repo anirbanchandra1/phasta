@@ -1,7 +1,7 @@
       PARAMETER (maxtask = 200)
 
       integer INEWCOMM
-      integer sevsegtype(maxtask,15)
+      integer sevsegtype(maxtask,17)
 
       common /newcom/ INEWCOMM
       common /newtyp/ sevsegtype

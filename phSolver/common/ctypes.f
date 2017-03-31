@@ -142,11 +142,16 @@ c
        call MPI_TYPE_HVECTOR(nflow*nsd,1,lstride,sevsegtype(itask,1),
      &                                   sevsegtype(itask,15), ierr)
 c
+c... the 17th slot is for n = 4
+c
+       call MPI_TYPE_HVECTOR(4 ,1,lstride,sevsegtype(itask,1),
+     &                                   sevsegtype(itask,17), ierr)
+c
 c
 c.... now this must be done to make MPI recognize each of the data
 c     types that were just defined
 c
-        do kdof = 1,16
+        do kdof = 1,17
           call MPI_TYPE_COMMIT (sevsegtype(itask,kdof), ierr)
         enddo
 c
@@ -167,7 +172,7 @@ c
         include "auxmpi.h"
         integer numtask
         do itask = 1,numtask
-          do kdof = 1,16
+          do kdof = 1,17
             call MPI_TYPE_FREE(sevsegtype(itask,kdof), ierr)
           enddo
         enddo
