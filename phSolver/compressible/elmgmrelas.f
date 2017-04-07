@@ -44,7 +44,7 @@ c
         integer errorcount(2)
 c
         integer listcounter, ngc, itnv, basevID, nv, vID, vID2, ioffset
-        real*8  iflt, igr
+        real*8  iflt, igr, igrexp
         dimension inormal(nsd)
 c
         real*8, allocatable :: tmpshp(:,:), tmpshgl(:,:,:)
@@ -191,11 +191,13 @@ c
 c
 c.... loop over vertices on this growth curve
 c
+          igrexp = 1.0
           do nv = 2, itnv
             vID = BLlist(listconuter + nv) + ioffset
             vID2= BLlist(listconuter + nv - 1) + ioffset ! the previous one
-            xtmp(vID,:) = xtmp(vID2,:) + iflt * inormal(:) * igr**(nv-2)
+            xtmp(vID,:) = xtmp(vID2,:) + iflt * inormal(:) * igrexp  ! igr**(nv-2)
             disp(vID,:) = xtmp(vID,:) - x(vID,:)
+            igrexp = igrexp * igr
 c
 c.... assign iBC and BC arrays
 c
