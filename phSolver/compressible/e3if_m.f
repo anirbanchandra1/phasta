@@ -152,12 +152,12 @@ c
       mu(:,2) = max(tmpmu0(:,2),tmpmu1(:,2))
       mu(:,3) = max(tmpmu0(:,3),tmpmu1(:,3))
       mu(:,4) = max(tmpmu0(:,4),tmpmu1(:,4))
-      mu(:,5) = max(tmpmu0(:,5),tmpmu1(:,5))
+      mu(:,5) = max(tmpmu0(:,5),tmpmu1(:,5))*100.0
 c
       deallocate(tmpmu0,tmpmu1)
 c
-CC            call dg_penalty(ri0,y0,y1)
-CC            call dg_penalty(ri1,y1,y0)
+            call dg_penalty(ri0,y0,y1)
+            call dg_penalty(ri1,y1,y0)
 c
 c...LHS calculations...
 c
@@ -165,17 +165,22 @@ c
 c
               call set_lhs_matrices
 c
-              call calc_egmass(egmass00,egmass01,
-     &                         A0_0, A0_1, Ai0, Ai1,
-     &                         Kij0, Kij1,
-     &                         AiNa0,AiNa1,KijNaj0,KijNaj1,KijNajC0,KijNajC1,
-     &                         shp0,nv0,nv1,WdetJif0,prop0,nshl0,nshl1)
+c              call calc_egmass(egmass00,egmass01,
+c     &                         A0_0, A0_1, Ai0, Ai1,
+c     &                         Kij0, Kij1,
+c     &                         AiNa0,AiNa1,KijNaj0,KijNaj1,KijNajC0,KijNajC1,
+c     &                         shp0,nv0,nv1,WdetJif0,prop0,nshl0,nshl1)
 c
-              call calc_egmass(egmass11,egmass10,
-     &                         A0_1, A0_0, Ai1, Ai0,
-     &                         Kij1, Kij0,
-     &                         AiNa1,AiNa0,KijNaj1,KijNaj0,KijNajC1,KijNajC0,
-     &                         shp1,nv1,nv0,WdetJif1,prop1,nshl1,nshl0)
+c              call calc_egmass(egmass11,egmass10,
+c     &                         A0_1, A0_0, Ai1, Ai0,
+c     &                         Kij1, Kij0,
+c     &                         AiNa1,AiNa0,KijNaj1,KijNaj0,KijNajC1,KijNajC0,
+c     &                         shp1,nv1,nv0,WdetJif1,prop1,nshl1,nshl0)
+
+               call calc_egmass_(egmass00,shp0,shp0,shg0,shg0,Ai0,Kij0,Kij0,nv0,nv0,WdetJif0,nshl0,nshl0)
+               call calc_egmass_(egmass01,shp0,shp1,shg0,shg1,Ai1,Kij0,Kij1,nv0,nv1,WdetJif0,nshl0,nshl1)
+               call calc_egmass_(egmass10,shp1,shp0,shg1,shg0,Ai0,Kij1,Kij0,nv1,nv0,WdetJif1,nshl1,nshl0)
+               call calc_egmass_(egmass11,shp1,shp1,shg1,shg1,Ai1,Kij1,Kij1,nv1,nv1,WdetJif1,nshl1,nshl1)
 c
             endif
 c

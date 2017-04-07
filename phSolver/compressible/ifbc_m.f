@@ -68,16 +68,17 @@ c
           if (numpe > 1) then
             call commu (ifbc(:,ivapor_frac), ilwork, 1, 'in ')
             call commu (ifbc(:,iwt), ilwork, 1, 'in ')
-            call commu (sum_vi_area(:,4), ilwork, 1, 'in ')
             call MPI_BARRIER (MPI_COMM_WORLD,ierr)
-          endif
-c 
-          if (numpe > 1) then
             call commu (ifbc(:,ivapor_frac), ilwork, 1, 'out')
             call commu (ifbc(:,iwt), ilwork, 1, 'out ')
-            call commu (sum_vi_area(:,4), ilwork, 1, 'out')
             call MPI_BARRIER (MPI_COMM_WORLD,ierr)
           endif
+c
+          where(ifbc(:,ivapor_frac) .ne. zero)
+            BC(:,6+isclr) = ifbc(:,ivapor_frac)/ifbc(:,iwt)
+          endwhere
+c
+          return            
 c
           do iblk = 1,nelblif
 c
@@ -96,12 +97,13 @@ c... set vapor fraction
 c
       isclr = 1
                 BC(i0,6+isclr) = ifbc(i0,ivapor_frac)/ifbc(i0,iwt)
-c                BC(i0,6+isclr) = pt50
+C                BC(i0,6+isclr) = zero
                 BC(i1,6+isclr) = one
                 y(i0,5+isclr) = BC(i0,6+isclr)
                 y(i1,5+isclr) = BC(i1,6+isclr)
 c      write(*,*) 'i0, i1: ',i0,i1,iBC(i0),iBC(i1),btest(ibc(i0),6),btest(ibc(i1),6)
-c      write(*,*) 'i0: ',i0,ifbc(i0,ivapor_frac),ifbc(i0,iwt),BC(i0,6+isclr),btest(ibc(i0),6)
+C      write(*,*) '[',myrank,'] i0: ',i0,ifbc(i0,ivapor_frac),ifbc(i0,iwt),BC(i0,6+isclr),btest(ibc(i0),6)
+c      write(*,*) 'i1: ',i1,ifbc(i1,ivapor_frac),ifbc(i1,iwt),BC(i1,6+isclr),btest(ibc(i1),6)
 c
               enddo
             enddo

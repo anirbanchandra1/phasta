@@ -66,7 +66,7 @@ c
 c
       subroutine getthm7_ideal_gas_mixture
 c
-        real*8, dimension(npro) :: mw,rgas,y,gamma_mix,cp_air,cv_air
+        real*8, dimension(npro) :: mw,rgas,y,gamma_mix,cp_gas,cv_gas,cv_mix,cp_mix
 c
         y = vap_frac
         y = max(zero,y)
@@ -78,21 +78,23 @@ c
         gamma1 = gamma - one
         Rgas  = Ru/mw*1.0d3
         rho = pres / (Rgas*T)
-        cp_air  = Rgas*gamma / gamma1
-        cv_air  = Rgas / gamma1
-c
+        cp_gas  = Rgas*gamma / gamma1
+        cv_gas  = Rgas / gamma1
         cv_liq  = mat_prop(2,iprop_liquid_1_cv,     1)
 c
-        cp = y*cv_liq + (one-y)*cp_air
-        if (associated(cv)) cv = y*cv_liq + (one-y)*cv_air
+        cp_mix = y*cv_liq + (one-y)*cp_gas
+        cv_mix = y*cv_liq + (one-y)*cv_gas
 c
-        ei  = T * Rgas / gamma1
-        h   = T * Rgas / gamma1 * gamma
+        ei  = T * cv_mix
+        h   = T * cp_mix
+c
         alphaP = one / T
         betaT  = one / pres
+c
 c        gamb = gamma1
-        if (associated(cv).and.associated(gamb)) gamb = cp / cv - one
-        if (associated(C)) c =  sqrt( gamma * Rgas * T )
+        if (associated(cv))   cv = cv_mix
+        if (associated(gamb)) gamb = cp_mix / cv_mix - one
+        if (associated(C))    c =  sqrt( gamma * Rgas * T )
 c
       end subroutine getthm7_ideal_gas_mixture
 c

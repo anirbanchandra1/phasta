@@ -134,6 +134,7 @@ c
         call local (sum_vi_area, sum_vi_area_l1, ienif1, nsd+1, 'scatter ', nshg, nshl1,npro,ipord)
 c
         call local (ifbc, ifbc_l0, ienif0, nifbc+1, 'scatter ', nshg, nshl0, npro, ipord)
+        call local (ifbc, ifbc_l1, ienif1, nifbc+1, 'scatter ', nshg, nshl1, npro, ipord)
 c
 10    format(a12,3i6,5e24.16)
 20    format(a12,1i6,5e24.16)

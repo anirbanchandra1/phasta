@@ -594,9 +594,9 @@ int input_fform(phSolver::Input& inp)
       dgifinp.T_boil_liquid  = (double)inp.GetValue("Boiling Temperature");}
       
 
-    dgifinp.s = (double)inp.GetValue("DG Interface Stability Factor");
-    dgifinp.e = (double)inp.GetValue("DG Interface Kinematic Condition epsilon");
-    dgifinp.h = (double)inp.GetValue("DG Interface Kinematic Condition h");
+    dgifinp.s = (double)inp.GetValue("DG Interface Kinematic Condition S");
+    dgifinp.e = (double)inp.GetValue("DG Interface Penalty Factor epsilon");
+    dgifinp.h = (double)inp.GetValue("DG Interface Penalty Factor h");
 
 //for mesh-elastic--------------------------------------------
     vec = inp.GetValue("Mesh Elastic Youngs Modulus");
