@@ -95,7 +95,6 @@ c
           un1 = (u1(:,1)-um1(:,1))*nv1(:,1) + (u1(:,2)-um1(:,2))*nv1(:,2) + (u1(:,3)-um1(:,3))*nv1(:,3)
 c
           vap_rate = rho_mix/rho1*(-y_vapor*un0 - scdiff(1)*dydn)
-c      vap_rate = 1.e-3
 c
           vi(:,1) = c1 * (vap_rate * nv0(:,1) + u1(:,1))
           vi(:,2) = c1 * (vap_rate * nv0(:,2) + u1(:,2))
@@ -172,6 +171,8 @@ c
         do n = 1,nshl0
           ifbc_l0(:,n,ivapor_frac) = ifbc_l0(:,n,ivapor_frac) + shp0(:,n)*area*vap_frac0
           ifbc_l0(:,n,iwt)         = ifbc_l0(:,n,iwt)         + shp0(:,n)*area
+          ifbc_l1(:,n,ivapor_frac) = ifbc_l1(:,n,ivapor_frac) + shp1(:,n)
+          ifbc_l1(:,n,iwt)         = ifbc_l1(:,n,iwt)         + shp1(:,n)
         enddo
       end subroutine calc_vapor_frac_node
 c
