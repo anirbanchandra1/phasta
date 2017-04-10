@@ -23,7 +23,7 @@ c
      &          meshq(numel),
      &          meshV(numel)
 c
-        dimension gcnormal(nshg, nsd)
+        real*8  gcnormal(nshg, nsd)
 c
         dimension x(numnp,nsd),        disp(numnp,nsd),
      &            xtmp(numnp,nsd),     iBC(nshg),
@@ -46,8 +46,8 @@ c
         integer errorcount(2)
 c
         integer listcounter, ngc, itnv, basevID, nv, vID, vID2, ioffset
-        real*8  iflt, igr, igrexp
-        dimension inormal(nsd)
+        real*8  iflt, igr, igrexp, tmp
+        real*8  inormal(nsd)
 c
         real*8, allocatable :: tmpshp(:,:), tmpshgl(:,:,:)
         real*8, allocatable :: Estiff(:,:,:)
@@ -169,44 +169,41 @@ c.... ---------------->   Re-position layered mesh   <-----------------
 c
 c.... loop over growth curves
 c
-        listconuter = 0
+        listcounter = 0
         ioffset = 1 ! the ID starts from 1 in phasta
         do ngc = 1, numgc
-          itnv = BLtnv(ngc) ! total number of vertices for this growth curve
+          itnv = BLtnv(ngc) ! number of vertices on this growth curve
 c
 c.... precaution
 c
           if (itnv .lt. 2) then
-            listconuter = listconuter + itnv
+            listcounter = listcounter + itnv
             cycle ! not loop over vertices
           endif
 c
 c.... prepare other paramteres
 c
-          iflt = BLflt(ngc) ! first layer thickness for this growth curve
-          igr  = BLgr(ngc)  ! growth ratio for this growth curve
-          basevID = BLlist(listconuter + 1) + ioffset
-          tmp  = sqrt( gcnormal(basevID,1)**2
-     &               + gcnormal(basevID,2)**2
-     &               + gcnormal(basevID,3)**2 )
-          inormal = gcnormal(basevID,:) / tmp
+          iflt = BLflt(ngc) ! first layer thickness of this growth curve
+          igr  = BLgr(ngc)  ! growth ratio of this growth curve
+          basevID = BLlist(listcounter + 1) + ioffset
+          tmp  = sqrt( gcnormal(basevID,1) * gcnormal(basevID,1)
+     &               + gcnormal(basevID,2) * gcnormal(basevID,2)
+     &               + gcnormal(basevID,3) * gcnormal(basevID,3) )
+          inormal(:) = gcnormal(basevID,:) / tmp
 c
 c.... loop over vertices on this growth curve
 c
           igrexp = 1.0
           do nv = 2, itnv
-            vID = BLlist(listconuter + nv) + ioffset
-            vID2= BLlist(listconuter + nv - 1) + ioffset ! the previous one
+            vID = BLlist(listcounter + nv) + ioffset
+            vID2= BLlist(listcounter + nv - 1) + ioffset ! the previous one
             xtmp(vID,:) = xtmp(vID2,:) + iflt * inormal(:) * igrexp  ! igr**(nv-2)
             disp(vID,:) = xtmp(vID,:) - x(vID,:)
             igrexp = igrexp * igr
-c
-c.... setup flag
-c
-            call iBCelas_to_dbl(iBC(basevID), flag(vID))
+            flag(vID) = 1.0 ! setup flag
           enddo ! over this growth curve
 c
-          listconuter = listconuter + itnv ! update counter
+          listcounter = listcounter + itnv ! update counter
 c
 c.... end loop growth curves
 c
@@ -239,13 +236,11 @@ c.... turn off commu flag
 c
         layerCommuFlag = 0
 c
-c.... separate dispCommu into disp + flag
+c.... separate dispCommu into disp; update BC
 c
         do i = 1, numnp
           disp(i,:) = dispCommu(i,1:3)
-          flag(i)   = dispCommu(i,4)
-          call dbl_to_iBCelas(flag(i), iBC(i))
-          call setBLbc(disp(i,:), iBC(i), BC(i,ndof+2:ndof+5))
+          call setBLbc(disp(i,:), iBC(i), BC(i, ndof+2:ndof+5))
         enddo
 c
 c.... -------------------->   interior elements   <--------------------

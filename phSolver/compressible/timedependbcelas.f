@@ -82,7 +82,8 @@ c.... rotate + trans + shrink
 c
       if ( casenumber .eq. 3 ) then
         do i = 1,numnp
-          if ( (ibits(iBC(i),14,3) .eq. 7) .and.
+c          if ( (ibits(iBC(i),14,3) .eq. 7) .and.
+          if ( (ibits(iBC(i),3,3) .eq. 7) .and.
      &         (abs(x(i,1)) .lt. 0.2) .and.
      &         (abs(x(i,2)) .lt. 0.2) .and.
      &         (abs(x(i,3)) .lt. 0.2) ) then

@@ -189,72 +189,6 @@ c----------------------------------------------------------------------
 c
 c----------------------------------------------------------------------
 c
-       subroutine iBCelas_to_dbl(iBCelas, flag)
-c
-        real*8 flag
-        integer iBCelas
-c
-        flag = REAL(ibits(iBCelas,14,3))
-c
-c.... end
-c
-        return
-        end
-c
-c----------------------------------------------------------------------
-c
-c----------------------------------------------------------------------
-c
-       subroutine dbl_to_iBCelas(flag, iBCelas)
-c
-        real*8 flag
-        integer iBCcase, iBCelas
-c
-        iBCcase = INT(flag + 0.5)
-c
-            select case (iBCcase)
-            case (1) ! x1 direction
-              iBCelas = ibset(iBCelas, 14)
-              iBCelas = ibclr(iBCelas, 15)
-              iBCelas = ibclr(iBCelas, 16)
-            case (2) ! x2 direction
-              iBCelas = ibclr(iBCelas, 14)
-              iBCelas = ibset(iBCelas, 15)
-              iBCelas = ibclr(iBCelas, 16)
-            case (3) ! x1 & x2 direction
-              iBCelas = ibset(iBCelas, 14)
-              iBCelas = ibset(iBCelas, 15)
-              iBCelas = ibclr(iBCelas, 16)
-            case (4) ! x3 direction
-              iBCelas = ibclr(iBCelas, 14)
-              iBCelas = ibclr(iBCelas, 15)
-              iBCelas = ibset(iBCelas, 16)
-            case (5) ! x1 & x3 direction
-              iBCelas = ibset(iBCelas, 14)
-              iBCelas = ibclr(iBCelas, 15)
-              iBCelas = ibset(iBCelas, 16)
-            case (6) ! x2 & x3 direction
-              iBCelas = ibclr(iBCelas, 14)
-              iBCelas = ibset(iBCelas, 15)
-              iBCelas = ibset(iBCelas, 16)
-            case (7) ! x1 & x2 & x3 direction
-              iBCelas = ibset(iBCelas, 14)
-              iBCelas = ibset(iBCelas, 15)
-              iBCelas = ibset(iBCelas, 16)
-            case DEFAULT
-              call error('dbl_to_iBCelas','wrong BC case',vID)
-            end select
-c
-c
-c.... end
-c
-        return
-        end
-c
-c----------------------------------------------------------------------
-c
-c----------------------------------------------------------------------
-c
        subroutine layerCommuAssembly(global, rtemp, ilwork, n)
 c
          include "common.h"
@@ -277,14 +211,14 @@ c
 c
 c.... total number of nodes involved in this task (lfront)
 c
+            iacc   = ilwork (itkbeg + 2)
+            numseg = ilwork (itkbeg + 4)
             lfront = 0
             do is = 1,numseg
               lenseg = ilwork (itkbeg + 4 + 2*is)
               lfront = lfront + lenseg
             enddo
 c
-            iacc   = ilwork (itkbeg + 2)
-            numseg = ilwork (itkbeg + 4)
             if(iacc.eq.1) then
                jdl=jdl+1  ! keep track of order of rtemp's
 c
@@ -297,8 +231,12 @@ c
                    lenseg = ilwork (itkbeg + 4 + 2*is)
                    do icsg = 1,lenseg
                      icid  = isgbeg + icsg - 1
-                     locFlag = global(icid,4)
-                     revFlag = rtemp(3*lfront+mod(itemp,lfront),jdl)
+                     locFlag = global(icid,4) ! if it has been updated
+                     if(lfront .gt. 0) then
+                       revFlag = rtemp(3*lfront+mod(itemp,lfront),jdl)
+                     else
+                       revFlag = 0.0;
+                     endif
 c
 c.... if received from a growth curve and it's not been updated
 c
@@ -308,12 +246,12 @@ c
                        global(icid,4) = revFlag
                      endif
                      itemp = itemp + 1
-                   enddo
-                 enddo
-               enddo
+                   enddo ! end within each segment
+                 enddo ! end segments
+               enddo ! end dof
             endif ! end of receive (iacc=1)
             itkbeg = itkbeg + 4 + 2*numseg
-         enddo
+         enddo ! end tasks
 c
 c.... end
 c
