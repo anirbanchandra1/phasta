@@ -32,7 +32,7 @@ c
      &            elasBDiag(nshg,nelas,nelas),
      &            iper(nshg)
 c
-        dimension flag(numnp),   dispCommu(numnp,4)
+        real*8  flag(numnp),   dispCommu(numnp,4)
 c
         dimension shp(MAXTOP,maxsh,MAXQPT),
      &            shgl(MAXTOP,nsd,maxsh,MAXQPT),
@@ -169,6 +169,7 @@ c.... ---------------->   Re-position layered mesh   <-----------------
 c
 c.... loop over growth curves
 c
+        flag = zero
         listcounter = 0
         ioffset = 1 ! the ID starts from 1 in phasta
         do ngc = 1, numgc

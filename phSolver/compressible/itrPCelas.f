@@ -9,8 +9,8 @@ c-----------------------------------------------------------------------
       
       real*8   disp(nshg,nelas),umesh(numnp,nsd),dt
 c
-c      disp = zero
-      disp = umesh*dt
+      disp = zero
+c      disp = umesh*dt
 c
       return
       end
