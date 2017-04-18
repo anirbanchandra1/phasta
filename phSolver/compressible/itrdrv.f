@@ -98,8 +98,6 @@ c
      &         disp(numnp, nsd),    elasDy(nshg,nelas),
      &         umeshold(numnp, nsd), xold(numnp,nsd)
 
-       dimension gcnormal(nshg, nsd) ! For debugging
-
        logical alive
 
         integer iTurbWall(nshg) 
@@ -659,7 +657,7 @@ c
      &                                hBrg,     eBrg,    yBrg,
      &                                Rcos,     Rsin,    iper,   ilwork,
      &                                shp,      shgl,    shpb,   shglb,
-     &                                shpif,    elasDy,  gcnormal)
+     &                                shpif,    elasDy)
 c
                   endif  ! end of switch for flow or scalar or mesh-elastic solve
 c     
@@ -892,11 +890,6 @@ c     &                  xdot,  'd'//char(0), numnp, nsd, lstep)
                    call write_field(
      &                  myrank,'a'//char(0),'meshQ'//char(0), 5, 
      &                  meshq, 'd'//char(0), numel, 1,   lstep)
-c.... for debugging
-                   call write_field(
-     &                  myrank,  'a'//char(0),'gcnormal'//char(0), 8,
-     &                  gcnormal,'d'//char(0), numnp, nsd, lstep)
-c.... for debugging
                  endif
 c
       if (solid_p%is_active) call write_restart_solid
@@ -927,11 +920,6 @@ c     &                xdot,  'd'//char(0), numnp, nsd, lstep)
                  call write_field(
      &                myrank,'a'//char(0),'meshQ'//char(0), 5, 
      &                meshq, 'd'//char(0), numel, 1,   lstep)
-c.... for debugging
-                 call write_field(
-     &                myrank,  'a'//char(0),'gcnormal'//char(0), 8,
-     &                gcnormal,'d'//char(0), numnp, nsd, lstep)
-c.... for debugging
                endif
 c
                   call write_field(

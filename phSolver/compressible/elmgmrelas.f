@@ -2,7 +2,7 @@
      &                         iBC,     BC,      shpb,    shglb,
      &                         shpif,   elasres, elasBDiag,
      &                         iper,    ilwork,  elaslhsK,
-     &                         col,     row,     meshq, gcnormal)
+     &                         col,     row,     meshq)
 c
 c----------------------------------------------------------------------
 c

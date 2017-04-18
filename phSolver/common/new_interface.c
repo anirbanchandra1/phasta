@@ -228,8 +228,8 @@ void countfieldstowriterestart()
   }
 
   if (conpar.iALE == 2) {
-//HARDCODED BY FAN, 2 fields: mesh_vel, mesh_coord, meshQ
-    nfields = nfields + 4; // should be 3. 4th for gcnormal
+//HARDCODED BY FAN, 3 fields: mesh_vel, mesh_coord, meshQ
+    nfields = nfields + 3;
   }
 
   if (conpar.iSOLID == 1) {

@@ -3,7 +3,7 @@
      &                       HBrg,    eBrg,    yBrg,
      &                       Rcos,    Rsin,    iper,    ilwork,
      &                       shp,     shgl,    shpb,    shglb,
-     &                       shpif,   Dy,      gcnormal)
+     &                       shpif,   Dy)
 c
 c----------------------------------------------------------------------
 c
@@ -52,7 +52,6 @@ c
 c
       real*8, dimension(maxtop,    maxsh,maxqpt) :: shpif
 c
-      dimension gcnormal(nshg, nsd)
 c.... *******************>> Element Data Formation <<******************
 c
 c.... form the LHS matrices, the residual vector, and the block
@@ -62,7 +61,7 @@ c
      &                 iBC,     BC,      shpb,    shglb,
      &                 shpif,   elasres, elasBDiag,
      &                 iper,    ilwork,  elaslhsK,
-     &                 col,     row,     meshq, gcnormal)
+     &                 col,     row,     meshq)
 c
 c.... **********************>>    EBE - GMRES    <<********************
 c
