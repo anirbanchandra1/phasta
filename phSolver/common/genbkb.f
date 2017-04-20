@@ -65,7 +65,7 @@ C
             if(input_mode.ge.1)then
                write (fname2,"('connectivity boundary',i1)") iblk
             else
-               write (fname2,"('connectivity boundary linear tetrahedron')")
+               write (fname2,"('connectivity boundary?')")
             endif
  
             call phio_readheader(fhandle, fname2 // char(0),
@@ -139,7 +139,7 @@ CC           call phio_readheader(fhandle, trim(fname2)//C_NULL_CHAR,
 c
 c.... Read the boundary material type
 c
-           if(input_mode.gt.1)then
+           if(input_mode.ge.1)then
              write (fname2,"('material type boundary linear tetrahedron',i1)") iblk
            else 
 c             select case (iblk)
@@ -150,7 +150,7 @@ c               write (fname2,"('material type boundary linear wedge')")
 c             case (itp_wedge_quad)
 c               write (fname2,"('material type boundary linear wedge quadface')") 
 c             end select
-      write (fname2,"('material type boundary?')") 
+            write (fname2,"('material type boundary?')")
            endif
 C           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
            intfromfile(:)=-1
