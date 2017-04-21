@@ -52,6 +52,107 @@ c
         real*8, allocatable :: tmpshp(:,:), tmpshgl(:,:,:)
         real*8, allocatable :: Estiff(:,:,:)
 c
+c.... ------------------->   check layered mesh   <--------------------
+c
+        real*8, allocatable :: tmpNm(:,:)
+        real*8, allocatable :: thickness(:), gcvpos(:)
+        real*8  tmpCP1,tmpCP2,tmpCP3,norm1,norm2
+c
+c        do i = 1,numnp
+c          if( x(i,1) .ge. 0.0043890 .and. x(i,1) .le. 0.0043892) then
+c          if( x(i,1) .ge. -0.021889 .and. x(i,1) .le. -0.021887) then
+c          if( x(i,1) .ge. -2.40772e-2 .and. x(i,1) .le. -2.40770e-2) then
+c            write(*,*) "find base: rank:",myrank,"ID",i
+c            write(*,*) "find top most: rank:",myrank,"ID",i
+c          endif
+c        enddo
+c
+c... check top most
+         if (myrank .eq. 0) then
+           write(*,*) "top most rank:",myrank,"coord:",x(1466,:)
+         endif
+         if (myrank .eq. 2) then
+           write(*,*) "top most rank:",myrank,"coord:",x(2729,:)
+         endif
+         if (myrank .eq. 3) then
+           write(*,*) "top most rank:",myrank,"coord:",x(2757,:)
+         endif
+c... not end check top most
+c
+c.... loop over growth curves
+c
+c        listcounter = 0
+c        ioffset = 1 ! the ID starts from 1 in phasta
+c        do ngc = 1, numgc
+c         itnv = BLtnv(ngc) ! number of vertices on this growth curve
+c          allocate(tmpNm(itnv-1, nsd))
+c          allocate(thickness(itnv-1))
+c          allocate(gcvpos(itnv-1))
+c          basevID = BLlist(listcounter + 1) + ioffset
+c          do nv = 2, itnv
+c            vID = BLlist(listcounter + nv) + ioffset
+c
+c... continue check top most
+c            if(myrank .eq. 2 .and. basevID .eq. 393 .and. nv .eq. 4) then
+c              write(*,*) "top most: ",x(vID,:)
+c            endif
+c... end check top most
+c
+c... check inter part gc positions
+c            if((myrank .eq. 0 .and. basevID .eq. 555) .or.
+c     &         (myrank .eq. 2 .and. basevID .eq. 14 ) .or.
+c     &         (myrank .eq. 3 .and. basevID .eq. 25 )) then
+c              gcvpos(nv-1) = x(vID, 3) ! 1,2,3
+c            endif
+c... not end check inter part gc positions
+c
+c            vID2= BLlist(listcounter + nv - 1) + ioffset ! the previous one
+c            tmpNm(nv-1,:) = x(vID,:) - x(vID2,:)
+c
+c... check thickness
+c            thickness(nv-1) = sqrt(tmpNm(nv-1,1)*tmpNm(nv-1,1)
+c     &                           + tmpNm(nv-1,2)*tmpNm(nv-1,2)
+c     &                           + tmpNm(nv-1,3)*tmpNm(nv-1,3))
+c
+c... not end check thickness
+c
+c
+c... check normal direction alignment
+c            if(nv .gt. 2) then
+c              tmpCP1 = tmpNm(nv-2,2)*tmpNm(nv-1,3)-tmpNm(nv-1,2)*tmpNm(nv-2,3)
+c              tmpCP2 = tmpNm(nv-1,1)*tmpNm(nv-2,3)-tmpNm(nv-2,1)*tmpNm(nv-1,3)
+c              tmpCP3 = tmpNm(nv-2,1)*tmpNm(nv-1,2)-tmpNm(nv-1,1)*tmpNm(nv-2,2)
+c              norm1  = sqrt(tmpNm(nv-2,1)*tmpNm(nv-2,1)
+c     &                    + tmpNm(nv-2,2)*tmpNm(nv-2,2)
+c     &                    + tmpNm(nv-2,3)*tmpNm(nv-2,3))
+c              norm2  = sqrt(tmpNm(nv-1,1)*tmpNm(nv-1,1)
+c     &                    + tmpNm(nv-1,2)*tmpNm(nv-1,2)
+c     &                    + tmpNm(nv-1,3)*tmpNm(nv-1,3))
+c              write(*,*) "rank: ",myrank," gc: ",ngc," layer: ",nv-1,
+c     &          " cp/m: ",tmpCP1/norm1/norm2,tmpCP2/norm1/norm2,tmpCP3/norm1/norm2
+c            endif
+c... end check normal direction alignment
+c
+c          enddo ! over this growth curve
+c
+c... continue check inter part gc positions
+c          if((myrank .eq. 0 .and. basevID .eq. 555) .or.
+c     &         (myrank .eq. 2 .and. basevID .eq. 14 ) .or.
+c     &         (myrank .eq. 3 .and. basevID .eq. 25 )) then
+c            write(*,*) "rank:",myrank,"gc:",ngc,"v x pos:",gcvpos(:)
+c          endif
+c... end check inter part gc positions
+c
+c... continue check thickness
+c          write(*,*) "rank: ",myrank," gc: ",ngc," thickness: ",thickness(:)
+c... end check thickness
+c
+c          deallocate(gcvpos)
+c          deallocate(thickness)
+c          deallocate(tmpNm)
+c          listcounter = listcounter + itnv ! update counter
+c        enddo
+c
 c.... ------------------->   layer base elements   <-------------------
 c
 c.... calculate the normal of each growth curve based on new boundary positions
