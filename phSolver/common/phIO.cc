@@ -74,7 +74,8 @@ void phio_readdatablock(
     const char  datatype[],
     const char  iotype[] ) {
   const double t0 = getTime();
-  f->ops->readdatablock(f->file, keyphrase, valueArray,
+  if (*nItems > 0)
+    f->ops->readdatablock(f->file, keyphrase, valueArray,
       nItems, datatype, iotype);
   printTime(__func__, getTime()-t0);
 }
