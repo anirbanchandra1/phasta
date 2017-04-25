@@ -52,7 +52,7 @@ c
       character*60 fname1,  fmt1, fmt2, fnamer, fname2
       character*13 fieldbflux 
       character*19 fieldwss 
-      integer irstin, isize, nitems, ndofwss
+      integer isize, nitems, ndofwss
       integer iarray(50)  ! integers read from headers
 
       real*8, allocatable, dimension(:,:,:,:) :: xKebe, xGoC

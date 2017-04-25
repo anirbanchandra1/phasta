@@ -79,9 +79,6 @@ c
         real*8    xmudmi(npro,ngauss),      dwl(npro,nshl)
 c
       	dimension xKebe(npro,9,nshl,nshl),  rKwall_glob(npro,9,nshl,nshl)
-      	integer   intp
-
-
 c
 c.... compute the nodes which lie on the boundary (hierarchic)
 c
