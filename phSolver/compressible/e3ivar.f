@@ -16,6 +16,7 @@
      &                     uml,     divum )
 c
 c----------------------------------------------------------------------
+c DUMMY LINE _AC
 c
 c  This routine computes the variables at integration point.
 c

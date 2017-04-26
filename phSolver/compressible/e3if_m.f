@@ -19,6 +19,7 @@ c----------------------------------------
         use e3if_vi_m
         use if_global_m
 c
+c       DUMMY
         implicit none
 c
       contains

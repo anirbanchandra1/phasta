@@ -13,6 +13,7 @@ c algorithm. It contains the Hulbert Generalized Alpha method which
 c is 2nd order accurate for Rho_inf from 0 to 1.  The method can be
 c made  first-order accurate by setting Rho_inf=-1. It uses a
 c GMRES iterative solver.
+c Dummy linr
 c
 c working arrays:
 c  y      (nshg,ndof)           : Y variables
