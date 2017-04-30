@@ -468,19 +468,22 @@ c
            real*8,dimension(npro,nflow,nsd) :: cy_jump, kcy
 	   !CHANDRA
 	   real*8 :: vel_SL, temp_SL
-	   real*8, dimension(nflow) ::sl_vec ! Slip Length Vector
+	   real*8, dimension(nflow) :: sl_vec  ! Slip Length Vector
+	   real*8, dimension(npro) :: dum !dummy variable
+	   real*8, dimension(npro,nflow,nsd) :: cy_jump_mod
 c	   
 c	 
 	   vel_SL=0.01; temp_SL=1;
 	   sl_vec(1)=0;sl_vec(2)=vel_SL;sl_vec(3)=vel_SL;sl_vec(4)=vel_SL;
 	   sl_vec(5)=temp_SL;
- 	   print *,var0(1)%grad_y(1,5)  ,g_y0(1,1,5)
+ 	   !print *,nv0(5,1)
 c	
 c	  	 
 c
            do iflow = 1,nflow
 c
-             cy_jump(:,iflow,:) = zero
+            cy_jump(:,iflow,:) = zero	
+	    cy_jump_mod(:,iflow,:) = zero 
 c
              do jflow = 1,nflow
                cy_jump(:,iflow,1) = cy_jump(:,iflow,1) + cmtrx(:,iflow,jflow)*y_jump(:,jflow,1)
@@ -490,6 +493,27 @@ c
 c
            enddo
 c
+	cy_jump_mod(:,:,:) = cy_jump(:,:,:)
+        dum(:) = 0.d0
+	!print *, cy_jump_mod(3,4,3),cy_jump(3,4,3)
+	do isd = 1, nsd
+	  do iflow = 1 , nflow
+            do jflow = 1 , nflow
+	      dum(:) = cmtrx(:,iflow,jflow)*g_y0(:,isd,jflow)*nv0(:,isd)
+	      cy_jump_mod(:,iflow,1) = cy_jump_mod(:,iflow,1) - dum(:)*nv0(:,1)			 
+              cy_jump_mod(:,iflow,2) = cy_jump_mod(:,iflow,2) - dum(:)*nv0(:,2)
+              cy_jump_mod(:,iflow,3) = cy_jump_mod(:,iflow,3) - dum(:)*nv0(:,3)
+	    enddo
+	 enddo
+       enddo
+
+
+
+
+
+
+
+
            do iflow = 1,nflow
              do isd = 1,nsd
 c
@@ -497,7 +521,7 @@ c
 c
              do jflow = 1,nflow
                do jsd = 1,nsd
-                 this_kcy = this_kcy + Kij(:,iflow,jflow,isd,jsd)*cy_jump(:,jflow,jsd)
+                 this_kcy = this_kcy + Kij(:,iflow,jflow,isd,jsd)*cy_jump_mod(:,jflow,jsd) !CHANDRA
                enddo
              enddo
 c
