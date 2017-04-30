@@ -96,8 +96,8 @@ c
       prop0%mater = mater0
       prop1%mater = mater1
 c
-            call e3var(y0, var0, ycl0, shp0, shgl0, shg0, nshl0) 
-            call e3var(y1, var1, ycl1, shp1, shgl1, shg1, nshl1) 
+            call e3var(y0,g_y0, var0, ycl0, shp0, shgl0, shg0, nshl0) 
+            call e3var(y1,g_y1,  var1, ycl1, shp1, shgl1, shg1, nshl1) 
 c
             call calc_stiff(prop0, var0, mater0)
             call calc_stiff(prop1, var1, mater1)
@@ -220,9 +220,11 @@ c
 c
         end subroutine e3if
 c
-        subroutine e3var(y,var,ycl,shp,shgl,shg,nshl)
+        subroutine e3var(y,g_y,var,ycl,shp,shgl,shg,nshl)
 c
           real*8, dimension(:,:), intent(out) :: y
+	  real*8, dimension(:,:,:), intent(out) :: g_y 
+	  !CHANDRA new variable to export gradients
           type(var_t), pointer, intent(out) :: var(:)
           real*8, pointer, intent(in) :: shp(:,:),shgl(:,:,:), shg(:,:,:)
           real*8, dimension(npro,nshl,nflow), intent(in) :: ycl
@@ -233,12 +235,18 @@ c
 c
           do ivar = 1,nflow
             y(:,ivar) = zero
+	    g_y(:,1,ivar) = zero
+	    g_y(:,2,ivar) = zero
+	    g_y(:,3,ivar) = zero	
             var(:)%y(ivar) = zero
             var(:)%grad_y(1,ivar) = zero
             var(:)%grad_y(2,ivar) = zero
             var(:)%grad_y(3,ivar) = zero
             do n = 1,nshl
-              y(:,ivar) = y(:,ivar) + ycl(:,n,ivar)*shp(:,n)
+	      g_y(:,1,ivar) = g_y(:,1,ivar) + ycl(:,n,ivar)*shg(:,n,1)	
+              g_y(:,2,ivar) = g_y(:,2,ivar) + ycl(:,n,ivar)*shg(:,n,2)
+              g_y(:,3,ivar) = g_y(:,3,ivar) + ycl(:,n,ivar)*shg(:,n,3)
+	      y(:,ivar) = y(:,ivar) + ycl(:,n,ivar)*shp(:,n)
               var(:)%y(ivar) = var(:)%y(ivar) + ycl(:,n,ivar)*shp(:,n)
               var(:)%grad_y(1,ivar) = var(:)%grad_y(1,ivar) + ycl(:,n,ivar)*shg(:,n,1)
               var(:)%grad_y(2,ivar) = var(:)%grad_y(2,ivar) + ycl(:,n,ivar)*shg(:,n,2)
@@ -458,6 +466,17 @@ c
            real*8 :: this_kcy(npro)
            real*8, dimension(npro,nflow,nflow,nsd,nsd) :: CKij
            real*8,dimension(npro,nflow,nsd) :: cy_jump, kcy
+	   !CHANDRA
+	   real*8 :: vel_SL, temp_SL
+	   real*8, dimension(nflow) ::sl_vec ! Slip Length Vector
+c	   
+c	 
+	   vel_SL=0.01; temp_SL=1;
+	   sl_vec(1)=0;sl_vec(2)=vel_SL;sl_vec(3)=vel_SL;sl_vec(4)=vel_SL;
+	   sl_vec(5)=temp_SL;
+ 	   print *,var0(1)%grad_y(1,5)  ,g_y0(1,1,5)
+c	
+c	  	 
 c
            do iflow = 1,nflow
 c

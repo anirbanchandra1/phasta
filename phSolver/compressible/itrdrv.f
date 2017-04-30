@@ -52,7 +52,9 @@ c
      &            xn(numnp,nsd),           xdot(numnp,nsd),
      &            x(numnp,nsd),            iBC(nshg),
      &            BC(nshg,ndofBC),         ilwork(nlwork),
-     &            iper(nshg),              uold(nshg,nsd)
+     &            iper(nshg),              uold(nshg,nsd),
+     &            DUMMY_NODE(3) !CHANDRA)
+
 c
         dimension res(nshg,nflow),         
      &            rest(nshg),              solinc(nshg,ndof)
@@ -63,7 +65,7 @@ c
      &            shglb(MAXTOP,nsd,maxsh,MAXQPT) 
         real*8, dimension(maxtop,    maxsh,maxqpt) :: shpif
         real*8, dimension(maxtop,nsd,maxsh,maxqpt) :: shgif
-        real*8   almit, alfit, gamit
+        real*8   almit, alfit, gamit, DIST  !CHANDRA
         dimension ifath(numnp),    velbar(nfath,ndof),  nsons(nfath)
         real*8 rerr(nshg,10),ybar(nshg,ndof+8) ! 8 is for avg. of square as uu, vv, ww, pp, TT, uv, uw, and vw
         real*8, allocatable, dimension(:,:) :: vortG
@@ -334,6 +336,31 @@ c        tcorewc1 = secs(0.0)
 
 
 c============ Start the loop of time steps============================c
+        !CHANDRA HW3
+        !----------------------------------------------
+        print *, 'Q1(a) -  Coords of Node 9: ',x(9,1),x(9,2),x(9,3)
+        !------------------------------------------
+        DUMMY_NODE(1)=0.d0; DUMMY_NODE(2)=-0.5; DUMMY_NODE(3)=1.d0;
+         do istep1=0,nshg
+            DIST=0.d0
+            DIST=(x(istep1,1)-DUMMY_NODE(1))**2
+            DIST=DIST+(x(istep1,2)-DUMMY_NODE(2))**2
+            DIST=DIST+(x(istep1,3)-DUMMY_NODE(3))**2
+             if(DIST.eq.0.d0) then
+             print *, 'Q1(b) - ',istep1, x(istep1,1),x(istep1,2),x(istep1,3)
+            endif
+        enddo
+        !---------------------------------------
+        istep1=nelblk
+        print *, 'Q2 - ', (lcblk(1,istep1+1)-lcblk(1,istep1))
+        !---------------------------------------
+        print *, 'Q3 - iBC for node 9 : ', iBC(9)
+        !---------------------------------------
+        istep1=nelblb
+        print *, 'DD - : ', (lcblkb(1,istep1+1)-lcblkb(1,istep1))
+        !------------------------------------------------
+
+
 !        edamp2=.99
 !        edamp3=0.05
         deltaInlInv=one/(0.125*0.0254)
