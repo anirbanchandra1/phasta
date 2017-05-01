@@ -498,7 +498,6 @@ c
            real*8 :: this_sum(npro)
 c
            do iflow = 1,nflow
-             do isd = 1,nsd
 c
                this_sum = zero
 c
@@ -508,7 +507,6 @@ c
 c
                ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*mu(:,iflow)/length_h * this_sum
 c
-             enddo
            enddo
 c
         end subroutine dg_penalty
