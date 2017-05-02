@@ -279,6 +279,11 @@ c        deallocate(xdotold)
         deallocate(uold)
         deallocate(wnrm)
         deallocate(otwn)
+c
+        deallocate(BLflt)
+        deallocate(BLgr)
+        deallocate(BLtnv)
+        deallocate(BLlist)
         call finalizeDtN
         call clearper
         call finalizeNABI
