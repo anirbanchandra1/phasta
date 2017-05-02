@@ -56,9 +56,9 @@ c
 c
 c.... enlarge the stiffness for wedge elements
 c
-c        if (lcsyst .eq. 3) then ! wedge
-c          youngMod(:) = 10 * youngMod(:) ! 10 is randomly chosen
-c        endif
+        if (lcsyst .eq. 3) then ! wedge
+          youngMod(:) = blfactor * youngMod(:)
+        endif
 c
         lamda(:) = youngMod(:) * poisnRat(:) /
      &         (1.0+poisnRat(:)) / (1.0-2.0*poisnRat(:))

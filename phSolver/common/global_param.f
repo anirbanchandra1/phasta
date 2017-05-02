@@ -119,14 +119,17 @@ c numgc           : number of growth curves
 c numgcnp         : total number of nodal points of all growth curves
 c useBLbaseSrfID  : use the surf ID to identify layer base
 c BLbaseSrfID     : the surf ID of layer base
+c layerCommuFlag  : the flag used for layer mesh master assembly in commu
+c blfactor        : multiplied with stiffness of wedge element in elas solver
 c
       module laymesh_m
         use iso_c_binding
         implicit none
+        real(c_double), target :: blfactor
         integer(c_int), target :: numgc,          numgcnp,
      &                            useBLbaseSrfID, BLbaseSrfID
         integer :: layerCommuFlag = 0
-        common /laymesh/ numgc,          numgcnp,
+        common /laymesh/ blfactor,  numgc,   numgcnp,
      &                   useBLbaseSrfID, BLbaseSrfID,
      &                   layerCommuFlag
       end module laymesh_m

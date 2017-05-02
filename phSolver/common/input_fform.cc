@@ -416,6 +416,8 @@ int input_fform(phSolver::Input& inp)
       exit(1);
     }
 
+    laymesh.blfactor = inp.GetValue("Wedge Stiffness Factor");
+
     outpar.iv_rankpercore = inp.GetValue("Ranks per core");
     outpar.iv_corepernode = inp.GetValue("Cores per node");
 

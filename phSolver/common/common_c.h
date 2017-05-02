@@ -250,6 +250,7 @@ extern "C" {
   } aerfrc ;
 
   extern struct {
+	double blfactor;
     int numgc;
 	int numgcnp;
     int useBLbaseSrfID;
