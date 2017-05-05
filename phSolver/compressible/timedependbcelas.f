@@ -101,6 +101,27 @@ c
         enddo ! end loop numnp
       endif  ! end case 3
 c
+c.... Update BC value based on geom and iBC
+c.... twist one end of a cylinder
+c
+      if ( casenumber .eq. 4 ) then
+        do i = 1,numnp
+          if ( (ibits(iBC(i),14,3) .eq. 7) .and.
+     &         (x(i,1) .lt. 0.501) .and.
+     &         (x(i,1) .gt. 0.499) ) then
+c
+            disp(i,1) = 0.0
+            disp(i,2) = x(i,2) * (cos(pi/100) - 1.0)
+     &                - x(i,3) *  sin(pi/100)
+            disp(i,3) = x(i,3) * (cos(pi/100) - 1.0)
+     &                + x(i,2) *  sin(pi/100)
+c
+            BC(i,:)   = disp(i,:) / Delt(1)
+          endif ! end if inside box
+        enddo ! end loop numnp
+      endif  ! end case 4
+c
+
       return
       end
 c
