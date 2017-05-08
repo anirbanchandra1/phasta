@@ -161,24 +161,24 @@ c
 c
             select case (ibits(iBC,14,3))
             case (1) ! x1 direction
-              BC(1) = disp(1) / Delt(1)
+              BC(1) = disp(1)
             case (2) ! x2 direction
-              BC(2) = disp(2) / Delt(1)
+              BC(1) = disp(2)
             case (3) ! x1 & x2 direction
-              BC(1) = disp(1) / Delt(1)
-              BC(3) = disp(2) / Delt(1)
+              BC(1) = disp(1)
+              BC(3) = disp(2)
             case (4) ! x3 direction
-              BC(3) = disp(3) / Delt(1)
+              BC(1) = disp(3)
             case (5) ! x1 & x3 direction
-              BC(1) = disp(1) / Delt(1)
-              BC(3) = disp(3) / Delt(1)
+              BC(1) = disp(1)
+              BC(3) = disp(3)
             case (6) ! x2 & x3 direction
-              BC(1) = disp(2) / Delt(1)
-              BC(3) = disp(3) / Delt(1)
+              BC(1) = disp(2)
+              BC(3) = disp(3)
             case (7) ! x1 & x2 & x3 direction
-              BC(1) = disp(1) / Delt(1)
-              BC(2) = disp(2) / Delt(1)
-              BC(3) = disp(3) / Delt(1)
+              BC(1) = disp(1)
+              BC(2) = disp(2)
+              BC(3) = disp(3)
             end select
 c.... end
 c
