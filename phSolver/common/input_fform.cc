@@ -418,6 +418,15 @@ int input_fform(phSolver::Input& inp)
 
     laymesh.blfactor = inp.GetValue("Wedge Stiffness Factor");
 
+    if ( (string)inp.GetValue("Snap back to surface option") == "False" ){
+	  snapmesh.snapSurfFlag = 0;
+	}
+	else if ( (string)inp.GetValue("Snap back to surface option") == "True" ){
+	  snapmesh.snapSurfFlag = 1;
+	}
+
+    snapmesh.snapSurfID = inp.GetValue("Snap back to surface surf ID");
+
     outpar.iv_rankpercore = inp.GetValue("Ranks per core");
     outpar.iv_corepernode = inp.GetValue("Cores per node");
 

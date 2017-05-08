@@ -20,6 +20,7 @@
 #define spebcvr FortranCInterface_GLOBAL_(spebcvr,SPEBCVR)
 #define aerfrc FortranCInterface_GLOBAL_(aerfrc,AERFRC)
 #define laymesh FortranCInterface_GLOBAL_(laymesh,LAYMESH)
+#define snapmesh FortranCInterface_GLOBAL_(snapmesh,SNAPMESH)
 #define astore FortranCInterface_GLOBAL_(astore,ASTORE)
 #define conpar FortranCInterface_GLOBAL_(conpar,CONPAR)
 #define ctrlvari FortranCInterface_GLOBAL_(ctrlvari,CTRLVARI)
@@ -256,6 +257,11 @@ extern "C" {
     int useBLbaseSrfID;
 	int BLbaseSrfID;
   } laymesh ;
+
+  extern struct {
+    int snapSurfFlag;
+    int snapSurfID;
+  } snapmesh ;
 
   extern struct { 
     double a[100000];

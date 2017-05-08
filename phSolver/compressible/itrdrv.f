@@ -659,6 +659,12 @@ c
      &                                shp,      shgl,    shpb,   shglb,
      &                                shpif,    elasDy)
 c
+c.... snapping back to surface
+c
+c                     if (snapSurfFlag .eq. 1) then ! apply snapping
+c                       call 
+c                     endif ! end snapping
+c
                   endif  ! end of switch for flow or scalar or mesh-elastic solve
 c     
 c.... end of the multi-corrector loop

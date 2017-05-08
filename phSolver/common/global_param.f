@@ -136,6 +136,20 @@ c
 c
 c----------------------------------------------------------------------
 c
+c.... common /snapmesh/   : snap mesh nodes back the surface
+c
+c snapSurfFlag: flag for snap back method
+c snapSurfID  : surface ID for the target surface
+c
+      module snapmesh_m
+        use iso_c_binding
+        implicit none
+        integer(c_int), target :: snapSurfFlag,  snapSurfID
+        common /snapmesh/ snapSurfFlag,  snapSurfID
+      end module snapmesh_m
+c
+c----------------------------------------------------------------------
+c
 c.... common /timdat/   : time data
 c
 c time          : current run time
