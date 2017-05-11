@@ -185,3 +185,67 @@ c
         return
         end
 c
+c----------------------------------------------------------------------
+c
+c----------------------------------------------------------------------
+c
+       subroutine iBCelas_to_dbl( iBCelas, flag )
+c
+        real*8  flag
+        integer iBCelas
+c
+        flag = REAL(ibits(iBCelas,14,3))
+c
+c.... end
+c
+        return
+        end
+c
+c----------------------------------------------------------------------
+c
+c----------------------------------------------------------------------
+c
+       subroutine dbl_to_iBCelas( flag, iBCelas )
+c
+        real*8  flag
+        integer iBCcase, iBCelas
+c
+        iBCcase = INT(flag + 0.5)
+c
+          select case (iBCcase)
+          case (1) ! x1 direction
+            iBCelas = ibset(iBCelas, 14)
+            iBCelas = ibclr(iBCelas, 15)
+            iBCelas = ibclr(iBCelas, 16)
+          case (2) ! x2 direction
+            iBCelas = ibclr(iBCelas, 14)
+            iBCelas = ibset(iBCelas, 15)
+            iBCelas = ibclr(iBCelas, 16)
+          case (3) ! x1 & x2 direction
+            iBCelas = ibset(iBCelas, 14)
+            iBCelas = ibset(iBCelas, 15)
+            iBCelas = ibclr(iBCelas, 16)
+          case (4) ! x3 direction
+            iBCelas = ibclr(iBCelas, 14)
+            iBCelas = ibclr(iBCelas, 15)
+            iBCelas = ibset(iBCelas, 16)
+          case (5) ! x1 & x3 direction
+            iBCelas = ibset(iBCelas, 14)
+            iBCelas = ibclr(iBCelas, 15)
+            iBCelas = ibset(iBCelas, 16)
+          case (6) ! x2 & x3 direction
+            iBCelas = ibclr(iBCelas, 14)
+            iBCelas = ibset(iBCelas, 15)
+            iBCelas = ibset(iBCelas, 16)
+          case (7) ! x1 & x2 & x3 direction
+            iBCelas = ibset(iBCelas, 14)
+            iBCelas = ibset(iBCelas, 15)
+            iBCelas = ibset(iBCelas, 16)
+          end select
+c
+c.... end
+c
+        return
+        end
+c
+

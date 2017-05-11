@@ -121,7 +121,8 @@ c          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
 c
 c.... collect wedge_tri or surfID option is on
 c
-          if((lcsyst.ne.itp_wedge_tri) .and. (useBLbaseSrfID.eq.0)) cycle
+c          if((lcsyst.ne.itp_wedge_tri) .and. (useBLbaseSrfID.eq.0)) cycle
+          if((lcsyst.ne.itp_wedge_tri) ) cycle ! DG interface cannot be applied surf ID yet
 c
 c.... compute and assemble non-unit normal
 c
@@ -143,7 +144,8 @@ c          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
 c
 c.... collect wedge_tri or surfID option is on
 c
-          if((lcsyst.ne.itp_wedge_tri) .and. (useBLbaseSrfID.eq.0)) cycle
+c          if((lcsyst.ne.itp_wedge_tri) .and. (useBLbaseSrfID.eq.0)) cycle
+          if((lcsyst.ne.itp_wedge_tri) ) cycle ! DG interface cannot be applied surf ID yet
 c
 c.... compute and assemble non-unit normal
 c
@@ -201,7 +203,8 @@ c
             xtmp(vID,:) = xtmp(vID2,:) + iflt * inormal(:) * igrexp  ! igr**(nv-2)
             disp(vID,:) = xtmp(vID,:) - x(vID,:)
             igrexp = igrexp * igr
-            flag(vID) = 1.0 ! setup flag
+c... set flag
+            call iBCelas_to_dbl(iBC(vID), flag(vID))
           enddo ! over this growth curve
 c
           listcounter = listcounter + itnv ! update counter
@@ -237,10 +240,12 @@ c.... turn off commu flag
 c
         layerCommuFlag = 0
 c
-c.... separate dispCommu into disp; update BC
+c.... separate dispCommu into disp and iBC; update BC
 c
         do i = 1, numnp
           disp(i,:) = dispCommu(i,1:3)
+          flag(i)   = dispCommu(i,4)
+          call dbl_to_iBCelas(flag(i), iBC(i))
           call setBLbc(disp(i,:), iBC(i), BC(i, ndof+2:ndof+5))
         enddo
 c
