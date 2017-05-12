@@ -176,6 +176,7 @@ c
         ioffset = 1 ! the ID starts from 1 in phasta
         do ngc = 1, numgc
           itnv = BLtnv(ngc) ! number of vertices on this growth curve
+          basevID = BLlist(listcounter + 1) + ioffset
 c
 c.... precaution
 c
@@ -183,12 +184,16 @@ c
             listcounter = listcounter + itnv
             cycle ! not loop over vertices
           endif
+c.... no BC on base, skip this growth curve
+          if (ibits(iBC(basevID),14,3) .eq. 0) then
+            cycle ! not loop over vertices
+          endif
 c
 c.... prepare other paramteres
 c
           iflt = BLflt(ngc) ! first layer thickness of this growth curve
           igr  = BLgr(ngc)  ! growth ratio of this growth curve
-          basevID = BLlist(listcounter + 1) + ioffset
+c
           tmp  = sqrt( gcnormal(basevID,1) * gcnormal(basevID,1)
      &               + gcnormal(basevID,2) * gcnormal(basevID,2)
      &               + gcnormal(basevID,3) * gcnormal(basevID,3) )
@@ -204,7 +209,7 @@ c
             disp(vID,:) = xtmp(vID,:) - x(vID,:)
             igrexp = igrexp * igr
 c... set flag
-            call iBCelas_to_dbl(iBC(vID), flag(vID))
+            call iBCelas_to_dbl(iBC(basevID), flag(vID))
           enddo ! over this growth curve
 c
           listcounter = listcounter + itnv ! update counter

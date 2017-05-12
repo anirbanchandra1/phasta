@@ -672,6 +672,8 @@ c... satisfy BC on disp_snap
 c... update iBC and BC array based on disp_snap
                        call updateSnapSurfBC(x, disp_snap, iBC_snap,
      &                                       BC_snap(:,ndof+2:ndof+5))
+c
+                       disp = zero
 c... update disp based on new iBC and BC array
                        call itrBCElas(umesh,  disp,  iBC_snap,
      &                                BC_snap(:,ndof+2:ndof+5),
