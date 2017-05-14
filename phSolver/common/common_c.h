@@ -261,6 +261,8 @@ extern "C" {
   extern struct {
     int snapSurfFlag;
     int snapSurfID;
+	int timeDepComp1Flag;
+	int timeDepComp1ID;
   } snapmesh ;
 
   extern struct { 

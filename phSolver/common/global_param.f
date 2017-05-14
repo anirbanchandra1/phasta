@@ -144,8 +144,10 @@ c
       module snapmesh_m
         use iso_c_binding
         implicit none
-        integer(c_int), target :: snapSurfFlag,  snapSurfID
-        common /snapmesh/ snapSurfFlag,  snapSurfID
+        integer(c_int), target :: snapSurfFlag,     snapSurfID,
+     &                            timeDepComp1Flag, timeDepComp1ID
+        common /snapmesh/ snapSurfFlag,     snapSurfID,
+     &                    timeDepComp1Flag, timeDepComp1ID
       end module snapmesh_m
 c
 c----------------------------------------------------------------------

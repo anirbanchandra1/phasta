@@ -427,6 +427,15 @@ int input_fform(phSolver::Input& inp)
 
     snapmesh.snapSurfID = inp.GetValue("Snap back to surface surf ID");
 
+    if ( (string)inp.GetValue("Time depended comp1_elas option") == "False" ){
+	  snapmesh.timeDepComp1Flag = 0;
+	}
+	else if ( (string)inp.GetValue("Time depended comp1_elas option") == "True" ){
+	  snapmesh.timeDepComp1Flag = 1;
+	}
+
+    snapmesh.timeDepComp1ID = inp.GetValue("Time depended comp1_elas surf ID");
+
     outpar.iv_rankpercore = inp.GetValue("Ranks per core");
     outpar.iv_corepernode = inp.GetValue("Cores per node");
 
