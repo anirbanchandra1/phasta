@@ -1,0 +1,203 @@
+Start testing: May 04 16:13 EDT
+----------------------------------------------------------
+1/13 Testing: common_readHeader
+1/13 Test: common_readHeader
+Command: "/usr/local/mpich3/latest/bin/mpirun" "-np" "4" "/lore/chanda5/phasta/build/bin/phIOreadheader" "2"
+Directory: /path/to/phastaCases//incompressible
+"common_readHeader" start time: May 04 16:13 EDT
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Failed.
+"common_readHeader" end time: May 04 16:13 EDT
+"common_readHeader" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/13 Testing: common_readIlwork
+2/13 Test: common_readIlwork
+Command: "/usr/local/mpich3/latest/bin/mpirun" "-np" "1" "/lore/chanda5/phasta/build/bin/phIOreadIlwork" "geombc.dat.1"
+Directory: /path/to/phastaCases//crossflow/4-1chef/4-procs_case
+"common_readIlwork" start time: May 04 16:13 EDT
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Failed.
+"common_readIlwork" end time: May 04 16:13 EDT
+"common_readIlwork" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/13 Testing: common_readHeaderMultiTopo
+3/13 Test: common_readHeaderMultiTopo
+Command: "/usr/local/mpich3/latest/bin/mpirun" "-np" "4" "/lore/chanda5/phasta/build/bin/phIOposixMultiTopo"
+Directory: /path/to/phastaCases//crossflow/4-1chef/4-procs_case
+"common_readHeaderMultiTopo" start time: May 04 16:13 EDT
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Failed.
+"common_readHeaderMultiTopo" end time: May 04 16:13 EDT
+"common_readHeaderMultiTopo" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/13 Testing: common_readDatablock
+4/13 Test: common_readDatablock
+Command: "/usr/local/mpich3/latest/bin/mpirun" "-np" "4" "/lore/chanda5/phasta/build/bin/phIOreaddatablock" "2"
+Directory: /path/to/phastaCases//incompressible
+"common_readDatablock" start time: May 04 16:13 EDT
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Failed.
+"common_readDatablock" end time: May 04 16:13 EDT
+"common_readDatablock" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/13 Testing: common_write
+5/13 Test: common_write
+Command: "/usr/local/mpich3/latest/bin/mpirun" "-np" "4" "/lore/chanda5/phasta/build/bin/phIOwrite" "2"
+Directory: /path/to/phastaCases/
+"common_write" start time: May 04 16:13 EDT
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Failed.
+"common_write" end time: May 04 16:13 EDT
+"common_write" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/13 Testing: common_readFtn
+6/13 Test: common_readFtn
+Command: "/usr/local/mpich3/latest/bin/mpirun" "-np" "4" "/lore/chanda5/phasta/build/bin/phIOreadFtn"
+Directory: /path/to/phastaCases//incompressible/
+"common_readFtn" start time: May 04 16:13 EDT
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Failed.
+"common_readFtn" end time: May 04 16:13 EDT
+"common_readFtn" time elapsed: 00:00:00
+----------------------------------------------------------
+
+7/13 Testing: common_writeFtn
+7/13 Test: common_writeFtn
+Command: "/usr/local/mpich3/latest/bin/mpirun" "-np" "4" "/lore/chanda5/phasta/build/bin/phIOwriteFtn"
+Directory: /path/to/phastaCases/
+"common_writeFtn" start time: May 04 16:13 EDT
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Failed.
+"common_writeFtn" end time: May 04 16:13 EDT
+"common_writeFtn" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/13 Testing: compressible__inpCfg
+8/13 Test: compressible__inpCfg
+Command: "/bin/cp" "/lore/chanda5/phasta/phSolver/common/input.config" "/path/to/phastaCases//compressible"
+Directory: /path/to/phastaCases//compressible
+"compressible__inpCfg" start time: May 04 16:13 EDT
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Failed.
+"compressible__inpCfg" end time: May 04 16:13 EDT
+"compressible__inpCfg" time elapsed: 00:00:00
+----------------------------------------------------------
+
+9/13 Testing: compressible_native_solverInp
+9/13 Test: compressible_native_solverInp
+Command: "/bin/ln" "-snf" "/path/to/phastaCases//compressible/solver.inp.native" "/path/to/phastaCases//compressible/solver.inp"
+Directory: /path/to/phastaCases//compressible
+"compressible_native_solverInp" start time: May 04 16:13 EDT
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Failed.
+"compressible_native_solverInp" end time: May 04 16:13 EDT
+"compressible_native_solverInp" time elapsed: 00:00:00
+----------------------------------------------------------
+
+10/13 Testing: compressible_native_inpCfg_staticBubble
+10/13 Test: compressible_native_inpCfg_staticBubble
+Command: "/bin/cp" "/lore/chanda5/phasta/phSolver/common/input.config" "/path/to/phastaCases//staticBubble/run"
+Directory: /path/to/phastaCases//staticBubble/run
+"compressible_native_inpCfg_staticBubble" start time: May 04 16:13 EDT
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Failed.
+"compressible_native_inpCfg_staticBubble" end time: May 04 16:13 EDT
+"compressible_native_inpCfg_staticBubble" time elapsed: 00:00:00
+----------------------------------------------------------
+
+11/13 Testing: compressible_native_resCfg_staticBubble
+11/13 Test: compressible_native_resCfg_staticBubble
+Command: "/bin/cp" "-r" "/path/to/phastaCases//staticBubble/run/../chef/8-procs_case" "/path/to/phastaCases//staticBubble/run"
+Directory: /path/to/phastaCases//staticBubble/run
+"compressible_native_resCfg_staticBubble" start time: May 04 16:13 EDT
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Failed.
+"compressible_native_resCfg_staticBubble" end time: May 04 16:13 EDT
+"compressible_native_resCfg_staticBubble" time elapsed: 00:00:00
+----------------------------------------------------------
+
+12/13 Testing: compressible_native_staticBubble
+12/13 Test: compressible_native_staticBubble
+Command: "/usr/local/mpich3/latest/bin/mpirun" "-np" "8" "/lore/chanda5/phasta/build/bin/phastaC.exe"
+Directory: /path/to/phastaCases//staticBubble/run
+"compressible_native_staticBubble" start time: May 04 16:13 EDT
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Failed.
+"compressible_native_staticBubble" end time: May 04 16:13 EDT
+"compressible_native_staticBubble" time elapsed: 00:00:00
+----------------------------------------------------------
+
+13/13 Testing: compressible_native_compareRestart-staticBubble
+13/13 Test: compressible_native_compareRestart-staticBubble
+Command: "/usr/local/mpich3/latest/bin/mpirun" "-np" "8" "/lore/chanda5/phasta/build/bin/checkphasta" "/path/to/phastaCases//staticBubble/run/8-procs_case/" "/path/to/phastaCases//staticBubble/run/8-procs_case_ref/" "8" "1e-6"
+Directory: /path/to/phastaCases//staticBubble/run
+"compressible_native_compareRestart-staticBubble" start time: May 04 16:13 EDT
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Failed.
+"compressible_native_compareRestart-staticBubble" end time: May 04 16:13 EDT
+"compressible_native_compareRestart-staticBubble" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: May 04 16:13 EDT
+
+phsolver_common =   0.00 sec
+
+phsolver_compressible =   0.00 sec
+

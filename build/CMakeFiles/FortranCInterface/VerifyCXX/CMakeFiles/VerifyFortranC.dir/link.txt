@@ -1,0 +1,1 @@
+/usr/local/gcc/4.9.2/bin/g++   -O3 -DNDEBUG    CMakeFiles/VerifyFortranC.dir/main.c.o CMakeFiles/VerifyFortranC.dir/VerifyC.c.o CMakeFiles/VerifyFortranC.dir/VerifyCXX.cxx.o  -o VerifyFortranC -rdynamic libVerifyFortran.a -lgfortran -lquadmath 

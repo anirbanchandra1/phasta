@@ -1,0 +1,3 @@
+SET(PHASTA_COMMON_LIBS common /usr/local/mpich3/3.1.2-thread-multiple/lib/libmpicxx.so;/usr/local/mpich3/3.1.2-thread-multiple/lib/libmpi.so;/usr/lib64/librt.so;/usr/lib64/libpthread.so;/usr/local/mpich3/3.1.2-thread-multiple/lib/libmpifort.so;/usr/local/mpich3/3.1.2-thread-multiple/lib/libmpi.so;/usr/lib64/librt.so;/usr/lib64/libpthread.so )
+SET(PHASTA_COMMON_INCLUDE_DIRS /lore/chanda5/phasta/phSolver/common;/usr/local/mpich3/3.1.2-thread-multiple/include;/usr/local/mpich3/3.1.2-thread-multiple/include;/usr/local/mpich3/3.1.2-thread-multiple/include;/lore/chanda5/phasta/phSolver/common/phstreamEmpty )
+SET(PHASTA_COMMON_FOUND TRUE )

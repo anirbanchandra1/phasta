@@ -1,0 +1,1 @@
+/usr/local/gcc/4.9.2/bin/g++   -g    CMakeFiles/converterO2N.dir/converterO2N.cc.o  -o ../bin/converterO2N -rdynamic ../lib/libphastaIO.a /usr/local/mpich3/3.1.2-thread-multiple/lib/libmpi.so -lrt -lpthread -Wl,-rpath,/usr/local/mpich3/3.1.2-thread-multiple/lib 

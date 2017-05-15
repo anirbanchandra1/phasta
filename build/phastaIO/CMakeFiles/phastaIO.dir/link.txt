@@ -1,0 +1,2 @@
+/usr/bin/ar cr ../lib/libphastaIO.a  CMakeFiles/phastaIO.dir/phiotmrc.cc.o CMakeFiles/phastaIO.dir/phastaIO.cc.o
+/usr/bin/ranlib ../lib/libphastaIO.a

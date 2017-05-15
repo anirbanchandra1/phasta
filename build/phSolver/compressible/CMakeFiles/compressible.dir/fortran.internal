@@ -1,0 +1,28 @@
+# The fortran modules provided by this target.
+provides
+ block_m
+ e3_func_m
+ e3_param_m
+ e3_solid_func_m
+ e3_solid_m
+ e3if_diff_m
+ e3if_func_m
+ e3if_geom_m
+ e3if_lhs_m
+ e3if_m
+ e3if_param_m
+ e3if_vi_m
+ e3metric_m
+ e3sclr_param_m
+ eqn_state_m
+ if_global_m
+ if_velocity_m
+ ifbc_def_m
+ ifbc_m
+ machcontrol
+ pp_data
+ probe_def_m
+ probe_m
+ rampbc
+ stats
+ timedatac

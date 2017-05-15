@@ -1,0 +1,3 @@
+/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/CMakeFiles/FortranCInterface.dir
+/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/CMakeFiles/myfort.dir
+/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/CMakeFiles/symbols.dir
