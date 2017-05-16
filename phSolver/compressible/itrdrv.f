@@ -634,6 +634,13 @@ c
 c
                       lhs = 1  
                       iprec=lhs
+c
+c.... time depended comp1_elas BC
+c
+                   if (timeDepComp1Flag .eq. 1) then
+                     call updateTDComp1BC(x,     shpb,     iBC,
+     &                                    BC(:,ndof+2:ndof+5))
+                   endif
 c 
 c.... only used for prescribing time-dependent mesh-elastic BC
 c.... comp3_elas and DG interface share the same iBC, thus, this
@@ -685,6 +692,7 @@ c... solve the system based on new disp, iBC and BC array
      &                                  Rcos,     Rsin,    iper,   ilwork,
      &                                  shp,      shgl,    shpb,   shglb,
      &                                  shpif,    elasDy)
+c
                      endif ! end snapping
 c
                   endif  ! end of switch for flow or scalar or mesh-elastic solve
@@ -745,9 +753,18 @@ c.... call itrCorrectElas ... and then itrBCElas ...
 c
                      call itrCorrectElas(disp, elasDy)
 c
-                     call itrBCElas(umesh,  disp,  iBC,
-     &                              BC(:,ndof+2:ndof+5),
-     &                              iper,   ilwork        )
+
+                     if (snapSurfFlag .eq. 1) then ! apply snapping
+c... update disp based on snap iBC and BC array
+                       call itrBCElas(umesh,  disp,  iBC_snap,
+     &                                BC_snap(:,ndof+2:ndof+5),
+     &                                iper,   ilwork)
+                     else
+c... else normal update
+                       call itrBCElas(umesh,  disp,  iBC,
+     &                                BC(:,ndof+2:ndof+5),
+     &                                iper,   ilwork        )
+                     endif
 c
                      x = xold + disp
 c
