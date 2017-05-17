@@ -1,3 +1,27 @@
+      module simmetrix_snap
+      use iso_c_binding
+
+      interface
+        subroutine sim_closest_pos ( dx, dy, dz, id )
+     &    bind(C, NAME='sim_closest_pos')
+        use iso_c_binding
+          real(c_double), value :: dx, dy, dz
+          integer(c_int), value :: id
+        end subroutine
+
+c        subroutine get_model_velocity (v)
+c     &    bind(C, NAME='get_model_velocity')
+c        use iso_c_binding
+c          real(c_double) :: v
+c        end subroutine
+      end interface
+
+      end module
+c
+c----------------------------------------------------------------------
+c
+c----------------------------------------------------------------------
+c
         subroutine updateSnapSurfBC ( x,       disp_snap,
      &                                iBC,     BC)
 c
@@ -71,6 +95,9 @@ c
         subroutine resetSnapBC ( x,       disp_snap,
      &                           iBC,     BC,     surfID_snap)
 c
+        use iso_c_binding
+        use simmetrix_snap
+c
         include "common.h"
 c
         real*8    x(numnp,nsd),  disp_snap(numnp,nsd)
@@ -78,6 +105,7 @@ c
         integer   surfID_snap(nshg)
         real*8    x_tmp(nsd),    x_crt(nsd)
         real*8    mag,           rad
+        integer   i
 c
         do i = 1, nshg
 c... if surf ID is snapSurfID
@@ -85,11 +113,13 @@ c... if surf ID is snapSurfID
 c... current x
             x_tmp(:) = x(i,:) + disp_snap(i,:)
 c... correct x
+            call sim_closest_pos (disp_snap(i,1), disp_snap(i,2),
+     &                            disp_snap(i,3), i)
 c... hardcoding; we should use simmetrix V_movedParamPoint to do this
-            mag = sqrt(x_tmp(2)*x_tmp(2) + x_tmp(3)*x_tmp(3)) ! cylinder axis is x
-            rad = 0.05
-            x_crt(2) = x_tmp(2) / mag * rad
-            x_crt(3) = x_tmp(3) / mag * rad
+c            mag = sqrt(x_tmp(2)*x_tmp(2) + x_tmp(3)*x_tmp(3)) ! cylinder axis is x
+c            rad = 0.05
+c            x_crt(2) = x_tmp(2) / mag * rad
+c            x_crt(3) = x_tmp(3) / mag * rad
 c... end hardcoding
 c... update iBC and BC
             iBC(i) = ibset(iBC(i), 14)
@@ -122,6 +152,8 @@ c
         real*8    normal(nshg, nsd)
 c
         if ( timeDepComp1Flag .eq. 1) then ! double check
+c
+        write(*,*) "Modify comp1_elas BC on surfID",timeDepComp1ID
 c
         surfID_TDComp1 = zero
         normal = zero
