@@ -146,6 +146,7 @@ c
         implicit none
         integer(c_int), target :: snapSurfFlag,     snapSurfID,
      &                            timeDepComp1Flag, timeDepComp1ID
+        real*8, allocatable    :: timeDepComp1Mag(:)
         common /snapmesh/ snapSurfFlag,     snapSurfID,
      &                    timeDepComp1Flag, timeDepComp1ID
       end module snapmesh_m

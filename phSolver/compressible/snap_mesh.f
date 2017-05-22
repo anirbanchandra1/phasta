@@ -228,11 +228,11 @@ c----------------------------------------------------------------------
 c
         subroutine resetTDComp1BC (x, surfID_TDComp1, normal, iBC, BC)
 c
-        include "common.h"
+        include "common.h" ! access timeDepComp1Mag
 c
         real*8    x(numnp,nsd)
         integer   surfID_TDComp1(nshg)
-        real*8    normal(nshg, nsd)
+        real*8    normal(nshg, nsd),    tmp
         dimension iBC(nshg),     BC(nshg, 4)
         integer   maxDir(1)
 c
@@ -244,6 +244,10 @@ c... if BC code is comp1 (iBC = 1 or 2 or 4)
      &          (ibits(iBC(i),14,3) .eq. 2) .or.
      &          (ibits(iBC(i),14,3) .eq. 4)) then
 c... calculate normal and normalize it
+              tmp = normal(i,1)*normal(i,1)
+     &            + normal(i,2)*normal(i,2)
+     &            + normal(i,3)*normal(i,3)
+              normal(i,:) = normal(i,:) / sqrt(tmp)
               maxDir = maxloc(abs(normal(i,:)))
               select case (maxDir(1))
 c... if x of normal is the max
@@ -251,22 +255,25 @@ c... if x of normal is the max
               iBC(i) = ibset(iBC(i), 14)
               iBC(i) = ibclr(iBC(i), 15)
               iBC(i) = ibclr(iBC(i), 16)
-              BC(i,2)= normal(i,2) / normal(i,1)
-              BC(i,3)= normal(i,3) / normal(i,1)
+              BC(i,1)= timeDepComp1Mag(i) / normal(i,1)
+              BC(i,2)=        normal(i,2) / normal(i,1)
+              BC(i,3)=        normal(i,3) / normal(i,1)
 c... if y of normal is the max
               case (2)
               iBC(i) = ibclr(iBC(i), 14)
               iBC(i) = ibset(iBC(i), 15)
               iBC(i) = ibclr(iBC(i), 16)
-              BC(i,2)= normal(i,1) / normal(i,2)
-              BC(i,3)= normal(i,3) / normal(i,2)
+              BC(i,1)= timeDepComp1Mag(i) / normal(i,2)
+              BC(i,2)=        normal(i,1) / normal(i,2)
+              BC(i,3)=        normal(i,3) / normal(i,2)
 c... if z of normal is the max
               case (3)
               iBC(i) = ibclr(iBC(i), 14)
               iBC(i) = ibclr(iBC(i), 15)
               iBC(i) = ibset(iBC(i), 16)
-              BC(i,2)= normal(i,1) / normal(i,3)
-              BC(i,3)= normal(i,2) / normal(i,3)
+              BC(i,1)= timeDepComp1Mag(i) / normal(i,3)
+              BC(i,2)=        normal(i,1) / normal(i,3)
+              BC(i,3)=        normal(i,2) / normal(i,3)
               end select
             endif ! if BC code is comp1
           endif ! if equal to timeDepComp1ID

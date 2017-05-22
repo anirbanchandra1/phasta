@@ -1088,6 +1088,11 @@ c
 
         call BC_finalize
       endif
+c
+c.... deallocate comp1_elas magnitude if time-depended option is on
+      if((timeDepComp1Flag .eq. 1) .and. (iALE .eq. 2)) then
+        deallocate( timeDepComp1Mag )
+      endif
 
 c      close (iecho)
       if(iabc==1) deallocate(acs)
