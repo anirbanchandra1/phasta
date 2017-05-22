@@ -424,6 +424,11 @@ int input_fform(phSolver::Input& inp)
 	else if ( (string)inp.GetValue("Snap back to surface option") == "True" ){
 	  snapmesh.snapSurfFlag = 1;
 	}
+    else {
+      cout << " Snap back to surface option: Only Legal Values (True, False) ";
+      cout << endl;
+      exit(1);
+    }
 
     snapmesh.snapSurfID = inp.GetValue("Snap back to surface surf ID");
 
@@ -433,6 +438,11 @@ int input_fform(phSolver::Input& inp)
 	else if ( (string)inp.GetValue("Time depended comp1_elas option") == "True" ){
 	  snapmesh.timeDepComp1Flag = 1;
 	}
+    else {
+      cout << " Time depended comp1_elas option: Only Legal Values (True, False) ";
+      cout << endl;
+      exit(1);
+    }
 
     snapmesh.timeDepComp1ID = inp.GetValue("Time depended comp1_elas surf ID");
 
@@ -619,6 +629,18 @@ int input_fform(phSolver::Input& inp)
     dgifinp.h = (double)inp.GetValue("DG Interface Penalty Factor h");
 
 //for mesh-elastic--------------------------------------------
+    if((string)inp.GetValue("Mesh Elastic Youngs Modulus Volume Option") == "True"){
+      matdat.datelas_volume_YM = 1;
+	}
+	else if((string)inp.GetValue("Mesh Elastic Youngs Modulus Volume Option") == "False"){
+      matdat.datelas_volume_YM = 0;
+    }
+    else {
+      cout << " Mesh Elastic Youngs Modulus Volume Option: Only Legal Values (True, False) ";
+      cout << endl;
+      exit(1);
+    }
+
     vec = inp.GetValue("Mesh Elastic Youngs Modulus");
       matdat.datelas[0][0] = vec[0];
     vec.erase(vec.begin(),vec.end());

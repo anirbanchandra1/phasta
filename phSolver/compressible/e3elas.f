@@ -51,7 +51,11 @@ c.... initial setup
 c
 c.... modify Young's Modulus and Poisson Ratio
 c
-        youngMod(:) = datelas(1,1) / meshV(:)
+        if(datelas_volume_YM .eq. 1) then
+          youngMod(:) = datelas(1,1) / meshV(:)
+        else
+          youngMod(:) = datelas(1,1)
+        endif
         poisnRat(:) = datelas(1,2)
 c
 c.... enlarge the stiffness for wedge elements

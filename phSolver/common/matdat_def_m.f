@@ -41,6 +41,7 @@ C      &,                       iprop_solid_1_bulkMod  = 8
 
 c
         integer :: surface_tension_flag
+        integer :: datelas_volume_YM
 c
         real*8  :: datmat(MAXMAT,MAXPROP,MAXTS)
         real*8  :: mat_prop(MAXMAT,MAXPROP,MAXTS)
@@ -58,6 +59,7 @@ c
         common /matdat/ matflg, mat_tag, mat_eos, nummat, mexist
      &,   mat_prop, datmat, datelas
      &,   surface_tension_coeff, surface_tension_flag
+     &,   datelas_volume_YM
 c
 c
       end module matdat_def_m

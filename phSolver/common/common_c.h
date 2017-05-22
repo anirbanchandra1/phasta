@@ -537,6 +537,7 @@ extern "C" {
     double datelas[2][1];
     double surface_tension_coeff;
     int surface_tension_flag;
+	int datelas_volume_YM;
   } matdat ;
 
   extern struct {
