@@ -167,7 +167,7 @@ c... ALE
      &        + (u1 - um1)*((u1 - um1)*gijd(:,1)
      &        + two*((u2 - um2)*gijd(:,2) + (u3 - um3)*gijd(:,4)))
      &        + (u2 - um2)*((u2 - um2)*gijd(:,3) + two*(u3-um3)*gijd(:,5))
-     &        + (u2 - um2)*(u2 - um2)*gijd(:,6))
+     &        + (u3 - um3)*(u3 - um3)*gijd(:,6))
      &        +fff*rmu**2*(gijd(:,1)**2 + gijd(:,3)**2 + gijd(:,6)**2 +
      &        two*(gijd(:,2)**2 + gijd(:,4)**2 + gijd(:,5)**2))
          fact=sqrt(tau(:,2))
