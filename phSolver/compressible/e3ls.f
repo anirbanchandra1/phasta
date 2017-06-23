@@ -187,7 +187,7 @@ c.... in the first incarnation we will ONLY have a diagonal tau here
 
        if (itau .lt. 10) then    ! diagonal tau
 
-          call e3tau  (rho,             cp,		rmu,
+          call e3tau  (T, rho,             cp,		rmu,
      &         u1,              u2,             u3,
      &         um1,             um2,            um3,
      &         con,             dxidx,          rLyi,  
@@ -733,7 +733,7 @@ c
 c
 c.... compute the factors
 c
-            fact = shape(:,j) * WdetJ * almi/gami/alfi*dtgl
+            fact = shape(:,j) * WdetJ * almi/gami/alfi*dtgl !AC
 c
 c.... loop through d.o.f.'s
 c

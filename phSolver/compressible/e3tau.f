@@ -1,4 +1,4 @@
-      subroutine e3tau  (rho,    cp,     rmu, 	
+      subroutine e3tau  (T, rho,    cp,     rmu, 	
      &                     u1,     u2,     u3,
      &                     um1,    um2,    um3,
      &                     con,    dxidx,  rLyi,
@@ -16,7 +16,7 @@ c ENSA codes
 c
 c input:
 c  rho    (npro)           : density
-c  T      (npro)           : temperature
+c   T      (npro)           : temperature
 c  cp     (npro)           : specific heat at constant pressure
 c  u1     (npro)           : x1-velocity component
 c  u2     (npro)           : x2-velocity component
@@ -38,9 +38,12 @@ c Zdenek Johan, Summer 1990.  (Modified from e2tau.f)
 c Zdenek Johan, Winter 1991.  (Fortran 90)
 c----------------------------------------------------------------------
 c
+      
+      use eqn_state_m, only : c  !AC
       include "common.h"
 c
-      dimension rho(npro),                 con(npro), 
+      dimension   T(npro),
+     &		  rho(npro),                 con(npro), 
      &            cp(npro),                  u1(npro),
      &            u2(npro),                  u3(npro),
      &            um1(npro),                 um2(npro), 
@@ -96,6 +99,7 @@ c
 c       call tnanqe(h2o2u,1,"riaconv ")
 
       h2o2u = one / sqrt(h2o2u) ! this flips it over leaves it h_2/(2u)
+      !write (*,*),c !AC
 c  
 c.... diffusive corrections
 
@@ -160,14 +164,11 @@ c     fff = 144.0d0
       endif           
          dts = dtsfct*Dtgl
          tau(:,2)=rho**2*((two*dts)**2
-c     &        + u1*(u1*gijd(:,1) + two*(u2*gijd(:,2)+u3*gijd(:,4)))
-c     &        + u2*(u2*gijd(:,3) + two*u3*gijd(:,5))
-c     &        + u3*u3*gijd(:,6))
-c... ALE
      &        + (u1 - um1)*((u1 - um1)*gijd(:,1)
      &        + two*((u2 - um2)*gijd(:,2) + (u3 - um3)*gijd(:,4)))
      &        + (u2 - um2)*((u2 - um2)*gijd(:,3) + two*(u3-um3)*gijd(:,5))
-     &        + (u2 - um2)*(u2 - um2)*gijd(:,6))
+     &        + (u3 - um3)*(u3 - um3)*gijd(:,6))
+!     &        + c**2*(gijd(:,1)+gijd(:,3)+gijd(:,6)) !AC 
      &        +fff*rmu**2*(gijd(:,1)**2 + gijd(:,3)**2 + gijd(:,6)**2 +
      &        two*(gijd(:,2)**2 + gijd(:,4)**2 + gijd(:,5)**2))
          fact=sqrt(tau(:,2))

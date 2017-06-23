@@ -1,21 +1,127 @@
+Compiling the Fortran compiler identification source file "CMakeFortranCompilerId.F" failed.
+Compiler: /usr/local/gcc/4.9.2/bin/gfortran 
+Build flags: 
+Id flags: -v 
+
+The output was:
+1
+Driving: /usr/local/gcc/4.9.2/bin/gfortran -v CMakeFortranCompilerId.F -l gfortran -l m -shared-libgcc
+Using built-in specs.
+COLLECT_GCC=/usr/local/gcc/4.9.2/bin/gfortran
+COLLECT_LTO_WRAPPER=/usr/local/gcc/4.9.2/libexec/gcc/x86_64-linux-gnu/4.9.2/lto-wrapper
+Target: x86_64-linux-gnu
+Configured with: ../gcc-4.9.2/configure --enable-languages=c,c++,fortran --with-system-zlib --disable-multilib --enable-threads=posix --with-tune=generic --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --prefix=/usr/local/gcc/4.9.2 --with-gmp=/usr/local/gcc/4.9.2 --with-mpfr=/usr/local/gcc/4.9.2 --with-mpc=/usr/local/gcc/4.9.2 --disable-bootstrap
+Thread model: posix
+gcc version 4.9.2 (GCC) 
+COLLECT_GCC_OPTIONS='-v' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /usr/local/gcc/4.9.2/libexec/gcc/x86_64-linux-gnu/4.9.2/f951 CMakeFortranCompilerId.F -ffixed-form -cpp=/tmp/ccX7dVNd.f90 -quiet -v CMakeFortranCompilerId.F -quiet -dumpbase CMakeFortranCompilerId.F -mtune=generic -march=x86-64 -auxbase CMakeFortranCompilerId -version -fintrinsic-modules-path /usr/local/gcc/4.9.2/lib/gcc/x86_64-linux-gnu/4.9.2/finclude -o /tmp/cc0CPnCI.s
+GNU Fortran (GCC) version 4.9.2 (x86_64-linux-gnu)
+	compiled by GNU C version 4.9.2, GMP version 6.0.0, MPFR version 3.1.2-p11, MPC version 1.0.2
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring duplicate directory "/usr/local/gcc/4.9.2/include"
+ignoring nonexistent directory "/usr/local/gcc/4.9.2/lib/gcc/x86_64-linux-gnu/4.9.2/../../../../x86_64-linux-gnu/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /usr/local/gcc/4.9.2/lib/gcc/x86_64-linux-gnu/4.9.2/finclude
+ /usr/local/gcc/4.9.2/include
+ /usr/local/mpich3/latest/include
+ /usr/local/gcc/4.9.2/lib/gcc/x86_64-linux-gnu/4.9.2/include
+ /usr/local/include
+ /usr/local/gcc/4.9.2/lib/gcc/x86_64-linux-gnu/4.9.2/include-fixed
+ /usr/include
+End of search list.
+GNU Fortran (GCC) version 4.9.2 (x86_64-linux-gnu)
+	compiled by GNU C version 4.9.2, GMP version 6.0.0, MPFR version 3.1.2-p11, MPC version 1.0.2
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+COLLECT_GCC_OPTIONS='-v' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ as -v --64 -o /tmp/ccJjli3d.o /tmp/cc0CPnCI.s
+GNU assembler version 2.25 (x86_64-linux-gnu) using BFD version (GNU Binutils for Debian) 2.25
+Reading specs from /usr/local/gcc/4.9.2/lib/gcc/x86_64-linux-gnu/4.9.2/../../../../lib64/libgfortran.spec
+rename spec lib to liborig
+COLLECT_GCC_OPTIONS='-v' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+COMPILER_PATH=/usr/local/gcc/4.9.2/libexec/gcc/x86_64-linux-gnu/4.9.2/:/usr/local/gcc/4.9.2/libexec/gcc/x86_64-linux-gnu/4.9.2/:/usr/local/gcc/4.9.2/libexec/gcc/x86_64-linux-gnu/:/usr/local/gcc/4.9.2/lib/gcc/x86_64-linux-gnu/4.9.2/:/usr/local/gcc/4.9.2/lib/gcc/x86_64-linux-gnu/
+LIBRARY_PATH=/usr/local/gcc/4.9.2/lib/gcc/x86_64-linux-gnu/4.9.2/:/usr/local/gcc/4.9.2/lib/gcc/x86_64-linux-gnu/4.9.2/../../../../lib64/:/lib/../lib64/:/usr/local/gcc/4.9.2/lib/gcc/x86_64-linux-gnu/4.9.2/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /usr/local/gcc/4.9.2/libexec/gcc/x86_64-linux-gnu/4.9.2/collect2 --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 crt1.o crti.o /usr/local/gcc/4.9.2/lib/gcc/x86_64-linux-gnu/4.9.2/crtbegin.o -L/usr/local/gcc/4.9.2/lib/gcc/x86_64-linux-gnu/4.9.2 -L/usr/local/gcc/4.9.2/lib/gcc/x86_64-linux-gnu/4.9.2/../../../../lib64 -L/lib/../lib64 -L/usr/local/gcc/4.9.2/lib/gcc/x86_64-linux-gnu/4.9.2/../../.. /tmp/ccJjli3d.o -lgfortran -lm -lgcc_s -lgcc -lquadmath -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/local/gcc/4.9.2/lib/gcc/x86_64-linux-gnu/4.9.2/crtend.o crtn.o
+/usr/bin/ld: cannot find crt1.o: No such file or directory
+/usr/bin/ld: cannot find crti.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Compiling the Fortran compiler identification source file "CMakeFortranCompilerId.F" failed.
+Compiler: /usr/local/gcc/4.9.2/bin/gfortran 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+/usr/bin/ld: cannot find crt1.o: No such file or directory
+/usr/bin/ld: cannot find crti.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /usr/local/gcc/4.9.2/bin/gcc 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+/usr/bin/ld: cannot find crt1.o: No such file or directory
+/usr/bin/ld: cannot find crti.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/local/gcc/4.9.2/bin/g++ 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+/usr/bin/ld: cannot find crt1.o: No such file or directory
+/usr/bin/ld: cannot find crti.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Determining if the Fortran compiler works failed with the following output:
+Change Dir: /lore/chanda5/phasta/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/local/bin/gmake" "cmTC_3d021/fast"
+/usr/local/bin/gmake -f CMakeFiles/cmTC_3d021.dir/build.make CMakeFiles/cmTC_3d021.dir/build
+gmake[1]: Entering directory '/lore/chanda5/phasta/build/CMakeFiles/CMakeTmp'
+Building Fortran object CMakeFiles/cmTC_3d021.dir/testFortranCompiler.f.o
+/usr/local/gcc/4.9.2/bin/gfortran    -c /lore/chanda5/phasta/build/CMakeFiles/CMakeTmp/testFortranCompiler.f -o CMakeFiles/cmTC_3d021.dir/testFortranCompiler.f.o
+Linking Fortran executable cmTC_3d021
+/usr/local/cmake/3.8.1/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3d021.dir/link.txt --verbose=1
+/usr/local/gcc/4.9.2/bin/gfortran      CMakeFiles/cmTC_3d021.dir/testFortranCompiler.f.o  -o cmTC_3d021 
+/usr/bin/ld: cannot find crt1.o: No such file or directory
+/usr/bin/ld: cannot find crti.o: No such file or directory
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_3d021.dir/build.make:97: recipe for target 'cmTC_3d021' failed
+gmake[1]: *** [cmTC_3d021] Error 1
+gmake[1]: Leaving directory '/lore/chanda5/phasta/build/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_3d021/fast' failed
+gmake: *** [cmTC_3d021/fast] Error 2
+
+
 Determining if the pthread_create exist failed with the following output:
 Change Dir: /lore/chanda5/phasta/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/local/bin/gmake" "cmTryCompileExec2823347338/fast"
-/usr/local/bin/gmake -f CMakeFiles/cmTryCompileExec2823347338.dir/build.make CMakeFiles/cmTryCompileExec2823347338.dir/build
+Run Build Command:"/usr/local/bin/gmake" "cmTC_6e827/fast"
+/usr/local/bin/gmake -f CMakeFiles/cmTC_6e827.dir/build.make CMakeFiles/cmTC_6e827.dir/build
 gmake[1]: Entering directory `/lore/chanda5/phasta/build/CMakeFiles/CMakeTmp'
-/usr/local/cmake/3.0.0/bin/cmake -E cmake_progress_report /lore/chanda5/phasta/build/CMakeFiles/CMakeTmp/CMakeFiles 1
-Building C object CMakeFiles/cmTryCompileExec2823347338.dir/CheckSymbolExists.c.o
-/usr/local/gcc/4.9.2/bin/gcc    -o CMakeFiles/cmTryCompileExec2823347338.dir/CheckSymbolExists.c.o   -c /lore/chanda5/phasta/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
-Linking C executable cmTryCompileExec2823347338
-/usr/local/cmake/3.0.0/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2823347338.dir/link.txt --verbose=1
-/usr/local/gcc/4.9.2/bin/gcc       CMakeFiles/cmTryCompileExec2823347338.dir/CheckSymbolExists.c.o  -o cmTryCompileExec2823347338 -rdynamic 
-CMakeFiles/cmTryCompileExec2823347338.dir/CheckSymbolExists.c.o: In function `main':
+Building C object CMakeFiles/cmTC_6e827.dir/CheckSymbolExists.c.o
+/usr/local/gcc/4.9.2/bin/gcc    -o CMakeFiles/cmTC_6e827.dir/CheckSymbolExists.c.o   -c /lore/chanda5/phasta/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_6e827
+/usr/local/cmake/3.8.1/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6e827.dir/link.txt --verbose=1
+/usr/local/gcc/4.9.2/bin/gcc      -rdynamic CMakeFiles/cmTC_6e827.dir/CheckSymbolExists.c.o  -o cmTC_6e827 
+CMakeFiles/cmTC_6e827.dir/CheckSymbolExists.c.o: In function `main':
 CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
 collect2: error: ld returned 1 exit status
-gmake[1]: *** [cmTryCompileExec2823347338] Error 1
+gmake[1]: *** [cmTC_6e827] Error 1
 gmake[1]: Leaving directory `/lore/chanda5/phasta/build/CMakeFiles/CMakeTmp'
-gmake: *** [cmTryCompileExec2823347338/fast] Error 2
+gmake: *** [cmTC_6e827/fast] Error 2
 
 File /lore/chanda5/phasta/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
 /* */
@@ -35,19 +141,18 @@ int main(int argc, char** argv)
 Determining if the function pthread_create exists in the pthreads failed with the following output:
 Change Dir: /lore/chanda5/phasta/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/local/bin/gmake" "cmTryCompileExec2588624141/fast"
-/usr/local/bin/gmake -f CMakeFiles/cmTryCompileExec2588624141.dir/build.make CMakeFiles/cmTryCompileExec2588624141.dir/build
+Run Build Command:"/usr/local/bin/gmake" "cmTC_dfaa1/fast"
+/usr/local/bin/gmake -f CMakeFiles/cmTC_dfaa1.dir/build.make CMakeFiles/cmTC_dfaa1.dir/build
 gmake[1]: Entering directory `/lore/chanda5/phasta/build/CMakeFiles/CMakeTmp'
-/usr/local/cmake/3.0.0/bin/cmake -E cmake_progress_report /lore/chanda5/phasta/build/CMakeFiles/CMakeTmp/CMakeFiles 1
-Building C object CMakeFiles/cmTryCompileExec2588624141.dir/CheckFunctionExists.c.o
-/usr/local/gcc/4.9.2/bin/gcc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTryCompileExec2588624141.dir/CheckFunctionExists.c.o   -c /usr/local/cmake/3.0.0/share/cmake-3.0/Modules/CheckFunctionExists.c
-Linking C executable cmTryCompileExec2588624141
-/usr/local/cmake/3.0.0/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2588624141.dir/link.txt --verbose=1
-/usr/local/gcc/4.9.2/bin/gcc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTryCompileExec2588624141.dir/CheckFunctionExists.c.o  -o cmTryCompileExec2588624141 -rdynamic -lpthreads 
+Building C object CMakeFiles/cmTC_dfaa1.dir/CheckFunctionExists.c.o
+/usr/local/gcc/4.9.2/bin/gcc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_dfaa1.dir/CheckFunctionExists.c.o   -c /usr/local/cmake/3.8.1/share/cmake-3.8/Modules/CheckFunctionExists.c
+Linking C executable cmTC_dfaa1
+/usr/local/cmake/3.8.1/bin/cmake -E cmake_link_script CMakeFiles/cmTC_dfaa1.dir/link.txt --verbose=1
+/usr/local/gcc/4.9.2/bin/gcc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_dfaa1.dir/CheckFunctionExists.c.o  -o cmTC_dfaa1 -lpthreads 
 /usr/bin/ld: cannot find -lpthreads
 collect2: error: ld returned 1 exit status
-gmake[1]: *** [cmTryCompileExec2588624141] Error 1
+gmake[1]: *** [cmTC_dfaa1] Error 1
 gmake[1]: Leaving directory `/lore/chanda5/phasta/build/CMakeFiles/CMakeTmp'
-gmake: *** [cmTryCompileExec2588624141/fast] Error 2
+gmake: *** [cmTC_dfaa1/fast] Error 2
 
 

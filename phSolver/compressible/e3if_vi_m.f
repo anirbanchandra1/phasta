@@ -1,9 +1,8 @@
       module e3if_vi_m
-c
-c----------------------------------------
-c    aims to calculate the interface
-c    velocity at element level
-c----------------------------------------
+!----------------------------------------
+!    aims to calculate the interface
+!    velocity at element level
+!----------------------------------------
         use dgifinp_m
         use e3if_param_m
         use matdat_def_m
@@ -12,6 +11,7 @@ c
 c
       contains
 c
+!--------------------------------------------------------------------------------------------------
       subroutine calc_vi(p,u)
 c
         use sclrs_m
@@ -33,9 +33,9 @@ c... Clausius-Clapeyron:
 c
 #define debug 0
         select case (vi_ramping)
-        case (no_ramp)
+        case (no_ramp)  
           c1 = one
-        case (linear_ramp)
+        case (linear_ramp) 
           t1 = ramp_time
           v1 = vimag
 c
@@ -44,10 +44,11 @@ c
           else
             c1 = one
           endif
-        case default
+        case default 
           call error ('ERROR in e3if_vi:',' vi_ramping is not supported,',vi_ramping)
         end select
 c
+! Phase change model selection case
         select case (phase_change_model)
         case (no_vi)
           vi = zero
@@ -64,7 +65,7 @@ c      write(*,100) 'nv0   : ',nv0(:,1)
 c      write(*,100) 'u1    : ',u1(:,1)
 100   format(a,8e16.5)
           return
-        case (vieilles_burning)
+       	case (vieilles_burning)
 c
           vi(:,1) = burn_rate_coeff*(p/burn_rate_pref)**burn_rate_exp * nv0(:,1)
           vi(:,2) = burn_rate_coeff*(p/burn_rate_pref)**burn_rate_exp * nv0(:,2)
@@ -104,10 +105,10 @@ c          vi(:,2) = vap_rate * nv0(:,2)
 c          vi(:,3) = vap_rate * nv0(:,3)
 c
 #if debug == 1
-      do iel = 1,npro
-        write(*,10) iel, y_vapor(iel),vap_rate(iel),vi(iel,1)
-      enddo
-10    format('E3IF_VI: iel,y_vapor,vap_rate,vi(1):',i4,3e18.6)
+      	do iel = 1,npro
+        	write(*,10) iel, y_vapor(iel),vap_rate(iel),vi(iel,1)
+      	enddo
+10    	format('E3IF_VI: iel,y_vapor,vap_rate,vi(1):',i4,3e18.6)
 #endif
 C
 c... NOTE: we don't add liquid velocity because it's already there...
@@ -142,7 +143,7 @@ c
         vi(:,1) = c1*(vi(:,1) + u(:,1))
         vi(:,2) = c1*(vi(:,2) + u(:,2))
         vi(:,3) = c1*(vi(:,3) + u(:,3))
-c
+!------------------------------------------------------------------------------------------------
       end subroutine calc_vi
 c
       subroutine calc_vi_area_node(sum_vi_area_l,shp,WdetJif,nshl)

@@ -1,53 +1,51 @@
 Change Dir: /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX
 
-Run Build Command:"/usr/local/bin/gmake"
-/usr/local/cmake/3.0.0/bin/cmake -H/usr/local/cmake/3.0.0/share/cmake-3.0/Modules/FortranCInterface/Verify -B/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX --check-build-system CMakeFiles/Makefile.cmake 0
-/usr/local/cmake/3.0.0/bin/cmake -E cmake_progress_start /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles/progress.marks
-/usr/local/bin/gmake -f CMakeFiles/Makefile2 all
+Run Build Command:"/usr/local/bin/gmake" "VerifyFortranC"
+/usr/local/cmake/3.8.1/bin/cmake -H/usr/local/cmake/3.8.1/share/cmake-3.8/Modules/FortranCInterface/Verify -B/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX --check-build-system CMakeFiles/Makefile.cmake 0
+/usr/local/bin/gmake -f CMakeFiles/Makefile2 VerifyFortranC
 gmake[1]: Entering directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
+/usr/local/cmake/3.8.1/bin/cmake -H/usr/local/cmake/3.8.1/share/cmake-3.8/Modules/FortranCInterface/Verify -B/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX --check-build-system CMakeFiles/Makefile.cmake 0
+/usr/local/cmake/3.8.1/bin/cmake -E cmake_progress_start /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles 6
+/usr/local/bin/gmake -f CMakeFiles/Makefile2 CMakeFiles/VerifyFortranC.dir/all
+gmake[2]: Entering directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
 /usr/local/bin/gmake -f CMakeFiles/VerifyFortran.dir/build.make CMakeFiles/VerifyFortran.dir/depend
-gmake[2]: Entering directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
-cd /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX && /usr/local/cmake/3.0.0/bin/cmake -E cmake_depends "Unix Makefiles" /usr/local/cmake/3.0.0/share/cmake-3.0/Modules/FortranCInterface/Verify /usr/local/cmake/3.0.0/share/cmake-3.0/Modules/FortranCInterface/Verify /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles/VerifyFortran.dir/DependInfo.cmake
+gmake[3]: Entering directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
+cd /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX && /usr/local/cmake/3.8.1/bin/cmake -E cmake_depends "Unix Makefiles" /usr/local/cmake/3.8.1/share/cmake-3.8/Modules/FortranCInterface/Verify /usr/local/cmake/3.8.1/share/cmake-3.8/Modules/FortranCInterface/Verify /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles/VerifyFortran.dir/DependInfo.cmake
 Scanning dependencies of target VerifyFortran
-gmake[2]: Leaving directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
+gmake[3]: Leaving directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
 /usr/local/bin/gmake -f CMakeFiles/VerifyFortran.dir/build.make CMakeFiles/VerifyFortran.dir/requires
-gmake[2]: Entering directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
-gmake[2]: Nothing to be done for `CMakeFiles/VerifyFortran.dir/requires'.
-gmake[2]: Leaving directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
+gmake[3]: Entering directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
+gmake[3]: Nothing to be done for `CMakeFiles/VerifyFortran.dir/requires'.
+gmake[3]: Leaving directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
 /usr/local/bin/gmake -f CMakeFiles/VerifyFortran.dir/build.make CMakeFiles/VerifyFortran.dir/build
-gmake[2]: Entering directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
-/usr/local/cmake/3.0.0/bin/cmake -E cmake_progress_report /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles 1
-[ 25%] Building Fortran object CMakeFiles/VerifyFortran.dir/VerifyFortran.f.o
-/usr/local/gcc/4.9.2/bin/gfortran  -DVERIFY_CXX -O3 -I/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX    -c /usr/local/cmake/3.0.0/share/cmake-3.0/Modules/FortranCInterface/Verify/VerifyFortran.f -o CMakeFiles/VerifyFortran.dir/VerifyFortran.f.o
-Linking Fortran static library libVerifyFortran.a
-/usr/local/cmake/3.0.0/bin/cmake -P CMakeFiles/VerifyFortran.dir/cmake_clean_target.cmake
-/usr/local/cmake/3.0.0/bin/cmake -E cmake_link_script CMakeFiles/VerifyFortran.dir/link.txt --verbose=1
-/usr/bin/ar cr libVerifyFortran.a  CMakeFiles/VerifyFortran.dir/VerifyFortran.f.o
+gmake[3]: Entering directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
+[ 16%] Building Fortran object CMakeFiles/VerifyFortran.dir/VerifyFortran.f.o
+/usr/local/gcc/4.9.2/bin/gfortran -DVERIFY_CXX -I/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX  -O3 -DNDEBUG -O3   -c /usr/local/cmake/3.8.1/share/cmake-3.8/Modules/FortranCInterface/Verify/VerifyFortran.f -o CMakeFiles/VerifyFortran.dir/VerifyFortran.f.o
+[ 33%] Linking Fortran static library libVerifyFortran.a
+/usr/local/cmake/3.8.1/bin/cmake -P CMakeFiles/VerifyFortran.dir/cmake_clean_target.cmake
+/usr/local/cmake/3.8.1/bin/cmake -E cmake_link_script CMakeFiles/VerifyFortran.dir/link.txt --verbose=1
+/usr/bin/ar qc libVerifyFortran.a  CMakeFiles/VerifyFortran.dir/VerifyFortran.f.o
 /usr/bin/ranlib libVerifyFortran.a
-gmake[2]: Leaving directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
-/usr/local/cmake/3.0.0/bin/cmake -E cmake_progress_report /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles  1
-[ 25%] Built target VerifyFortran
+gmake[3]: Leaving directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
+[ 33%] Built target VerifyFortran
 /usr/local/bin/gmake -f CMakeFiles/VerifyFortranC.dir/build.make CMakeFiles/VerifyFortranC.dir/depend
-gmake[2]: Entering directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
-cd /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX && /usr/local/cmake/3.0.0/bin/cmake -E cmake_depends "Unix Makefiles" /usr/local/cmake/3.0.0/share/cmake-3.0/Modules/FortranCInterface/Verify /usr/local/cmake/3.0.0/share/cmake-3.0/Modules/FortranCInterface/Verify /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles/VerifyFortranC.dir/DependInfo.cmake
+gmake[3]: Entering directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
+cd /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX && /usr/local/cmake/3.8.1/bin/cmake -E cmake_depends "Unix Makefiles" /usr/local/cmake/3.8.1/share/cmake-3.8/Modules/FortranCInterface/Verify /usr/local/cmake/3.8.1/share/cmake-3.8/Modules/FortranCInterface/Verify /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles/VerifyFortranC.dir/DependInfo.cmake
 Scanning dependencies of target VerifyFortranC
-gmake[2]: Leaving directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
+gmake[3]: Leaving directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
 /usr/local/bin/gmake -f CMakeFiles/VerifyFortranC.dir/build.make CMakeFiles/VerifyFortranC.dir/build
-gmake[2]: Entering directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
-/usr/local/cmake/3.0.0/bin/cmake -E cmake_progress_report /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles 2
+gmake[3]: Entering directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
 [ 50%] Building C object CMakeFiles/VerifyFortranC.dir/main.c.o
-/usr/local/gcc/4.9.2/bin/gcc  -DVERIFY_CXX -O3 -DNDEBUG -I/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX    -o CMakeFiles/VerifyFortranC.dir/main.c.o   -c /usr/local/cmake/3.0.0/share/cmake-3.0/Modules/FortranCInterface/Verify/main.c
-/usr/local/cmake/3.0.0/bin/cmake -E cmake_progress_report /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles 3
-[ 75%] Building C object CMakeFiles/VerifyFortranC.dir/VerifyC.c.o
-/usr/local/gcc/4.9.2/bin/gcc  -DVERIFY_CXX -O3 -DNDEBUG -I/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX    -o CMakeFiles/VerifyFortranC.dir/VerifyC.c.o   -c /usr/local/cmake/3.0.0/share/cmake-3.0/Modules/FortranCInterface/Verify/VerifyC.c
-/usr/local/cmake/3.0.0/bin/cmake -E cmake_progress_report /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles 4
-[100%] Building CXX object CMakeFiles/VerifyFortranC.dir/VerifyCXX.cxx.o
-/usr/local/gcc/4.9.2/bin/g++   -DVERIFY_CXX -O3 -DNDEBUG -I/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX    -o CMakeFiles/VerifyFortranC.dir/VerifyCXX.cxx.o -c /usr/local/cmake/3.0.0/share/cmake-3.0/Modules/FortranCInterface/Verify/VerifyCXX.cxx
-Linking CXX executable VerifyFortranC
-/usr/local/cmake/3.0.0/bin/cmake -E cmake_link_script CMakeFiles/VerifyFortranC.dir/link.txt --verbose=1
-/usr/local/gcc/4.9.2/bin/g++   -O3 -DNDEBUG    CMakeFiles/VerifyFortranC.dir/main.c.o CMakeFiles/VerifyFortranC.dir/VerifyC.c.o CMakeFiles/VerifyFortranC.dir/VerifyCXX.cxx.o  -o VerifyFortranC -rdynamic libVerifyFortran.a -lgfortran -lquadmath 
-gmake[2]: Leaving directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
-/usr/local/cmake/3.0.0/bin/cmake -E cmake_progress_report /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles  2 3 4
+/usr/local/gcc/4.9.2/bin/gcc -DVERIFY_CXX -I/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX  -O3 -DNDEBUG   -o CMakeFiles/VerifyFortranC.dir/main.c.o   -c /usr/local/cmake/3.8.1/share/cmake-3.8/Modules/FortranCInterface/Verify/main.c
+[ 66%] Building C object CMakeFiles/VerifyFortranC.dir/VerifyC.c.o
+/usr/local/gcc/4.9.2/bin/gcc -DVERIFY_CXX -I/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX  -O3 -DNDEBUG   -o CMakeFiles/VerifyFortranC.dir/VerifyC.c.o   -c /usr/local/cmake/3.8.1/share/cmake-3.8/Modules/FortranCInterface/Verify/VerifyC.c
+[ 83%] Building CXX object CMakeFiles/VerifyFortranC.dir/VerifyCXX.cxx.o
+/usr/local/gcc/4.9.2/bin/g++  -DVERIFY_CXX -I/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX  -O3 -DNDEBUG   -o CMakeFiles/VerifyFortranC.dir/VerifyCXX.cxx.o -c /usr/local/cmake/3.8.1/share/cmake-3.8/Modules/FortranCInterface/Verify/VerifyCXX.cxx
+[100%] Linking CXX executable VerifyFortranC
+/usr/local/cmake/3.8.1/bin/cmake -E cmake_link_script CMakeFiles/VerifyFortranC.dir/link.txt --verbose=1
+/usr/local/gcc/4.9.2/bin/g++  -O3 -DNDEBUG   CMakeFiles/VerifyFortranC.dir/main.c.o CMakeFiles/VerifyFortranC.dir/VerifyC.c.o CMakeFiles/VerifyFortranC.dir/VerifyCXX.cxx.o  -o VerifyFortranC libVerifyFortran.a -lgfortran -lquadmath 
+gmake[3]: Leaving directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
 [100%] Built target VerifyFortranC
+gmake[2]: Leaving directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
+/usr/local/cmake/3.8.1/bin/cmake -E cmake_progress_start /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles 0
 gmake[1]: Leaving directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX'
-/usr/local/cmake/3.0.0/bin/cmake -E cmake_progress_start /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles 0

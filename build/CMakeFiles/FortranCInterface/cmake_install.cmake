@@ -1,4 +1,4 @@
-# Install script for directory: /usr/local/cmake/3.0.0/share/cmake-3.0/Modules/FortranCInterface
+# Install script for directory: /usr/local/cmake/3.8.1/share/cmake-3.8/Modules/FortranCInterface
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -38,7 +38,7 @@ else()
   set(CMAKE_INSTALL_MANIFEST "install_manifest.txt")
 endif()
 
-file(WRITE "/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/${CMAKE_INSTALL_MANIFEST}" "")
-foreach(file ${CMAKE_INSTALL_MANIFEST_FILES})
-  file(APPEND "/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/${CMAKE_INSTALL_MANIFEST}" "${file}\n")
-endforeach()
+string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
+       "${CMAKE_INSTALL_MANIFEST_FILES}")
+file(WRITE "/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/${CMAKE_INSTALL_MANIFEST}"
+     "${CMAKE_INSTALL_MANIFEST_CONTENT}")

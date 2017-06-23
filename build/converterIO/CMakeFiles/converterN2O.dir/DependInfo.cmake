@@ -9,7 +9,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # Preprocessor definitions for this target.
-set(CMAKE_TARGET_DEFINITIONS
+set(CMAKE_TARGET_DEFINITIONS_CXX
   "DEBUG"
   "LINUX"
   "MPI"
@@ -19,19 +19,19 @@ set(CMAKE_TARGET_DEFINITIONS
   "PARALLEL"
   )
 
-# Targets to which this target links.
-set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/lore/chanda5/phasta/build/phastaIO/CMakeFiles/phastaIO.dir/DependInfo.cmake"
-  )
-
 # The include file search paths:
-set(CMAKE_C_TARGET_INCLUDE_PATH
+set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "."
   "../phastaIO"
   "../shapeFunction/src"
   "../phSolver/common"
   "/usr/local/mpich3/3.1.2-thread-multiple/include"
   )
-set(CMAKE_CXX_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
-set(CMAKE_Fortran_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
-set(CMAKE_ASM_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
+
+# Targets to which this target links.
+set(CMAKE_TARGET_LINKED_INFO_FILES
+  "/lore/chanda5/phasta/build/phastaIO/CMakeFiles/phastaIO.dir/DependInfo.cmake"
+  )
+
+# Fortran module output directory.
+set(CMAKE_Fortran_TARGET_MODULE_DIR "")

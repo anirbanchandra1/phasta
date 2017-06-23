@@ -1,8 +1,44 @@
-#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
 
 #IncludeRegexScan: ^.*$
 
 #IncludeRegexComplain: ^$
 
 #IncludeRegexTransform: 
+
+../phSolver/common/common_c.h
+FCMangle.h
+-
+
+../phSolver/common/vec_func.h
+math.h
+-
+
+/lore/chanda5/phasta/phSolver/compressible/get_h.c
+vec_func.h
+/lore/chanda5/phasta/phSolver/compressible/vec_func.h
+
+/lore/chanda5/phasta/phSolver/compressible/gltet.c
+
+/lore/chanda5/phasta/phSolver/compressible/solgmrpetsc.c
+stdio.h
+-
+petscsys.h
+/lore/chanda5/phasta/phSolver/compressible/petscsys.h
+petscvec.h
+/lore/chanda5/phasta/phSolver/compressible/petscvec.h
+petscmat.h
+/lore/chanda5/phasta/phSolver/compressible/petscmat.h
+petscpc.h
+/lore/chanda5/phasta/phSolver/compressible/petscpc.h
+petscksp.h
+/lore/chanda5/phasta/phSolver/compressible/petscksp.h
+assert.h
+/lore/chanda5/phasta/phSolver/compressible/assert.h
+common_c.h
+/lore/chanda5/phasta/phSolver/compressible/common_c.h
+FCMangle.h
+-
+
+FCMangle.h
 

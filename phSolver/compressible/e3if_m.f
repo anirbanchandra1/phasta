@@ -109,6 +109,7 @@ c            call flux_jump
 c
             call calc_cmtrx
             call calc_y_jump
+
 c
             call kinematic_condition(ri0,Kij0)
             call kinematic_condition(ri1,Kij1)
@@ -152,7 +153,7 @@ c
       mu(:,2) = max(tmpmu0(:,2),tmpmu1(:,2))
       mu(:,3) = max(tmpmu0(:,3),tmpmu1(:,3))
       mu(:,4) = max(tmpmu0(:,4),tmpmu1(:,4))
-      mu(:,5) = max(tmpmu0(:,5),tmpmu1(:,5))*100.0
+      mu(:,5) = max(tmpmu0(:,5),tmpmu1(:,5))*100
 c
       deallocate(tmpmu0,tmpmu1)
 c
@@ -477,8 +478,9 @@ c
 c
              do jflow = 1,nflow
                do jsd = 1,nsd
-                 this_kcy = this_kcy + Kij(:,iflow,jflow,isd,jsd)*cy_jump(:,jflow,jsd)
-               enddo
+c                 this_kcy = this_kcy + Kij(:,iflow,jflow,isd,jsd)*cy_jump(:,jflow,jsd)
+                 this_kcy = this_kcy + Kij(:,jsd,isd,iflow,jflow)*cy_jump(:,jflow,jsd)
+		enddo
              enddo
 c
              ri(:,nflow*(isd-1)+iflow) = ri(:,nflow*(isd-1)+iflow) + pt50 * s * this_kcy

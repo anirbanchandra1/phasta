@@ -1,2 +1,2 @@
-/usr/bin/ar cr libVerifyFortran.a  CMakeFiles/VerifyFortran.dir/VerifyFortran.f.o
+/usr/bin/ar qc libVerifyFortran.a  CMakeFiles/VerifyFortran.dir/VerifyFortran.f.o
 /usr/bin/ranlib libVerifyFortran.a

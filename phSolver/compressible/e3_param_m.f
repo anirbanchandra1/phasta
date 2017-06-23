@@ -11,7 +11,7 @@ c  rk                    : kinetic energy
 c
       module e3_param_m
 c
-c----------------------------------------
+c
 c    allocate/deallocate common parameters
 c    used for DG interface only
 c----------------------------------------

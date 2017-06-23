@@ -33,9 +33,12 @@ ScpCommand: /usr/bin/scp
 NightlyStartTime: 00:00:00 EDT
 
 # Commands for the build/test/submit cycle
-ConfigureCommand: "/usr/local/cmake/3.0.0/bin/cmake" "/lore/chanda5/phasta"
-MakeCommand: /usr/local/cmake/3.0.0/bin/cmake --build . --config "${CTEST_CONFIGURATION_TYPE}" -- -i
+ConfigureCommand: "/usr/local/cmake/3.8.1/bin/cmake" "/lore/chanda5/phasta"
+MakeCommand: /usr/local/cmake/3.8.1/bin/cmake --build . --config "${CTEST_CONFIGURATION_TYPE}" -- -i
 DefaultCTestConfigurationType: Release
+
+# version control
+UpdateVersionOnly: 
 
 # CVS options
 # Default is "-d -P -A"
@@ -49,6 +52,7 @@ SVNUpdateOptions:
 
 # Git options
 GITCommand: /usr/bin/git
+GITInitSubmodules: 
 GITUpdateOptions: 
 GITUpdateCustom: 
 
@@ -66,11 +70,14 @@ UpdateType: git
 
 # Compiler info
 Compiler: /usr/local/gcc/4.9.2/bin/g++
+CompilerVersion: 4.9.2
 
 # Dynamic analysis (MemCheck)
 PurifyCommand: 
 ValgrindCommand: 
 ValgrindCommandOptions: 
+MemoryCheckType: 
+MemoryCheckSanitizerOptions: 
 MemoryCheckCommand: /usr/bin/valgrind
 MemoryCheckCommandOptions: 
 MemoryCheckSuppressionFile: 
@@ -89,6 +96,10 @@ SlurmRunCommand: SLURM_SRUN_COMMAND-NOTFOUND
 # process will be summarily terminated.
 # Currently set to 25 minutes
 TimeOut: 1500
+
+# During parallel testing CTest will not start a new test if doing
+# so would cause the system load to exceed this value.
+TestLoad: 
 
 UseLaunchers: 
 CurlOptions: 

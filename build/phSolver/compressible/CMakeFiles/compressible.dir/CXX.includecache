@@ -1,8 +1,54 @@
-#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
 
 #IncludeRegexScan: ^.*$
 
 #IncludeRegexComplain: ^$
 
 #IncludeRegexTransform: 
+
+../phSolver/common/Input.h
+vector
+-
+string
+-
+map
+-
+ValType.h
+../phSolver/common/ValType.h
+
+../phSolver/common/ValType.h
+iostream
+-
+string
+-
+
+../phSolver/common/phasta.h
+Input.h
+../phSolver/common/Input.h
+
+/lore/chanda5/phasta/phSolver/compressible/main.cc
+phasta.h
+-
+mpi.h
+-
+
+/usr/local/mpich3/3.1.2-thread-multiple/include/mpi.h
+stddef.h
+-
+cstdint
+-
+stdint.h
+-
+mpio.h
+/usr/local/mpich3/3.1.2-thread-multiple/include/mpio.h
+mpicxx.h
+/usr/local/mpich3/3.1.2-thread-multiple/include/mpicxx.h
+
+/usr/local/mpich3/3.1.2-thread-multiple/include/mpicxx.h
+stdio.h
+-
+
+/usr/local/mpich3/3.1.2-thread-multiple/include/mpio.h
+mpi.h
+/usr/local/mpich3/3.1.2-thread-multiple/include/mpi.h
 

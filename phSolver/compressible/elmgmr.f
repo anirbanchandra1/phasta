@@ -160,7 +160,7 @@ c
      &                 qres,                EGmass(iel:inum,:,:),
      &                 rerr)
 c
-c.... satisfy the BC's on the implicit LHS
+!.... satisfy the BC's on the implicit LHS
 c     
           call bc3LHS (iBC,                  BC,  mien(iblk)%p, 
      &                 EGmass(iel:inum,:,:)  ) 

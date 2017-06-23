@@ -20,13 +20,9 @@ set(CMAKE_DEPENDS_CHECK_C
   "/lore/chanda5/phasta/shapeFunction/src/uniformP.c" "/lore/chanda5/phasta/build/shapeFunction/src/CMakeFiles/shapeFunction.dir/uniformP.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
-set(CMAKE_DEPENDS_CHECK_CXX
-  "/lore/chanda5/phasta/shapeFunction/src/TriShapeAndDrv.cc" "/lore/chanda5/phasta/build/shapeFunction/src/CMakeFiles/shapeFunction.dir/TriShapeAndDrv.cc.o"
-  )
-set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # Preprocessor definitions for this target.
-set(CMAKE_TARGET_DEFINITIONS
+set(CMAKE_TARGET_DEFINITIONS_C
   "DEBUG"
   "LINUX"
   "MPI"
@@ -35,14 +31,33 @@ set(CMAKE_TARGET_DEFINITIONS
   "PARALLEL"
   )
 
-# Targets to which this target links.
-set(CMAKE_TARGET_LINKED_INFO_FILES
-  )
-
 # The include file search paths:
 set(CMAKE_C_TARGET_INCLUDE_PATH
   "."
   )
-set(CMAKE_CXX_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
-set(CMAKE_Fortran_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
-set(CMAKE_ASM_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
+set(CMAKE_DEPENDS_CHECK_CXX
+  "/lore/chanda5/phasta/shapeFunction/src/TriShapeAndDrv.cc" "/lore/chanda5/phasta/build/shapeFunction/src/CMakeFiles/shapeFunction.dir/TriShapeAndDrv.cc.o"
+  )
+set(CMAKE_CXX_COMPILER_ID "GNU")
+
+# Preprocessor definitions for this target.
+set(CMAKE_TARGET_DEFINITIONS_CXX
+  "DEBUG"
+  "LINUX"
+  "MPI"
+  "MPICH_SKIP_MPICXX"
+  "OMPI_SKIP_MPICXX"
+  "PARALLEL"
+  )
+
+# The include file search paths:
+set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  "."
+  )
+
+# Targets to which this target links.
+set(CMAKE_TARGET_LINKED_INFO_FILES
+  )
+
+# Fortran module output directory.
+set(CMAKE_Fortran_TARGET_MODULE_DIR "")

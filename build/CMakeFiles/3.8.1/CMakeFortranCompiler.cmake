@@ -1,6 +1,8 @@
 set(CMAKE_Fortran_COMPILER "/usr/local/gcc/4.9.2/bin/gfortran")
 set(CMAKE_Fortran_COMPILER_ARG1 "")
 set(CMAKE_Fortran_COMPILER_ID "GNU")
+set(CMAKE_Fortran_COMPILER_VERSION "4.9.2")
+set(CMAKE_Fortran_COMPILER_WRAPPER "")
 set(CMAKE_Fortran_PLATFORM_ID "")
 set(CMAKE_Fortran_SIMULATE_ID "")
 set(CMAKE_Fortran_SIMULATE_VERSION "")
@@ -51,6 +53,10 @@ endif()
 if(CMAKE_Fortran_LIBRARY_ARCHITECTURE)
   set(CMAKE_LIBRARY_ARCHITECTURE "")
 endif()
+
+
+
+
 
 set(CMAKE_Fortran_IMPLICIT_LINK_LIBRARIES "gfortran;m;quadmath;m;c")
 set(CMAKE_Fortran_IMPLICIT_LINK_DIRECTORIES "/usr/local/gcc/4.9.2/lib/gcc/x86_64-linux-gnu/4.9.2;/usr/local/gcc/4.9.2/lib64;/lib64;/usr/lib64;/usr/local/gcc/4.9.2/lib")

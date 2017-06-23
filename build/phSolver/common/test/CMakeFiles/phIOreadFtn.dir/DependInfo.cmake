@@ -10,7 +10,7 @@ set(CMAKE_DEPENDS_CHECK_Fortran
 set(CMAKE_Fortran_COMPILER_ID "GNU")
 
 # Preprocessor definitions for this target.
-set(CMAKE_TARGET_DEFINITIONS
+set(CMAKE_TARGET_DEFINITIONS_Fortran
   "DEBUG"
   "LINUX"
   "MPI"
@@ -18,6 +18,17 @@ set(CMAKE_TARGET_DEFINITIONS
   "OMPI_SKIP_MPICXX"
   "OMPI_SKIP_MPICXX=1"
   "PARALLEL"
+  )
+
+# The include file search paths:
+set(CMAKE_Fortran_TARGET_INCLUDE_PATH
+  "."
+  "../phastaIO"
+  "../shapeFunction/src"
+  "../phSolver/common"
+  "phSolver/modules"
+  "/usr/local/mpich3/3.1.2-thread-multiple/include"
+  "../phSolver/common/phstreamEmpty"
   )
 
 # Targets to which this target links.
@@ -28,17 +39,3 @@ set(CMAKE_TARGET_LINKED_INFO_FILES
 
 # Fortran module output directory.
 set(CMAKE_Fortran_TARGET_MODULE_DIR "/lore/chanda5/phasta/build/phSolver/modules")
-
-# The include file search paths:
-set(CMAKE_C_TARGET_INCLUDE_PATH
-  "."
-  "../phastaIO"
-  "../shapeFunction/src"
-  "../phSolver/common"
-  "phSolver/modules"
-  "/usr/local/mpich3/3.1.2-thread-multiple/include"
-  "../phSolver/common/phstreamEmpty"
-  )
-set(CMAKE_CXX_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
-set(CMAKE_Fortran_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
-set(CMAKE_ASM_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})

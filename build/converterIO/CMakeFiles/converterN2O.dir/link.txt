@@ -1,1 +1,1 @@
-/usr/local/gcc/4.9.2/bin/g++   -g    CMakeFiles/converterN2O.dir/converterN2O.cc.o  -o ../bin/converterN2O -rdynamic ../lib/libphastaIO.a /usr/local/mpich3/3.1.2-thread-multiple/lib/libmpi.so -lrt -lpthread -Wl,-rpath,/usr/local/mpich3/3.1.2-thread-multiple/lib 
+/usr/local/gcc/4.9.2/bin/g++  -g  -rdynamic CMakeFiles/converterN2O.dir/converterN2O.cc.o  -o ../bin/converterN2O -Wl,-rpath,/usr/local/mpich3/3.1.2-thread-multiple/lib ../lib/libphastaIO.a /usr/local/mpich3/3.1.2-thread-multiple/lib/libmpi.so -lrt -lpthread 

@@ -129,7 +129,7 @@ c
                   do jsd = 1,nsd
                     Kij1Naj1ni0 = Kij1Naj1ni0 + Kij1(:,isd,jsd,iflow,jflow)*shg1(:,j,jsd)*ni0(:,isd)
                     do kflow = 1,nflow
-                      Kij0Nbj0CNa1ni1 = Kij0Nbj0CNa1ni1 + Kij0(:,isd,jsd,iflow,kflow) 
+                      Kij0Nbj0CNa1ni1 = Kij0Nbj0CNa1ni1 + Kij0(:,isd,jsd,iflow,kflow) !AC
      &                                                  * shg0(:,i,jsd)
      &                                                  * cmtrx(:,kflow,jflow)
      &                                                  * shp1(:,j)
@@ -144,7 +144,7 @@ c
                 enddo
 c
                 egmass(:,il,jl) = egmass(:,il,jl)
-     &          - ( 
+     &          - (    
      &              pt50 * shp0(:,i) * (Ai1Na1ni0 + Kij1Naj1ni0)
      &          +   pt50 * s         * Kij0Nbj0CNa1ni1
      &          +   e * this_mu(:,iflow,jflow) /length_h * CNb0ni0CNa1ni1

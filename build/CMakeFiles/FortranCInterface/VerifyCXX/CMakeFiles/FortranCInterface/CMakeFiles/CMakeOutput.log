@@ -1,15 +1,14 @@
-Performing C SOURCE FILE Test C_SUPPORTS_DOLLAR succeded with the following output:
+Performing C SOURCE FILE Test C_SUPPORTS_DOLLAR succeeded with the following output:
 Change Dir: /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles/FortranCInterface/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/local/bin/gmake" "cmTryCompileExec3546894068/fast"
-/usr/local/bin/gmake -f CMakeFiles/cmTryCompileExec3546894068.dir/build.make CMakeFiles/cmTryCompileExec3546894068.dir/build
+Run Build Command:"/usr/local/bin/gmake" "cmTC_7d90d/fast"
+/usr/local/bin/gmake -f CMakeFiles/cmTC_7d90d.dir/build.make CMakeFiles/cmTC_7d90d.dir/build
 gmake[1]: Entering directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles/FortranCInterface/CMakeFiles/CMakeTmp'
-/usr/local/cmake/3.0.0/bin/cmake -E cmake_progress_report /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles/FortranCInterface/CMakeFiles/CMakeTmp/CMakeFiles 1
-Building C object CMakeFiles/cmTryCompileExec3546894068.dir/src.c.o
-/usr/local/gcc/4.9.2/bin/gcc   -DC_SUPPORTS_DOLLAR   -o CMakeFiles/cmTryCompileExec3546894068.dir/src.c.o   -c /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles/FortranCInterface/CMakeFiles/CMakeTmp/src.c
-Linking C executable cmTryCompileExec3546894068
-/usr/local/cmake/3.0.0/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3546894068.dir/link.txt --verbose=1
-/usr/local/gcc/4.9.2/bin/gcc   -DC_SUPPORTS_DOLLAR    CMakeFiles/cmTryCompileExec3546894068.dir/src.c.o  -o cmTryCompileExec3546894068 -rdynamic 
+Building C object CMakeFiles/cmTC_7d90d.dir/src.c.o
+/usr/local/gcc/4.9.2/bin/gcc   -DC_SUPPORTS_DOLLAR   -o CMakeFiles/cmTC_7d90d.dir/src.c.o   -c /lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles/FortranCInterface/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_7d90d
+/usr/local/cmake/3.8.1/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7d90d.dir/link.txt --verbose=1
+/usr/local/gcc/4.9.2/bin/gcc  -DC_SUPPORTS_DOLLAR    CMakeFiles/cmTC_7d90d.dir/src.c.o  -o cmTC_7d90d 
 gmake[1]: Leaving directory `/lore/chanda5/phasta/build/CMakeFiles/FortranCInterface/VerifyCXX/CMakeFiles/FortranCInterface/CMakeFiles/CMakeTmp'
 
 Source file was:
