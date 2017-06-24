@@ -1,5 +1,11 @@
 file(GLOB SRC_FILES *.cc *.f *.f90 *.c)
 list(REMOVE_ITEM SRC_FILES "main.cc")
+
+if(PHASTA_CHEF_ENABLED)
+  list(REMOVE_ITEM SRC_FILES "dummyC.cc")
+  message(STATUS "removed dummy one")
+endif()
+
 find_package(phastaCommon REQUIRED PATHS ${CMAKE_BINARY_DIR})
 set(PHASTAC_LIBS ${CMAKE_THREAD_LIBS_INIT} ${PHASTA_COMMON_LIBS})
 set(PHASTAC_INCLUDE_DIRS
