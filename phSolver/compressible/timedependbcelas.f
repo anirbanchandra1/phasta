@@ -121,7 +121,252 @@ c
         enddo ! end loop numnp
       endif  ! end case 4
 c
+c.... test case 5
+c.... original mov+rot+shrk
+c
+      if ( casenumber .eq. 5 ) then
+        dyn_org    = lstep * 0.04
+        do i = 1,numnp
+          if ( (ibits(iBC(i),14,3) .eq. 7) .and.
+     &         (x(i,1) .lt. 23.9) .and. (x(i,1) .gt. -15.9) .and. 
+     &         ((x(i,2)*x(i,2) + x(i,3)*x(i,3)) .lt. 63.9) ) then
+            if( x(i,2) .ge. 2.0 ) then ! top
+              if ( x(i,1) .le. (dyn_org-4.0) ) then ! top tail
+                disp(i,1) = -0.005 * (x(i,1)+8.0) + 0.02
+     &                    + (x(i,1)+8.0) * (cos(pi/600) - 1.0)
+     &                    - (x(i,2)-4.0) *  sin(pi/600)
+                disp(i,2) = -0.005 * (x(i,2)-4.0) + 0.01
+     &                    + (x(i,2)-4.0) * (cos(pi/600) - 1.0)
+     &                    + (x(i,1)+8.0) *  sin(pi/600)
+                disp(i,3) = -0.005 * x(i,3)
 
+              else if ( x(i,1) .ge. (dyn_org+4.0) ) then ! top head
+                disp(i,1) = -0.005 * (x(i,1)-8.0) + 0.02
+     &                    + (x(i,1)-8.0) * (cos(pi/600) - 1.0)
+     &                    - (x(i,2)-4.0) *  sin(pi/600)
+                disp(i,2) = -0.005 * (x(i,2)-4.0) + 0.01
+     &                    + (x(i,2)-4.0) * (cos(pi/600) - 1.0)
+     &                    + (x(i,1)-8.0) *  sin(pi/600)
+                disp(i,3) = -0.005 * x(i,3)
+ 
+              else ! top middle
+                disp(i,1) = -0.005 * (x(i,1)) + 0.02
+     &                    + (x(i,1)) * (cos(pi/600) - 1.0)
+     &                    - (x(i,2)-4.0) *  sin(pi/600)
+                disp(i,2) = -0.005 * (x(i,2)-4.0) + 0.01
+     &                    + (x(i,2)-4.0) * (cos(pi/600) - 1.0)
+     &                    + (x(i,1)) *  sin(pi/600)
+                disp(i,3) = -0.005 * x(i,3)
+ 
+              endif ! end top--switch head middle tail
+
+            else if( x(i,2) .le. -2.0 ) then ! bottom
+              if ( x(i,1) .le. (dyn_org-4.0) ) then ! bottom tail 
+                disp(i,1) = -0.005 * (x(i,1)+8.0) + 0.02
+     &                    - (x(i,1)+8.0) * (cos(pi/600) - 1.0)
+     &                    + (x(i,2)+4.0) *  sin(pi/600)
+                disp(i,2) = -0.005 * (x(i,2)+4.0) - 0.01
+     &                    - (x(i,2)+4.0) * (cos(pi/600) - 1.0)
+     &                    - (x(i,1)+8.0) *  sin(pi/600)
+                disp(i,3) = -0.005 * x(i,3)
+ 
+              else if ( x(i,1) .ge. (dyn_org+4.0) ) then ! bottom head
+                disp(i,1) = -0.005 * (x(i,1)-8.0) + 0.02
+     &                    - (x(i,1)-8.0) * (cos(pi/600) - 1.0)
+     &                    + (x(i,2)+4.0) *  sin(pi/600)
+                disp(i,2) = -0.005 * (x(i,2)+4.0) - 0.01
+     &                    - (x(i,2)+4.0) * (cos(pi/600) - 1.0)
+     &                    - (x(i,1)-8.0) *  sin(pi/600)
+                disp(i,3) = -0.005 * x(i,3)
+ 
+              else ! bottom middle
+                disp(i,1) = -0.005 * (x(i,1)) + 0.02
+     &                    - (x(i,1)) * (cos(pi/600) - 1.0)
+     &                    + (x(i,2)+4.0) *  sin(pi/600)
+                disp(i,2) = -0.005 * (x(i,2)+4.0) - 0.01
+     &                    - (x(i,2)+4.0) * (cos(pi/600) - 1.0)
+     &                    - (x(i,1)) *  sin(pi/600)
+                disp(i,3) = -0.005 * x(i,3)
+ 
+              endif ! end bottom--switch head middle tail
+
+            else ! middle
+              if ( x(i,1) .le. (dyn_org-4.0) ) then ! middle tail
+                disp(i,1) = -0.005 * (x(i,1)+8.0) + 0.02
+c     &                    + (x(i,1)+8.0) * (cos(pi/600) - 1.0)
+c     &                    - (x(i,2)) *  sin(pi/600)
+                disp(i,2) = -0.005 * (x(i,2)) ! + 0.01
+c     &                    + (x(i,2)) * (cos(pi/600) - 1.0)
+c     &                    + (x(i,1)+8.0) *  sin(pi/600)
+                disp(i,3) = -0.005 * x(i,3)
+ 
+              else if ( x(i,1) .ge. (dyn_org+4.0) ) then ! middle head
+                disp(i,1) = -0.005 * (x(i,1)-8.0) + 0.02
+c     &                    + (x(i,1)-8.0) * (cos(pi/600) - 1.0)
+c     &                    - (x(i,2)) *  sin(pi/600)
+                disp(i,2) = -0.005 * (x(i,2)) ! + 0.01
+c     &                    + (x(i,2)) * (cos(pi/600) - 1.0)
+c     &                    + (x(i,1)-8.0) *  sin(pi/600)
+                disp(i,3) = -0.005 * x(i,3)
+ 
+              else ! middle middle
+                disp(i,1) = -0.005 * (x(i,1)) + 0.02
+c     &                    + (x(i,1)) * (cos(pi/600) - 1.0)
+c     &                    - (x(i,2)) *  sin(pi/600)
+                disp(i,2) = -0.005 * (x(i,2)) ! + 0.01
+c     &                    + (x(i,2)) * (cos(pi/600) - 1.0)
+c     &                    + (x(i,1)) *  sin(pi/600)
+                disp(i,3) = -0.005 * x(i,3)
+ 
+              endif ! end middle--switch head middle tail
+
+            endif ! end if switch top middle bottom
+            BC(i,1)   = disp(i,1) !/ Delt(1)
+            BC(i,2)   = disp(i,2) !/ Delt(1)
+            BC(i,3)   = disp(i,3) !/ Delt(1)
+            umesh(i,1)= BC(i,1)
+            umesh(i,2)= BC(i,2)
+            umesh(i,3)= BC(i,3)
+          endif ! end if inside cylinder
+        enddo ! end loop numnp
+      endif ! end if case 1
+c
+c.... end test case 5
+c
+c
+c.... test case 6
+c.... used to mov+rot+shrk ARO 9-grains case
+c
+      if ( casenumber .eq. 6 ) then
+        dyn_org    = lstep * 0.04
+        do i = 1,numnp
+          if ( (ibits(iBC(i),14,3) .eq. 7) .and.
+     &         (x(i,1) .lt. 23.9) .and. (x(i,1) .gt. -15.9) .and. 
+     &         ((x(i,2)*x(i,2) + x(i,3)*x(i,3)) .lt. 63.9) ) then
+            if( x(i,2) .ge. 2.0 ) then ! top
+              if ( x(i,1) .le. (dyn_org-4.0) ) then ! top tail
+                norm = SQRT((x(i,1)+8.0)*(x(i,1)+8.0)
+     &                     +(x(i,2)-4.0)*(x(i,2)-4.0)+x(i,3)*x(i,3));
+                disp(i,1) = -0.005 * (x(i,1)+8.0)/norm + 0.02
+     &                    + (x(i,1)+8.0) * (cos(pi/600) - 1.0)
+     &                    - (x(i,2)-4.0) *  sin(pi/600)
+                disp(i,2) = -0.005 * (x(i,2)-4.0)/norm + 0.01
+     &                    + (x(i,2)-4.0) * (cos(pi/600) - 1.0)
+     &                    + (x(i,1)+8.0) *  sin(pi/600)
+                disp(i,3) = -0.005 * x(i,3)/norm
+
+              else if ( x(i,1) .ge. (dyn_org+4.0) ) then ! top head
+                norm = SQRT((x(i,1)-8.0)*(x(i,1)-8.0)
+     &                     +(x(i,2)-4.0)*(x(i,2)-4.0)+x(i,3)*x(i,3));
+                disp(i,1) = -0.005 * (x(i,1)-8.0)/norm + 0.02
+     &                    + (x(i,1)-8.0) * (cos(pi/600) - 1.0)
+     &                    - (x(i,2)-4.0) *  sin(pi/600)
+                disp(i,2) = -0.005 * (x(i,2)-4.0)/norm + 0.01
+     &                    + (x(i,2)-4.0) * (cos(pi/600) - 1.0)
+     &                    + (x(i,1)-8.0) *  sin(pi/600)
+                disp(i,3) = -0.005 * x(i,3)/norm
+ 
+              else ! top middle
+                norm = SQRT((x(i,1))*(x(i,1))
+     &                     +(x(i,2)-4.0)*(x(i,2)-4.0)+x(i,3)*x(i,3));
+                disp(i,1) = -0.005 * (x(i,1))/norm + 0.02
+     &                    + (x(i,1)) * (cos(pi/600) - 1.0)
+     &                    - (x(i,2)-4.0) *  sin(pi/600)
+                disp(i,2) = -0.005 * (x(i,2)-4.0)/norm + 0.01
+     &                    + (x(i,2)-4.0) * (cos(pi/600) - 1.0)
+     &                    + (x(i,1)) *  sin(pi/600)
+                disp(i,3) = -0.005 * x(i,3)/norm
+ 
+              endif ! end top--switch head middle tail
+
+            else if( x(i,2) .le. -2.0 ) then ! bottom
+              if ( x(i,1) .le. (dyn_org-4.0) ) then ! bottom tail 
+                norm = SQRT((x(i,1)+8.0)*(x(i,1)+8.0)
+     &                     +(x(i,2)+4.0)*(x(i,2)+4.0)+x(i,3)*x(i,3));
+                disp(i,1) = -0.005 * (x(i,1)+8.0)/norm + 0.02
+     &                    - (x(i,1)+8.0) * (cos(pi/600) - 1.0)
+     &                    + (x(i,2)+4.0) *  sin(pi/600)
+                disp(i,2) = -0.005 * (x(i,2)+4.0)/norm - 0.01
+     &                    - (x(i,2)+4.0) * (cos(pi/600) - 1.0)
+     &                    - (x(i,1)+8.0) *  sin(pi/600)
+                disp(i,3) = -0.005 * x(i,3)/norm
+ 
+              else if ( x(i,1) .ge. (dyn_org+4.0) ) then ! bottom head
+                norm = SQRT((x(i,1)-8.0)*(x(i,1)-8.0)
+     &                     +(x(i,2)+4.0)*(x(i,2)+4.0)+x(i,3)*x(i,3));
+                disp(i,1) = -0.005 * (x(i,1)-8.0)/norm + 0.02
+     &                    - (x(i,1)-8.0) * (cos(pi/600) - 1.0)
+     &                    + (x(i,2)+4.0) *  sin(pi/600)
+                disp(i,2) = -0.005 * (x(i,2)+4.0)/norm - 0.01
+     &                    - (x(i,2)+4.0) * (cos(pi/600) - 1.0)
+     &                    - (x(i,1)-8.0) *  sin(pi/600)
+                disp(i,3) = -0.005 * x(i,3)/norm
+ 
+              else ! bottom middle
+                norm = SQRT((x(i,1))*(x(i,1))
+     &                     +(x(i,2)+4.0)*(x(i,2)+4.0)+x(i,3)*x(i,3));
+                disp(i,1) = -0.005 * (x(i,1))/norm + 0.02
+     &                    - (x(i,1)) * (cos(pi/600) - 1.0)
+     &                    + (x(i,2)+4.0) *  sin(pi/600)
+                disp(i,2) = -0.005 * (x(i,2)+4.0)/norm - 0.01
+     &                    - (x(i,2)+4.0) * (cos(pi/600) - 1.0)
+     &                    - (x(i,1)) *  sin(pi/600)
+                disp(i,3) = -0.005 * x(i,3)/norm
+ 
+              endif ! end bottom--switch head middle tail
+
+            else ! middle
+              if ( x(i,1) .le. (dyn_org-4.0) ) then ! middle tail
+                norm = SQRT((x(i,1)+8.0)*(x(i,1)+8.0)
+     &                     +(x(i,2))*(x(i,2))+x(i,3)*x(i,3));
+                disp(i,1) = -0.005 * (x(i,1)+8.0)/norm + 0.02
+c     &                    + (x(i,1)+8.0) * (cos(pi/600) - 1.0)
+c     &                    - (x(i,2)) *  sin(pi/600)
+                disp(i,2) = -0.005 * (x(i,2))/norm ! + 0.01
+c     &                    + (x(i,2)) * (cos(pi/600) - 1.0)
+c     &                    + (x(i,1)+8.0) *  sin(pi/600)
+                disp(i,3) = -0.005 * x(i,3)/norm
+ 
+              else if ( x(i,1) .ge. (dyn_org+4.0) ) then ! middle head
+                norm = SQRT((x(i,1)-8.0)*(x(i,1)-8.0)
+     &                     +(x(i,2))*(x(i,2))+x(i,3)*x(i,3));
+                disp(i,1) = -0.005 * (x(i,1)-8.0)/norm + 0.02
+c     &                    + (x(i,1)-8.0) * (cos(pi/600) - 1.0)
+c     &                    - (x(i,2)) *  sin(pi/600)
+                disp(i,2) = -0.005 * (x(i,2))/norm ! + 0.01
+c     &                    + (x(i,2)) * (cos(pi/600) - 1.0)
+c     &                    + (x(i,1)-8.0) *  sin(pi/600)
+                disp(i,3) = -0.005 * x(i,3)/norm
+ 
+              else ! middle middle
+                norm = SQRT((x(i,1))*(x(i,1))
+     &                     +(x(i,2))*(x(i,2))+x(i,3)*x(i,3));
+                disp(i,1) = -0.005 * (x(i,1))/norm + 0.02
+c     &                    + (x(i,1)) * (cos(pi/600) - 1.0)
+c     &                    - (x(i,2)) *  sin(pi/600)
+                disp(i,2) = -0.005 * (x(i,2))/norm ! + 0.01
+c     &                    + (x(i,2)) * (cos(pi/600) - 1.0)
+c     &                    + (x(i,1)) *  sin(pi/600)
+                disp(i,3) = -0.005 * x(i,3)/norm
+ 
+              endif ! end middle--switch head middle tail
+
+            endif ! end if switch top middle bottom
+            disp(i,1) = disp(i,1) * Delt(1)
+            disp(i,2) = disp(i,2) * Delt(1)
+            disp(i,3) = disp(i,3) * Delt(1)
+            BC(i,1)   = disp(i,1) / Delt(1)
+            BC(i,2)   = disp(i,2) / Delt(1)
+            BC(i,3)   = disp(i,3) / Delt(1)
+            umesh(i,1)= BC(i,1)
+            umesh(i,2)= BC(i,2)
+            umesh(i,3)= BC(i,3)
+          endif ! end if inside cylinder
+        enddo ! end loop numnp
+      endif ! end if case 1
+c
+c.... end test case 6
+c
       return
       end
 c
