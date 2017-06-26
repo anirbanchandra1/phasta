@@ -126,6 +126,68 @@ c.... original mov+rot+shrk
 c
       if ( casenumber .eq. 5 ) then
         if (lstep .eq. 0) then
+        dyn_org    = 2.625e-3
+        do i = 1,numnp
+          if ( (ibits(iBC(i),14,3) .eq. 7) .and.
+     &         (x(i,1) .lt. 6.65e-3) .and. (x(i,1) .gt. -1.4e-3) .and.
+     &         ((x(i,2)*x(i,2) + x(i,3)*x(i,3)) .lt. 2.89e-6) ) then
+            if( x(i,2) .ge. 0.6e-3 ) then ! top
+              if ( x(i,1) .le. (dyn_org-1.025e-3) ) then ! top tail
+                disp(i,1) = -0.05 * (x(i,1)-0.5e-3) !+ 0.02
+                disp(i,2) = -0.05 * (x(i,2)-1.125e-3) !+ 0.01
+                disp(i,3) = -0.05 * x(i,3)
+              else if ( x(i,1) .ge. (dyn_org+1.025e-3) ) then ! top head
+                disp(i,1) = -0.05 * (x(i,1)-4.75e-3) !+ 0.02
+                disp(i,2) = -0.05 * (x(i,2)-1.125e-3) !+ 0.01
+                disp(i,3) = -0.05 * x(i,3)
+              else ! top middle
+                disp(i,1) = -0.05 * (x(i,1)-2.625e-3) !+ 0.02
+                disp(i,2) = -0.05 * (x(i,2)-1.125e-3) !+ 0.01
+                disp(i,3) = -0.05 * x(i,3)
+              endif ! end top--switch head middle tail
+            else if( x(i,2) .le. -0.6e-3 ) then ! bottom
+              if ( x(i,1) .le. (dyn_org-1.025e-3) ) then ! bottom tail
+                disp(i,1) = -0.05 * (x(i,1)-0.5e-3) !+ 0.02
+                disp(i,2) = -0.05 * (x(i,2)+1.125e-3) !- 0.01
+                disp(i,3) = -0.05 * x(i,3)
+              else if ( x(i,1) .ge. (dyn_org+1.025e-3) ) then ! bottom head
+                disp(i,1) = -0.05 * (x(i,1)-4.75e-3) !+ 0.02
+                disp(i,2) = -0.05 * (x(i,2)+1.125e-3) !- 0.01
+                disp(i,3) = -0.05 * x(i,3)
+              else ! bottom middle
+                disp(i,1) = -0.05 * (x(i,1)-2.625e-3) !+ 0.02
+                disp(i,2) = -0.05 * (x(i,2)+1.125e-3) !- 0.01
+                disp(i,3) = -0.05 * x(i,3)
+              endif ! end bottom--switch head middle tail
+            else ! middle
+              if ( x(i,1) .le. (dyn_org-1.025e-3) ) then ! middle tail
+                disp(i,1) = -0.05 * (x(i,1)-0.5e-3) !+ 0.02
+                disp(i,2) = -0.05 * (x(i,2)) ! + 0.01
+                disp(i,3) = -0.05 * x(i,3)
+              else if ( x(i,1) .ge. (dyn_org+1.025e-3) ) then ! middle head
+                disp(i,1) = -0.05 * (x(i,1)-4.75e-3) !+ 0.02
+                disp(i,2) = -0.05 * (x(i,2)) ! + 0.01
+                disp(i,3) = -0.05 * x(i,3)
+              else ! middle middle
+                disp(i,1) = -0.05 * (x(i,1)-2.625e-3) !+ 0.02
+                disp(i,2) = -0.05 * (x(i,2)) ! + 0.01
+                disp(i,3) = -0.05 * x(i,3)
+              endif ! end middle--switch head middle tail
+            endif ! end if switch top middle bottom
+            BC(i,1:3)   = disp(i,1:3)
+          endif ! end if inside cylinder
+        enddo ! end loop numnp
+        endif ! first time step
+      endif ! end if case 5
+c
+c.... end test case 5
+c
+c
+c.... test case 6
+c.... original mov+rot+shrk
+c
+      if ( casenumber .eq. 6 ) then
+        if (lstep .eq. 0) then
 c        dyn_org    = lstep * 0.04
         dyn_org    = 2.625e-3
         do i = 1,numnp
@@ -135,29 +197,29 @@ c        dyn_org    = lstep * 0.04
             if( x(i,2) .ge. 0.6e-3 ) then ! top
               if ( x(i,1) .le. (dyn_org-1.025e-3) ) then ! top tail
                 disp(i,1) = -0.05 * (x(i,1)-0.5e-3) !+ 0.02
-c     &                    + (x(i,1)+8.0) * (cos(pi/600) - 1.0)
-c     &                    - (x(i,2)-4.0) *  sin(pi/600)
+     &                    + (x(i,1)-0.5e-3) * (cos(pi/600) - 1.0)
+     &                    - (x(i,2)-1.125e-3) *  sin(pi/600)
                 disp(i,2) = -0.05 * (x(i,2)-1.125e-3) !+ 0.01
-c     &                    + (x(i,2)-4.0) * (cos(pi/600) - 1.0)
-c     &                    + (x(i,1)+8.0) *  sin(pi/600)
+     &                    + (x(i,2)-1.125e-3) * (cos(pi/600) - 1.0)
+     &                    + (x(i,1)-0.5e-3) *  sin(pi/600)
                 disp(i,3) = -0.05 * x(i,3)
 
               else if ( x(i,1) .ge. (dyn_org+1.025e-3) ) then ! top head
                 disp(i,1) = -0.05 * (x(i,1)-4.75e-3) !+ 0.02
-c     &                    + (x(i,1)-8.0) * (cos(pi/600) - 1.0)
-c     &                    - (x(i,2)-4.0) *  sin(pi/600)
+     &                    + (x(i,1)-4.75e-3) * (cos(pi/600) - 1.0)
+     &                    - (x(i,2)-1.125e-3) *  sin(pi/600)
                 disp(i,2) = -0.05 * (x(i,2)-1.125e-3) !+ 0.01
-c     &                    + (x(i,2)-4.0) * (cos(pi/600) - 1.0)
-c     &                    + (x(i,1)-8.0) *  sin(pi/600)
+     &                    + (x(i,2)-1.125e-3) * (cos(pi/600) - 1.0)
+     &                    + (x(i,1)-4.75e-3) *  sin(pi/600)
                 disp(i,3) = -0.05 * x(i,3)
 
               else ! top middle
                 disp(i,1) = -0.05 * (x(i,1)-2.625e-3) !+ 0.02
-c     &                    + (x(i,1)) * (cos(pi/600) - 1.0)
-c     &                    - (x(i,2)-4.0) *  sin(pi/600)
+     &                    + (x(i,1)-2.625e-3) * (cos(pi/600) - 1.0)
+     &                    - (x(i,2)-1.125e-3) *  sin(pi/600)
                 disp(i,2) = -0.05 * (x(i,2)-1.125e-3) !+ 0.01
-c     &                    + (x(i,2)-4.0) * (cos(pi/600) - 1.0)
-c     &                    + (x(i,1)) *  sin(pi/600)
+     &                    + (x(i,2)-1.125e-3) * (cos(pi/600) - 1.0)
+     &                    + (x(i,1)-2.625e-3) *  sin(pi/600)
                 disp(i,3) = -0.05 * x(i,3)
 
               endif ! end top--switch head middle tail
@@ -165,29 +227,29 @@ c     &                    + (x(i,1)) *  sin(pi/600)
             else if( x(i,2) .le. -0.6e-3 ) then ! bottom
               if ( x(i,1) .le. (dyn_org-1.025e-3) ) then ! bottom tail
                 disp(i,1) = -0.05 * (x(i,1)-0.5e-3) !+ 0.02
-c     &                    - (x(i,1)+8.0) * (cos(pi/600) - 1.0)
-c     &                    + (x(i,2)+4.0) *  sin(pi/600)
+     &                    - (x(i,1)-0.5e-3) * (cos(pi/600) - 1.0)
+     &                    + (x(i,2)+1.125e-3) *  sin(pi/600)
                 disp(i,2) = -0.05 * (x(i,2)+1.125e-3) !- 0.01
-c     &                    - (x(i,2)+4.0) * (cos(pi/600) - 1.0)
-c     &                    - (x(i,1)+8.0) *  sin(pi/600)
+     &                    - (x(i,2)+1.125e-3) * (cos(pi/600) - 1.0)
+     &                    - (x(i,1)-0.5e-3) *  sin(pi/600)
                 disp(i,3) = -0.05 * x(i,3)
 
               else if ( x(i,1) .ge. (dyn_org+1.025e-3) ) then ! bottom head
                 disp(i,1) = -0.05 * (x(i,1)-4.75e-3) !+ 0.02
-c     &                    - (x(i,1)-8.0) * (cos(pi/600) - 1.0)
-c     &                    + (x(i,2)+4.0) *  sin(pi/600)
+     &                    - (x(i,1)-4.75e-3) * (cos(pi/600) - 1.0)
+     &                    + (x(i,2)+1.125e-3) *  sin(pi/600)
                 disp(i,2) = -0.05 * (x(i,2)+1.125e-3) !- 0.01
-c     &                    - (x(i,2)+4.0) * (cos(pi/600) - 1.0)
-c     &                    - (x(i,1)-8.0) *  sin(pi/600)
+     &                    - (x(i,2)+1.125e-3) * (cos(pi/600) - 1.0)
+     &                    - (x(i,1)-4.75e-3) *  sin(pi/600)
                 disp(i,3) = -0.05 * x(i,3)
 
               else ! bottom middle
                 disp(i,1) = -0.05 * (x(i,1)-2.625e-3) !+ 0.02
-c     &                    - (x(i,1)) * (cos(pi/600) - 1.0)
-c     &                    + (x(i,2)+4.0) *  sin(pi/600)
+     &                    - (x(i,1)-2.625e-3) * (cos(pi/600) - 1.0)
+     &                    + (x(i,2)+1.125e-3) *  sin(pi/600)
                 disp(i,2) = -0.05 * (x(i,2)+1.125e-3) !- 0.01
-c     &                    - (x(i,2)+4.0) * (cos(pi/600) - 1.0)
-c     &                    - (x(i,1)) *  sin(pi/600)
+     &                    - (x(i,2)+1.125e-3) * (cos(pi/600) - 1.0)
+     &                    - (x(i,1)-2.625e-3) *  sin(pi/600)
                 disp(i,3) = -0.05 * x(i,3)
 
               endif ! end bottom--switch head middle tail
@@ -195,29 +257,29 @@ c     &                    - (x(i,1)) *  sin(pi/600)
             else ! middle
               if ( x(i,1) .le. (dyn_org-1.025e-3) ) then ! middle tail
                 disp(i,1) = -0.05 * (x(i,1)-0.5e-3) !+ 0.02
-c     &                    + (x(i,1)+8.0) * (cos(pi/600) - 1.0)
-c     &                    - (x(i,2)) *  sin(pi/600)
+     &                    + (x(i,1)-0.5e-3) * (cos(pi/600) - 1.0)
+     &                    - (x(i,2)) *  sin(pi/600)
                 disp(i,2) = -0.05 * (x(i,2)) ! + 0.01
-c     &                    + (x(i,2)) * (cos(pi/600) - 1.0)
-c     &                    + (x(i,1)+8.0) *  sin(pi/600)
+     &                    + (x(i,2)) * (cos(pi/600) - 1.0)
+     &                    + (x(i,1)-0.5e-3) *  sin(pi/600)
                 disp(i,3) = -0.05 * x(i,3)
 
               else if ( x(i,1) .ge. (dyn_org+1.025e-3) ) then ! middle head
                 disp(i,1) = -0.05 * (x(i,1)-4.75e-3) !+ 0.02
-c     &                    + (x(i,1)-8.0) * (cos(pi/600) - 1.0)
-c     &                    - (x(i,2)) *  sin(pi/600)
+     &                    + (x(i,1)-4.75e-3) * (cos(pi/600) - 1.0)
+     &                    - (x(i,2)) *  sin(pi/600)
                 disp(i,2) = -0.05 * (x(i,2)) ! + 0.01
-c     &                    + (x(i,2)) * (cos(pi/600) - 1.0)
-c     &                    + (x(i,1)-8.0) *  sin(pi/600)
+     &                    + (x(i,2)) * (cos(pi/600) - 1.0)
+     &                    + (x(i,1)-4.75e-3) *  sin(pi/600)
                 disp(i,3) = -0.05 * x(i,3)
 
               else ! middle middle
                 disp(i,1) = -0.05 * (x(i,1)-2.625e-3) !+ 0.02
-c     &                    + (x(i,1)) * (cos(pi/600) - 1.0)
-c     &                    - (x(i,2)) *  sin(pi/600)
+     &                    + (x(i,1)-2.625e-3) * (cos(pi/600) - 1.0)
+     &                    - (x(i,2)) *  sin(pi/600)
                 disp(i,2) = -0.05 * (x(i,2)) ! + 0.01
-c     &                    + (x(i,2)) * (cos(pi/600) - 1.0)
-c     &                    + (x(i,1)) *  sin(pi/600)
+     &                    + (x(i,2)) * (cos(pi/600) - 1.0)
+     &                    + (x(i,1)-2.625e-3) *  sin(pi/600)
                 disp(i,3) = -0.05 * x(i,3)
 
               endif ! end middle--switch head middle tail
@@ -226,16 +288,16 @@ c     &                    + (x(i,1)) *  sin(pi/600)
             BC(i,1:3)   = disp(i,1:3)
           endif ! end if inside cylinder
         enddo ! end loop numnp
-        endif
-      endif ! end if case 1
+        endif ! first time step
+      endif ! end if case 6
 c
-c.... end test case 5
+c.... end test case 6
 c
 c
-c.... test case 6
+c.... test case 7
 c.... used to mov+rot+shrk ARO 9-grains case
 c
-      if ( casenumber .eq. 6 ) then
+      if ( casenumber .eq. 7 ) then
         dyn_org    = lstep * 0.04
         do i = 1,numnp
           if ( (ibits(iBC(i),14,3) .eq. 7) .and.
@@ -353,9 +415,9 @@ c     &                    + (x(i,1)) *  sin(pi/600)
             BC(i,1:3)   = disp(i,1:3)
           endif ! end if inside cylinder
         enddo ! end loop numnp
-      endif ! end if case 1
+      endif ! end if case 7
 c
-c.... end test case 6
+c.... end test case 7
 c
       return
       end
