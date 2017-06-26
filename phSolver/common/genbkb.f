@@ -117,7 +117,7 @@ CC           call phio_readheader(fhandle, trim(fname2)//C_NULL_CHAR,
            nenbl =intfromfile(6)
            lcsyst=intfromfile(7)
            numnbc=intfromfile(8)
-      write(*,*) ' BKB: iblk, intfromfile:',iblk,intfromfile(1:8) 
+c      write(*,*) ' BKB: iblk, intfromfile:',iblk,intfromfile(1:8) 
 
            if (neltp<0) then
               writeLock=1;
@@ -158,7 +158,7 @@ C           call MPI_BARRIER(MPI_COMM_WORLD, ierr)
      &      c_loc(intfromfile), ione, dataInt, iotype)
 c
            allocate(mattype(intfromfile(1)))
-      write(*,*) ' BKB: iblk, intfromfile:',iblk,intfromfile(1:8) 
+c      write(*,*) ' BKB: iblk, intfromfile:',iblk,intfromfile(1:8) 
            call phio_readdatablock(fhandle, fname2 // char(0),
      &      c_loc(mattype), intfromfile(1), dataInt, iotype)
 c     

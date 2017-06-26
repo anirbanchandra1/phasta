@@ -117,7 +117,7 @@ c
            nnface = intfromfile(7)       ! number of nodes on the interface
            tmplcsyst0= intfromfile(8)       ! element type 0
            tmplcsyst1= intfromfile(9)       ! element type 1
-      write(*,*) 'BKIF: iblk, intfromfile: ',iblk,intfromfile(1:9)
+c      write(*,*) 'BKIF: iblk, intfromfile: ',iblk,intfromfile(1:9)
 c
            if (neltp<0) then
               writeLock=1;

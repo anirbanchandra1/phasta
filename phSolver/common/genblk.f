@@ -110,7 +110,7 @@ C           call MPI_Barrier(MPI_COMM_WORLD,ierr)
            ijunk  =intfromfile(5)
            ijunk  =intfromfile(6)
            lcsyst =intfromfile(7)
-      write(*,*) ' BLK: iblk, intfromfile:',iblk,intfromfile(1:7) 
+c      write(*,*) ' BLK: iblk, intfromfile:',iblk,intfromfile(1:7) 
 C
            if (neltp<0) then
               writeLock=1;
