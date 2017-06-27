@@ -1,9 +1,9 @@
       module e3if_lhs_m
-c
-c----------------------------------------
-c    detail subroutines to computer the
-c    LHS for interface elements
-c----------------------------------------
+!
+!----------------------------------------
+!    detail subroutines to computer the
+!    LHS for interface elements
+!----------------------------------------
         use e3if_param_m
         use e3if_func_m
 c
@@ -145,7 +145,7 @@ c
 c
                 egmass(:,il,jl) = egmass(:,il,jl)
      &          - (    
-     &              pt50 * shp0(:,i) * (Ai1Na1ni0 + Kij1Naj1ni0)
+     &              pt50 * shp0(:,i) * (Ai1Na1ni0 -  Kij1Naj1ni0)
      &          +   pt50 * s         * Kij0Nbj0CNa1ni1
      &          +   e * this_mu(:,iflow,jflow) /length_h * CNb0ni0CNa1ni1
      &            ) * WdetJ0

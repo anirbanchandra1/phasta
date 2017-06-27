@@ -1,11 +1,11 @@
       module e3if_m
-c
-c----------------------------------------
-c   this is the main subroutine in calculating
-c   the element level contribution for the
-c   interface. It calls many other subroutines
-c   to collect the data for both RHS and LHS
-c----------------------------------------
+!
+!----------------------------------------
+!   this is the main subroutine in calculating
+!   the element level contribution for the
+!   interface. It calls many other subroutines
+!   to collect the data for both RHS and LHS
+!----------------------------------------
         use workfc_m
         use hierarchic_m
         use matdat_def_m
@@ -105,12 +105,12 @@ c ... Interface flux
 c
             call e3if_flux
 c
-c            call flux_jump
+!            call flux_jump
 c
             call calc_cmtrx
             call calc_y_jump
 
-c
+!
             call kinematic_condition(ri0,Kij0)
             call kinematic_condition(ri1,Kij1)
 c
@@ -127,9 +127,9 @@ c
         tmpmu0(:,4) = prop0%stiff(3,3)
         tmpmu0(:,5) = prop0%stiff(5,5)
       case (ieos_solid_1)
-C
-C Yu please fill this out
-c
+!
+! Yu please fill this out
+!
       case default
         call error ('getthm  ', 'wrong material', mater)
       end select
@@ -142,9 +142,9 @@ c
         tmpmu1(:,4) = prop1%stiff(3,3)
         tmpmu1(:,5) = prop1%stiff(5,5)
       case (ieos_solid_1)
-C
-C Yu please fill this out
-c
+!
+! Yu please fill this out
+!
       case default
         call error ('getthm  ', 'wrong material', mater)
       end select
@@ -164,19 +164,19 @@ c...LHS calculations...
 c
             if (lhs_dg .eq. 1) then
 c
-              call set_lhs_matrices
-c
-c              call calc_egmass(egmass00,egmass01,
-c     &                         A0_0, A0_1, Ai0, Ai1,
-c     &                         Kij0, Kij1,
-c     &                         AiNa0,AiNa1,KijNaj0,KijNaj1,KijNajC0,KijNajC1,
-c     &                         shp0,nv0,nv1,WdetJif0,prop0,nshl0,nshl1)
-c
-c              call calc_egmass(egmass11,egmass10,
-c     &                         A0_1, A0_0, Ai1, Ai0,
-c     &                         Kij1, Kij0,
-c     &                         AiNa1,AiNa0,KijNaj1,KijNaj0,KijNajC1,KijNajC0,
-c     &                         shp1,nv1,nv0,WdetJif1,prop1,nshl1,nshl0)
+!              call set_lhs_matrices
+!
+!              call calc_egmass(egmass00,egmass01,
+!     &                         A0_0, A0_1, Ai0, Ai1,
+!     &                         Kij0, Kij1,
+!     &                         AiNa0,AiNa1,KijNaj0,KijNaj1,KijNajC0,KijNajC1,
+!     &                         shp0,nv0,nv1,WdetJif0,prop0,nshl0,nshl1)
+!
+!              call calc_egmass(egmass11,egmass10,
+!     &                         A0_1, A0_0, Ai1, Ai0,
+!     &                         Kij1, Kij0,
+!     &                         AiNa1,AiNa0,KijNaj1,KijNaj0,KijNajC1,KijNajC0,
+!     &                         shp1,nv1,nv0,WdetJif1,prop1,nshl1,nshl0)
 
                call calc_egmass_(egmass00,shp0,shp0,shg0,shg0,Ai0,Kij0,Kij0,nv0,nv0,WdetJif0,nshl0,nshl0)
                call calc_egmass_(egmass01,shp0,shp1,shg0,shg1,Ai1,Kij0,Kij1,nv0,nv1,WdetJif0,nshl0,nshl1)

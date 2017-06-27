@@ -733,9 +733,9 @@ c
 c
 c.... compute the factors
 c
-            fact = shape(:,j) * WdetJ * almi/gami/alfi*dtgl !AC
+            fact = 0*shape(:,j) * WdetJ * almi/gami/alfi*dtgl !AC
 c
-c.... loop through d.o.f.'s
+c.... loop through d.o.f.s
 c
             do idof = 1, nflow
                il = i0 + idof

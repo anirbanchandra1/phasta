@@ -586,7 +586,7 @@ c
 
 c
 c... Form Primitive Variable Tau as [dY/dV]*tilde{Tau},
-c... see G.Hauke's thesis appendix for [dY/dV] matrix
+c... see G.Haukes thesis appendix for [dY/dV] matrix
 c
         betaT = cp*T + pt5*(u1**2+u2**2+u3**2) !reuse betaT
           
@@ -1046,7 +1046,7 @@ c
 
 c
 c... Form Primitive Variable Tau as [dY/dV]*tilde{Tau},
-c... see G.Hauke's thesis appendix for [dY/dV] matrix
+!... see G.Hauke's thesis appendix for [dY/dV] matrix
 c
       do k = 1, ipord
 
