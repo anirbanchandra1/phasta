@@ -242,6 +242,7 @@ c.... if we have the mesh elastic solver
       if (iALE .eq. 2) then 
 c
 c----------------Re-organize Mesh Elastic Velocities-----------------
+c.... convert mesh velocity to mesh displacement
 c
         elas3 = ndof + 2
         elas4 = ndof + 3
@@ -252,7 +253,7 @@ c.... if the velocity in the x1-direction is specified
 c
         where (ibits(iBC,14,3) .eq. 1)
           tmp     = BCtmp(:,17)**2 + BCtmp(:,18)**2 + BCtmp(:,19)**2
-          BC(:,elas3) = tmp * BCtmp(:,20) / BCtmp(:,17)
+          BC(:,elas3) = tmp * BCtmp(:,20) / BCtmp(:,17) * Delt(1)
           BC(:,elas4) =       BCtmp(:,18) / BCtmp(:,17)
           BC(:,elas5) =       BCtmp(:,19) / BCtmp(:,17)
         endwhere
@@ -261,7 +262,7 @@ c.... if the velocity in the x2-direction is specified
 c
         where (ibits(iBC,14,3) .eq. 2)
           tmp     = BCtmp(:,17)**2 + BCtmp(:,18)**2 + BCtmp(:,19)**2
-          BC(:,elas3) = tmp * BCtmp(:,20) / BCtmp(:,18)
+          BC(:,elas3) = tmp * BCtmp(:,20) / BCtmp(:,18) * Delt(1)
           BC(:,elas4) =       BCtmp(:,17) / BCtmp(:,18)
           BC(:,elas5) =       BCtmp(:,19) / BCtmp(:,18)
         endwhere
@@ -301,7 +302,7 @@ c
      &                 - BCtmp(:, 18) * BCtmp(:, 23)
           BCtmp(:, 20) = BCtmp(:, 22) * BCtmp(:, 20)
      &                 - BCtmp(:, 18) * BCtmp(:, 23)
-          BC(:,elas3)  = BCtmp(:, 20) / BCtmp(:, 17)
+          BC(:,elas3)  = BCtmp(:, 20) / BCtmp(:, 17) * Delt(1)
           BC(:,elas4)  = BCtmp(:, 19) / BCtmp(:, 17)
 c
           BCtmp(:, 22) = BCtmp(:, 17) * BCtmp(:, 22) 
@@ -309,7 +310,7 @@ c
      &                 - BCtmp(:, 21) * BCtmp(:, 19)
           BCtmp(:, 24) = BCtmp(:, 17) * BCtmp(:, 24)
      &                 - BCtmp(:, 21) * BCtmp(:, 20)
-          BC(:,elas5)  = BCtmp(:, 24) / BCtmp(:, 22)
+          BC(:,elas5)  = BCtmp(:, 24) / BCtmp(:, 22) * Delt(1)
           BC(:,elas6)  = BCtmp(:, 23) / BCtmp(:, 22)
         endwhere
 c
@@ -318,7 +319,7 @@ c
         if (nsd .eq. 3) then
         where (ibits(iBC,3,3) .eq. 4)
           tmp     = BCtmp(:,17)**2 + BCtmp(:,18)**2 + BCtmp(:,19)**2
-          BC(:,elas3) = tmp * BCtmp(:,20) / BCtmp(:,19)
+          BC(:,elas3) = tmp * BCtmp(:,20) / BCtmp(:,19) * Delt(1)
           BC(:,elas4) =       BCtmp(:,17) / BCtmp(:,19)
           BC(:,elas5) =       BCtmp(:,18) / BCtmp(:,19)
         endwhere
@@ -360,7 +361,7 @@ c
      &                 - BCtmp(:, 19) * BCtmp(:, 22)
           BCtmp(:, 20) = BCtmp(:, 23) * BCtmp(:, 20)
      &                 - BCtmp(:, 19) * BCtmp(:, 24)
-          BC(:,elas3)  = BCtmp(:, 20) / BCtmp(:, 17)
+          BC(:,elas3)  = BCtmp(:, 20) / BCtmp(:, 17) * Delt(1)
           BC(:,elas4)  = BCtmp(:, 18) / BCtmp(:, 17)
 c
           BCtmp(:, 22) = BCtmp(:, 17) * BCtmp(:, 22)
@@ -368,7 +369,7 @@ c
           BCtmp(:, 23) = BCtmp(:, 17) * BCtmp(:, 23)
           BCtmp(:, 24) = BCtmp(:, 17) * BCtmp(:, 24)
      &                 - BCtmp(:, 21) * BCtmp(:, 20)
-          BC(:,elas5)  = BCtmp(:, 24) / BCtmp(:, 23)
+          BC(:,elas5)  = BCtmp(:, 24) / BCtmp(:, 23) * Delt(1)
           BC(:,elas6)  = BCtmp(:, 22) / BCtmp(:, 23)
         endwhere
         endif
@@ -409,7 +410,7 @@ c
      &                 - BCtmp(:, 19) * BCtmp(:, 22)
           BCtmp(:, 20) = BCtmp(:, 23) * BCtmp(:, 20)
      &                 - BCtmp(:, 19) * BCtmp(:, 23)
-          BC(:,elas3)  = BCtmp(:, 20) / BCtmp(:, 18)
+          BC(:,elas3)  = BCtmp(:, 20) / BCtmp(:, 18) * Delt(1)
           BC(:,elas4)  = BCtmp(:, 17) / BCtmp(:, 18)
 c
           BCtmp(:, 21) = BCtmp(:, 18) * BCtmp(:, 21)
@@ -417,7 +418,7 @@ c
           BCtmp(:, 23) = BCtmp(:, 18) * BCtmp(:, 23)
           BCtmp(:, 24) = BCtmp(:, 18) * BCtmp(:, 24)
      &                 - BCtmp(:, 22) * BCtmp(:, 20)
-          BC(:,elas5)  = BCtmp(:, 24) / BCtmp(:, 23)
+          BC(:,elas5)  = BCtmp(:, 24) / BCtmp(:, 23) * Delt(1)
           BC(:,elas6)  = BCtmp(:, 21) / BCtmp(:, 23)
         endwhere
         endif
@@ -427,9 +428,9 @@ c
 
         if (nsd .eq. 3) then
         where (ibits(iBC,14,3) .eq. 7)
-          BC(:,elas3) = BCtmp(:,20) * BCtmp(:,17)
-          BC(:,elas4) = BCtmp(:,20) * BCtmp(:,18)
-          BC(:,elas5) = BCtmp(:,20) * BCtmp(:,19)
+          BC(:,elas3) = BCtmp(:,20) * BCtmp(:,17) * Delt(1)
+          BC(:,elas4) = BCtmp(:,20) * BCtmp(:,18) * Delt(1)
+          BC(:,elas5) = BCtmp(:,20) * BCtmp(:,19) * Delt(1)
         endwhere
         endif
       endif ! end if iALE = 2

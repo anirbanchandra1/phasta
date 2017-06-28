@@ -29,61 +29,63 @@ c
 c.... x1-velocity, 3D
 c
           where (ibits(iBC,14,3) .eq. 1)
-            umesh(:,1) = BC(:,1) - BC(:,2) * umesh(:,2)
-     &                           - BC(:,3) * umesh(:,3)
-            disp(:,1)  = umesh(:,1) * Delt(1)
+            disp(:,1)  = BC(:,1) - BC(:,2) * disp(:,2)
+     &                           - BC(:,3) * disp(:,3)
+            umesh(:,1) = disp(:,1) / Delt(1)
           endwhere
 c
 c.... x2-velocity, 3D
 c
           where (ibits(iBC,14,3) .eq. 2)
-            umesh(:,2) = BC(:,1) - BC(:,2) * umesh(:,1)
-     &                           - BC(:,3) * umesh(:,3)
-            disp(:,2)  = umesh(:,2) * Delt(1)
+            disp(:,2)  = BC(:,1) - BC(:,2) * disp(:,1)
+     &                           - BC(:,3) * disp(:,3)
+            umesh(:,2) = disp(:,2) / Delt(1)
           endwhere
 c
 c.... x1-velocity and x2-velocity, 3D
 c
           where (ibits(iBC,14,3) .eq. 3)
-            umesh(:,1) = BC(:,1) - BC(:,2) * umesh(:,3)
-            umesh(:,2) = BC(:,3) - BC(:,4) * umesh(:,3)
-            disp(:,1)  = umesh(:,1) * Delt(1)
-            disp(:,2)  = umesh(:,2) * Delt(1)
+            disp(:,1)  = BC(:,1) - BC(:,2) * disp(:,3)
+            disp(:,2)  = BC(:,3) - BC(:,4) * disp(:,3)
+            umesh(:,1) = disp(:,1) / Delt(1)
+            umesh(:,2) = disp(:,2) / Delt(1)
           endwhere
 c
 c.... x3-velocity, 3D
 c
           where (ibits(iBC,14,3) .eq. 4)
-            umesh(:,3) = BC(:,1) - BC(:,2) * umesh(:,1)
-     &                           - BC(:,3) * umesh(:,2)
-            disp(:,3)  = umesh(:,3) * Delt(1)
+            disp(:,3)  = BC(:,1) - BC(:,2) * disp(:,1)
+     &                           - BC(:,3) * disp(:,2)
+            umesh(:,3) = disp(:,3) / Delt(1)
           endwhere
 c
 c.... x1-velocity and x3-velocity, 3D
 c
           where (ibits(iBC,14,3) .eq. 5)
-            umesh(:,1) = BC(:,1) - BC(:,2) * umesh(:,2)
-            umesh(:,3) = BC(:,3) - BC(:,4) * umesh(:,2)
-            disp(:,1)  = umesh(:,1) * Delt(1)
-            disp(:,3)  = umesh(:,3) * Delt(1)
+            disp(:,1)  = BC(:,1) - BC(:,2) * disp(:,2)
+            disp(:,3)  = BC(:,3) - BC(:,4) * disp(:,2)
+            umesh(:,1) = disp(:,1) / Delt(1)
+            umesh(:,3) = disp(:,3) / Delt(1)
           endwhere
 c
 c.... x2-velocity and x3-velocity, 3D
 c
           where (ibits(iBC,14,3) .eq. 6)
-            umesh(:,2) = BC(:,1) - BC(:,2) * umesh(:,1)
-            disp(:,2)  = umesh(:,2) * Delt(1)
+            disp(:,2)  = BC(:,1) - BC(:,2) * disp(:,1)
+            disp(:,3)  = BC(:,3) - BC(:,4) * disp(:,1)
+            umesh(:,2) = disp(:,2) / Delt(1)
+            umesh(:,3) = disp(:,3) / Delt(1)
           endwhere
 c
 c.... x1-velocity, x2-velocity and x3-velocity, 3D
 c
           where (ibits(iBC,14,3) .eq. 7)
-            umesh(:,1) =  BC(:,1)
-            umesh(:,2) =  BC(:,2)
-            umesh(:,3) =  BC(:,3) 
-            disp(:,1)  = umesh(:,1) * Delt(1)
-            disp(:,2)  = umesh(:,2) * Delt(1)
-            disp(:,3)  = umesh(:,3) * Delt(1)
+            disp(:,1)  = BC(:,1)
+            disp(:,2)  = BC(:,2)
+            disp(:,3)  = BC(:,3)
+            umesh(:,1) = disp(:,1) / Delt(1)
+            umesh(:,2) = disp(:,2) / Delt(1)
+            umesh(:,3) = disp(:,3) / Delt(1)
           endwhere
 c
 c       endif

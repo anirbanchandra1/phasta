@@ -168,7 +168,10 @@ c     fff = 144.0d0
      &        + two*((u2 - um2)*gijd(:,2) + (u3 - um3)*gijd(:,4)))
      &        + (u2 - um2)*((u2 - um2)*gijd(:,3) + two*(u3-um3)*gijd(:,5))
      &        + (u3 - um3)*(u3 - um3)*gijd(:,6))
+<<<<<<< HEAD
 !     &        + c**2*(gijd(:,1)+gijd(:,3)+gijd(:,6)) !AC 
+=======
+>>>>>>> 1c016114de7761cd19718c8bfcb3ddd9e45ad734
      &        +fff*rmu**2*(gijd(:,1)**2 + gijd(:,3)**2 + gijd(:,6)**2 +
      &        two*(gijd(:,2)**2 + gijd(:,4)**2 + gijd(:,5)**2))
          fact=sqrt(tau(:,2))
