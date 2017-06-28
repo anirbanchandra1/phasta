@@ -733,7 +733,7 @@ c
 c
 c.... compute the factors
 c
-            fact = 0*shape(:,j) * WdetJ * almi/gami/alfi*dtgl !AC
+            fact = shape(:,j) * WdetJ * almi/gami/alfi*dtgl !AC
 c
 c.... loop through d.o.f.s
 c
