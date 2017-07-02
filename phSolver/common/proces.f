@@ -284,6 +284,10 @@ c
         deallocate(BLgr)
         deallocate(BLtnv)
         deallocate(BLlist)
+c
+        deallocate(m2gClsfcn)
+        deallocate(m2gParCoord)
+c
         call finalizeDtN
         call clearper
         call finalizeNABI

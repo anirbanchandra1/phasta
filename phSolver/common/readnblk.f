@@ -32,6 +32,9 @@ c
       real*8, allocatable  :: BLgr(:)
       integer, allocatable :: BLtnv(:)
       integer, allocatable :: BLlist(:)
+
+      integer, allocatable :: m2gClsfcn(:,:)
+      real*8, allocatable :: m2gParCoord(:,:)
       end module
 
       subroutine readnblk
@@ -51,11 +54,13 @@ c
       real*8, target, allocatable :: xdotoldread(:,:), umeshread(:,:)
       real*8, target, allocatable :: BCinpread(:,:)
       real*8, target, allocatable :: tmpBLDbl(:)
+      real*8, target, allocatable :: tmpm2gParCoord(:,:)
       real*8 :: iotime
       integer, target, allocatable :: iperread(:), iBCtmpread(:)
       integer, target, allocatable :: ilworkread(:), nBCread(:)
       integer, target, allocatable :: fncorpread(:)
       integer, target, allocatable :: tmpBLInt(:), tmpBLlist(:)
+      integer, target, allocatable :: tmpm2gClsfcn(:,:)
       integer fncorpsize
       character*10 cname2, cname2nd
       character*8 mach2
@@ -69,6 +74,7 @@ c
       integer :: ierr_io, numprocs, itmp, itmp2
       integer :: ignored
       integer :: fileFmt
+      integer :: numm2g, ixsiz
       character*255 fname2, temp2
       character*64 temp1
       type(c_ptr) :: handle
@@ -274,6 +280,69 @@ c
      & c_char_'co-ordinates' // char(0),
      & c_loc(xread),ixsiz, dataDbl, iotype)
       point2x = xread
+c
+c.... read mesh to geom fields
+c
+        call phio_readheader(fhandle,
+     &   c_char_'m2g classification' // char(0),
+     &   c_loc(intfromfile),itwo, dataInt, iotype)
+        numm2g = intfromfile(1)
+        if (numm2g > 0) then
+          if (numm2g .ne. numnp) then
+            write(*,*) "size of m2g field is not consistent with numnp"
+            call error ('readnblk  ', 'numnp   ', numnp)
+          endif
+          allocate( tmpm2gClsfcn(numnp,2) )
+          allocate( m2gClsfcn(numnp,2) )
+          ixsiz=numnp*2 ! dim and tag
+        else
+          allocate( tmpm2gClsfcn(1,1) )
+          allocate( m2gClsfcn(1,1) )
+          ixsiz=1*1
+        endif
+        call phio_readdatablock(fhandle,
+     &   c_char_'m2g classification' // char(0),
+     &   c_loc(tmpm2gClsfcn),ixsiz, dataInt, iotype)
+c
+        if (numm2g > 0) then
+          m2gClsfcn = tmpm2gClsfcn
+          deallocate( tmpm2gClsfcn )
+        else
+          m2gClsfcn = 0
+          deallocate( tmpm2gClsfcn )
+        endif
+c...
+        call phio_readheader(fhandle,
+     &   c_char_'m2g parametric coordinate' // char(0),
+     &   c_loc(intfromfile),itwo, dataDbl, iotype)
+        numm2g = intfromfile(1)
+        if (numm2g > 0) then
+          if (numm2g .ne. numnp) then
+            write(*,*) "size of m2g field is not consistent with numnp"
+            call error ('readnblk  ', 'numnp   ', numnp)
+          endif
+          allocate( tmpm2gParCoord(numnp,2) )
+          allocate( m2gParCoord(numnp,2) )
+          ixsiz=numnp*2 ! par1 and par2
+        else
+          allocate( tmpm2gParCoord(1,1) )
+          allocate( m2gParCoord(1,1) )
+          ixsiz=1*1
+        endif
+        call phio_readdatablock(fhandle,
+     &   c_char_'m2g parametric coordinate' // char(0),
+     &   c_loc(tmpm2gParCoord),ixsiz, dataDbl, iotype)
+c
+        if (numm2g > 0) then
+          m2gParCoord = tmpm2gParCoord
+          deallocate( tmpm2gParCoord )
+        else
+          m2gParCoord = 0
+          deallocate( tmpm2gParCoord )
+        endif
+c
+c.... end read mesh to geom fields
+c
 c
 c.... read in and block out the connectivity
 c
