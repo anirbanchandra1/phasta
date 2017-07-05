@@ -282,3 +282,31 @@ c
         return
         end
 c
+c----------------------------------------------------------------------
+c
+c----------------------------------------------------------------------
+c
+        subroutine write_m2g_fields ()
+c
+        use readarrays ! read m2g fields
+c
+        include "common.h"
+c
+c.... temporary write out here
+        if (mesh2geom .eq. 1) then
+          call write_field(
+     &         myrank,'a'//char(0),'m2g_classification'//char(0),18,
+     &         m2gClsfcn,  'i'//char(0), numnp, 2, lstep)
+          call write_field(
+     &         myrank,'a'//char(0),'m2g_parCoordinate'//char(0),17,
+     &         m2gParCoord,  'd'//char(0), numnp, 2, lstep)
+        endif
+c
+        return
+        end
+c
+c----------------------------------------------------------------------
+c
+c----------------------------------------------------------------------
+c
+

@@ -295,10 +295,12 @@ c
           allocate( tmpm2gClsfcn(numnp,2) )
           allocate( m2gClsfcn(numnp,2) )
           ixsiz=numnp*2 ! dim and tag
+          mesh2geom = 1
         else
           allocate( tmpm2gClsfcn(1,1) )
           allocate( m2gClsfcn(1,1) )
           ixsiz=1*1
+          mesh2geom = 0
         endif
         call phio_readdatablock(fhandle,
      &   c_char_'m2g classification' // char(0),
@@ -323,11 +325,13 @@ c...
           endif
           allocate( tmpm2gParCoord(numnp,2) )
           allocate( m2gParCoord(numnp,2) )
-          ixsiz=numnp*2 ! par1 and par2
+          ixsiz=numnp*2 ! par1 and par2 ! may not needed
+          mesh2geom = 1 ! may not needed
         else
           allocate( tmpm2gParCoord(1,1) )
           allocate( m2gParCoord(1,1) )
-          ixsiz=1*1
+          ixsiz=1*1 ! may not needed
+          mesh2geom = 0 ! may not needed
         endif
         call phio_readdatablock(fhandle,
      &   c_char_'m2g parametric coordinate' // char(0),

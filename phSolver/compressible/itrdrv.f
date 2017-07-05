@@ -971,6 +971,9 @@ c
      &              myrank,'a'//char(0),'material_type'//char(0),13,
      &              mattype_interior, 'd',numel, 1, lstep)
 c
+c.... write m2g fields to restart file
+                  call write_m2g_fields()
+c
                if (solid_p%is_active)
      &           call write_restart_solid
 
