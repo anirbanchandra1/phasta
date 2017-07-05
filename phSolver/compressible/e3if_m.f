@@ -214,7 +214,7 @@ c
             call calc_vi_area_node(sum_vi_area_l0,shp0,WdetJif0,nshl0)
             call calc_vi_area_node(sum_vi_area_l1,shp1,WdetJif1,nshl1)
 c
-            call calc_vapor_frac_node
+!            call calc_vapor_frac_node
 c
           enddo  ! end of integeration points loop 
 c
@@ -507,7 +507,7 @@ c
                  this_sum = this_sum + ctc(:,iflow,jflow)*(y0(:,jflow)-y1(:,jflow))
                enddo
 c
-               ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*mu(:,iflow)/length_h * this_sum
+             ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*mu(:,iflow)/length_h * this_sum
 c
            enddo
 c

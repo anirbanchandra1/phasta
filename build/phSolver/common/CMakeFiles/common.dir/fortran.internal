@@ -47,6 +47,7 @@ provides
  sclrs_m
  shpdat_m
  slpw
+ snapmesh_m
  solid_data_m
  solid_m
  spebc

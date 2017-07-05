@@ -311,6 +311,9 @@ phSolver/compressible/CMakeFiles/compressible.dir/shpmeasure.f.o
 phSolver/compressible/CMakeFiles/compressible.dir/shuffle.f.o
  /lore/chanda5/phasta/phSolver/compressible/shuffle.f
  ../phSolver/common/common.h
+phSolver/compressible/CMakeFiles/compressible.dir/snap_mesh.f.o
+ /lore/chanda5/phasta/phSolver/compressible/snap_mesh.f
+ ../phSolver/common/common.h
 phSolver/compressible/CMakeFiles/compressible.dir/solgmr.f.o
  /lore/chanda5/phasta/phSolver/compressible/solgmr.f
  ../phSolver/common/auxmpi.h

@@ -95,6 +95,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/compressible.dir/setBlowing_Duct2.f.o"
   "CMakeFiles/compressible.dir/shpmeasure.f.o"
   "CMakeFiles/compressible.dir/shuffle.f.o"
+  "CMakeFiles/compressible.dir/snap_mesh.f.o"
   "CMakeFiles/compressible.dir/solgmr.f.o"
   "CMakeFiles/compressible.dir/solgmrelas.f.o"
   "CMakeFiles/compressible.dir/solmfg.f.o"

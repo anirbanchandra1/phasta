@@ -88,7 +88,7 @@ c
           deallocate(iBCpart)
        endif
 
-c.... deallocate iBCtmp even there are no BC's on this partition
+c.... deallocate iBCtmp even there are no BCs on this partition
       deallocate(iBCtmp)
           
 c

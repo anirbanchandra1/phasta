@@ -541,6 +541,33 @@ blowerControl.f90.s:
 	cd /lore/chanda5/phasta/build && $(MAKE) -f phSolver/common/CMakeFiles/common.dir/build.make phSolver/common/CMakeFiles/common.dir/blowerControl.f90.s
 .PHONY : blowerControl.f90.s
 
+calc_normal.o: calc_normal.f.o
+
+.PHONY : calc_normal.o
+
+# target to build an object file
+calc_normal.f.o:
+	cd /lore/chanda5/phasta/build && $(MAKE) -f phSolver/common/CMakeFiles/common.dir/build.make phSolver/common/CMakeFiles/common.dir/calc_normal.f.o
+.PHONY : calc_normal.f.o
+
+calc_normal.i: calc_normal.f.i
+
+.PHONY : calc_normal.i
+
+# target to preprocess a source file
+calc_normal.f.i:
+	cd /lore/chanda5/phasta/build && $(MAKE) -f phSolver/common/CMakeFiles/common.dir/build.make phSolver/common/CMakeFiles/common.dir/calc_normal.f.i
+.PHONY : calc_normal.f.i
+
+calc_normal.s: calc_normal.f.s
+
+.PHONY : calc_normal.s
+
+# target to generate assembly for a file
+calc_normal.f.s:
+	cd /lore/chanda5/phasta/build && $(MAKE) -f phSolver/common/CMakeFiles/common.dir/build.make phSolver/common/CMakeFiles/common.dir/calc_normal.f.s
+.PHONY : calc_normal.f.s
+
 clear.o: clear.f.o
 
 .PHONY : clear.o
@@ -1485,33 +1512,6 @@ genibc.s: genibc.f.s
 genibc.f.s:
 	cd /lore/chanda5/phasta/build && $(MAKE) -f phSolver/common/CMakeFiles/common.dir/build.make phSolver/common/CMakeFiles/common.dir/genibc.f.s
 .PHONY : genibc.f.s
-
-genibcelas.o: genibcelas.f.o
-
-.PHONY : genibcelas.o
-
-# target to build an object file
-genibcelas.f.o:
-	cd /lore/chanda5/phasta/build && $(MAKE) -f phSolver/common/CMakeFiles/common.dir/build.make phSolver/common/CMakeFiles/common.dir/genibcelas.f.o
-.PHONY : genibcelas.f.o
-
-genibcelas.i: genibcelas.f.i
-
-.PHONY : genibcelas.i
-
-# target to preprocess a source file
-genibcelas.f.i:
-	cd /lore/chanda5/phasta/build && $(MAKE) -f phSolver/common/CMakeFiles/common.dir/build.make phSolver/common/CMakeFiles/common.dir/genibcelas.f.i
-.PHONY : genibcelas.f.i
-
-genibcelas.s: genibcelas.f.s
-
-.PHONY : genibcelas.s
-
-# target to generate assembly for a file
-genibcelas.f.s:
-	cd /lore/chanda5/phasta/build && $(MAKE) -f phSolver/common/CMakeFiles/common.dir/build.make phSolver/common/CMakeFiles/common.dir/genibcelas.f.s
-.PHONY : genibcelas.f.s
 
 genini.o: genini.f.o
 
@@ -4213,33 +4213,6 @@ syncio.f.s:
 	cd /lore/chanda5/phasta/build && $(MAKE) -f phSolver/common/CMakeFiles/common.dir/build.make phSolver/common/CMakeFiles/common.dir/syncio.f.s
 .PHONY : syncio.f.s
 
-tempgenibc.o: tempgenibc.f.o
-
-.PHONY : tempgenibc.o
-
-# target to build an object file
-tempgenibc.f.o:
-	cd /lore/chanda5/phasta/build && $(MAKE) -f phSolver/common/CMakeFiles/common.dir/build.make phSolver/common/CMakeFiles/common.dir/tempgenibc.f.o
-.PHONY : tempgenibc.f.o
-
-tempgenibc.i: tempgenibc.f.i
-
-.PHONY : tempgenibc.i
-
-# target to preprocess a source file
-tempgenibc.f.i:
-	cd /lore/chanda5/phasta/build && $(MAKE) -f phSolver/common/CMakeFiles/common.dir/build.make phSolver/common/CMakeFiles/common.dir/tempgenibc.f.i
-.PHONY : tempgenibc.f.i
-
-tempgenibc.s: tempgenibc.f.s
-
-.PHONY : tempgenibc.s
-
-# target to generate assembly for a file
-tempgenibc.f.s:
-	cd /lore/chanda5/phasta/build && $(MAKE) -f phSolver/common/CMakeFiles/common.dir/build.make phSolver/common/CMakeFiles/common.dir/tempgenibc.f.s
-.PHONY : tempgenibc.f.s
-
 timer.o: timer.f.o
 
 .PHONY : timer.o
@@ -4403,6 +4376,9 @@ help:
 	@echo "... blowerControl.o"
 	@echo "... blowerControl.i"
 	@echo "... blowerControl.s"
+	@echo "... calc_normal.o"
+	@echo "... calc_normal.i"
+	@echo "... calc_normal.s"
 	@echo "... clear.o"
 	@echo "... clear.i"
 	@echo "... clear.s"
@@ -4508,9 +4484,6 @@ help:
 	@echo "... genibc.o"
 	@echo "... genibc.i"
 	@echo "... genibc.s"
-	@echo "... genibcelas.o"
-	@echo "... genibcelas.i"
-	@echo "... genibcelas.s"
 	@echo "... genini.o"
 	@echo "... genini.i"
 	@echo "... genini.s"
@@ -4811,9 +4784,6 @@ help:
 	@echo "... syncio.o"
 	@echo "... syncio.i"
 	@echo "... syncio.s"
-	@echo "... tempgenibc.o"
-	@echo "... tempgenibc.i"
-	@echo "... tempgenibc.s"
 	@echo "... timer.o"
 	@echo "... timer.i"
 	@echo "... timer.s"

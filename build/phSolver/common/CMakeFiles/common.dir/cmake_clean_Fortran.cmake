@@ -188,6 +188,10 @@ FILE(REMOVE
   "../modules/SLPW.mod"
   "CMakeFiles/common.dir/slpw.mod.stamp"
 
+  "../modules/snapmesh_m.mod"
+  "../modules/SNAPMESH_M.mod"
+  "CMakeFiles/common.dir/snapmesh_m.mod.stamp"
+
   "../modules/solid_data_m.mod"
   "../modules/SOLID_DATA_M.mod"
   "CMakeFiles/common.dir/solid_data_m.mod.stamp"

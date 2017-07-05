@@ -72,6 +72,7 @@ c      write(*,200) 'AFTER: ', myrank,inode, umesh(inode,:)
 c          endif
 c        enddo
 c
+	open (unit = 2000, file = "debug.dat")
         do iblk = 1,nelblif
           npro  = lcblkif(1,iblk+1) - lcblkif(1,iblk)
           ienif0 => mienif0(iblk)%p
@@ -86,8 +87,8 @@ c              BC(i0,:) = sum_vi_area(i0,:) / sum_vi_area(i0,nsd+1)
 c              BC(i1,:) = sum_vi_area(i1,:) / sum_vi_area(i1,nsd+1)
               BC(i0,:) = umesh(i0,:) * dt
               BC(i1,:) = umesh(i1,:) * dt
-c      write(*,200) 'AFTER: ', myrank,i0, umesh(i0,:)
-c      write(*,200) 'AFTER: ', myrank,i1, umesh(i1,:)
+      write(2000,200) 'AFTER: ', myrank,i0, umesh(i0,:)
+      write(2000,200) 'AFTER: ', myrank,i1, umesh(i1,:)
             enddo
           enddo
         enddo

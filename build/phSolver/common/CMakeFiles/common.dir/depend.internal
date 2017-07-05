@@ -293,6 +293,9 @@ phSolver/common/CMakeFiles/common.dir/blowerControl.f90.o
  /lore/chanda5/phasta/phSolver/common/blowerControl.f90
  /lore/chanda5/phasta/phSolver/common/common.h
  /usr/local/mpich3/3.1.2-thread-multiple/include/mpif.h
+phSolver/common/CMakeFiles/common.dir/calc_normal.f.o
+ /lore/chanda5/phasta/phSolver/common/calc_normal.f
+ /lore/chanda5/phasta/phSolver/common/common.h
 phSolver/common/CMakeFiles/common.dir/clear.f.o
  /lore/chanda5/phasta/phSolver/common/clear.f
  /lore/chanda5/phasta/phSolver/common/common.h
@@ -396,9 +399,6 @@ phSolver/common/CMakeFiles/common.dir/gendat.f.o
  /usr/local/mpich3/3.1.2-thread-multiple/include/mpif.h
 phSolver/common/CMakeFiles/common.dir/genibc.f.o
  /lore/chanda5/phasta/phSolver/common/genibc.f
- /lore/chanda5/phasta/phSolver/common/common.h
-phSolver/common/CMakeFiles/common.dir/genibcelas.f.o
- /lore/chanda5/phasta/phSolver/common/genibcelas.f
  /lore/chanda5/phasta/phSolver/common/common.h
 phSolver/common/CMakeFiles/common.dir/genini.f.o
  /lore/chanda5/phasta/phSolver/common/genini.f
@@ -604,9 +604,6 @@ phSolver/common/CMakeFiles/common.dir/streamio.f.o
  /lore/chanda5/phasta/phSolver/common/streamio.f
 phSolver/common/CMakeFiles/common.dir/syncio.f.o
  /lore/chanda5/phasta/phSolver/common/syncio.f
-phSolver/common/CMakeFiles/common.dir/tempgenibc.f.o
- /lore/chanda5/phasta/phSolver/common/tempgenibc.f
- /lore/chanda5/phasta/phSolver/common/common.h
 phSolver/common/CMakeFiles/common.dir/timer.f.o
  /lore/chanda5/phasta/phSolver/common/timer.f
  /lore/chanda5/phasta/phSolver/common/common.h

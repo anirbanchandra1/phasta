@@ -633,9 +633,33 @@ phSolver/common/CMakeFiles/common.dir/bctint.f.o.provides: phSolver/common/CMake
 phSolver/common/CMakeFiles/common.dir/bctint.f.o.provides.build: phSolver/common/CMakeFiles/common.dir/bctint.f.o
 
 
+phSolver/common/CMakeFiles/common.dir/calc_normal.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
+phSolver/common/CMakeFiles/common.dir/calc_normal.f.o: ../phSolver/common/calc_normal.f
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building Fortran object phSolver/common/CMakeFiles/common.dir/calc_normal.f.o"
+	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/calc_normal.f -o CMakeFiles/common.dir/calc_normal.f.o
+
+phSolver/common/CMakeFiles/common.dir/calc_normal.f.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing Fortran source to CMakeFiles/common.dir/calc_normal.f.i"
+	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -E /lore/chanda5/phasta/phSolver/common/calc_normal.f > CMakeFiles/common.dir/calc_normal.f.i
+
+phSolver/common/CMakeFiles/common.dir/calc_normal.f.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling Fortran source to assembly CMakeFiles/common.dir/calc_normal.f.s"
+	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -S /lore/chanda5/phasta/phSolver/common/calc_normal.f -o CMakeFiles/common.dir/calc_normal.f.s
+
+phSolver/common/CMakeFiles/common.dir/calc_normal.f.o.requires:
+
+.PHONY : phSolver/common/CMakeFiles/common.dir/calc_normal.f.o.requires
+
+phSolver/common/CMakeFiles/common.dir/calc_normal.f.o.provides: phSolver/common/CMakeFiles/common.dir/calc_normal.f.o.requires
+	$(MAKE) -f phSolver/common/CMakeFiles/common.dir/build.make phSolver/common/CMakeFiles/common.dir/calc_normal.f.o.provides.build
+.PHONY : phSolver/common/CMakeFiles/common.dir/calc_normal.f.o.provides
+
+phSolver/common/CMakeFiles/common.dir/calc_normal.f.o.provides.build: phSolver/common/CMakeFiles/common.dir/calc_normal.f.o
+
+
 phSolver/common/CMakeFiles/common.dir/clear.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/clear.f.o: ../phSolver/common/clear.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building Fortran object phSolver/common/CMakeFiles/common.dir/clear.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building Fortran object phSolver/common/CMakeFiles/common.dir/clear.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/clear.f -o CMakeFiles/common.dir/clear.f.o
 
 phSolver/common/CMakeFiles/common.dir/clear.f.i: cmake_force
@@ -659,7 +683,7 @@ phSolver/common/CMakeFiles/common.dir/clear.f.o.provides.build: phSolver/common/
 
 phSolver/common/CMakeFiles/common.dir/cmass.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/cmass.f.o: ../phSolver/common/cmass.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building Fortran object phSolver/common/CMakeFiles/common.dir/cmass.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building Fortran object phSolver/common/CMakeFiles/common.dir/cmass.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/cmass.f -o CMakeFiles/common.dir/cmass.f.o
 
 phSolver/common/CMakeFiles/common.dir/cmass.f.i: cmake_force
@@ -683,7 +707,7 @@ phSolver/common/CMakeFiles/common.dir/cmass.f.o.provides.build: phSolver/common/
 
 phSolver/common/CMakeFiles/common.dir/cname.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/cname.f.o: ../phSolver/common/cname.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building Fortran object phSolver/common/CMakeFiles/common.dir/cname.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building Fortran object phSolver/common/CMakeFiles/common.dir/cname.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/cname.f -o CMakeFiles/common.dir/cname.f.o
 
 phSolver/common/CMakeFiles/common.dir/cname.f.i: cmake_force
@@ -707,7 +731,7 @@ phSolver/common/CMakeFiles/common.dir/cname.f.o.provides.build: phSolver/common/
 
 phSolver/common/CMakeFiles/common.dir/common.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/common.f.o: ../phSolver/common/common.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building Fortran object phSolver/common/CMakeFiles/common.dir/common.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building Fortran object phSolver/common/CMakeFiles/common.dir/common.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/common.f -o CMakeFiles/common.dir/common.f.o
 
 phSolver/common/CMakeFiles/common.dir/common.f.i: cmake_force
@@ -731,7 +755,7 @@ phSolver/common/CMakeFiles/common.dir/common.f.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/commu.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/commu.f.o: ../phSolver/common/commu.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building Fortran object phSolver/common/CMakeFiles/common.dir/commu.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building Fortran object phSolver/common/CMakeFiles/common.dir/commu.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/commu.f -o CMakeFiles/common.dir/commu.f.o
 
 phSolver/common/CMakeFiles/common.dir/commu.f.i: cmake_force
@@ -755,7 +779,7 @@ phSolver/common/CMakeFiles/common.dir/commu.f.o.provides.build: phSolver/common/
 
 phSolver/common/CMakeFiles/common.dir/commuInt.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/commuInt.f.o: ../phSolver/common/commuInt.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building Fortran object phSolver/common/CMakeFiles/common.dir/commuInt.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building Fortran object phSolver/common/CMakeFiles/common.dir/commuInt.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/commuInt.f -o CMakeFiles/common.dir/commuInt.f.o
 
 phSolver/common/CMakeFiles/common.dir/commuInt.f.i: cmake_force
@@ -779,7 +803,7 @@ phSolver/common/CMakeFiles/common.dir/commuInt.f.o.provides.build: phSolver/comm
 
 phSolver/common/CMakeFiles/common.dir/commuLayer.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/commuLayer.f.o: ../phSolver/common/commuLayer.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building Fortran object phSolver/common/CMakeFiles/common.dir/commuLayer.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building Fortran object phSolver/common/CMakeFiles/common.dir/commuLayer.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/commuLayer.f -o CMakeFiles/common.dir/commuLayer.f.o
 
 phSolver/common/CMakeFiles/common.dir/commuLayer.f.i: cmake_force
@@ -803,7 +827,7 @@ phSolver/common/CMakeFiles/common.dir/commuLayer.f.o.provides.build: phSolver/co
 
 phSolver/common/CMakeFiles/common.dir/ctypes.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/ctypes.f.o: ../phSolver/common/ctypes.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building Fortran object phSolver/common/CMakeFiles/common.dir/ctypes.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building Fortran object phSolver/common/CMakeFiles/common.dir/ctypes.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/ctypes.f -o CMakeFiles/common.dir/ctypes.f.o
 
 phSolver/common/CMakeFiles/common.dir/ctypes.f.i: cmake_force
@@ -827,7 +851,7 @@ phSolver/common/CMakeFiles/common.dir/ctypes.f.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/dtn.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/dtn.f.o: ../phSolver/common/dtn.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building Fortran object phSolver/common/CMakeFiles/common.dir/dtn.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building Fortran object phSolver/common/CMakeFiles/common.dir/dtn.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/dtn.f -o CMakeFiles/common.dir/dtn.f.o
 
 phSolver/common/CMakeFiles/common.dir/dtn.f.i: cmake_force
@@ -851,7 +875,7 @@ phSolver/common/CMakeFiles/common.dir/dtn.f.o.provides.build: phSolver/common/CM
 
 phSolver/common/CMakeFiles/common.dir/e3metric.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/e3metric.f.o: ../phSolver/common/e3metric.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building Fortran object phSolver/common/CMakeFiles/common.dir/e3metric.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building Fortran object phSolver/common/CMakeFiles/common.dir/e3metric.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/e3metric.f -o CMakeFiles/common.dir/e3metric.f.o
 
 phSolver/common/CMakeFiles/common.dir/e3metric.f.i: cmake_force
@@ -875,7 +899,7 @@ phSolver/common/CMakeFiles/common.dir/e3metric.f.o.provides.build: phSolver/comm
 
 phSolver/common/CMakeFiles/common.dir/elem-search.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/elem-search.f.o: ../phSolver/common/elem-search.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building Fortran object phSolver/common/CMakeFiles/common.dir/elem-search.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Building Fortran object phSolver/common/CMakeFiles/common.dir/elem-search.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/elem-search.f -o CMakeFiles/common.dir/elem-search.f.o
 
 phSolver/common/CMakeFiles/common.dir/elem-search.f.i: cmake_force
@@ -899,7 +923,7 @@ phSolver/common/CMakeFiles/common.dir/elem-search.f.o.provides.build: phSolver/c
 
 phSolver/common/CMakeFiles/common.dir/elm3keps.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/elm3keps.f.o: ../phSolver/common/elm3keps.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Building Fortran object phSolver/common/CMakeFiles/common.dir/elm3keps.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_37) "Building Fortran object phSolver/common/CMakeFiles/common.dir/elm3keps.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/elm3keps.f -o CMakeFiles/common.dir/elm3keps.f.o
 
 phSolver/common/CMakeFiles/common.dir/elm3keps.f.i: cmake_force
@@ -923,7 +947,7 @@ phSolver/common/CMakeFiles/common.dir/elm3keps.f.o.provides.build: phSolver/comm
 
 phSolver/common/CMakeFiles/common.dir/eqn_plane.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/eqn_plane.f.o: ../phSolver/common/eqn_plane.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_37) "Building Fortran object phSolver/common/CMakeFiles/common.dir/eqn_plane.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_38) "Building Fortran object phSolver/common/CMakeFiles/common.dir/eqn_plane.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/eqn_plane.f -o CMakeFiles/common.dir/eqn_plane.f.o
 
 phSolver/common/CMakeFiles/common.dir/eqn_plane.f.i: cmake_force
@@ -947,7 +971,7 @@ phSolver/common/CMakeFiles/common.dir/eqn_plane.f.o.provides.build: phSolver/com
 
 phSolver/common/CMakeFiles/common.dir/error.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/error.f.o: ../phSolver/common/error.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_38) "Building Fortran object phSolver/common/CMakeFiles/common.dir/error.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Building Fortran object phSolver/common/CMakeFiles/common.dir/error.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/error.f -o CMakeFiles/common.dir/error.f.o
 
 phSolver/common/CMakeFiles/common.dir/error.f.i: cmake_force
@@ -971,7 +995,7 @@ phSolver/common/CMakeFiles/common.dir/error.f.o.provides.build: phSolver/common/
 
 phSolver/common/CMakeFiles/common.dir/errorsmooth.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/errorsmooth.f.o: ../phSolver/common/errorsmooth.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Building Fortran object phSolver/common/CMakeFiles/common.dir/errorsmooth.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_40) "Building Fortran object phSolver/common/CMakeFiles/common.dir/errorsmooth.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/errorsmooth.f -o CMakeFiles/common.dir/errorsmooth.f.o
 
 phSolver/common/CMakeFiles/common.dir/errorsmooth.f.i: cmake_force
@@ -995,7 +1019,7 @@ phSolver/common/CMakeFiles/common.dir/errorsmooth.f.o.provides.build: phSolver/c
 
 phSolver/common/CMakeFiles/common.dir/f3lhs.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/f3lhs.f.o: ../phSolver/common/f3lhs.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_40) "Building Fortran object phSolver/common/CMakeFiles/common.dir/f3lhs.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_41) "Building Fortran object phSolver/common/CMakeFiles/common.dir/f3lhs.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/f3lhs.f -o CMakeFiles/common.dir/f3lhs.f.o
 
 phSolver/common/CMakeFiles/common.dir/f3lhs.f.i: cmake_force
@@ -1019,7 +1043,7 @@ phSolver/common/CMakeFiles/common.dir/f3lhs.f.o.provides.build: phSolver/common/
 
 phSolver/common/CMakeFiles/common.dir/fillsparse.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/fillsparse.f.o: ../phSolver/common/fillsparse.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_41) "Building Fortran object phSolver/common/CMakeFiles/common.dir/fillsparse.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_42) "Building Fortran object phSolver/common/CMakeFiles/common.dir/fillsparse.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/fillsparse.f -o CMakeFiles/common.dir/fillsparse.f.o
 
 phSolver/common/CMakeFiles/common.dir/fillsparse.f.i: cmake_force
@@ -1043,7 +1067,7 @@ phSolver/common/CMakeFiles/common.dir/fillsparse.f.o.provides.build: phSolver/co
 
 phSolver/common/CMakeFiles/common.dir/filtprep.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/filtprep.f.o: ../phSolver/common/filtprep.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_42) "Building Fortran object phSolver/common/CMakeFiles/common.dir/filtprep.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_43) "Building Fortran object phSolver/common/CMakeFiles/common.dir/filtprep.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/filtprep.f -o CMakeFiles/common.dir/filtprep.f.o
 
 phSolver/common/CMakeFiles/common.dir/filtprep.f.i: cmake_force
@@ -1067,7 +1091,7 @@ phSolver/common/CMakeFiles/common.dir/filtprep.f.o.provides.build: phSolver/comm
 
 phSolver/common/CMakeFiles/common.dir/findTurbWall.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/findTurbWall.f.o: ../phSolver/common/findTurbWall.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_43) "Building Fortran object phSolver/common/CMakeFiles/common.dir/findTurbWall.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_44) "Building Fortran object phSolver/common/CMakeFiles/common.dir/findTurbWall.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/findTurbWall.f -o CMakeFiles/common.dir/findTurbWall.f.o
 
 phSolver/common/CMakeFiles/common.dir/findTurbWall.f.i: cmake_force
@@ -1091,7 +1115,7 @@ phSolver/common/CMakeFiles/common.dir/findTurbWall.f.o.provides.build: phSolver/
 
 phSolver/common/CMakeFiles/common.dir/findslpw.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/findslpw.f.o: ../phSolver/common/findslpw.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_44) "Building Fortran object phSolver/common/CMakeFiles/common.dir/findslpw.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_45) "Building Fortran object phSolver/common/CMakeFiles/common.dir/findslpw.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/findslpw.f -o CMakeFiles/common.dir/findslpw.f.o
 
 phSolver/common/CMakeFiles/common.dir/findslpw.f.i: cmake_force
@@ -1115,7 +1139,7 @@ phSolver/common/CMakeFiles/common.dir/findslpw.f.o.provides.build: phSolver/comm
 
 phSolver/common/CMakeFiles/common.dir/fncorp.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/fncorp.f.o: ../phSolver/common/fncorp.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_45) "Building Fortran object phSolver/common/CMakeFiles/common.dir/fncorp.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_46) "Building Fortran object phSolver/common/CMakeFiles/common.dir/fncorp.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/fncorp.f -o CMakeFiles/common.dir/fncorp.f.o
 
 phSolver/common/CMakeFiles/common.dir/fncorp.f.i: cmake_force
@@ -1139,7 +1163,7 @@ phSolver/common/CMakeFiles/common.dir/fncorp.f.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/genadj.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/genadj.f.o: ../phSolver/common/genadj.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_46) "Building Fortran object phSolver/common/CMakeFiles/common.dir/genadj.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_47) "Building Fortran object phSolver/common/CMakeFiles/common.dir/genadj.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/genadj.f -o CMakeFiles/common.dir/genadj.f.o
 
 phSolver/common/CMakeFiles/common.dir/genadj.f.i: cmake_force
@@ -1163,7 +1187,7 @@ phSolver/common/CMakeFiles/common.dir/genadj.f.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/genbc.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/genbc.f.o: ../phSolver/common/genbc.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_47) "Building Fortran object phSolver/common/CMakeFiles/common.dir/genbc.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_48) "Building Fortran object phSolver/common/CMakeFiles/common.dir/genbc.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/genbc.f -o CMakeFiles/common.dir/genbc.f.o
 
 phSolver/common/CMakeFiles/common.dir/genbc.f.i: cmake_force
@@ -1187,7 +1211,7 @@ phSolver/common/CMakeFiles/common.dir/genbc.f.o.provides.build: phSolver/common/
 
 phSolver/common/CMakeFiles/common.dir/genbc1.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/genbc1.f.o: ../phSolver/common/genbc1.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_48) "Building Fortran object phSolver/common/CMakeFiles/common.dir/genbc1.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_49) "Building Fortran object phSolver/common/CMakeFiles/common.dir/genbc1.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/genbc1.f -o CMakeFiles/common.dir/genbc1.f.o
 
 phSolver/common/CMakeFiles/common.dir/genbc1.f.i: cmake_force
@@ -1211,7 +1235,7 @@ phSolver/common/CMakeFiles/common.dir/genbc1.f.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/genbkb.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/genbkb.f.o: ../phSolver/common/genbkb.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_49) "Building Fortran object phSolver/common/CMakeFiles/common.dir/genbkb.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_50) "Building Fortran object phSolver/common/CMakeFiles/common.dir/genbkb.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/genbkb.f -o CMakeFiles/common.dir/genbkb.f.o
 
 phSolver/common/CMakeFiles/common.dir/genbkb.f.i: cmake_force
@@ -1235,7 +1259,7 @@ phSolver/common/CMakeFiles/common.dir/genbkb.f.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/genbkif.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/genbkif.f.o: ../phSolver/common/genbkif.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_50) "Building Fortran object phSolver/common/CMakeFiles/common.dir/genbkif.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_51) "Building Fortran object phSolver/common/CMakeFiles/common.dir/genbkif.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/genbkif.f -o CMakeFiles/common.dir/genbkif.f.o
 
 phSolver/common/CMakeFiles/common.dir/genbkif.f.i: cmake_force
@@ -1259,7 +1283,7 @@ phSolver/common/CMakeFiles/common.dir/genbkif.f.o.provides.build: phSolver/commo
 
 phSolver/common/CMakeFiles/common.dir/genblk.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/genblk.f.o: ../phSolver/common/genblk.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_51) "Building Fortran object phSolver/common/CMakeFiles/common.dir/genblk.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_52) "Building Fortran object phSolver/common/CMakeFiles/common.dir/genblk.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/genblk.f -o CMakeFiles/common.dir/genblk.f.o
 
 phSolver/common/CMakeFiles/common.dir/genblk.f.i: cmake_force
@@ -1283,7 +1307,7 @@ phSolver/common/CMakeFiles/common.dir/genblk.f.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/gendat.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/gendat.f.o: ../phSolver/common/gendat.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_52) "Building Fortran object phSolver/common/CMakeFiles/common.dir/gendat.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_53) "Building Fortran object phSolver/common/CMakeFiles/common.dir/gendat.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/gendat.f -o CMakeFiles/common.dir/gendat.f.o
 
 phSolver/common/CMakeFiles/common.dir/gendat.f.i: cmake_force
@@ -1307,7 +1331,7 @@ phSolver/common/CMakeFiles/common.dir/gendat.f.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/genibc.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/genibc.f.o: ../phSolver/common/genibc.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_53) "Building Fortran object phSolver/common/CMakeFiles/common.dir/genibc.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_54) "Building Fortran object phSolver/common/CMakeFiles/common.dir/genibc.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/genibc.f -o CMakeFiles/common.dir/genibc.f.o
 
 phSolver/common/CMakeFiles/common.dir/genibc.f.i: cmake_force
@@ -1327,30 +1351,6 @@ phSolver/common/CMakeFiles/common.dir/genibc.f.o.provides: phSolver/common/CMake
 .PHONY : phSolver/common/CMakeFiles/common.dir/genibc.f.o.provides
 
 phSolver/common/CMakeFiles/common.dir/genibc.f.o.provides.build: phSolver/common/CMakeFiles/common.dir/genibc.f.o
-
-
-phSolver/common/CMakeFiles/common.dir/genibcelas.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
-phSolver/common/CMakeFiles/common.dir/genibcelas.f.o: ../phSolver/common/genibcelas.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_54) "Building Fortran object phSolver/common/CMakeFiles/common.dir/genibcelas.f.o"
-	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/genibcelas.f -o CMakeFiles/common.dir/genibcelas.f.o
-
-phSolver/common/CMakeFiles/common.dir/genibcelas.f.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing Fortran source to CMakeFiles/common.dir/genibcelas.f.i"
-	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -E /lore/chanda5/phasta/phSolver/common/genibcelas.f > CMakeFiles/common.dir/genibcelas.f.i
-
-phSolver/common/CMakeFiles/common.dir/genibcelas.f.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling Fortran source to assembly CMakeFiles/common.dir/genibcelas.f.s"
-	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -S /lore/chanda5/phasta/phSolver/common/genibcelas.f -o CMakeFiles/common.dir/genibcelas.f.s
-
-phSolver/common/CMakeFiles/common.dir/genibcelas.f.o.requires:
-
-.PHONY : phSolver/common/CMakeFiles/common.dir/genibcelas.f.o.requires
-
-phSolver/common/CMakeFiles/common.dir/genibcelas.f.o.provides: phSolver/common/CMakeFiles/common.dir/genibcelas.f.o.requires
-	$(MAKE) -f phSolver/common/CMakeFiles/common.dir/build.make phSolver/common/CMakeFiles/common.dir/genibcelas.f.o.provides.build
-.PHONY : phSolver/common/CMakeFiles/common.dir/genibcelas.f.o.provides
-
-phSolver/common/CMakeFiles/common.dir/genibcelas.f.o.provides.build: phSolver/common/CMakeFiles/common.dir/genibcelas.f.o
 
 
 phSolver/common/CMakeFiles/common.dir/genini.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
@@ -2865,33 +2865,9 @@ phSolver/common/CMakeFiles/common.dir/syncio.f.o.provides: phSolver/common/CMake
 phSolver/common/CMakeFiles/common.dir/syncio.f.o.provides.build: phSolver/common/CMakeFiles/common.dir/syncio.f.o
 
 
-phSolver/common/CMakeFiles/common.dir/tempgenibc.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
-phSolver/common/CMakeFiles/common.dir/tempgenibc.f.o: ../phSolver/common/tempgenibc.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_118) "Building Fortran object phSolver/common/CMakeFiles/common.dir/tempgenibc.f.o"
-	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/tempgenibc.f -o CMakeFiles/common.dir/tempgenibc.f.o
-
-phSolver/common/CMakeFiles/common.dir/tempgenibc.f.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing Fortran source to CMakeFiles/common.dir/tempgenibc.f.i"
-	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -E /lore/chanda5/phasta/phSolver/common/tempgenibc.f > CMakeFiles/common.dir/tempgenibc.f.i
-
-phSolver/common/CMakeFiles/common.dir/tempgenibc.f.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling Fortran source to assembly CMakeFiles/common.dir/tempgenibc.f.s"
-	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -S /lore/chanda5/phasta/phSolver/common/tempgenibc.f -o CMakeFiles/common.dir/tempgenibc.f.s
-
-phSolver/common/CMakeFiles/common.dir/tempgenibc.f.o.requires:
-
-.PHONY : phSolver/common/CMakeFiles/common.dir/tempgenibc.f.o.requires
-
-phSolver/common/CMakeFiles/common.dir/tempgenibc.f.o.provides: phSolver/common/CMakeFiles/common.dir/tempgenibc.f.o.requires
-	$(MAKE) -f phSolver/common/CMakeFiles/common.dir/build.make phSolver/common/CMakeFiles/common.dir/tempgenibc.f.o.provides.build
-.PHONY : phSolver/common/CMakeFiles/common.dir/tempgenibc.f.o.provides
-
-phSolver/common/CMakeFiles/common.dir/tempgenibc.f.o.provides.build: phSolver/common/CMakeFiles/common.dir/tempgenibc.f.o
-
-
 phSolver/common/CMakeFiles/common.dir/timer.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/timer.f.o: ../phSolver/common/timer.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_119) "Building Fortran object phSolver/common/CMakeFiles/common.dir/timer.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_118) "Building Fortran object phSolver/common/CMakeFiles/common.dir/timer.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/timer.f -o CMakeFiles/common.dir/timer.f.o
 
 phSolver/common/CMakeFiles/common.dir/timer.f.i: cmake_force
@@ -2915,7 +2891,7 @@ phSolver/common/CMakeFiles/common.dir/timer.f.o.provides.build: phSolver/common/
 
 phSolver/common/CMakeFiles/common.dir/turbke.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/turbke.f.o: ../phSolver/common/turbke.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_120) "Building Fortran object phSolver/common/CMakeFiles/common.dir/turbke.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_119) "Building Fortran object phSolver/common/CMakeFiles/common.dir/turbke.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/turbke.f -o CMakeFiles/common.dir/turbke.f.o
 
 phSolver/common/CMakeFiles/common.dir/turbke.f.i: cmake_force
@@ -2939,7 +2915,7 @@ phSolver/common/CMakeFiles/common.dir/turbke.f.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/turbsa.f.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/turbsa.f.o: ../phSolver/common/turbsa.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_121) "Building Fortran object phSolver/common/CMakeFiles/common.dir/turbsa.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_120) "Building Fortran object phSolver/common/CMakeFiles/common.dir/turbsa.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/turbsa.f -o CMakeFiles/common.dir/turbsa.f.o
 
 phSolver/common/CMakeFiles/common.dir/turbsa.f.i: cmake_force
@@ -2963,7 +2939,7 @@ phSolver/common/CMakeFiles/common.dir/turbsa.f.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/blowerControl.f90.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/blowerControl.f90.o: ../phSolver/common/blowerControl.f90
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_122) "Building Fortran object phSolver/common/CMakeFiles/common.dir/blowerControl.f90.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_121) "Building Fortran object phSolver/common/CMakeFiles/common.dir/blowerControl.f90.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/blowerControl.f90 -o CMakeFiles/common.dir/blowerControl.f90.o
 
 phSolver/common/CMakeFiles/common.dir/blowerControl.f90.i: cmake_force
@@ -2987,7 +2963,7 @@ phSolver/common/CMakeFiles/common.dir/blowerControl.f90.o.provides.build: phSolv
 
 phSolver/common/CMakeFiles/common.dir/mod_wallData.f90.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/mod_wallData.f90.o: ../phSolver/common/mod_wallData.f90
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_123) "Building Fortran object phSolver/common/CMakeFiles/common.dir/mod_wallData.f90.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_122) "Building Fortran object phSolver/common/CMakeFiles/common.dir/mod_wallData.f90.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/mod_wallData.f90 -o CMakeFiles/common.dir/mod_wallData.f90.o
 
 phSolver/common/CMakeFiles/common.dir/mod_wallData.f90.i: cmake_force
@@ -3011,7 +2987,7 @@ phSolver/common/CMakeFiles/common.dir/mod_wallData.f90.o.provides.build: phSolve
 
 phSolver/common/CMakeFiles/common.dir/setSuction_Duct3.f90.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/setSuction_Duct3.f90.o: ../phSolver/common/setSuction_Duct3.f90
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_124) "Building Fortran object phSolver/common/CMakeFiles/common.dir/setSuction_Duct3.f90.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_123) "Building Fortran object phSolver/common/CMakeFiles/common.dir/setSuction_Duct3.f90.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/common/setSuction_Duct3.f90 -o CMakeFiles/common.dir/setSuction_Duct3.f90.o
 
 phSolver/common/CMakeFiles/common.dir/setSuction_Duct3.f90.i: cmake_force
@@ -3035,7 +3011,7 @@ phSolver/common/CMakeFiles/common.dir/setSuction_Duct3.f90.o.provides.build: phS
 
 phSolver/common/CMakeFiles/common.dir/GaussLegendre1D.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/GaussLegendre1D.c.o: ../phSolver/common/GaussLegendre1D.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_125) "Building C object phSolver/common/CMakeFiles/common.dir/GaussLegendre1D.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_124) "Building C object phSolver/common/CMakeFiles/common.dir/GaussLegendre1D.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/GaussLegendre1D.c.o   -c /lore/chanda5/phasta/phSolver/common/GaussLegendre1D.c
 
 phSolver/common/CMakeFiles/common.dir/GaussLegendre1D.c.i: cmake_force
@@ -3059,7 +3035,7 @@ phSolver/common/CMakeFiles/common.dir/GaussLegendre1D.c.o.provides.build: phSolv
 
 phSolver/common/CMakeFiles/common.dir/GaussLegendreSimplex.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/GaussLegendreSimplex.c.o: ../phSolver/common/GaussLegendreSimplex.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_126) "Building C object phSolver/common/CMakeFiles/common.dir/GaussLegendreSimplex.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_125) "Building C object phSolver/common/CMakeFiles/common.dir/GaussLegendreSimplex.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/GaussLegendreSimplex.c.o   -c /lore/chanda5/phasta/phSolver/common/GaussLegendreSimplex.c
 
 phSolver/common/CMakeFiles/common.dir/GaussLegendreSimplex.c.i: cmake_force
@@ -3083,7 +3059,7 @@ phSolver/common/CMakeFiles/common.dir/GaussLegendreSimplex.c.o.provides.build: p
 
 phSolver/common/CMakeFiles/common.dir/cycle_count.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/cycle_count.c.o: ../phSolver/common/cycle_count.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_127) "Building C object phSolver/common/CMakeFiles/common.dir/cycle_count.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_126) "Building C object phSolver/common/CMakeFiles/common.dir/cycle_count.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/cycle_count.c.o   -c /lore/chanda5/phasta/phSolver/common/cycle_count.c
 
 phSolver/common/CMakeFiles/common.dir/cycle_count.c.i: cmake_force
@@ -3107,7 +3083,7 @@ phSolver/common/CMakeFiles/common.dir/cycle_count.c.o.provides.build: phSolver/c
 
 phSolver/common/CMakeFiles/common.dir/d2wall.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/d2wall.c.o: ../phSolver/common/d2wall.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_128) "Building C object phSolver/common/CMakeFiles/common.dir/d2wall.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_127) "Building C object phSolver/common/CMakeFiles/common.dir/d2wall.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/d2wall.c.o   -c /lore/chanda5/phasta/phSolver/common/d2wall.c
 
 phSolver/common/CMakeFiles/common.dir/d2wall.c.i: cmake_force
@@ -3131,7 +3107,7 @@ phSolver/common/CMakeFiles/common.dir/d2wall.c.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/dumbCvariables.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/dumbCvariables.c.o: ../phSolver/common/dumbCvariables.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_129) "Building C object phSolver/common/CMakeFiles/common.dir/dumbCvariables.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_128) "Building C object phSolver/common/CMakeFiles/common.dir/dumbCvariables.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/dumbCvariables.c.o   -c /lore/chanda5/phasta/phSolver/common/dumbCvariables.c
 
 phSolver/common/CMakeFiles/common.dir/dumbCvariables.c.i: cmake_force
@@ -3155,7 +3131,7 @@ phSolver/common/CMakeFiles/common.dir/dumbCvariables.c.o.provides.build: phSolve
 
 phSolver/common/CMakeFiles/common.dir/fillsparse.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/fillsparse.c.o: ../phSolver/common/fillsparse.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_130) "Building C object phSolver/common/CMakeFiles/common.dir/fillsparse.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_129) "Building C object phSolver/common/CMakeFiles/common.dir/fillsparse.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/fillsparse.c.o   -c /lore/chanda5/phasta/phSolver/common/fillsparse.c
 
 phSolver/common/CMakeFiles/common.dir/fillsparse.c.i: cmake_force
@@ -3179,7 +3155,7 @@ phSolver/common/CMakeFiles/common.dir/fillsparse.c.o.provides.build: phSolver/co
 
 phSolver/common/CMakeFiles/common.dir/flush.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/flush.c.o: ../phSolver/common/flush.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_131) "Building C object phSolver/common/CMakeFiles/common.dir/flush.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_130) "Building C object phSolver/common/CMakeFiles/common.dir/flush.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/flush.c.o   -c /lore/chanda5/phasta/phSolver/common/flush.c
 
 phSolver/common/CMakeFiles/common.dir/flush.c.i: cmake_force
@@ -3203,7 +3179,7 @@ phSolver/common/CMakeFiles/common.dir/flush.c.o.provides.build: phSolver/common/
 
 phSolver/common/CMakeFiles/common.dir/gen_ncorp.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/gen_ncorp.c.o: ../phSolver/common/gen_ncorp.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_132) "Building C object phSolver/common/CMakeFiles/common.dir/gen_ncorp.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_131) "Building C object phSolver/common/CMakeFiles/common.dir/gen_ncorp.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/gen_ncorp.c.o   -c /lore/chanda5/phasta/phSolver/common/gen_ncorp.c
 
 phSolver/common/CMakeFiles/common.dir/gen_ncorp.c.i: cmake_force
@@ -3227,7 +3203,7 @@ phSolver/common/CMakeFiles/common.dir/gen_ncorp.c.o.provides.build: phSolver/com
 
 phSolver/common/CMakeFiles/common.dir/getIntPnts.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/getIntPnts.c.o: ../phSolver/common/getIntPnts.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_133) "Building C object phSolver/common/CMakeFiles/common.dir/getIntPnts.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_132) "Building C object phSolver/common/CMakeFiles/common.dir/getIntPnts.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/getIntPnts.c.o   -c /lore/chanda5/phasta/phSolver/common/getIntPnts.c
 
 phSolver/common/CMakeFiles/common.dir/getIntPnts.c.i: cmake_force
@@ -3251,7 +3227,7 @@ phSolver/common/CMakeFiles/common.dir/getIntPnts.c.o.provides.build: phSolver/co
 
 phSolver/common/CMakeFiles/common.dir/get_time.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/get_time.c.o: ../phSolver/common/get_time.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_134) "Building C object phSolver/common/CMakeFiles/common.dir/get_time.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_133) "Building C object phSolver/common/CMakeFiles/common.dir/get_time.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/get_time.c.o   -c /lore/chanda5/phasta/phSolver/common/get_time.c
 
 phSolver/common/CMakeFiles/common.dir/get_time.c.i: cmake_force
@@ -3275,7 +3251,7 @@ phSolver/common/CMakeFiles/common.dir/get_time.c.o.provides.build: phSolver/comm
 
 phSolver/common/CMakeFiles/common.dir/gltri.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/gltri.c.o: ../phSolver/common/gltri.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_135) "Building C object phSolver/common/CMakeFiles/common.dir/gltri.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_134) "Building C object phSolver/common/CMakeFiles/common.dir/gltri.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/gltri.c.o   -c /lore/chanda5/phasta/phSolver/common/gltri.c
 
 phSolver/common/CMakeFiles/common.dir/gltri.c.i: cmake_force
@@ -3299,7 +3275,7 @@ phSolver/common/CMakeFiles/common.dir/gltri.c.o.provides.build: phSolver/common/
 
 phSolver/common/CMakeFiles/common.dir/gtnods.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/gtnods.c.o: ../phSolver/common/gtnods.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_136) "Building C object phSolver/common/CMakeFiles/common.dir/gtnods.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_135) "Building C object phSolver/common/CMakeFiles/common.dir/gtnods.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/gtnods.c.o   -c /lore/chanda5/phasta/phSolver/common/gtnods.c
 
 phSolver/common/CMakeFiles/common.dir/gtnods.c.i: cmake_force
@@ -3323,7 +3299,7 @@ phSolver/common/CMakeFiles/common.dir/gtnods.c.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/memoryusage.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/memoryusage.c.o: ../phSolver/common/memoryusage.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_137) "Building C object phSolver/common/CMakeFiles/common.dir/memoryusage.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_136) "Building C object phSolver/common/CMakeFiles/common.dir/memoryusage.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/memoryusage.c.o   -c /lore/chanda5/phasta/phSolver/common/memoryusage.c
 
 phSolver/common/CMakeFiles/common.dir/memoryusage.c.i: cmake_force
@@ -3347,7 +3323,7 @@ phSolver/common/CMakeFiles/common.dir/memoryusage.c.o.provides.build: phSolver/c
 
 phSolver/common/CMakeFiles/common.dir/missing_win32.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/missing_win32.c.o: ../phSolver/common/missing_win32.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_138) "Building C object phSolver/common/CMakeFiles/common.dir/missing_win32.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_137) "Building C object phSolver/common/CMakeFiles/common.dir/missing_win32.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/missing_win32.c.o   -c /lore/chanda5/phasta/phSolver/common/missing_win32.c
 
 phSolver/common/CMakeFiles/common.dir/missing_win32.c.i: cmake_force
@@ -3371,7 +3347,7 @@ phSolver/common/CMakeFiles/common.dir/missing_win32.c.o.provides.build: phSolver
 
 phSolver/common/CMakeFiles/common.dir/new_interface.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/new_interface.c.o: ../phSolver/common/new_interface.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_139) "Building C object phSolver/common/CMakeFiles/common.dir/new_interface.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_138) "Building C object phSolver/common/CMakeFiles/common.dir/new_interface.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/new_interface.c.o   -c /lore/chanda5/phasta/phSolver/common/new_interface.c
 
 phSolver/common/CMakeFiles/common.dir/new_interface.c.i: cmake_force
@@ -3395,7 +3371,7 @@ phSolver/common/CMakeFiles/common.dir/new_interface.c.o.provides.build: phSolver
 
 phSolver/common/CMakeFiles/common.dir/phComm.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/phComm.c.o: ../phSolver/common/phComm.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_140) "Building C object phSolver/common/CMakeFiles/common.dir/phComm.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_139) "Building C object phSolver/common/CMakeFiles/common.dir/phComm.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/phComm.c.o   -c /lore/chanda5/phasta/phSolver/common/phComm.c
 
 phSolver/common/CMakeFiles/common.dir/phComm.c.i: cmake_force
@@ -3419,7 +3395,7 @@ phSolver/common/CMakeFiles/common.dir/phComm.c.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/shp6w.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/shp6w.c.o: ../phSolver/common/shp6w.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_141) "Building C object phSolver/common/CMakeFiles/common.dir/shp6w.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_140) "Building C object phSolver/common/CMakeFiles/common.dir/shp6w.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/shp6w.c.o   -c /lore/chanda5/phasta/phSolver/common/shp6w.c
 
 phSolver/common/CMakeFiles/common.dir/shp6w.c.i: cmake_force
@@ -3443,7 +3419,7 @@ phSolver/common/CMakeFiles/common.dir/shp6w.c.o.provides.build: phSolver/common/
 
 phSolver/common/CMakeFiles/common.dir/shphex.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/shphex.c.o: ../phSolver/common/shphex.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_142) "Building C object phSolver/common/CMakeFiles/common.dir/shphex.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_141) "Building C object phSolver/common/CMakeFiles/common.dir/shphex.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/shphex.c.o   -c /lore/chanda5/phasta/phSolver/common/shphex.c
 
 phSolver/common/CMakeFiles/common.dir/shphex.c.i: cmake_force
@@ -3467,7 +3443,7 @@ phSolver/common/CMakeFiles/common.dir/shphex.c.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/shppyr.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/shppyr.c.o: ../phSolver/common/shppyr.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_143) "Building C object phSolver/common/CMakeFiles/common.dir/shppyr.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_142) "Building C object phSolver/common/CMakeFiles/common.dir/shppyr.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/shppyr.c.o   -c /lore/chanda5/phasta/phSolver/common/shppyr.c
 
 phSolver/common/CMakeFiles/common.dir/shppyr.c.i: cmake_force
@@ -3491,7 +3467,7 @@ phSolver/common/CMakeFiles/common.dir/shppyr.c.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/shptet.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/shptet.c.o: ../phSolver/common/shptet.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_144) "Building C object phSolver/common/CMakeFiles/common.dir/shptet.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_143) "Building C object phSolver/common/CMakeFiles/common.dir/shptet.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/shptet.c.o   -c /lore/chanda5/phasta/phSolver/common/shptet.c
 
 phSolver/common/CMakeFiles/common.dir/shptet.c.i: cmake_force
@@ -3515,7 +3491,7 @@ phSolver/common/CMakeFiles/common.dir/shptet.c.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/shptri.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/shptri.c.o: ../phSolver/common/shptri.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_145) "Building C object phSolver/common/CMakeFiles/common.dir/shptri.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_144) "Building C object phSolver/common/CMakeFiles/common.dir/shptri.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/shptri.c.o   -c /lore/chanda5/phasta/phSolver/common/shptri.c
 
 phSolver/common/CMakeFiles/common.dir/shptri.c.i: cmake_force
@@ -3539,7 +3515,7 @@ phSolver/common/CMakeFiles/common.dir/shptri.c.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/symhex.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/symhex.c.o: ../phSolver/common/symhex.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_146) "Building C object phSolver/common/CMakeFiles/common.dir/symhex.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_145) "Building C object phSolver/common/CMakeFiles/common.dir/symhex.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/symhex.c.o   -c /lore/chanda5/phasta/phSolver/common/symhex.c
 
 phSolver/common/CMakeFiles/common.dir/symhex.c.i: cmake_force
@@ -3563,7 +3539,7 @@ phSolver/common/CMakeFiles/common.dir/symhex.c.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/symline.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/symline.c.o: ../phSolver/common/symline.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_147) "Building C object phSolver/common/CMakeFiles/common.dir/symline.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_146) "Building C object phSolver/common/CMakeFiles/common.dir/symline.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/symline.c.o   -c /lore/chanda5/phasta/phSolver/common/symline.c
 
 phSolver/common/CMakeFiles/common.dir/symline.c.i: cmake_force
@@ -3587,7 +3563,7 @@ phSolver/common/CMakeFiles/common.dir/symline.c.o.provides.build: phSolver/commo
 
 phSolver/common/CMakeFiles/common.dir/sympyr.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/sympyr.c.o: ../phSolver/common/sympyr.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_148) "Building C object phSolver/common/CMakeFiles/common.dir/sympyr.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_147) "Building C object phSolver/common/CMakeFiles/common.dir/sympyr.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/sympyr.c.o   -c /lore/chanda5/phasta/phSolver/common/sympyr.c
 
 phSolver/common/CMakeFiles/common.dir/sympyr.c.i: cmake_force
@@ -3611,7 +3587,7 @@ phSolver/common/CMakeFiles/common.dir/sympyr.c.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/symquad.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/symquad.c.o: ../phSolver/common/symquad.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_149) "Building C object phSolver/common/CMakeFiles/common.dir/symquad.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_148) "Building C object phSolver/common/CMakeFiles/common.dir/symquad.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/symquad.c.o   -c /lore/chanda5/phasta/phSolver/common/symquad.c
 
 phSolver/common/CMakeFiles/common.dir/symquad.c.i: cmake_force
@@ -3635,7 +3611,7 @@ phSolver/common/CMakeFiles/common.dir/symquad.c.o.provides.build: phSolver/commo
 
 phSolver/common/CMakeFiles/common.dir/symquadw.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/symquadw.c.o: ../phSolver/common/symquadw.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_150) "Building C object phSolver/common/CMakeFiles/common.dir/symquadw.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_149) "Building C object phSolver/common/CMakeFiles/common.dir/symquadw.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/symquadw.c.o   -c /lore/chanda5/phasta/phSolver/common/symquadw.c
 
 phSolver/common/CMakeFiles/common.dir/symquadw.c.i: cmake_force
@@ -3659,7 +3635,7 @@ phSolver/common/CMakeFiles/common.dir/symquadw.c.o.provides.build: phSolver/comm
 
 phSolver/common/CMakeFiles/common.dir/symtet.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/symtet.c.o: ../phSolver/common/symtet.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_151) "Building C object phSolver/common/CMakeFiles/common.dir/symtet.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_150) "Building C object phSolver/common/CMakeFiles/common.dir/symtet.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/symtet.c.o   -c /lore/chanda5/phasta/phSolver/common/symtet.c
 
 phSolver/common/CMakeFiles/common.dir/symtet.c.i: cmake_force
@@ -3683,7 +3659,7 @@ phSolver/common/CMakeFiles/common.dir/symtet.c.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/symtri.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/symtri.c.o: ../phSolver/common/symtri.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_152) "Building C object phSolver/common/CMakeFiles/common.dir/symtri.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_151) "Building C object phSolver/common/CMakeFiles/common.dir/symtri.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/symtri.c.o   -c /lore/chanda5/phasta/phSolver/common/symtri.c
 
 phSolver/common/CMakeFiles/common.dir/symtri.c.i: cmake_force
@@ -3707,7 +3683,7 @@ phSolver/common/CMakeFiles/common.dir/symtri.c.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/symtripyr.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/symtripyr.c.o: ../phSolver/common/symtripyr.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_153) "Building C object phSolver/common/CMakeFiles/common.dir/symtripyr.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_152) "Building C object phSolver/common/CMakeFiles/common.dir/symtripyr.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/symtripyr.c.o   -c /lore/chanda5/phasta/phSolver/common/symtripyr.c
 
 phSolver/common/CMakeFiles/common.dir/symtripyr.c.i: cmake_force
@@ -3731,7 +3707,7 @@ phSolver/common/CMakeFiles/common.dir/symtripyr.c.o.provides.build: phSolver/com
 
 phSolver/common/CMakeFiles/common.dir/symwdg.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/symwdg.c.o: ../phSolver/common/symwdg.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_154) "Building C object phSolver/common/CMakeFiles/common.dir/symwdg.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_153) "Building C object phSolver/common/CMakeFiles/common.dir/symwdg.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/symwdg.c.o   -c /lore/chanda5/phasta/phSolver/common/symwdg.c
 
 phSolver/common/CMakeFiles/common.dir/symwdg.c.i: cmake_force
@@ -3755,7 +3731,7 @@ phSolver/common/CMakeFiles/common.dir/symwdg.c.o.provides.build: phSolver/common
 
 phSolver/common/CMakeFiles/common.dir/tmrc.c.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/tmrc.c.o: ../phSolver/common/tmrc.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_155) "Building C object phSolver/common/CMakeFiles/common.dir/tmrc.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_154) "Building C object phSolver/common/CMakeFiles/common.dir/tmrc.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/common.dir/tmrc.c.o   -c /lore/chanda5/phasta/phSolver/common/tmrc.c
 
 phSolver/common/CMakeFiles/common.dir/tmrc.c.i: cmake_force
@@ -3779,7 +3755,7 @@ phSolver/common/CMakeFiles/common.dir/tmrc.c.o.provides.build: phSolver/common/C
 
 phSolver/common/CMakeFiles/common.dir/phstreamEmpty/phstreamEmpty.cc.o: phSolver/common/CMakeFiles/common.dir/flags.make
 phSolver/common/CMakeFiles/common.dir/phstreamEmpty/phstreamEmpty.cc.o: ../phSolver/common/phstreamEmpty/phstreamEmpty.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_156) "Building CXX object phSolver/common/CMakeFiles/common.dir/phstreamEmpty/phstreamEmpty.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_155) "Building CXX object phSolver/common/CMakeFiles/common.dir/phstreamEmpty/phstreamEmpty.cc.o"
 	cd /lore/chanda5/phasta/build/phSolver/common && /usr/local/gcc/4.9.2/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/phstreamEmpty/phstreamEmpty.cc.o -c /lore/chanda5/phasta/phSolver/common/phstreamEmpty/phstreamEmpty.cc
 
 phSolver/common/CMakeFiles/common.dir/phstreamEmpty/phstreamEmpty.cc.i: cmake_force
@@ -3827,6 +3803,7 @@ common_OBJECTS = \
 "CMakeFiles/common.dir/aveprep.f.o" \
 "CMakeFiles/common.dir/bardmc.f.o" \
 "CMakeFiles/common.dir/bctint.f.o" \
+"CMakeFiles/common.dir/calc_normal.f.o" \
 "CMakeFiles/common.dir/clear.f.o" \
 "CMakeFiles/common.dir/cmass.f.o" \
 "CMakeFiles/common.dir/cname.f.o" \
@@ -3856,7 +3833,6 @@ common_OBJECTS = \
 "CMakeFiles/common.dir/genblk.f.o" \
 "CMakeFiles/common.dir/gendat.f.o" \
 "CMakeFiles/common.dir/genibc.f.o" \
-"CMakeFiles/common.dir/genibcelas.f.o" \
 "CMakeFiles/common.dir/genini.f.o" \
 "CMakeFiles/common.dir/genint.f.o" \
 "CMakeFiles/common.dir/genint_m.f.o" \
@@ -3920,7 +3896,6 @@ common_OBJECTS = \
 "CMakeFiles/common.dir/spebc.f.o" \
 "CMakeFiles/common.dir/streamio.f.o" \
 "CMakeFiles/common.dir/syncio.f.o" \
-"CMakeFiles/common.dir/tempgenibc.f.o" \
 "CMakeFiles/common.dir/timer.f.o" \
 "CMakeFiles/common.dir/turbke.f.o" \
 "CMakeFiles/common.dir/turbsa.f.o" \
@@ -3987,6 +3962,7 @@ lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/asithf.f.o
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/aveprep.f.o
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/bardmc.f.o
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/bctint.f.o
+lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/calc_normal.f.o
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/clear.f.o
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/cmass.f.o
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/cname.f.o
@@ -4016,7 +3992,6 @@ lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/genbkif.f.o
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/genblk.f.o
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/gendat.f.o
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/genibc.f.o
-lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/genibcelas.f.o
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/genini.f.o
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/genint.f.o
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/genint_m.f.o
@@ -4080,7 +4055,6 @@ lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/sonfath.f.o
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/spebc.f.o
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/streamio.f.o
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/syncio.f.o
-lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/tempgenibc.f.o
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/timer.f.o
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/turbke.f.o
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/turbsa.f.o
@@ -4121,7 +4095,7 @@ lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/tmrc.c.o
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/phstreamEmpty/phstreamEmpty.cc.o
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/build.make
 lib/libcommon.a: phSolver/common/CMakeFiles/common.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_157) "Linking CXX static library ../../lib/libcommon.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_156) "Linking CXX static library ../../lib/libcommon.a"
 	cd /lore/chanda5/phasta/build/phSolver/common && $(CMAKE_COMMAND) -P CMakeFiles/common.dir/cmake_clean_target.cmake
 	cd /lore/chanda5/phasta/build/phSolver/common && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/common.dir/link.txt --verbose=$(VERBOSE)
 
@@ -4154,6 +4128,7 @@ phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/commo
 phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/aveprep.f.o.requires
 phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/bardmc.f.o.requires
 phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/bctint.f.o.requires
+phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/calc_normal.f.o.requires
 phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/clear.f.o.requires
 phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/cmass.f.o.requires
 phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/cname.f.o.requires
@@ -4183,7 +4158,6 @@ phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/commo
 phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/genblk.f.o.requires
 phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/gendat.f.o.requires
 phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/genibc.f.o.requires
-phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/genibcelas.f.o.requires
 phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/genini.f.o.requires
 phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/genint.f.o.requires
 phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/genint_m.f.o.requires
@@ -4247,7 +4221,6 @@ phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/commo
 phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/spebc.f.o.requires
 phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/streamio.f.o.requires
 phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/syncio.f.o.requires
-phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/tempgenibc.f.o.requires
 phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/timer.f.o.requires
 phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/turbke.f.o.requires
 phSolver/common/CMakeFiles/common.dir/requires: phSolver/common/CMakeFiles/common.dir/turbsa.f.o.requires

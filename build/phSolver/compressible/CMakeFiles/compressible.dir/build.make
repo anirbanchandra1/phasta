@@ -2361,9 +2361,33 @@ phSolver/compressible/CMakeFiles/compressible.dir/shuffle.f.o.provides: phSolver
 phSolver/compressible/CMakeFiles/compressible.dir/shuffle.f.o.provides.build: phSolver/compressible/CMakeFiles/compressible.dir/shuffle.f.o
 
 
+phSolver/compressible/CMakeFiles/compressible.dir/snap_mesh.f.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
+phSolver/compressible/CMakeFiles/compressible.dir/snap_mesh.f.o: ../phSolver/compressible/snap_mesh.f
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_97) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/snap_mesh.f.o"
+	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/compressible/snap_mesh.f -o CMakeFiles/compressible.dir/snap_mesh.f.o
+
+phSolver/compressible/CMakeFiles/compressible.dir/snap_mesh.f.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing Fortran source to CMakeFiles/compressible.dir/snap_mesh.f.i"
+	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -E /lore/chanda5/phasta/phSolver/compressible/snap_mesh.f > CMakeFiles/compressible.dir/snap_mesh.f.i
+
+phSolver/compressible/CMakeFiles/compressible.dir/snap_mesh.f.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling Fortran source to assembly CMakeFiles/compressible.dir/snap_mesh.f.s"
+	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -S /lore/chanda5/phasta/phSolver/compressible/snap_mesh.f -o CMakeFiles/compressible.dir/snap_mesh.f.s
+
+phSolver/compressible/CMakeFiles/compressible.dir/snap_mesh.f.o.requires:
+
+.PHONY : phSolver/compressible/CMakeFiles/compressible.dir/snap_mesh.f.o.requires
+
+phSolver/compressible/CMakeFiles/compressible.dir/snap_mesh.f.o.provides: phSolver/compressible/CMakeFiles/compressible.dir/snap_mesh.f.o.requires
+	$(MAKE) -f phSolver/compressible/CMakeFiles/compressible.dir/build.make phSolver/compressible/CMakeFiles/compressible.dir/snap_mesh.f.o.provides.build
+.PHONY : phSolver/compressible/CMakeFiles/compressible.dir/snap_mesh.f.o.provides
+
+phSolver/compressible/CMakeFiles/compressible.dir/snap_mesh.f.o.provides.build: phSolver/compressible/CMakeFiles/compressible.dir/snap_mesh.f.o
+
+
 phSolver/compressible/CMakeFiles/compressible.dir/solgmr.f.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
 phSolver/compressible/CMakeFiles/compressible.dir/solgmr.f.o: ../phSolver/compressible/solgmr.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_97) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/solgmr.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_98) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/solgmr.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/compressible/solgmr.f -o CMakeFiles/compressible.dir/solgmr.f.o
 
 phSolver/compressible/CMakeFiles/compressible.dir/solgmr.f.i: cmake_force
@@ -2387,7 +2411,7 @@ phSolver/compressible/CMakeFiles/compressible.dir/solgmr.f.o.provides.build: phS
 
 phSolver/compressible/CMakeFiles/compressible.dir/solgmrelas.f.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
 phSolver/compressible/CMakeFiles/compressible.dir/solgmrelas.f.o: ../phSolver/compressible/solgmrelas.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_98) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/solgmrelas.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_99) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/solgmrelas.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/compressible/solgmrelas.f -o CMakeFiles/compressible.dir/solgmrelas.f.o
 
 phSolver/compressible/CMakeFiles/compressible.dir/solgmrelas.f.i: cmake_force
@@ -2411,7 +2435,7 @@ phSolver/compressible/CMakeFiles/compressible.dir/solgmrelas.f.o.provides.build:
 
 phSolver/compressible/CMakeFiles/compressible.dir/solmfg.f.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
 phSolver/compressible/CMakeFiles/compressible.dir/solmfg.f.o: ../phSolver/compressible/solmfg.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_99) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/solmfg.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_100) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/solmfg.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/compressible/solmfg.f -o CMakeFiles/compressible.dir/solmfg.f.o
 
 phSolver/compressible/CMakeFiles/compressible.dir/solmfg.f.i: cmake_force
@@ -2435,7 +2459,7 @@ phSolver/compressible/CMakeFiles/compressible.dir/solmfg.f.o.provides.build: phS
 
 phSolver/compressible/CMakeFiles/compressible.dir/sparseap.f.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
 phSolver/compressible/CMakeFiles/compressible.dir/sparseap.f.o: ../phSolver/compressible/sparseap.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_100) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/sparseap.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_101) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/sparseap.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/compressible/sparseap.f -o CMakeFiles/compressible.dir/sparseap.f.o
 
 phSolver/compressible/CMakeFiles/compressible.dir/sparseap.f.i: cmake_force
@@ -2459,7 +2483,7 @@ phSolver/compressible/CMakeFiles/compressible.dir/sparseap.f.o.provides.build: p
 
 phSolver/compressible/CMakeFiles/compressible.dir/spsi3pre.f.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
 phSolver/compressible/CMakeFiles/compressible.dir/spsi3pre.f.o: ../phSolver/compressible/spsi3pre.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_101) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/spsi3pre.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_102) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/spsi3pre.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/compressible/spsi3pre.f -o CMakeFiles/compressible.dir/spsi3pre.f.o
 
 phSolver/compressible/CMakeFiles/compressible.dir/spsi3pre.f.i: cmake_force
@@ -2483,7 +2507,7 @@ phSolver/compressible/CMakeFiles/compressible.dir/spsi3pre.f.o.provides.build: p
 
 phSolver/compressible/CMakeFiles/compressible.dir/stats.f.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
 phSolver/compressible/CMakeFiles/compressible.dir/stats.f.o: ../phSolver/compressible/stats.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_102) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/stats.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_103) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/stats.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/compressible/stats.f -o CMakeFiles/compressible.dir/stats.f.o
 
 phSolver/compressible/CMakeFiles/compressible.dir/stats.f.i: cmake_force
@@ -2507,7 +2531,7 @@ phSolver/compressible/CMakeFiles/compressible.dir/stats.f.o.provides.build: phSo
 
 phSolver/compressible/CMakeFiles/compressible.dir/timedependbcelas.f.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
 phSolver/compressible/CMakeFiles/compressible.dir/timedependbcelas.f.o: ../phSolver/compressible/timedependbcelas.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_103) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/timedependbcelas.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_104) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/timedependbcelas.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/compressible/timedependbcelas.f -o CMakeFiles/compressible.dir/timedependbcelas.f.o
 
 phSolver/compressible/CMakeFiles/compressible.dir/timedependbcelas.f.i: cmake_force
@@ -2531,7 +2555,7 @@ phSolver/compressible/CMakeFiles/compressible.dir/timedependbcelas.f.o.provides.
 
 phSolver/compressible/CMakeFiles/compressible.dir/timeseries.f.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
 phSolver/compressible/CMakeFiles/compressible.dir/timeseries.f.o: ../phSolver/compressible/timeseries.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_104) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/timeseries.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_105) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/timeseries.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/compressible/timeseries.f -o CMakeFiles/compressible.dir/timeseries.f.o
 
 phSolver/compressible/CMakeFiles/compressible.dir/timeseries.f.i: cmake_force
@@ -2555,7 +2579,7 @@ phSolver/compressible/CMakeFiles/compressible.dir/timeseries.f.o.provides.build:
 
 phSolver/compressible/CMakeFiles/compressible.dir/tmr.f.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
 phSolver/compressible/CMakeFiles/compressible.dir/tmr.f.o: ../phSolver/compressible/tmr.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_105) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/tmr.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_106) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/tmr.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/compressible/tmr.f -o CMakeFiles/compressible.dir/tmr.f.o
 
 phSolver/compressible/CMakeFiles/compressible.dir/tmr.f.i: cmake_force
@@ -2579,7 +2603,7 @@ phSolver/compressible/CMakeFiles/compressible.dir/tmr.f.o.provides.build: phSolv
 
 phSolver/compressible/CMakeFiles/compressible.dir/tnanq.f.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
 phSolver/compressible/CMakeFiles/compressible.dir/tnanq.f.o: ../phSolver/compressible/tnanq.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_106) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/tnanq.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_107) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/tnanq.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/compressible/tnanq.f -o CMakeFiles/compressible.dir/tnanq.f.o
 
 phSolver/compressible/CMakeFiles/compressible.dir/tnanq.f.i: cmake_force
@@ -2603,7 +2627,7 @@ phSolver/compressible/CMakeFiles/compressible.dir/tnanq.f.o.provides.build: phSo
 
 phSolver/compressible/CMakeFiles/compressible.dir/tnanqe.f.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
 phSolver/compressible/CMakeFiles/compressible.dir/tnanqe.f.o: ../phSolver/compressible/tnanqe.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_107) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/tnanqe.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_108) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/tnanqe.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/compressible/tnanqe.f -o CMakeFiles/compressible.dir/tnanqe.f.o
 
 phSolver/compressible/CMakeFiles/compressible.dir/tnanqe.f.i: cmake_force
@@ -2627,7 +2651,7 @@ phSolver/compressible/CMakeFiles/compressible.dir/tnanqe.f.o.provides.build: phS
 
 phSolver/compressible/CMakeFiles/compressible.dir/update_solid_blocks.f.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
 phSolver/compressible/CMakeFiles/compressible.dir/update_solid_blocks.f.o: ../phSolver/compressible/update_solid_blocks.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_108) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/update_solid_blocks.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_109) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/update_solid_blocks.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/compressible/update_solid_blocks.f -o CMakeFiles/compressible.dir/update_solid_blocks.f.o
 
 phSolver/compressible/CMakeFiles/compressible.dir/update_solid_blocks.f.i: cmake_force
@@ -2651,7 +2675,7 @@ phSolver/compressible/CMakeFiles/compressible.dir/update_solid_blocks.f.o.provid
 
 phSolver/compressible/CMakeFiles/compressible.dir/vorticity.f.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
 phSolver/compressible/CMakeFiles/compressible.dir/vorticity.f.o: ../phSolver/compressible/vorticity.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_109) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/vorticity.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_110) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/vorticity.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/compressible/vorticity.f -o CMakeFiles/compressible.dir/vorticity.f.o
 
 phSolver/compressible/CMakeFiles/compressible.dir/vorticity.f.i: cmake_force
@@ -2675,7 +2699,7 @@ phSolver/compressible/CMakeFiles/compressible.dir/vorticity.f.o.provides.build: 
 
 phSolver/compressible/CMakeFiles/compressible.dir/wtime.f.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
 phSolver/compressible/CMakeFiles/compressible.dir/wtime.f.o: ../phSolver/compressible/wtime.f
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_110) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/wtime.f.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_111) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/wtime.f.o"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/compressible/wtime.f -o CMakeFiles/compressible.dir/wtime.f.o
 
 phSolver/compressible/CMakeFiles/compressible.dir/wtime.f.i: cmake_force
@@ -2699,7 +2723,7 @@ phSolver/compressible/CMakeFiles/compressible.dir/wtime.f.o.provides.build: phSo
 
 phSolver/compressible/CMakeFiles/compressible.dir/MachControl.f90.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
 phSolver/compressible/CMakeFiles/compressible.dir/MachControl.f90.o: ../phSolver/compressible/MachControl.f90
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_111) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/MachControl.f90.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_112) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/MachControl.f90.o"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/compressible/MachControl.f90 -o CMakeFiles/compressible.dir/MachControl.f90.o
 
 phSolver/compressible/CMakeFiles/compressible.dir/MachControl.f90.i: cmake_force
@@ -2723,7 +2747,7 @@ phSolver/compressible/CMakeFiles/compressible.dir/MachControl.f90.o.provides.bui
 
 phSolver/compressible/CMakeFiles/compressible.dir/mod_timedata.f90.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
 phSolver/compressible/CMakeFiles/compressible.dir/mod_timedata.f90.o: ../phSolver/compressible/mod_timedata.f90
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_112) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/mod_timedata.f90.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_113) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/mod_timedata.f90.o"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/compressible/mod_timedata.f90 -o CMakeFiles/compressible.dir/mod_timedata.f90.o
 
 phSolver/compressible/CMakeFiles/compressible.dir/mod_timedata.f90.i: cmake_force
@@ -2747,7 +2771,7 @@ phSolver/compressible/CMakeFiles/compressible.dir/mod_timedata.f90.o.provides.bu
 
 phSolver/compressible/CMakeFiles/compressible.dir/timedata.f90.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
 phSolver/compressible/CMakeFiles/compressible.dir/timedata.f90.o: ../phSolver/compressible/timedata.f90
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_113) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/timedata.f90.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_114) "Building Fortran object phSolver/compressible/CMakeFiles/compressible.dir/timedata.f90.o"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gfortran $(Fortran_DEFINES) $(Fortran_INCLUDES) $(Fortran_FLAGS) -c /lore/chanda5/phasta/phSolver/compressible/timedata.f90 -o CMakeFiles/compressible.dir/timedata.f90.o
 
 phSolver/compressible/CMakeFiles/compressible.dir/timedata.f90.i: cmake_force
@@ -2771,7 +2795,7 @@ phSolver/compressible/CMakeFiles/compressible.dir/timedata.f90.o.provides.build:
 
 phSolver/compressible/CMakeFiles/compressible.dir/get_h.c.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
 phSolver/compressible/CMakeFiles/compressible.dir/get_h.c.o: ../phSolver/compressible/get_h.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_114) "Building C object phSolver/compressible/CMakeFiles/compressible.dir/get_h.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_115) "Building C object phSolver/compressible/CMakeFiles/compressible.dir/get_h.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/compressible.dir/get_h.c.o   -c /lore/chanda5/phasta/phSolver/compressible/get_h.c
 
 phSolver/compressible/CMakeFiles/compressible.dir/get_h.c.i: cmake_force
@@ -2795,7 +2819,7 @@ phSolver/compressible/CMakeFiles/compressible.dir/get_h.c.o.provides.build: phSo
 
 phSolver/compressible/CMakeFiles/compressible.dir/gltet.c.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
 phSolver/compressible/CMakeFiles/compressible.dir/gltet.c.o: ../phSolver/compressible/gltet.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_115) "Building C object phSolver/compressible/CMakeFiles/compressible.dir/gltet.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_116) "Building C object phSolver/compressible/CMakeFiles/compressible.dir/gltet.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/compressible.dir/gltet.c.o   -c /lore/chanda5/phasta/phSolver/compressible/gltet.c
 
 phSolver/compressible/CMakeFiles/compressible.dir/gltet.c.i: cmake_force
@@ -2819,7 +2843,7 @@ phSolver/compressible/CMakeFiles/compressible.dir/gltet.c.o.provides.build: phSo
 
 phSolver/compressible/CMakeFiles/compressible.dir/solgmrpetsc.c.o: phSolver/compressible/CMakeFiles/compressible.dir/flags.make
 phSolver/compressible/CMakeFiles/compressible.dir/solgmrpetsc.c.o: ../phSolver/compressible/solgmrpetsc.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_116) "Building C object phSolver/compressible/CMakeFiles/compressible.dir/solgmrpetsc.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_117) "Building C object phSolver/compressible/CMakeFiles/compressible.dir/solgmrpetsc.c.o"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && /usr/local/gcc/4.9.2/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/compressible.dir/solgmrpetsc.c.o   -c /lore/chanda5/phasta/phSolver/compressible/solgmrpetsc.c
 
 phSolver/compressible/CMakeFiles/compressible.dir/solgmrpetsc.c.i: cmake_force
@@ -2939,6 +2963,7 @@ compressible_OBJECTS = \
 "CMakeFiles/compressible.dir/setBlowing_Duct2.f.o" \
 "CMakeFiles/compressible.dir/shpmeasure.f.o" \
 "CMakeFiles/compressible.dir/shuffle.f.o" \
+"CMakeFiles/compressible.dir/snap_mesh.f.o" \
 "CMakeFiles/compressible.dir/solgmr.f.o" \
 "CMakeFiles/compressible.dir/solgmrelas.f.o" \
 "CMakeFiles/compressible.dir/solmfg.f.o" \
@@ -3059,6 +3084,7 @@ lib/libcompressible.a: phSolver/compressible/CMakeFiles/compressible.dir/secs.f.
 lib/libcompressible.a: phSolver/compressible/CMakeFiles/compressible.dir/setBlowing_Duct2.f.o
 lib/libcompressible.a: phSolver/compressible/CMakeFiles/compressible.dir/shpmeasure.f.o
 lib/libcompressible.a: phSolver/compressible/CMakeFiles/compressible.dir/shuffle.f.o
+lib/libcompressible.a: phSolver/compressible/CMakeFiles/compressible.dir/snap_mesh.f.o
 lib/libcompressible.a: phSolver/compressible/CMakeFiles/compressible.dir/solgmr.f.o
 lib/libcompressible.a: phSolver/compressible/CMakeFiles/compressible.dir/solgmrelas.f.o
 lib/libcompressible.a: phSolver/compressible/CMakeFiles/compressible.dir/solmfg.f.o
@@ -3081,7 +3107,7 @@ lib/libcompressible.a: phSolver/compressible/CMakeFiles/compressible.dir/gltet.c
 lib/libcompressible.a: phSolver/compressible/CMakeFiles/compressible.dir/solgmrpetsc.c.o
 lib/libcompressible.a: phSolver/compressible/CMakeFiles/compressible.dir/build.make
 lib/libcompressible.a: phSolver/compressible/CMakeFiles/compressible.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_117) "Linking CXX static library ../../lib/libcompressible.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/lore/chanda5/phasta/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_118) "Linking CXX static library ../../lib/libcompressible.a"
 	cd /lore/chanda5/phasta/build/phSolver/compressible && $(CMAKE_COMMAND) -P CMakeFiles/compressible.dir/cmake_clean_target.cmake
 	cd /lore/chanda5/phasta/build/phSolver/compressible && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/compressible.dir/link.txt --verbose=$(VERBOSE)
 
@@ -3186,6 +3212,7 @@ phSolver/compressible/CMakeFiles/compressible.dir/requires: phSolver/compressibl
 phSolver/compressible/CMakeFiles/compressible.dir/requires: phSolver/compressible/CMakeFiles/compressible.dir/setBlowing_Duct2.f.o.requires
 phSolver/compressible/CMakeFiles/compressible.dir/requires: phSolver/compressible/CMakeFiles/compressible.dir/shpmeasure.f.o.requires
 phSolver/compressible/CMakeFiles/compressible.dir/requires: phSolver/compressible/CMakeFiles/compressible.dir/shuffle.f.o.requires
+phSolver/compressible/CMakeFiles/compressible.dir/requires: phSolver/compressible/CMakeFiles/compressible.dir/snap_mesh.f.o.requires
 phSolver/compressible/CMakeFiles/compressible.dir/requires: phSolver/compressible/CMakeFiles/compressible.dir/solgmr.f.o.requires
 phSolver/compressible/CMakeFiles/compressible.dir/requires: phSolver/compressible/CMakeFiles/compressible.dir/solgmrelas.f.o.requires
 phSolver/compressible/CMakeFiles/compressible.dir/requires: phSolver/compressible/CMakeFiles/compressible.dir/solmfg.f.o.requires

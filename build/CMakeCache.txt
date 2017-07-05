@@ -274,7 +274,7 @@ MPIRUN:STRING=mpirun
 //the command line flag to give process count to MPIRUN
 MPIRUN_PROCFLAG:STRING=-np
 
-//Path to a program.
+//Cleared
 MPI_CXX_COMPILER:FILEPATH=/usr/local/mpich3/latest/bin/mpicxx
 
 //MPI CXX compilation flags
@@ -289,7 +289,7 @@ MPI_CXX_LIBRARIES:STRING=/usr/local/mpich3/3.1.2-thread-multiple/lib/libmpicxx.s
 //MPI CXX linking flags
 MPI_CXX_LINK_FLAGS:STRING=-Wl,-rpath -Wl,/usr/local/mpich3/3.1.2-thread-multiple/lib -Wl,--enable-new-dtags
 
-//Path to a program.
+//Cleared
 MPI_C_COMPILER:FILEPATH=/usr/local/mpich3/latest/bin/mpicc
 
 //MPI C compilation flags
@@ -307,7 +307,7 @@ MPI_C_LINK_FLAGS:STRING=-Wl,-rpath -Wl,/usr/local/mpich3/3.1.2-thread-multiple/l
 //Extra MPI libraries to link against
 MPI_EXTRA_LIBRARY:STRING=/usr/local/mpich3/3.1.2-thread-multiple/lib/libmpi.so;/usr/lib64/librt.so;/usr/lib64/libpthread.so
 
-//Path to a program.
+//Cleared
 MPI_Fortran_COMPILER:FILEPATH=/usr/local/mpich3/latest/bin/mpif90
 
 //MPI Fortran compilation flags
@@ -403,6 +403,9 @@ converterIO_BINARY_DIR:STATIC=/lore/chanda5/phasta/build/converterIO
 
 //Value Computed by CMake
 converterIO_SOURCE_DIR:STATIC=/lore/chanda5/phasta/converterIO
+
+//Path to a program.
+file_cmd:FILEPATH=/usr/bin/file
 
 //Value Computed by CMake
 phSolver_BINARY_DIR:STATIC=/lore/chanda5/phasta/build/AcuStat
@@ -677,4 +680,6 @@ SLURM_SBATCH_COMMAND-ADVANCED:INTERNAL=1
 SLURM_SRUN_COMMAND-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: SVNCOMMAND
 SVNCOMMAND-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: file_cmd
+file_cmd-ADVANCED:INTERNAL=1
 

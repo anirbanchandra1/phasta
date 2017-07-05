@@ -2854,6 +2854,33 @@ shuffle.f.s:
 	cd /lore/chanda5/phasta/build && $(MAKE) -f phSolver/compressible/CMakeFiles/compressible.dir/build.make phSolver/compressible/CMakeFiles/compressible.dir/shuffle.f.s
 .PHONY : shuffle.f.s
 
+snap_mesh.o: snap_mesh.f.o
+
+.PHONY : snap_mesh.o
+
+# target to build an object file
+snap_mesh.f.o:
+	cd /lore/chanda5/phasta/build && $(MAKE) -f phSolver/compressible/CMakeFiles/compressible.dir/build.make phSolver/compressible/CMakeFiles/compressible.dir/snap_mesh.f.o
+.PHONY : snap_mesh.f.o
+
+snap_mesh.i: snap_mesh.f.i
+
+.PHONY : snap_mesh.i
+
+# target to preprocess a source file
+snap_mesh.f.i:
+	cd /lore/chanda5/phasta/build && $(MAKE) -f phSolver/compressible/CMakeFiles/compressible.dir/build.make phSolver/compressible/CMakeFiles/compressible.dir/snap_mesh.f.i
+.PHONY : snap_mesh.f.i
+
+snap_mesh.s: snap_mesh.f.s
+
+.PHONY : snap_mesh.s
+
+# target to generate assembly for a file
+snap_mesh.f.s:
+	cd /lore/chanda5/phasta/build && $(MAKE) -f phSolver/compressible/CMakeFiles/compressible.dir/build.make phSolver/compressible/CMakeFiles/compressible.dir/snap_mesh.f.s
+.PHONY : snap_mesh.f.s
+
 solgmr.o: solgmr.f.o
 
 .PHONY : solgmr.o
@@ -3597,6 +3624,9 @@ help:
 	@echo "... shuffle.o"
 	@echo "... shuffle.i"
 	@echo "... shuffle.s"
+	@echo "... snap_mesh.o"
+	@echo "... snap_mesh.i"
+	@echo "... snap_mesh.s"
 	@echo "... solgmr.o"
 	@echo "... solgmr.i"
 	@echo "... solgmr.s"
