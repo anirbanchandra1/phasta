@@ -99,7 +99,7 @@ c
      &                  ndofelas, nshg,   nnz,    istop,  nflow,  nelas,
      &                  nnz_tot,  idtn,
      &                  ncorpsize, iownnodes, usingpetsc,
-     &                  elasModel, elasFDC
+     &                  elasModel, elasFDC, mesh2geom
         common /conpar/ numnp, numel,  numelb, numelif,
      &                  numpbc,   nen,    nfaces,
      &                  numflx,   ndof,   iALE, iSOLID,
@@ -108,7 +108,7 @@ c
      &                  ndofelas, nshg,   nnz,    istop,  nflow,  nelas,
      &                  nnz_tot,  idtn,
      &                  ncorpsize, iownnodes, usingpetsc,
-     &                  elasModel, elasFDC
+     &                  elasModel, elasFDC, mesh2geom
       end module conpar_m
 c
 c----------------------------------------------------------------------
