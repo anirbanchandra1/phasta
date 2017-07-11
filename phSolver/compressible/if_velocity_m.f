@@ -72,7 +72,7 @@ c      write(*,200) 'AFTER: ', myrank,inode, umesh(inode,:)
 c          endif
 c        enddo
 c
-	call itrBCvi(sum_vi_area(:,1:3),ac, iBC, BC, iper, ilwork) 
+	!call itrBCvi(sum_vi_area(:,1:3),ac, iBC, BC, iper, ilwork) 
 	open (unit = 2000, file = "debug.dat")
 	!HACK-AC!
 	sum_vi_area(106,2)=0

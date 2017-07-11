@@ -35,6 +35,10 @@ c
       integer :: iel,isd,n
       real*8 ::sum0,sumg0
       real*8, allocatable :: tmpmu0(:,:),tmpmu1(:,:)
+
+      !AC - To correct the implementation of the quadrature points	
+	real*8, dimension(npro, nsd) :: xglobal0, xglobal1
+	integer :: intp0, intp1	
 #define debug 0
 c
 c      write(*,*) 'In e3if...'
@@ -56,6 +60,8 @@ c
 c
           do intp = 1, nqpt
 c
+	    intp0 = intp
+	    intp1 = mod(2*intp+1,3)+1
             ri0 = zero
             ri1 = zero
 c
@@ -68,8 +74,8 @@ c... create a matrix of shape fucntions (and derivatives) for each
 c    element at this quadrature point. These arrays will contain
 c    the correct signs for the higher order hierarchic basis
 c
-            call  getshp(shp0, shgl0, shpif0, shgif0, sgn0, npro, nsd, nshl0, nqpt, nenl0, intp, ipord)
-            call  getshp(shp1, shgl1, shpif1, shgif1, sgn1, npro, nsd, nshl1, nqpt, nenl1, intp, ipord)
+            call  getshp(shp0, shgl0, shpif0, shgif0, sgn0, npro, nsd, nshl0, nqpt, nenl0, intp0, ipord)
+            call  getshp(shp1, shgl1, shpif1, shgif1, sgn1, npro, nsd, nshl1, nqpt, nenl1, intp1, ipord)
 c      call getshp_if(shp0,shp1,shgl0,shgl1,shpif0,shpif1,shgif0,shgif1,xl0,xl1,npro,nsd,nshl0,nqpt,nenl0,intp)
 c
 c... Element Metrics
@@ -79,10 +85,28 @@ c
 c      print*, 'shg0: ',shg0(1,:,1)
 c      print*, 'shg1: ',shg1(1,:,1)
 c
+!AC
+	!allocate(xglobal(npro,nsd))
+	xglobal0 = zero
+       do iel=1,nshl0
+	do isd=1,nsd
+           xglobal0(:,isd) = xglobal0(:,isd) + xl0(:,iel,isd)*shp0(:,iel)
+       	enddo
+       enddo
+
+	xglobal1 = zero
+
+       do iel=1,nshl1
+        do isd=1,nsd
+           xglobal1(:,isd)= xglobal1(:,isd) + xl1(:,iel,isd)*shp1(:,iel)
+        enddo
+       enddo
+	!deallocate(xglobal)
+
 c... Normal Vectors
 c
-            call calc_normal_vectors(nv0,area,WdetJif0,xl0,qwtif0,itpid,lcsyst0,intp,npro)
-            call calc_normal_vectors(nv1,area,WdetJif1,xl1,qwtif1,itpid,lcsyst1,intp,npro)
+            call calc_normal_vectors(nv0,area,WdetJif0,xl0,qwtif0,itpid,lcsyst0,intp0,npro)
+            call calc_normal_vectors(nv1,area,WdetJif1,xl1,qwtif1,itpid,lcsyst1,intp1,npro)
 c
 c... calculate the integration varibles
 c
