@@ -163,7 +163,7 @@ c...LHS calculations...
 c
             if (lhs_dg .eq. 1) then
 c
-              call set_lhs_matrices
+c              call set_lhs_matrices ! Unnecessary now
 c
 c              call calc_egmass(egmass00,egmass01,
 c     &                         A0_0, A0_1, Ai0, Ai1,
@@ -213,7 +213,7 @@ c
             call calc_vi_area_node(sum_vi_area_l0,shp0,WdetJif0,nshl0)
             call calc_vi_area_node(sum_vi_area_l1,shp1,WdetJif1,nshl1)
 c
-            call calc_vapor_frac_node
+c            call calc_vapor_frac_node
 c
           enddo  ! end of integeration points loop 
 c
@@ -477,7 +477,8 @@ c
 c
              do jflow = 1,nflow
                do jsd = 1,nsd
-                 this_kcy = this_kcy + Kij(:,iflow,jflow,isd,jsd)*cy_jump(:,jflow,jsd)
+!                 this_kcy = this_kcy + Kij(:,iflow,jflow,isd,jsd)*cy_jump(:,jflow,jsd)
+		this_kcy = this_kcy + Kij(:,jsd,isd,iflow,jflow)*cy_jump(:,jflow,jsd) !DOUBLE CHECK THIS
                enddo
              enddo
 c
