@@ -53,6 +53,13 @@ c
           sum_vi_area_l1 = zero
 c
           ifbc_l0 = zero
+c
+c
+c------------------------------------------------------------------------------------
+c------------ THIS IMPLEMENTATION IS VALID ONLY FOR LINEAR TETS -----------------------
+c------------------------------------------------------------------------------------
+c
+c
 c------------------- Begin loop over quadrature points ----------------------------
           do intp = 1, nqpt
 c		
@@ -60,6 +67,8 @@ c
             ri1 = zero
             intp0 = intp
             intp1 = mod(2*intp+1,3)+1
+c node #1 is matched at the chef level -- nodes 2 and 3 always opposite at interface
+c intp0 and intp1 intoduced to match physical location of integration points
 c
 c... do not include this quadrature point, if Det. .eq. 0
 c
