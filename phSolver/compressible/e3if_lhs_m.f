@@ -137,15 +137,15 @@ c
                     enddo
                   enddo
 !E! NOTE: Have to check this (penalty term...)
-!E!                  do kflow = 1,nflow
-!E!                      CNb0ni0CNa1ni1 = CNb0ni0CNa1ni1 + cmtrx(:,iflow,kflow) * shp0(:,i) * ni0(:,isd) 
-!E!     &                                                * cmtrx(:,kflow,jflow) * shp1(:,j) * ni1(:,isd)
-!E!                  enddo
+                  do kflow = 1,nflow
+                      CNb0ni0CNa1ni1 = CNb0ni0CNa1ni1 + cmtrx(:,iflow,kflow) * shp0(:,i) * ni0(:,isd) 
+     &                                                * cmtrx(:,kflow,jflow) * shp1(:,j) * ni1(:,isd)
+                  enddo
                 enddo
 c
                 egmass(:,il,jl) = egmass(:,il,jl)
      &          - ( 
-     &              pt50 * shp0(:,i) * (Ai1Na1ni0 + Kij1Naj1ni0)
+     &              pt50 * shp0(:,i) * (Ai1Na1ni0 - Kij1Naj1ni0)
      &          +   pt50 * s         * Kij0Nbj0CNa1ni1
      &          +   e * this_mu(:,iflow,jflow) /length_h * CNb0ni0CNa1ni1
      &            ) * WdetJ0
