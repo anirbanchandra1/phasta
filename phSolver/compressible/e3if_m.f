@@ -67,7 +67,7 @@ c
             ri1 = zero
             intp0 = intp
             intp1 = mod(2*intp+1,3)+1
-c node #1 is matched at the chef level -- nodes 2 and 3 always opposite at interface
+c node #1 is matched at the chef level -- nodes 2 and 3 always unmatched at interface
 c intp0 and intp1 intoduced to match physical location of integration points
 c
 c... do not include this quadrature point, if Det. .eq. 0
