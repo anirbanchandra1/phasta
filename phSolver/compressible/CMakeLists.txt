@@ -1,6 +1,13 @@
 file(GLOB SRC_FILES *.cc *.f *.f90 *.c)
 list(REMOVE_ITEM SRC_FILES "main.cc")
 
+if(NOT PHASTA_CHEF_ENABLED)
+  set(SRC_FILES ${SRC_FILES}
+    phastaChefEmpty/phastaChef_empty.cc
+    phastaChefEmpty/phastaChef_empty.f)
+  include_directories(phastaChefEmpty)
+endif()
+
 find_package(phastaCommon REQUIRED PATHS ${CMAKE_BINARY_DIR})
 set(PHASTAC_LIBS ${CMAKE_THREAD_LIBS_INIT} ${PHASTA_COMMON_LIBS})
 set(PHASTAC_INCLUDE_DIRS
@@ -11,6 +18,9 @@ set(PHASTAC_INCLUDE_DIRS
 add_library(compressible ${SRC_FILES})
 #add_dependencies(compressible common)
 target_link_libraries(compressible PUBLIC common)
+if(PHASTA_CHEF_ENABLED)
+  TARGET_LINK_LIBRARIES(compressible PUBLIC SCOREC::ph)
+endif()
 
 add_executable(phastaC.exe main.cc)
 include_directories(${PHASTAC_INCLUDE_DIRS})

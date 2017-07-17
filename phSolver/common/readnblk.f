@@ -283,10 +283,12 @@ c
 c
 c.... read mesh to geom fields
 c
+        intfromfile=0
         call phio_readheader(fhandle,
      &   c_char_'m2g classification' // char(0),
      &   c_loc(intfromfile),itwo, dataInt, iotype)
         numm2g = intfromfile(1)
+        ixsiz=numnp*2 ! dim and tag
         if (numm2g > 0) then
           if (numm2g .ne. numnp) then
             write(*,*) "size of m2g field is not consistent with numnp"
@@ -294,30 +296,24 @@ c
           endif
           allocate( tmpm2gClsfcn(numnp,2) )
           allocate( m2gClsfcn(numnp,2) )
-          ixsiz=numnp*2 ! dim and tag
           mesh2geom = 1
-        else
-          allocate( tmpm2gClsfcn(1,1) )
-          allocate( m2gClsfcn(1,1) )
-          ixsiz=1*1
-          mesh2geom = 0
-        endif
-        call phio_readdatablock(fhandle,
-     &   c_char_'m2g classification' // char(0),
-     &   c_loc(tmpm2gClsfcn),ixsiz, dataInt, iotype)
-c
-        if (numm2g > 0) then
+          call phio_readdatablock(fhandle,
+     &     c_char_'m2g classification' // char(0),
+     &     c_loc(tmpm2gClsfcn),ixsiz, dataInt, iotype)
           m2gClsfcn = tmpm2gClsfcn
           deallocate( tmpm2gClsfcn )
         else
+          allocate( m2gClsfcn(1,1) )
+          mesh2geom = 0
           m2gClsfcn = 0
-          deallocate( tmpm2gClsfcn )
         endif
 c...
+        intfromfile=0;
         call phio_readheader(fhandle,
      &   c_char_'m2g parametric coordinate' // char(0),
      &   c_loc(intfromfile),itwo, dataDbl, iotype)
         numm2g = intfromfile(1)
+        ixsiz=numnp*2 ! par1 and par2
         if (numm2g > 0) then
           if (numm2g .ne. numnp) then
             write(*,*) "size of m2g field is not consistent with numnp"
@@ -325,24 +321,16 @@ c...
           endif
           allocate( tmpm2gParCoord(numnp,2) )
           allocate( m2gParCoord(numnp,2) )
-          ixsiz=numnp*2 ! par1 and par2 ! may not needed
           mesh2geom = 1 ! may not needed
-        else
-          allocate( tmpm2gParCoord(1,1) )
-          allocate( m2gParCoord(1,1) )
-          ixsiz=1*1 ! may not needed
-          mesh2geom = 0 ! may not needed
-        endif
-        call phio_readdatablock(fhandle,
-     &   c_char_'m2g parametric coordinate' // char(0),
-     &   c_loc(tmpm2gParCoord),ixsiz, dataDbl, iotype)
-c
-        if (numm2g > 0) then
+          call phio_readdatablock(fhandle,
+     &     c_char_'m2g parametric coordinate' // char(0),
+     &     c_loc(tmpm2gParCoord),ixsiz, dataDbl, iotype)
           m2gParCoord = tmpm2gParCoord
           deallocate( tmpm2gParCoord )
         else
+          allocate( m2gParCoord(1,1) )
+          mesh2geom = 0 ! may not needed
           m2gParCoord = 0
-          deallocate( tmpm2gParCoord )
         endif
 c
 c.... end read mesh to geom fields
