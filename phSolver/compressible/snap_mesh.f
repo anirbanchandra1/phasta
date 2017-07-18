@@ -79,31 +79,27 @@ c
         real*8    x(numnp,nsd),  disp_snap(numnp,nsd)
         dimension iBC(nshg),     BC(nshg, 4)
         integer   surfID_snap(nshg)
-        real*8    x_tmp(nsd),    x_crt(nsd)
-        real*8    mag,           rad
+        real*8    mag,                rad
         integer   i
+        real*8    x_tmp_1(numnp), x_tmp_2(numnp), x_tmp_3(numnp)
+        real*8    x_crt_1(numnp), x_crt_2(numnp), x_crt_3(numnp)
+c
+        x_tmp_1 = x(:,1) + disp_snap(:,1)
+        x_tmp_2 = x(:,2) + disp_snap(:,2)
+        x_tmp_3 = x(:,3) + disp_snap(:,3)
+        call sim_get_pos_on_surf (x_tmp_1, x_tmp_2, x_tmp_3, numnp,
+     &                            x_crt_1, x_crt_2, x_crt_3)
 c
         do i = 1, nshg
 c... if surf ID is snapSurfID
           if (surfID_snap(i) .eq. snapSurfID) then
-c... current x
-            x_tmp(:) = x(i,:) + disp_snap(i,:)
-c... correct x
-            call sim_get_pos_on_surf (disp_snap(i,1), disp_snap(i,2),
-     &                            disp_snap(i,3), i)
-c... hardcoding; we should use simmetrix V_movedParamPoint to do this
-            mag = sqrt(x_tmp(2)*x_tmp(2) + x_tmp(3)*x_tmp(3)) ! cylinder axis is x
-            rad = 0.05
-            x_crt(2) = x_tmp(2) / mag * rad
-            x_crt(3) = x_tmp(3) / mag * rad
-c... end hardcoding
 c... update iBC and BC
             iBC(i) = ibset(iBC(i), 14)
             iBC(i) = ibset(iBC(i), 15)
             iBC(i) = ibset(iBC(i), 16)
-            BC(i,1)= disp_snap(i,1)
-            BC(i,2)= x_crt(2) - x(i,2)
-            BC(i,3)= x_crt(3) - x(i,3)
+            BC(i,1)= x_crt_1(i) - x(i,1)
+            BC(i,2)= x_crt_2(i) - x(i,2)
+            BC(i,3)= x_crt_3(i) - x(i,3)
           endif ! if equal to snapSurfID
         enddo
 c
