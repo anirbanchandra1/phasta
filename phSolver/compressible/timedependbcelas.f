@@ -32,7 +32,7 @@ c
      &         (abs(x(i,1)-0.8) .lt. 0.79) .and.
      &         ((x(i,2)*x(i,2) + x(i,3)*x(i,3)) .lt. 0.004225)) then
 c.... 0.004225 = 0.065^2
-            BC(i,1)   = acc * lstep * Delt(1)
+            BC(i,1)   = acc * lstep * Delt(1) * Delt(1)
             BC(i,2)   = zero
             BC(i,3)   = zero
           endif ! end if inside box
@@ -65,7 +65,7 @@ c.... collect total force
      &         (abs(x(i,1)-0.8) .lt. 0.79) .and.
      &         ((x(i,2)*x(i,2) + x(i,3)*x(i,3)) .lt. 0.004225)) then
 c.... 0.004225 = 0.065^2
-            BC(i,1)   = umeshold(i,1) + acc * Delt(1)
+            BC(i,1)   = umeshold(i,1) + acc * Delt(1) * Delt(1)
             BC(i,2)   = zero
             BC(i,3)   = zero
 
@@ -96,11 +96,32 @@ c
      &                + (x(i,1)) *  sin(pi/600)
             disp(i,3) = -0.005 * x(i,3)
 c
-            BC(i,:)   = disp(i,:) / Delt(1)
+            BC(i,:)   = disp(i,:)
           endif ! end if inside box
         enddo ! end loop numnp
       endif  ! end case 3
 c
+c.... Update BC value based on geom and iBC
+c.... twist one end of a cylinder
+c
+      if ( casenumber .eq. 4 ) then
+        do i = 1,numnp
+          if ( (ibits(iBC(i),14,3) .eq. 7) .and.
+     &         (x(i,1) .lt. 0.501) .and.
+     &         (x(i,1) .gt. 0.499) ) then
+c
+            disp(i,1) = 0.0
+            disp(i,2) = x(i,2) * (cos(pi/100) - 1.0)
+     &                - x(i,3) *  sin(pi/100)
+            disp(i,3) = x(i,3) * (cos(pi/100) - 1.0)
+     &                + x(i,2) *  sin(pi/100)
+c
+            BC(i,:)   = disp(i,:)
+          endif ! end if inside box
+        enddo ! end loop numnp
+      endif  ! end case 4
+c
+
       return
       end
 c

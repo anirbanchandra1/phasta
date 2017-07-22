@@ -100,7 +100,12 @@ c
        real*8  umesh(numnp,nsd),    meshq(numel),
      &         disp(numnp, nsd),    elasDy(nshg,nelas),
      &         umeshold(numnp, nsd), xold(numnp,nsd)
-
+c
+c.... For surface mesh snapping
+c
+       dimension iBC_snap(nshg),  BC_snap(nshg,ndofBC)
+       real*8    disp_snap(numnp, nsd)
+c
        logical alive
 
         integer iTurbWall(nshg) 
@@ -370,10 +375,10 @@ c.... only used for prescribing time-dependent mesh-elastic BC
 c.... comp3_elas and DG interface share the same iBC, thus, this
 c     call will replace the interface vel with prescribed value
 c     when using Force-driven as Mesh Elas Model in solver.inp
-          if (elasModel .eq. 1) then
-            call timeDependBCElas(x, iBC, BC(:,ndof+2:ndof+4),
-     &                            BC(:,3:5), umeshold)
-          endif
+c          if (elasModel .eq. 1) then
+c            call timeDependBCElas(x, iBC, BC(:,ndof+2:ndof+4),
+c     &                            BC(:,3:5), umeshold)
+c          endif
 c
         if(iramp.eq.1) 
      &        call BCprofileScale(vbc_prof,BC,yold)
@@ -657,12 +662,14 @@ c
 c
                       lhs = 1  
                       iprec=lhs
-c 
-c                     call set_if_velocity (BC(:,ndof+2:ndof+4),  iBC, 
-c     &                                umesh,    disp, x,  Delt(1),   ilwork,
-c     &                                nshg,  ndofBC,
-c     &                                nsd,   nelblif, nlwork )
 c
+c.... time depended comp1_elas BC
+c
+                   if (timeDepComp1Flag .eq. 1) then
+                     call updateTDComp1BC(x,     shpb,     iBC,
+     &                                    BC(:,ndof+2:ndof+5))
+                   endif
+c 
 c.... only used for prescribing time-dependent mesh-elastic BC
 c.... comp3_elas and DG interface share the same iBC, thus, this
 c     call will replace the interface vel with prescribed value
@@ -686,6 +693,35 @@ c
      &                                Rcos,     Rsin,    iper,   ilwork,
      &                                shp,      shgl,    shpb,   shglb,
      &                                shpif,    elasDy)
+c
+c.... snapping back to surface
+c
+                     if (snapSurfFlag .eq. 1) then ! apply snapping
+                       BC_snap = BC
+                       iBC_snap = iBC
+                       disp_snap = disp + elasDy
+c... satisfy BC on disp_snap
+                       call itrBCElas(umesh,  disp_snap,  iBC,
+     &                                BC(:,ndof+2:ndof+5),
+     &                                iper,   ilwork)
+c... update iBC and BC array based on disp_snap
+                       call updateSnapSurfBC(x, disp_snap, iBC_snap,
+     &                                       BC_snap(:,ndof+2:ndof+5))
+c
+                       disp = zero
+c... update disp based on new iBC and BC array
+                       call itrBCElas(umesh,  disp,  iBC_snap,
+     &                                BC_snap(:,ndof+2:ndof+5),
+     &                                iper,   ilwork)
+c... solve the system based on new disp, iBC and BC array
+                       call SolGMRElas (x,        disp,    iBC_snap, BC_snap,
+     &                                  colm,     rowp,    meshq,
+     &                                  hBrg,     eBrg,    yBrg,
+     &                                  Rcos,     Rsin,    iper,   ilwork,
+     &                                  shp,      shgl,    shpb,   shglb,
+     &                                  shpif,    elasDy)
+c
+                     endif ! end snapping
 c
                   endif  ! end of switch for flow or scalar or mesh-elastic solve
 c     
@@ -745,9 +781,18 @@ c.... call itrCorrectElas ... and then itrBCElas ...
 c
                      call itrCorrectElas(disp, elasDy)
 c
-                     call itrBCElas(umesh,  disp,  iBC,
-     &                              BC(:,ndof+2:ndof+5),
-     &                              iper,   ilwork        )
+
+                     if (snapSurfFlag .eq. 1) then ! apply snapping
+c... update disp based on snap iBC and BC array
+                       call itrBCElas(umesh,  disp,  iBC_snap,
+     &                                BC_snap(:,ndof+2:ndof+5),
+     &                                iper,   ilwork)
+                     else
+c... else normal update
+                       call itrBCElas(umesh,  disp,  iBC,
+     &                                BC(:,ndof+2:ndof+5),
+     &                                iper,   ilwork        )
+                     endif
 c
                      x = xold + disp
 c
@@ -1070,6 +1115,11 @@ c
         endif
 
         call BC_finalize
+      endif
+c
+c.... deallocate comp1_elas magnitude if time-depended option is on
+      if((timeDepComp1Flag .eq. 1) .and. (iALE .eq. 2)) then
+        deallocate( timeDepComp1Mag )
       endif
 
 c      close (iecho)

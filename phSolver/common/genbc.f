@@ -81,6 +81,11 @@ c
 c.... convert the input boundary conditions to condensed version
 c
       BC = zero
+c.... save comp1_elas magnitude if time-depended option is on
+      if((timeDepComp1Flag .eq. 1) .and. (iALE .eq. 2)) then
+        allocate( timeDepComp1Mag(nshg) )
+        timeDepComp1Mag = BCtmp(:,20) * Delt(1)
+      endif
 c
       if(myrank.eq.0) write(*,*) 'Navier is set to ', navier
       if(navier.eq.1)then ! zero navier means Euler simulation
