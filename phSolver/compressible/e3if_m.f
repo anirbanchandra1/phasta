@@ -157,8 +157,8 @@ c
 c
       deallocate(tmpmu0,tmpmu1)
 c
-            call dg_penalty(ri0,y0,y1)
-            call dg_penalty(ri1,y1,y0)
+            call dg_penalty0(ri0,y0,y1)
+            call dg_penalty1(ri1,y1,y0)
 c
 c...LHS calculations...
 c
@@ -178,10 +178,10 @@ c     &                         Kij1, Kij0,
 c     &                         AiNa1,AiNa0,KijNaj1,KijNaj0,KijNajC1,KijNajC0,
 c     &                         shp1,nv1,nv0,WdetJif1,prop1,nshl1,nshl0)
 
-               call calc_egmass_(egmass00,shp0,shp0,shg0,shg0,Ai0,Kij0,Kij0,nv0,nv0,WdetJif0,nshl0,nshl0)
-               call calc_egmass_(egmass01,shp0,shp1,shg0,shg1,Ai1,Kij0,Kij1,nv0,nv1,WdetJif0,nshl0,nshl1)
-               call calc_egmass_(egmass10,shp1,shp0,shg1,shg0,Ai0,Kij1,Kij0,nv1,nv0,WdetJif1,nshl1,nshl0)
-               call calc_egmass_(egmass11,shp1,shp1,shg1,shg1,Ai1,Kij1,Kij1,nv1,nv1,WdetJif1,nshl1,nshl1)
+               call calc_egmass00(egmass00,shp0,shp0,shg0,shg0,Ai0,Kij0,Kij0,nv0,nv0,WdetJif0,nshl0,nshl0)
+               call calc_egmass01(egmass01,shp0,shp1,shg0,shg1,Ai1,Kij0,Kij1,nv0,nv1,WdetJif0,nshl0,nshl1)
+               call calc_egmass10(egmass10,shp1,shp0,shg1,shg0,Ai0,Kij1,Kij0,nv1,nv0,WdetJif1,nshl1,nshl0)
+               call calc_egmass11(egmass11,shp1,shp1,shg1,shg1,Ai1,Kij1,Kij1,nv1,nv1,WdetJif1,nshl1,nshl1)
 c
             endif
 c
@@ -468,14 +468,14 @@ c
            real*8,dimension(npro,nflow,nsd) :: cy_jump, kcy
 	   !CHANDRA
 	   real*8 :: vel_SL, temp_SL
-	   real*8, dimension(nflow) :: sl_vec  ! Slip Length Vector
+	   !real*8, dimension(npro,nflow) :: sl_vec  ! Slip Length Vector
 	   real*8, dimension(npro) :: dum !dummy variable
 	   real*8, dimension(npro,nflow,nsd) :: cy_jump_mod
 c	   
 c	 
-	   vel_SL=0.01; temp_SL=1;
-	   sl_vec(1)=0;sl_vec(2)=vel_SL;sl_vec(3)=vel_SL;sl_vec(4)=vel_SL;
-	   sl_vec(5)=temp_SL;
+	   vel_SL=0.01; temp_SL=0.01;
+	   sl_vec(:,1)=0;sl_vec(:,2)=vel_SL;sl_vec(:,3)=vel_SL;sl_vec(:,4)=vel_SL;
+	   sl_vec(:,5)=temp_SL;
  	   !print *,nv0(5,1)
 c	
 c	  	 
@@ -499,20 +499,13 @@ c
 	do isd = 1, nsd
 	  do iflow = 1 , nflow
             do jflow = 1 , nflow
-	      dum(:) = cmtrx(:,iflow,jflow)*g_y0(:,isd,jflow)*nv0(:,isd)
+	      dum(:) = sl_vec(:,iflow)*cmtrx(:,iflow,jflow)*g_y0(:,isd,jflow)*nv0(:,isd)
 	      cy_jump_mod(:,iflow,1) = cy_jump_mod(:,iflow,1) - dum(:)*nv0(:,1)			 
               cy_jump_mod(:,iflow,2) = cy_jump_mod(:,iflow,2) - dum(:)*nv0(:,2)
               cy_jump_mod(:,iflow,3) = cy_jump_mod(:,iflow,3) - dum(:)*nv0(:,3)
 	    enddo
 	 enddo
        enddo
-
-
-
-
-
-
-
 
            do iflow = 1,nflow
              do isd = 1,nsd
@@ -557,6 +550,163 @@ c
 c
         end subroutine dg_penalty
 c
+
+!------------------------------Modified Penalty term subroutines------------------------------
+
+        subroutine dg_penalty0(ri,y0,y1)
+c
+           real*8, dimension(:,:), intent(inout) :: ri
+           real*8, dimension(:,:), intent(in) :: y0,y1
+           real*8, dimension(npro,nflow) :: modgY  
+           integer :: iflow,jflow,isd,jsd,p,r,q
+           real*8 :: this_sum(npro)
+	   real*8, dimension(npro,nflow,nflow) ::LC,CLC,CLLC
+c
+           do iflow = 1,nflow
+c             do isd = 1,nsd
+c
+               this_sum = zero
+c
+               do jflow = 1,nflow
+                 this_sum = this_sum + ctc(:,iflow,jflow)*(y0(:,jflow)-y1(:,jflow))
+               enddo
+c
+               ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*mu(:,iflow)/length_h * this_sum
+c
+c             enddo
+           enddo
+
+	!------------y*n----------------
+	modgY= zero
+	do iflow =1,nflow
+	 do jsd=1,nsd
+	   modgY(:,iflow)=modgY(:,iflow)+g_y0(:,jsd,iflow)*nv0(:,jsd)
+	 enddo
+	enddo
+        !--------------LC--------------
+	do iflow =1,nflow
+	 do jflow=1,nflow
+	  LC(:,iflow,jflow)= sl_vec(:,iflow)*cmtrx(:,iflow,jflow)
+	 enddo
+	enddo
+	!-------------CLC-----------   
+	do q=1,nflow
+         do p=1,nflow
+	  CLC(:,p,q)= zero
+	   do r=1,nflow
+             CLC(:,p,q)= CLC(:,p,q)+cmtrx(:,p,r)*LC(:,r,q)
+	   enddo
+         enddo
+        enddo
+	!------------CLLC---------- 
+	do q=1,nflow
+         do p=1,nflow
+          CLLC(:,p,q)= zero
+           do r=1,nflow
+             CLLC(:,p,q)= CLLC(:,p,q)+LC(:,p,r)*LC(:,r,q) ! transpose(LC)=LC
+           enddo
+         enddo
+        enddo
+
+	!print *, CLLC(:,:,:)
+	!____________Extra term Loops____________
+
+	!--------------------------------------
+        do iflow = 1,nflow
+	  this_sum= zero
+          do jflow = 1,nflow
+	     this_sum = this_sum + CLC(:,iflow,jflow)*modgY(:,jflow)                   
+	  enddo
+	ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) - e*mu(:,iflow)/length_h * this_sum
+	enddo
+
+	!------------------------------------
+	do iflow = 1,nflow
+           do isd = 1,nsd
+             this_sum = zero
+               do jflow = 1,nflow
+                 this_sum = this_sum + CLC(:,iflow,jflow)*(y0(:,jflow)-y1(:,jflow))*nv0(:,isd)
+               enddo
+             ri(:,nflow*(isd-1)+iflow) = ri(:,nflow*(isd-1)+iflow) -  e*mu(:,iflow)/length_h * this_sum
+           enddo
+        enddo
+	!--------------------------------
+        do iflow = 1,nflow
+           do isd = 1,nsd
+             this_sum = zero
+               do jflow = 1,nflow
+                 this_sum = this_sum + CLLC(:,iflow,jflow)*modgY(:,jflow)*nv0(:,isd)
+               enddo
+             ri(:,nflow*(isd-1)+iflow) = ri(:,nflow*(isd-1)+iflow) -  e*mu(:,iflow)/length_h * this_sum
+           enddo
+        enddo
+
+        end subroutine dg_penalty0
+
+
+
+
+!---------------------------New Gb1 suboutine---------------------------
+        subroutine dg_penalty1(ri,y0,y1)
+c
+           real*8, dimension(:,:), intent(inout) :: ri
+           real*8, dimension(:,:), intent(in) :: y0,y1
+           real*8 :: this_sum(npro)
+           real*8, dimension(npro,nflow) :: modgY
+           integer :: iflow,jflow,isd,jsd,p,r,q
+           real*8, dimension(npro,nflow,nflow) ::LC,CLC
+
+
+        !------------y*n----------------
+        modgY= zero
+        do iflow =1,nflow
+         do jsd=1,nsd
+           modgY(:,iflow)=modgY(:,iflow)+g_y0(:,jsd,iflow)*nv0(:,jsd)
+         enddo
+        enddo
+        !--------------LC--------------
+        do iflow =1,nflow
+         do jflow=1,nflow
+          LC(:,iflow,jflow)= sl_vec(:,iflow)*cmtrx(:,iflow,jflow)
+         enddo
+        enddo
+        !-------------CLC-----------
+        do q=1,nflow
+         do p=1,nflow
+          CLC(:,p,q)= zero
+           do r=1,nflow
+             CLC(:,p,q)= CLC(:,p,q)+cmtrx(:,p,r)*LC(:,r,q)
+           enddo
+         enddo
+        enddo
+
+c
+           do iflow = 1,nflow
+c             do isd = 1,nsd
+c
+               this_sum = zero
+c
+               do jflow = 1,nflow
+                 this_sum = this_sum + ctc(:,iflow,jflow)*(y0(:,jflow)-y1(:,jflow))
+               enddo
+c
+               ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*mu(:,iflow)/length_h * this_sum
+c
+c             enddo
+           enddo
+	!--------------------------------------    
+        do iflow = 1,nflow
+          this_sum= zero
+          do jflow = 1,nflow
+             this_sum = this_sum + CLC(:,iflow,jflow)*modgY(:,jflow)
+          enddo
+        ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*mu(:,iflow)/length_h * this_sum ! notesign
+        enddo
+
+        end subroutine dg_penalty1
+
+!--------------------------------------------------------------------------------------
+
         subroutine calc_cmtrx
 c
           integer :: p,q,r

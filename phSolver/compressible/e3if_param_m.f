@@ -39,7 +39,8 @@ c
         real*8,  dimension(:,:,:), pointer :: if_normal_l0, if_normal_l1,if_kappa_l0,if_kappa_l1
         real*8,  dimension(:,:,:), pointer :: ifbc_l0,ifbc_l1
         real*8,  dimension(:,:,:), pointer :: cmtrx,ctc     ! kinematic continuity matrix C
-        real*8,  dimension(:,:),   pointer :: shp0, shp1    ! element shape function at quadrature point
+	real*8,  dimension(:,:),   pointer :: sl_vec        !CHANDRA slip vector definition    
+	real*8,  dimension(:,:),   pointer :: shp0, shp1    ! element shape function at quadrature point
         real*8,  dimension(:,:,:), pointer :: shgl0, shgl1  ! element shape function gradient at a quadrature point
         real*8,  dimension(:,:,:), pointer :: shg0, shg1    ! shape function gradient at a quadrature point
         real*8,  dimension(:,:,:), pointer :: dxdxi0, dxdxi1  ! element deformation tensor
@@ -124,7 +125,8 @@ c
           allocate(ifbc_l1(npro,nshl1,nifbc+1))
           allocate(cmtrx(npro,nflow,nflow))
           allocate(ctc(npro,nflow,nflow))
-          allocate(acl0(npro,nshl0,ndof))
+          allocate(sl_vec(npro,nflow))
+	  allocate(acl0(npro,nshl0,ndof))
           allocate(acl1(npro,nshl1,ndof))
 c
           allocate(shg0(npro,nshl0,nsd))
@@ -193,7 +195,8 @@ c
           deallocate(ifbc_l0,ifbc_l1)
           deallocate(cmtrx)
           deallocate(ctc)
-          deallocate(acl0,acl1)
+          deallocate(sl_vec)
+	  deallocate(acl0,acl1)
           deallocate(shg0,shg1)
           deallocate(dxdxi0,dxdxi1)
           deallocate(y0,y1)

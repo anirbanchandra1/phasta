@@ -338,26 +338,26 @@ c        tcorewc1 = secs(0.0)
 c============ Start the loop of time steps============================c
         !CHANDRA HW3
         !----------------------------------------------
-        print *, 'Q1(a) -  Coords of Node 9: ',x(9,1),x(9,2),x(9,3)
+        !print *, 'Q1(a) -  Coords of Node 9: ',x(9,1),x(9,2),x(9,3)
         !------------------------------------------
-        DUMMY_NODE(1)=0.d0; DUMMY_NODE(2)=-0.5; DUMMY_NODE(3)=1.d0;
-         do istep1=0,nshg
-            DIST=0.d0
-            DIST=(x(istep1,1)-DUMMY_NODE(1))**2
-            DIST=DIST+(x(istep1,2)-DUMMY_NODE(2))**2
-            DIST=DIST+(x(istep1,3)-DUMMY_NODE(3))**2
-             if(DIST.eq.0.d0) then
-             print *, 'Q1(b) - ',istep1, x(istep1,1),x(istep1,2),x(istep1,3)
-            endif
-        enddo
+        !DUMMY_NODE(1)=0.d0; DUMMY_NODE(2)=-0.5; DUMMY_NODE(3)=1.d0;
+        ! do istep1=0,nshg
+        !    DIST=0.d0
+        !    DIST=(x(istep1,1)-DUMMY_NODE(1))**2
+        !    DIST=DIST+(x(istep1,2)-DUMMY_NODE(2))**2
+        !    DIST=DIST+(x(istep1,3)-DUMMY_NODE(3))**2
+        !     if(DIST.eq.0.d0) then
+        !     print *, 'Q1(b) - ',istep1, x(istep1,1),x(istep1,2),x(istep1,3)
+        !    endif
+        !enddo
         !---------------------------------------
-        istep1=nelblk
-        print *, 'Q2 - ', (lcblk(1,istep1+1)-lcblk(1,istep1))
+        !istep1=nelblk
+        !print *, 'Q2 - ', (lcblk(1,istep1+1)-lcblk(1,istep1))
         !---------------------------------------
-        print *, 'Q3 - iBC for node 9 : ', iBC(9)
+        !print *, 'Q3 - iBC for node 9 : ', iBC(9)
         !---------------------------------------
-        istep1=nelblb
-        print *, 'DD - : ', (lcblkb(1,istep1+1)-lcblkb(1,istep1))
+        !istep1=nelblb
+        !print *, 'DD - : ', (lcblkb(1,istep1+1)-lcblkb(1,istep1))
         !------------------------------------------------
 
 
