@@ -127,18 +127,18 @@ c
 
 c.... communications
 c 
-        if (numpe > 1) then
-           call commu (y, ilwork, nflow, 'out')
-           if(ires.ne.2) call commu (ac, ilwork, nflow, 'out')
-        endif
+c        if (numpe > 1) then
+c           call commu (y, ilwork, nflow, 'out')
+c           if(ires.ne.2) call commu (ac, ilwork, nflow, 'out')
+c        endif
 c
 c       slave has masters value, for abc we need to rotate it
 c
-        if(iabc==1) then        !are there any axisym bc's
-           call rotabc(y, iBC, 'out')
-           if(ires.ne.2) call rotabc(ac, iBC, 'out')
-        endif
-     
+c        if(iabc==1) then        !are there any axisym bc's
+c           call rotabc(y, iBC, 'out')
+c           if(ires.ne.2) call rotabc(ac, iBC, 'out')
+c        endif
+c     
 c
 c.... return
 c
