@@ -302,7 +302,7 @@ extern "C" {
     int usingpetsc;
     int elasModel;
     int elasFDC;
-	int mesh2geom;
+    int mesh2geom;
   } conpar ;
  
 /*chen Sep 25 2009  Flow Control Parameters*/
