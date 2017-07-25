@@ -42,31 +42,6 @@ c
         real*8 limitcount(nflow)
         integer locmax(1),locmin(1)
 c
-c  limiting...ugly but sometimes the only way
-c 
-c        limitcount=0
-c        do i=1,nflow
-c           if(ylimit(1,i).gt.0) then
-c              locmax=maxloc(y(:,i))
-c              locmin=minloc(y(:,i))
-c              ymax=maxval(y(:,i))
-c              ymin=minval(y(:,i))
-c              write(33,34)i,ymax,ymin,1.*locmax,1.*locmin
-c          call flush(33)
-c              do j=1,numnp      ! only limit linear modes for now
-c                 ypc=y(j,i)
-c                 y(j,i)=min(ylimit(3,i),max(ylimit(2,i),y(j,i)))
-c                if(ypc.ne.y(j,i) )limitcount(i)=limitcount(i)+one
-c              enddo
-c           endif
-c        enddo
-c        if(maxval(limitcount).gt.0) then
-c           write(33,34)myrank,(limitcount(j)/numnp,j=1,nflow)
-c           call flush(33)
-c        endif
-c 34     format(i5,5(2x,e14.7))
-c
-
 c.... ------------------------->  Velocity  <--------------------------
 c.... 3D
 c
@@ -128,7 +103,7 @@ c
 c.... communications
 c 
 c        if (numpe > 1) then
-c           call commu (y, ilwork, nflow, 'out')
+c           call commu (actual_vi, ilwork, nsd, 'out')
 c           if(ires.ne.2) call commu (ac, ilwork, nflow, 'out')
 c        endif
 c
