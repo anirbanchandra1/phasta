@@ -234,21 +234,22 @@ c
      &                                                  * shg0(:,i,jsd)
      &                                                  * cmtrx(:,kflow,jflow)
      &                                                  * shp1(:,j)
-     &                                                  * ni1(:,isd)
+     &                                                  * ni0(:,isd)
                     enddo
                   enddo
+                enddo
 !E! NOTE: Have to check this (penalty term...)
-                  do kflow = 1,nflow
-                      CNb0ni0CNa1ni1 = CNb0ni0CNa1ni1 + cmtrx(:,iflow,kflow) * shp0(:,i) * ni0(:,isd) 
-     &                                                * cmtrx(:,kflow,jflow) * shp1(:,j) * ni1(:,isd)
-                  enddo
+                do kflow = 1,nflow
+                    CNb0ni0CNa1ni1 = CNb0ni0CNa1ni1 + cmtrx(:,iflow,kflow) * shp0(:,i)
+     &                                              * mu(:,kflow)
+     &                                              * cmtrx(:,kflow,jflow) * shp1(:,j)
                 enddo
 c
                 egmass(:,il,jl) = egmass(:,il,jl)
      &          + ( 
      &              pt50 * shp0(:,i) * ( factor*Ai1Na1ni0 - Kij1Naj1ni0)
-     &          +   pt50 * s         * Kij0Nbj0CNa1ni1
-     &          +   e * this_mu(:,iflow,jflow) /length_h * CNb0ni0CNa1ni1
+     &          -   factor * pt50 * s * Kij0Nbj0CNa1ni1
+     &          -   factor * e /length_h * CNb0ni0CNa1ni1
      &            ) * WdetJ0
 c
               enddo
