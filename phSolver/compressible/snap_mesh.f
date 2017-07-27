@@ -44,7 +44,8 @@ c
           enddo ! end loop nshg
         else ! auto-detect snapping face
           do i = 1, nshg
-            if(m2gClsfcn(i,1) .lt. 3 .and. ibits(iBC(i),14,3) .ne. 7) then
+            if(m2gClsfcn(i,1) .lt. 3 .and. m2gClsfcn(i,1) .gt. 0
+     &         .and. ibits(iBC(i),14,3) .ne. 7) then
               face_snap(i) = 1
             endif
           enddo
