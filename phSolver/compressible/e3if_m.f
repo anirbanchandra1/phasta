@@ -427,37 +427,41 @@ c
 c
         end subroutine e3if_flux
 c
-        subroutine flux_jump
 c
-          real*8, dimension(npro) :: vi0,vi1,etot0,etot1
 c
-          vi0 = + (vi(:,1)-um0(:,1))*nv0(:,1)
-     &          + (vi(:,2)-um0(:,2))*nv0(:,2)
-     &          + (vi(:,3)-um0(:,3))*nv0(:,3)
+c        subroutine flux_jump
 c
-          vi1 = + (vi(:,1)-um1(:,1))*nv1(:,1)
-     &          + (vi(:,2)-um1(:,2))*nv1(:,2)
-     &          + (vi(:,3)-um1(:,3))*nv1(:,3)
+c          real*8, dimension(npro) :: vi0,vi1,etot0,etot1
+c
+c          vi0 = + (vi(:,1)-um0(:,1))*nv0(:,1)
+c    &          + (vi(:,2)-um0(:,2))*nv0(:,2)
+c     &          + (vi(:,3)-um0(:,3))*nv0(:,3)
+c
+c          vi1 = + (vi(:,1)-um1(:,1))*nv1(:,1)
+c     &          + (vi(:,2)-um1(:,2))*nv1(:,2)
+c     &          + (vi(:,3)-um1(:,3))*nv1(:,3)
 c
 c      write(*,*) 'vi0:',vi0
 c      write(*,*) 'vi1:',vi1
 c
-          etot0 = ei0 + pt50 * (u0(:,1)*u0(:,1)+u0(:,2)*u0(:,2)+u0(:,3)*u0(:,3))
-          etot1 = ei1 + pt50 * (u1(:,1)*u1(:,1)+u1(:,2)*u1(:,2)+u1(:,3)*u1(:,3))
+c          etot0 = ei0 + pt50 * (u0(:,1)*u0(:,1)+u0(:,2)*u0(:,2)+u0(:,3)*u0(:,3))
+c          etot1 = ei1 + pt50 * (u1(:,1)*u1(:,1)+u1(:,2)*u1(:,2)+u1(:,3)*u1(:,3))
 c
-          ri0(:,16) = ri0(:,16) + vi0*rho0
-          ri0(:,17) = ri0(:,17) + vi0*rho0*u0(:,1)
-          ri0(:,18) = ri0(:,18) + vi0*rho0*u0(:,2)
-          ri0(:,19) = ri0(:,19) + vi0*rho0*u0(:,3)
-          ri0(:,20) = ri0(:,20) + vi0*rho0*etot0
+c          ri0(:,16) = ri0(:,16) + vi0*rho0
+c          ri0(:,17) = ri0(:,17) + vi0*rho0*u0(:,1)
+c          ri0(:,18) = ri0(:,18) + vi0*rho0*u0(:,2)
+c          ri0(:,19) = ri0(:,19) + vi0*rho0*u0(:,3)
+c          ri0(:,20) = ri0(:,20) + vi0*rho0*etot0
 c
-          ri1(:,16) = ri1(:,16) + vi1*rho1
-          ri1(:,17) = ri1(:,17) + vi1*rho1*u1(:,1)
-          ri1(:,18) = ri1(:,18) + vi1*rho1*u1(:,2)
-          ri1(:,19) = ri1(:,19) + vi1*rho1*u1(:,3)
-          ri1(:,20) = ri1(:,20) + vi1*rho1*etot1
+c          ri1(:,16) = ri1(:,16) + vi1*rho1
+c          ri1(:,17) = ri1(:,17) + vi1*rho1*u1(:,1)
+c          ri1(:,18) = ri1(:,18) + vi1*rho1*u1(:,2)
+c          ri1(:,19) = ri1(:,19) + vi1*rho1*u1(:,3)
+c          ri1(:,20) = ri1(:,20) + vi1*rho1*etot1
 c
-        end subroutine flux_jump
+c        end subroutine flux_jump
+c
+c
 c
         subroutine kinematic_condition(ri,Kij)
 c
