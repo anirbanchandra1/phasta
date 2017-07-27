@@ -20,7 +20,7 @@ c
             if (ibits(iBC(i),14,3) .eq. 7) then
               cycle
             endif
-            if (m2gClsfcn(i,1) .eq. 3) then ! region
+            if (m2gClsfcn(i,1) .eq. 3 .or. m2gClsfcn(i,1) .eq. 0) then ! region or vertex
               cycle
             else if (m2gClsfcn(i,1) .eq. 2) then ! face
               do j = 1, snapNumFaceTags
@@ -29,7 +29,7 @@ c
                   exit
                 endif
               enddo
-            else ! edge or vertex
+            else if (m2gClsfcn(i,1) .eq. 1) then ! edge
               answer = zero
               do j = 1, snapNumFaceTags
                 call sim_is_in_closure(m2gClsfcn(i,1), m2gClsfcn(i,2),
