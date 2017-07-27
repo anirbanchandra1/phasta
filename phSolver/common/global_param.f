@@ -138,16 +138,19 @@ c----------------------------------------------------------------------
 c
 c.... common /snapmesh/   : snap mesh nodes back the surface
 c
-c snapSurfFlag: flag for snap back method
-c snapSurfID  : surface ID for the target surface
+c snapSurfFlag    : flag for snap back method
+c snapNumFaceTags : number of face tags; default is zero
+c snapFaceTags    : face tags for the target surface
 c
       module snapmesh_m
         use iso_c_binding
+        use global_const_m
         implicit none
-        integer(c_int), target :: snapSurfFlag,     snapSurfID,
+        integer(c_int), target, dimension(MAXTS) :: snapFaceTags
+        integer(c_int), target :: snapSurfFlag,     snapNumFaceTags,
      &                            timeDepComp1Flag, timeDepComp1ID
         real*8, allocatable    :: timeDepComp1Mag(:)
-        common /snapmesh/ snapSurfFlag,     snapSurfID,
+        common /snapmesh/ snapSurfFlag,  snapNumFaceTags,  snapFaceTags,
      &                    timeDepComp1Flag, timeDepComp1ID
       end module snapmesh_m
 c

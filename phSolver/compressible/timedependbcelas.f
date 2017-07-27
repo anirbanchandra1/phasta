@@ -21,6 +21,7 @@ c.... dynamic origin, x translation, rotation frequence
       real*8    dyn_org,   xtsl,  rotf
 c
       if (elasFDC .gt. 0) then
+        write(*,*) "use Force-driven case:", elasFDC
         casenumber = elasFDC
       else
         write(*,*) "Please use Force-driven as Mesh Elas Model"
