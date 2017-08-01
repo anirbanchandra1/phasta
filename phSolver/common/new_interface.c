@@ -232,11 +232,6 @@ void countfieldstowriterestart()
     nfields = nfields + 3;
   }
 
-  if (conpar.mesh2geom == 1) {
-//HARDCODED BY FAN, 2 fields: m2gClsfcn, m2gParCoord
-    nfields = nfields + 2;
-  }
-
   if (conpar.iSOLID == 1) {
 //HARDCODED BY Yu, 3 fields added: elmB1, elmB2, disp_solid
     nfields = nfields + 3; 
