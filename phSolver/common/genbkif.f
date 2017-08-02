@@ -231,7 +231,7 @@ c            lcblkif(2,nelblif) = iopen   ! ??? see genblk.f
             lcblkif(iblkif_nshl0,nelblif) = nshl0
             lcblkif(iblkif_nshl1,nelblif) = nshl1
             lcblkif(iblkif_topology,nelblif) = iftp_map(lcsyst0,lcsyst1)
-      write(*,*) 'IF TOPOLOGY: ',iftp_map(lcsyst0,lcsyst1)
+c      write(*,*) 'IF TOPOLOGY: ',iftp_map(lcsyst0,lcsyst1)
 c
 c... allocate memory for stack arrays
 c
