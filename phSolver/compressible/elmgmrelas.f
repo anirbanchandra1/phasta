@@ -54,6 +54,8 @@ c
 c
 c.... ------------------->   layer base elements   <-------------------
 c
+      if (numgc .gt. 0) then
+c
 c.... calculate the normal of each growth curve based on new boundary positions
 c
         xtmp = x + disp
@@ -167,11 +169,19 @@ c
 c
 c.... end calculation of growth curve normal
 c
+      endif ! end if numgc greater than 0
+c
 c.... ---------------->   Re-position layered mesh   <-----------------
+c
+c.... if no growth curve, skip whole re-positioning method
+c
+      if (numgc .gt. 0) then
 c
 c.... loop over growth curves
 c
-        flag = zero
+        do i = 1, numnp
+          call iBCelas_to_dbl(iBC(i), flag(i))
+        enddo
         listcounter = 0
         ioffset = 1 ! the ID starts from 1 in phasta
         do ngc = 1, numgc
@@ -218,8 +228,6 @@ c.... end loop growth curves
 c
         enddo
 c
-c.... end re-position layered mesh
-c
 c.... -------------------->     communication     <--------------------
 c
 c.... combine disp + flag into dispCommu
@@ -253,6 +261,12 @@ c
           call dbl_to_iBCelas(flag(i), iBC(i))
           call setBLbc(disp(i,:), iBC(i), BC(i, ndof+2:ndof+5))
         enddo
+c
+c.... end if growth curve
+c
+      endif ! end if numgc greater than 0
+c
+c.... end re-position layered mesh
 c
 c.... -------------------->   interior elements   <--------------------
 c
