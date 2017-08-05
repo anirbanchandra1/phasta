@@ -1,7 +1,7 @@
         subroutine updateSnapSurfBC ( x,       disp_snap,
      &                                iBC,     BC)
 c
-         use readarrays ! read m2g fields
+         use m2gfields ! read m2g fields
          use pointer_data
          use simmetrix_snap
 c
