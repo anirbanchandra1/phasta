@@ -434,15 +434,12 @@ c
      & c_char_'DG interface flag' // char(0),
      & c_loc(intfromfile), ione, dataInt, iotype)
 
+      allocate( ifFlag(nshg) )
       if ( intfromfile(1) .gt. 0 ) then
         if ( intfromfile(1) .ne. nshg ) then
           call error ('readnblk  ', 'size of interface flag ', intfromfile(1))
         endif
-        allocate( ifFlag(nshg) )
         allocate( tmpifFlag(nshg) )
-      else  ! sometimes a partition has no interface
-        allocate( ifFlag(1) )
-        allocate( tmpifFlag(1) )
       endif
 
       call phio_readdatablock(fhandle,
@@ -453,8 +450,7 @@ c
          ifFlag = tmpifFlag
          deallocate( tmpifFlag )
       else  ! sometimes a partition has no interface
-         ifFlag = 0
-         deallocate( tmpifFlag )
+         ifFlag = zero
       endif
 c
 c--------------------- read the layered mesh parameters ------------------
