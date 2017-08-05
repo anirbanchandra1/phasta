@@ -449,7 +449,7 @@ c
      & c_char_'DG interface flag' // char(0),
      & c_loc(tmpifFlag), nshg, dataInt, iotype)
 
-      if ( nshgtmp .gt. 0 ) then
+      if ( intfromfile(1) .gt. 0 ) then
          ifFlag = tmpifFlag
          deallocate( tmpifFlag )
       else  ! sometimes a partition has no interface

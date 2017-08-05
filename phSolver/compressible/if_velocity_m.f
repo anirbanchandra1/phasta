@@ -65,7 +65,7 @@ c
 c
         actual_vi = zero
         do inode = 1, nshg
-          if ( ifFlag(inode) .gt. 0 ) then
+          if ( ifFlag(inode) .eq. 1 ) then
             actual_vi(inode,:) = sum_vi_area(inode,:) / sum_vi_area(inode,nsd+1)
           endif
         enddo
