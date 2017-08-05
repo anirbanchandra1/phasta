@@ -251,18 +251,19 @@ extern "C" {
   } aerfrc ;
 
   extern struct {
-	double blfactor;
+    double blfactor;
     int numgc;
-	int numgcnp;
+    int numgcnp;
     int useBLbaseSrfID;
-	int BLbaseSrfID;
+    int BLbaseSrfID;
   } laymesh ;
 
   extern struct {
     int snapSurfFlag;
-    int snapSurfID;
-	int timeDepComp1Flag;
-	int timeDepComp1ID;
+    int snapNumFaceTags;
+    int snapFaceTags[MAXTS];
+    int timeDepComp1Flag;
+    int timeDepComp1ID;
   } snapmesh ;
 
   extern struct { 
@@ -302,7 +303,7 @@ extern "C" {
     int usingpetsc;
     int elasModel;
     int elasFDC;
-	int mesh2geom;
+    int mesh2geom;
   } conpar ;
  
 /*chen Sep 25 2009  Flow Control Parameters*/

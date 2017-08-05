@@ -288,6 +288,8 @@ c
         deallocate(m2gClsfcn)
         deallocate(m2gParCoord)
 c
+        deallocate(ifFlag)
+c
         call finalizeDtN
         call clearper
         call finalizeNABI

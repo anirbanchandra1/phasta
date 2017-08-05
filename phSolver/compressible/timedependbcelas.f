@@ -21,6 +21,7 @@ c.... dynamic origin, x translation, rotation frequence
       real*8    dyn_org,   xtsl,  rotf
 c
       if (elasFDC .gt. 0) then
+        write(*,*) "use Force-driven case:", elasFDC
         casenumber = elasFDC
       else
         write(*,*) "Please use Force-driven as Mesh Elas Model"
@@ -190,101 +191,101 @@ c.... test case 6
 c.... original mov+rot+shrk
 c
       if ( casenumber .eq. 6 ) then
-        xtsl     = 1.0000000000000e-4
-        dyn_org  = 2.6250000000000e-3 + lstep * xtsl
+        xtsl     = 2.0000000000000e-4
+        dyn_org  = 2.6250000000000e-3 + DBLE(lstep) * xtsl
         write(*,*) "current lstep:", lstep, "dyn_org:", dyn_org
-        rotf     = 180.0
+        rotf     = 90.0
         do i = 1,numnp
           if ( (ibits(iBC(i),14,3) .eq. 7) .and.
      &         (x(i,1) .lt. 6.65e-3) .and. (x(i,1) .gt. -1.4e-3) .and.
      &         ((x(i,2)*x(i,2) + x(i,3)*x(i,3)) .lt. 2.89e-6) ) then
             if( x(i,2) .ge. 0.6e-3 ) then ! top
               if ( x(i,1) .le. (dyn_org-1.025e-3) ) then ! top tail
-                disp(i,1) = -0.05 * (x(i,1)-dyn_org+2.125e-3) + xtsl
+                disp(i,1) = -0.1 * (x(i,1)-dyn_org+2.125e-3) + xtsl
      &                    + (x(i,1)-dyn_org+2.125e-3) * (cos(pi/rotf) - 1.0)
      &                    - (x(i,2)-1.125e-3) *  sin(pi/rotf)
-                disp(i,2) = -0.05 * (x(i,2)-1.125e-3) !+ 0.01
+                disp(i,2) = -0.1 * (x(i,2)-1.125e-3) !+ 0.01
      &                    + (x(i,2)-1.125e-3) * (cos(pi/rotf) - 1.0)
      &                    + (x(i,1)-dyn_org+2.125e-3) *  sin(pi/rotf)
-                disp(i,3) = -0.05 * x(i,3)
+                disp(i,3) = -0.1 * x(i,3)
 
               else if ( x(i,1) .ge. (dyn_org+1.025e-3) ) then ! top head
-                disp(i,1) = -0.05 * (x(i,1)-dyn_org-2.125e-3) + xtsl
+                disp(i,1) = -0.1 * (x(i,1)-dyn_org-2.125e-3) + xtsl
      &                    + (x(i,1)-dyn_org-2.125e-3) * (cos(pi/rotf) - 1.0)
      &                    - (x(i,2)-1.125e-3) *  sin(pi/rotf)
-                disp(i,2) = -0.05 * (x(i,2)-1.125e-3) !+ 0.01
+                disp(i,2) = -0.1 * (x(i,2)-1.125e-3) !+ 0.01
      &                    + (x(i,2)-1.125e-3) * (cos(pi/rotf) - 1.0)
      &                    + (x(i,1)-dyn_org-2.125e-3) *  sin(pi/rotf)
-                disp(i,3) = -0.05 * x(i,3)
+                disp(i,3) = -0.1 * x(i,3)
 
               else ! top middle
-                disp(i,1) = -0.05 * (x(i,1)-dyn_org) + xtsl
+                disp(i,1) = -0.1 * (x(i,1)-dyn_org) + xtsl
      &                    + (x(i,1)-dyn_org) * (cos(pi/rotf) - 1.0)
      &                    - (x(i,2)-1.125e-3) *  sin(pi/rotf)
-                disp(i,2) = -0.05 * (x(i,2)-1.125e-3) !+ 0.01
+                disp(i,2) = -0.1 * (x(i,2)-1.125e-3) !+ 0.01
      &                    + (x(i,2)-1.125e-3) * (cos(pi/rotf) - 1.0)
      &                    + (x(i,1)-dyn_org) *  sin(pi/rotf)
-                disp(i,3) = -0.05 * x(i,3)
+                disp(i,3) = -0.1 * x(i,3)
 
               endif ! end top--switch head middle tail
 
             else if( x(i,2) .le. -0.6e-3 ) then ! bottom
               if ( x(i,1) .le. (dyn_org-1.025e-3) ) then ! bottom tail
-                disp(i,1) = -0.05 * (x(i,1)-dyn_org+2.125e-3) + xtsl
+                disp(i,1) = -0.1 * (x(i,1)-dyn_org+2.125e-3) + xtsl
      &                    - (x(i,1)-dyn_org+2.125e-3) * (cos(pi/rotf) - 1.0)
      &                    + (x(i,2)+1.125e-3) *  sin(pi/rotf)
-                disp(i,2) = -0.05 * (x(i,2)+1.125e-3) !- 0.01
+                disp(i,2) = -0.1 * (x(i,2)+1.125e-3) !- 0.01
      &                    - (x(i,2)+1.125e-3) * (cos(pi/rotf) - 1.0)
      &                    - (x(i,1)-dyn_org+2.125e-3) *  sin(pi/rotf)
-                disp(i,3) = -0.05 * x(i,3)
+                disp(i,3) = -0.1 * x(i,3)
 
               else if ( x(i,1) .ge. (dyn_org+1.025e-3) ) then ! bottom head
-                disp(i,1) = -0.05 * (x(i,1)-dyn_org-2.125e-3) + xtsl
+                disp(i,1) = -0.1 * (x(i,1)-dyn_org-2.125e-3) + xtsl
      &                    - (x(i,1)-dyn_org-2.125e-3) * (cos(pi/rotf) - 1.0)
      &                    + (x(i,2)+1.125e-3) *  sin(pi/rotf)
-                disp(i,2) = -0.05 * (x(i,2)+1.125e-3) !- 0.01
+                disp(i,2) = -0.1 * (x(i,2)+1.125e-3) !- 0.01
      &                    - (x(i,2)+1.125e-3) * (cos(pi/rotf) - 1.0)
      &                    - (x(i,1)-dyn_org-2.125e-3) *  sin(pi/rotf)
-                disp(i,3) = -0.05 * x(i,3)
+                disp(i,3) = -0.1 * x(i,3)
 
               else ! bottom middle
-                disp(i,1) = -0.05 * (x(i,1)-dyn_org) + xtsl
+                disp(i,1) = -0.1 * (x(i,1)-dyn_org) + xtsl
      &                    - (x(i,1)-dyn_org) * (cos(pi/rotf) - 1.0)
      &                    + (x(i,2)+1.125e-3) *  sin(pi/rotf)
-                disp(i,2) = -0.05 * (x(i,2)+1.125e-3) !- 0.01
+                disp(i,2) = -0.1 * (x(i,2)+1.125e-3) !- 0.01
      &                    - (x(i,2)+1.125e-3) * (cos(pi/rotf) - 1.0)
      &                    - (x(i,1)-dyn_org) *  sin(pi/rotf)
-                disp(i,3) = -0.05 * x(i,3)
+                disp(i,3) = -0.1 * x(i,3)
 
               endif ! end bottom--switch head middle tail
 
             else ! middle
               if ( x(i,1) .le. (dyn_org-1.025e-3) ) then ! middle tail
-                disp(i,1) = -0.05 * (x(i,1)-dyn_org+2.125e-3) + xtsl
+                disp(i,1) = -0.1 * (x(i,1)-dyn_org+2.125e-3) + xtsl
 c     &                    + (x(i,1)-0.5e-3) * (cos(pi/rotf) - 1.0)
 c     &                    - (x(i,2)) *  sin(pi/rotf)
-                disp(i,2) = -0.05 * (x(i,2)) ! + 0.01
+                disp(i,2) = -0.1 * (x(i,2)) ! + 0.01
 c     &                    + (x(i,2)) * (cos(pi/rotf) - 1.0)
 c     &                    + (x(i,1)-0.5e-3) *  sin(pi/rotf)
-                disp(i,3) = -0.05 * x(i,3)
+                disp(i,3) = -0.1 * x(i,3)
 
               else if ( x(i,1) .ge. (dyn_org+1.025e-3) ) then ! middle head
-                disp(i,1) = -0.05 * (x(i,1)-dyn_org-2.125e-3) + xtsl
+                disp(i,1) = -0.1 * (x(i,1)-dyn_org-2.125e-3) + xtsl
 c     &                    + (x(i,1)-4.75e-3) * (cos(pi/rotf) - 1.0)
 c     &                    - (x(i,2)) *  sin(pi/rotf)
-                disp(i,2) = -0.05 * (x(i,2)) ! + 0.01
+                disp(i,2) = -0.1 * (x(i,2)) ! + 0.01
 c     &                    + (x(i,2)) * (cos(pi/rotf) - 1.0)
 c     &                    + (x(i,1)-4.75e-3) *  sin(pi/rotf)
-                disp(i,3) = -0.05 * x(i,3)
+                disp(i,3) = -0.1 * x(i,3)
 
               else ! middle middle
-                disp(i,1) = -0.05 * (x(i,1)-dyn_org) + xtsl
+                disp(i,1) = -0.1 * (x(i,1)-dyn_org) + xtsl
 c     &                    + (x(i,1)-2.625e-3) * (cos(pi/rotf) - 1.0)
 c     &                    - (x(i,2)) *  sin(pi/rotf)
-                disp(i,2) = -0.05 * (x(i,2)) ! + 0.01
+                disp(i,2) = -0.1 * (x(i,2)) ! + 0.01
 c     &                    + (x(i,2)) * (cos(pi/rotf) - 1.0)
 c     &                    + (x(i,1)-2.625e-3) *  sin(pi/rotf)
-                disp(i,3) = -0.05 * x(i,3)
+                disp(i,3) = -0.1 * x(i,3)
 
               endif ! end middle--switch head middle tail
 

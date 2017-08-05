@@ -430,7 +430,11 @@ int input_fform(phSolver::Input& inp)
       exit(1);
     }
 
-    snapmesh.snapSurfID = inp.GetValue("Snap back to surface surf ID");
+    snapmesh.snapNumFaceTags = inp.GetValue("Snap back to surface number of face tags");
+    ivec = inp.GetValue("Snap back to surface face tags");
+    for (i = 0; i < snapmesh.snapNumFaceTags; ++i)
+      snapmesh.snapFaceTags[i] = ivec[i];
+    ivec.erase(ivec.begin(),ivec.end());
 
     if ( (string)inp.GetValue("Time depended comp1_elas option") == "False" ){
 	  snapmesh.timeDepComp1Flag = 0;

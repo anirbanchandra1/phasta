@@ -1,41 +1,57 @@
         subroutine updateSnapSurfBC ( x,       disp_snap,
      &                                iBC,     BC)
 c
+         use m2gfields ! read m2g fields
          use pointer_data
+         use simmetrix_snap
 c
         include "common.h"
 c
         real*8    x(numnp,nsd),    disp_snap(numnp,nsd)
         dimension iBC(nshg),       BC(nshg,4)
-        integer   surfID_snap(nshg)
+        integer   face_snap(nshg)
+        integer   answer
 c
-        if ( snapSurfFlag .eq. 1) then ! double check
+        if ( snapSurfFlag .eq. 1 ) then ! double check
 c
-        surfID_snap = zero
+        face_snap = zero
+        if (snapNumFaceTags .gt. 0) then ! user specify face tags
+          do i = 1, nshg
+            if (ibits(iBC(i),14,3) .eq. 7) then
+              cycle
+            endif
+            if (m2gClsfcn(i,1) .eq. 3 .or. m2gClsfcn(i,1) .eq. 0) then ! region or vertex
+              cycle
+            else if (m2gClsfcn(i,1) .eq. 2) then ! face
+              do j = 1, snapNumFaceTags
+                if (m2gClsfcn(i,2) .eq. snapFaceTags(j)) then
+                  face_snap(i) = 1
+                  exit
+                endif
+              enddo
+            else if (m2gClsfcn(i,1) .eq. 1) then ! edge
+              answer = zero
+              do j = 1, snapNumFaceTags
+                call sim_is_in_closure(m2gClsfcn(i,1), m2gClsfcn(i,2),
+     &                                 2,              snapFaceTags(j),
+     &                                 answer)
+                if (answer .ne. 0) then
+                  face_snap(i) = 1
+                  exit
+                endif
+              enddo
+            endif ! end check dimension
+          enddo ! end loop nshg
+        else ! auto-detect snapping face
+          do i = 1, nshg
+            if(m2gClsfcn(i,1) .lt. 3 .and. m2gClsfcn(i,1) .gt. 0
+     &         .and. ibits(iBC(i),14,3) .ne. 7) then
+              face_snap(i) = 1
+            endif
+          enddo
+        endif
 c
-c.... loop over the boundary elements
-c
-        boundary_blocks: do iblk = 1, nelblb
-c
-c.... set up the parameters
-c
-          iel    = lcblkb(1,iblk)
-          lelCat = lcblkb(2,iblk)
-          lcsyst = lcblkb(3,iblk)
-          iorder = lcblkb(4,iblk)
-          nenl   = lcblkb(5,iblk)  ! no. of vertices per element
-          nenbl  = lcblkb(6,iblk)  ! no. of vertices per bdry. face
-          nshl   = lcblkb(9,iblk)
-          nshlb  = lcblkb(10,iblk)
-          mattyp = lcblkb(7,iblk)
-          ndofl  = lcblkb(8,iblk)
-          npro   = lcblkb(1,iblk+1) - iel
-c
-          call checkSnapSurfID(mienb(iblk)%p, miBCB(iblk)%p, surfID_snap)
-c
-        enddo boundary_blocks ! end loop the boundary elements
-c
-        call resetSnapBC(x, disp_snap, iBC, BC, surfID_snap)
+        call resetSnapBC(x, disp_snap, iBC, BC, face_snap)
 c
         endif ! end check snap flag
 c
@@ -46,30 +62,8 @@ c----------------------------------------------------------------------
 c
 c----------------------------------------------------------------------
 c
-        subroutine checkSnapSurfID (ienb, iBCB, surfID_snap)
-c
-        include "common.h"
-c
-        integer   surfID_snap(nshg)
-        dimension iBCB(npro,ndiBCB),  ienb(npro,nshl)
-c
-        do inode = 1, npro
-          if (iBCB(inode,2) .eq. snapSurfID) then
-            do i = 1, nenbl ! only loop over vtx on the boundary
-              surfID_snap(ienb(inode,i)) = iBCB(inode,2)
-            enddo
-          endif
-        enddo
-c
-        return
-        end
-c
-c----------------------------------------------------------------------
-c
-c----------------------------------------------------------------------
-c
         subroutine resetSnapBC ( x,       disp_snap,
-     &                           iBC,     BC,     surfID_snap)
+     &                           iBC,     BC,        face_snap)
 c
         use iso_c_binding
         use simmetrix_snap
@@ -78,9 +72,9 @@ c
 c
         real*8    x(numnp,nsd),  disp_snap(numnp,nsd)
         dimension iBC(nshg),     BC(nshg, 4)
-        integer   surfID_snap(nshg)
+        integer   face_snap(nshg)
         real*8    mag,                rad
-        integer   i
+        integer   i,    j
         real*8    x_tmp_1(numnp), x_tmp_2(numnp), x_tmp_3(numnp)
         real*8    x_crt_1(numnp), x_crt_2(numnp), x_crt_3(numnp)
 c
@@ -91,8 +85,8 @@ c
      &                            x_crt_1, x_crt_2, x_crt_3)
 c
         do i = 1, nshg
-c... if surf ID is snapSurfID
-          if (surfID_snap(i) .eq. snapSurfID) then
+c... if face_snap = 1
+          if (face_snap(i) .ne. 0) then
 c... update iBC and BC
             iBC(i) = ibset(iBC(i), 14)
             iBC(i) = ibset(iBC(i), 15)
@@ -100,7 +94,7 @@ c... update iBC and BC
             BC(i,1)= x_crt_1(i) - x(i,1)
             BC(i,2)= x_crt_2(i) - x(i,2)
             BC(i,3)= x_crt_3(i) - x(i,3)
-          endif ! if equal to snapSurfID
+          endif ! if face_snap is on
         enddo
 c
         return
@@ -250,29 +244,6 @@ c... if z of normal is the max
             endif ! if BC code is comp1
           endif ! if equal to timeDepComp1ID
         enddo
-c
-        return
-        end
-c
-c----------------------------------------------------------------------
-c
-c----------------------------------------------------------------------
-c
-        subroutine write_m2g_fields ()
-c
-        use readarrays ! read m2g fields
-c
-        include "common.h"
-c
-c.... temporary write out here
-        if (mesh2geom .eq. 1) then
-          call write_field(
-     &         myrank,'a'//char(0),'m2g_classification'//char(0),18,
-     &         m2gClsfcn,  'i'//char(0), numnp, 2, lstep)
-          call write_field(
-     &         myrank,'a'//char(0),'m2g_parCoordinate'//char(0),17,
-     &         m2gParCoord,  'd'//char(0), numnp, 2, lstep)
-        endif
 c
         return
         end

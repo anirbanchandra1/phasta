@@ -8,8 +8,20 @@ c    subroutine readnblk ("Reed and Block") -- allocates space for
 c     and reads data to be contained in module readarrays.  Reads
 c     all remaining data and blocks them with pointers.
 c
+      module m2gfields
+      integer, allocatable :: m2gClsfcn(:,:)
+      real*8, allocatable :: m2gParCoord(:,:)
+      end module
+
+      module interfaceflag
+      integer, allocatable :: ifFlag(:)
+      end module
+
       module readarrays
-      
+
+      use m2gfields
+      use interfaceflag
+
       real*8, allocatable :: point2x(:,:)
       real*8, allocatable :: qold(:,:)
       real*8, allocatable :: uold(:,:)
@@ -33,8 +45,6 @@ c
       integer, allocatable :: BLtnv(:)
       integer, allocatable :: BLlist(:)
 
-      integer, allocatable :: m2gClsfcn(:,:)
-      real*8, allocatable :: m2gParCoord(:,:)
       end module
 
       subroutine readnblk
@@ -61,6 +71,7 @@ c
       integer, target, allocatable :: fncorpread(:)
       integer, target, allocatable :: tmpBLInt(:), tmpBLlist(:)
       integer, target, allocatable :: tmpm2gClsfcn(:,:)
+      integer, target, allocatable :: tmpifFlag(:)
       integer fncorpsize
       character*10 cname2, cname2nd
       character*8 mach2
@@ -413,6 +424,37 @@ c         endif
       else  ! sometimes a partition has no BC's
          deallocate(BCinpread)
          BCinp=0
+      endif
+c
+c.... read global interface flag
+c
+      ione=1
+      intfromfile=0
+      call phio_readheader(fhandle,
+     & c_char_'DG interface flag' // char(0),
+     & c_loc(intfromfile), ione, dataInt, iotype)
+
+      if ( intfromfile(1) .gt. 0 ) then
+        if ( intfromfile(1) .ne. nshg ) then
+          call error ('readnblk  ', 'size of interface flag ', nshgtmp)
+        endif
+        allocate( ifFlag(nshg) )
+        allocate( tmpifFlag(nshg) )
+      else
+        allocate( ifFlag(1) )
+        allocate( tmpifFlag(1) )
+      endif
+
+      call phio_readdatablock(fhandle,
+     & c_char_'DG interface flag' // char(0),
+     & c_loc(tmpifFlag), nshg, dataInt, iotype)
+
+      if ( nshgtmp .gt. 0 ) then
+         ifFlag = tmpifFlag
+         deallocate( tmpifFlag )
+      else  ! sometimes a partition has no interface
+         ifFlag = 0
+         deallocate( tmpifFlag )
       endif
 c
 c--------------------- read the layered mesh parameters ------------------
