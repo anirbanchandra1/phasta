@@ -8,6 +8,7 @@ c----------------------------------------
         use number_def_m
         use pointer_data
         use blkdat_m
+        use interfaceflag
 c	use bc_on_vi_m
 c
         implicit none
@@ -55,67 +56,29 @@ c
           call commu (sum_vi_area(:,4), ilwork, 1, 'in ')
           call MPI_BARRIER (MPI_COMM_WORLD,ierr)
         endif
-c 
+c
         if (numpe > 1) then
           call commu (sum_vi_area(:,1:3), ilwork, nsd, 'out')
           call commu (sum_vi_area(:,4), ilwork, 1, 'out')
           call MPI_BARRIER (MPI_COMM_WORLD,ierr)
         endif
 c
-c        do inode = 1,nshg
-c
-c ... NOT SURE IF THIS IS THE BEST IF :
-c
-c          if (abs(sum_vi_area(inode,nsd+1)) > zero) then
-c            umesh(inode,:) = sum_vi_area(inode,:) / sum_vi_area(inode,nsd+1)
-c            BC(inode,:) = umesh(inode,:)
-c      write(*,100) 'AFTER: ', myrank,inode, x(inode,:), sum_vi_area(inode,:),umesh(inode,:)
-c      write(*,200) 'AFTER: ', myrank,inode, umesh(inode,:)
-c          endif
-c        enddo
-c
-
-c---- To get actual(non area weighted) values of vi
-	actual_vi = zero
-        do iblk = 1,nelblif
-          npro  = lcblkif(1,iblk+1) - lcblkif(1,iblk)
-          ienif0 => mienif0(iblk)%p
-          ienif1 => mienif1(iblk)%p
-          do iel = 1,npro
-            do n = 1,3  ! only triangles on the surface
-              i0 = ienif0(iel,n)
-              i1 = ienif1(iel,n)
-              actual_vi(i0,:) = sum_vi_area(i0,:) / sum_vi_area(i0,nsd+1)
-              actual_vi(i1,:) = sum_vi_area(i1,:) / sum_vi_area(i1,nsd+1)
-c              BC(i0,:) = sum_vi_area(i0,:) / sum_vi_area(i0,nsd+1)
-c              BC(i1,:) = sum_vi_area(i1,:) / sum_vi_area(i1,nsd+1)
-c      write(*,200) 'AFTER: ', myrank,i0, umesh(i0,:)
-c      write(*,200) 'AFTER: ', myrank,i1, umesh(i1,:)
-            enddo
-          enddo
+        actual_vi = zero
+        do inode = 1, nshg
+          if ( ifFlag(inode) .gt. 0 ) then
+            actual_vi(inode,:) = sum_vi_area(inode,:) / sum_vi_area(inode,nsd+1)
+          endif
         enddo
-
-	call itrBCvi ( actual_vi ,iBC ,BC ,ilwork ) 
-
-        do iblk = 1,nelblif
-          npro  = lcblkif(1,iblk+1) - lcblkif(1,iblk)
-          ienif0 => mienif0(iblk)%p
-          ienif1 => mienif1(iblk)%p
-          do iel = 1,npro
-            do n = 1,3  ! only triangles on the surface
-              i0 = ienif0(iel,n)
-              i1 = ienif1(iel,n)
-              umesh(i0,:) = actual_vi(i0,:)
-              umesh(i1,:) = actual_vi(i1,:)
-c              BC(i0,:) = sum_vi_area(i0,:) / sum_vi_area(i0,nsd+1)
-c              BC(i1,:) = sum_vi_area(i1,:) / sum_vi_area(i1,nsd+1)
-              BC(i0,ndof+2:ndof+4) = umesh(i0,:) * dt
-              BC(i1,ndof+2:ndof+4) = umesh(i1,:) * dt
-c      write(*,200) 'AFTER: ', myrank,i0, umesh(i0,:)
-c      write(*,200) 'AFTER: ', myrank,i1, umesh(i1,:)
-            enddo
-          enddo
+c
+        call itrBCvi ( actual_vi ,iBC ,BC ,ilwork )
+c
+        do inode = 1, nshg
+          if ( ifFlag(inode) .gt. 0 ) then
+            umesh(inode,:) = actual_vi(inode,:)
+            BC(inode,ndof+2:ndof+4) = umesh(inode,:) * dt
+          endif
         enddo
+c
 c
 100   format(a,'[',i2,'] ',i6,3f7.3,x,7e14.6)
 200   format(a,'[',i2,'] ',i6,3e14.6)
