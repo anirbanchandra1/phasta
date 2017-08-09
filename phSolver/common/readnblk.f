@@ -22,6 +22,7 @@ c
         real*8, allocatable  :: BLgr(:)
         integer, allocatable :: BLtnv(:)
         integer, allocatable :: BLlist(:)
+        integer, allocatable :: BLflag(:)
       end module
 
       module readarrays
@@ -89,6 +90,7 @@ c
       integer :: ignored
       integer :: fileFmt
       integer :: numm2g, ixsiz
+      integer :: listcounter, ioffset, ngc, itnv, basevID
       character*255 fname2, temp2
       character*64 temp1
       type(c_ptr) :: handle
@@ -556,6 +558,23 @@ c.... growth curve connectivity
       else  ! sometimes a partition has no BL
          BLlist = 0
          deallocate( tmpBLlist )
+      endif
+c
+c.... growth curve base vertex flag
+      allocate( BLflag(nshg) )
+      BLflag = zero
+      if (numgc > 0) then
+        listcounter = 0
+        ioffset = 1 ! the ID starts from 1 in phasta
+        do ngc = 1, numgc
+          itnv = BLtnv(ngc) ! number of vertices on this growth curve
+          basevID = BLlist(listcounter + 1) + ioffset
+          BLflag(basevID) = 1
+          listcounter = listcounter + itnv ! update counter
+        enddo
+        if ( numpe > 1 ) then
+          call commuInt(BLflag, point2ilwork, 1, 'out')
+        endif
       endif
 c
 c------------------ end read the layered mesh parameters ------------------

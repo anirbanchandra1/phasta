@@ -254,8 +254,6 @@ extern "C" {
     double blfactor;
     int numgc;
     int numgcnp;
-    int useBLbaseSrfID;
-    int BLbaseSrfID;
   } laymesh ;
 
   extern struct {
