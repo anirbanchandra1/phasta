@@ -9,18 +9,27 @@ c     and reads data to be contained in module readarrays.  Reads
 c     all remaining data and blocks them with pointers.
 c
       module m2gfields
-      integer, allocatable :: m2gClsfcn(:,:)
-      real*8, allocatable :: m2gParCoord(:,:)
+        integer, allocatable :: m2gClsfcn(:,:)
+        real*8, allocatable :: m2gParCoord(:,:)
       end module
 
       module interfaceflag
-      integer, allocatable :: ifFlag(:)
+        integer, allocatable :: ifFlag(:)
+      end module
+
+      module BLparameters
+        real*8, allocatable  :: BLflt(:)
+        real*8, allocatable  :: BLgr(:)
+        integer, allocatable :: BLtnv(:)
+        integer, allocatable :: BLlist(:)
+        integer, allocatable :: BLflag(:)
       end module
 
       module readarrays
 
       use m2gfields
       use interfaceflag
+      use BLparameters
 
       real*8, allocatable :: point2x(:,:)
       real*8, allocatable :: qold(:,:)
@@ -39,11 +48,6 @@ c
       integer, allocatable :: point2iper(:)
       integer, target, allocatable :: point2ifath(:)
       integer, target, allocatable :: point2nsons(:)
-
-      real*8, allocatable  :: BLflt(:)
-      real*8, allocatable  :: BLgr(:)
-      integer, allocatable :: BLtnv(:)
-      integer, allocatable :: BLlist(:)
 
       end module
 
@@ -86,6 +90,7 @@ c
       integer :: ignored
       integer :: fileFmt
       integer :: numm2g, ixsiz
+      integer :: listcounter, ioffset, ngc, itnv, basevID
       character*255 fname2, temp2
       character*64 temp1
       type(c_ptr) :: handle
@@ -549,6 +554,23 @@ c.... growth curve connectivity
       else  ! sometimes a partition has no BL
          BLlist = 0
          deallocate( tmpBLlist )
+      endif
+c
+c.... growth curve base vertex flag
+      allocate( BLflag(nshg) )
+      BLflag = zero
+      if (numgc > 0) then
+        listcounter = 0
+        ioffset = 1 ! the ID starts from 1 in phasta
+        do ngc = 1, numgc
+          itnv = BLtnv(ngc) ! number of vertices on this growth curve
+          basevID = BLlist(listcounter + 1) + ioffset
+          BLflag(basevID) = 1
+          listcounter = listcounter + itnv ! update counter
+        enddo
+        if ( numpe > 1 ) then
+          call commuInt(BLflag, point2ilwork, 1, 'out')
+        endif
       endif
 c
 c------------------ end read the layered mesh parameters ------------------

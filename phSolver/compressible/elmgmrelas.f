@@ -82,10 +82,6 @@ c
           if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
           ngaussb = nintb(lcsyst)
 c
-c.... collect wedge_tri or surfID option is on
-c
-          if((lcsyst.ne.itp_wedge_tri) .and. (useBLbaseSrfID.eq.0)) cycle
-c
 c.... compute and assemble non-unit normal
 c
           call calc_gc_normal (xtmp,             shpb(lcsyst,1:nshl,:),
@@ -121,11 +117,6 @@ c
 c          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
           ngaussb = nintb(lcsyst)
 c
-c.... collect wedge_tri or surfID option is on
-c
-c          if((lcsyst.ne.itp_wedge_tri) .and. (useBLbaseSrfID.eq.0)) cycle
-          if((lcsyst.ne.itp_wedge_tri) ) cycle ! DG interface cannot be applied surf ID yet
-c
 c.... compute and assemble non-unit normal
 c
           call calc_gc_normal (xtmp,            shpif(lcsyst,1:nshl,:),
@@ -143,11 +134,6 @@ c
 
 c          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
           ngaussb = nintb(lcsyst)
-c
-c.... collect wedge_tri or surfID option is on
-c
-c          if((lcsyst.ne.itp_wedge_tri) .and. (useBLbaseSrfID.eq.0)) cycle
-          if((lcsyst.ne.itp_wedge_tri) ) cycle ! DG interface cannot be applied surf ID yet
 c
 c.... compute and assemble non-unit normal
 c

@@ -1,6 +1,7 @@
         subroutine calc_gc_normal ( x,     shpb,
      &                              ienb,  iBCB,  normal)
 c
+        use BLparameters
         include "common.h"
 c
         dimension x(numnp,nsd),
@@ -11,17 +12,29 @@ c
         dimension normal(nshg, nsd)
 c
         integer   calc_factor(npro)
+        integer   BLflag_l(npro,nenl)
+        integer   ielm, counter
 c
-c.... collect wedge tri and surf ID = BLbaseSrfID
+c.... localize BLflag
 c
-       calc_factor(:) = 1
-       if ((useBLbaseSrfID .eq. 1) .and. (lcsyst .ne. itp_wedge_tri)) then
-         do inode = 1,npro
-           if (iBCB(inode,2) .ne. BLbaseSrfID) then
-             calc_factor(inode) = 0
+        call localx(BLflag,  BLflag_l,  ienb,  1,  'gather  ')
+c
+c.... collect only all the first nenbl vertices has BLflag
+c
+       calc_factor(:) = 0
+       do ielm = 1, npro
+         counter = 0
+c
+         do i = 1, nenbl
+           if ( BLflag_l(ielm, i) .eq. 1 ) then
+             counter = counter + 1
            endif
-         enddo
-       endif
+         enddo ! end loop bounadry vertice in an element
+c
+         if (counter .eq. nenbl) then
+           calc_factor(ielm) = 1
+         endif
+       enddo
 c
 c.... assemble the normal vector
 c
