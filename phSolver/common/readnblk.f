@@ -9,18 +9,26 @@ c     and reads data to be contained in module readarrays.  Reads
 c     all remaining data and blocks them with pointers.
 c
       module m2gfields
-      integer, allocatable :: m2gClsfcn(:,:)
-      real*8, allocatable :: m2gParCoord(:,:)
+        integer, allocatable :: m2gClsfcn(:,:)
+        real*8, allocatable :: m2gParCoord(:,:)
       end module
 
       module interfaceflag
-      integer, allocatable :: ifFlag(:)
+        integer, allocatable :: ifFlag(:)
+      end module
+
+      module BLparameters
+        real*8, allocatable  :: BLflt(:)
+        real*8, allocatable  :: BLgr(:)
+        integer, allocatable :: BLtnv(:)
+        integer, allocatable :: BLlist(:)
       end module
 
       module readarrays
 
       use m2gfields
       use interfaceflag
+      use BLparameters
 
       real*8, allocatable :: point2x(:,:)
       real*8, allocatable :: qold(:,:)
@@ -39,11 +47,6 @@ c
       integer, allocatable :: point2iper(:)
       integer, target, allocatable :: point2ifath(:)
       integer, target, allocatable :: point2nsons(:)
-
-      real*8, allocatable  :: BLflt(:)
-      real*8, allocatable  :: BLgr(:)
-      integer, allocatable :: BLtnv(:)
-      integer, allocatable :: BLlist(:)
 
       end module
 
