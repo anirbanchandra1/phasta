@@ -9,15 +9,10 @@ c
      &            ienb(npro,nshl),
      &            iBCB(npro,ndiBCB)
 c
-        dimension normal(nshg, nsd)
+        real*8, dimension(nshg, nsd) :: normal
 c
         integer   calc_factor(npro)
-        integer   BLflag_l(npro,nenl)
         integer   ielm, counter
-c
-c.... localize BLflag
-c
-        call localx(BLflag,  BLflag_l,  ienb,  1,  'gather  ')
 c
 c.... collect only all the first nenbl vertices has BLflag
 c
@@ -26,7 +21,7 @@ c
          counter = 0
 c
          do i = 1, nenbl
-           if ( BLflag_l(ielm, i) .eq. 1 ) then
+           if ( BLflag(ienb(ielm, i)) .eq. 1 ) then
              counter = counter + 1
            endif
          enddo ! end loop bounadry vertice in an element
