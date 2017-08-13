@@ -445,17 +445,20 @@ c
           call error ('readnblk  ', 'size of interface flag ', intfromfile(1))
         endif
         allocate( tmpifFlag(nshg) )
+      else
+        allocate( tmpifFlag(1) )
       endif
 
       call phio_readdatablock(fhandle,
      & c_char_'DG interface flag' // char(0),
-     & c_loc(tmpifFlag), nshg, dataInt, iotype)
+     & c_loc(tmpifFlag), intfromfile(1), dataInt, iotype)
 
       if ( intfromfile(1) .gt. 0 ) then
          ifFlag = tmpifFlag
          deallocate( tmpifFlag )
       else  ! sometimes a partition has no interface
          ifFlag = zero
+         deallocate( tmpifFlag )
       endif
 c
 c--------------------- read the layered mesh parameters ------------------
