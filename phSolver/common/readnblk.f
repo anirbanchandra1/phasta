@@ -22,7 +22,7 @@ c
         real*8, allocatable  :: BLgr(:)
         integer, allocatable :: BLtnv(:)
         integer, allocatable :: BLlist(:)
-        integer, allocatable :: BLflag(:)
+        integer*8, allocatable :: BLflag(:)
       end module
 
       module readarrays
@@ -572,9 +572,10 @@ c.... growth curve base vertex flag
           BLflag(basevID) = 1
           listcounter = listcounter + itnv ! update counter
         enddo
-        if ( numpe > 1 ) then
-          call commuInt(BLflag, point2ilwork, 1, 'out')
-        endif
+      endif
+c
+      if ( numpe > 1 ) then
+        call commuInt(BLflag, point2ilwork, 1, 'out')
       endif
 c
 c------------------ end read the layered mesh parameters ------------------
