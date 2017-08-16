@@ -162,9 +162,7 @@ c.... ---------------->   Re-position layered mesh   <-----------------
 c
 c.... if no growth curve, skip whole re-positioning method
 c
-      do i = 1, numnp
-        call iBCelas_to_dbl(iBC(i), flag(i))
-      enddo
+      flag = zero
       if (numgc .gt. 0) then
 c
 c.... loop over growth curves
