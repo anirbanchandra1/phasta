@@ -403,19 +403,6 @@ int input_fform(phSolver::Input& inp)
 
     aerfrc.isrfIM = inp.GetValue("Surface ID for Integrated Mass");
 
-    if ( (string)inp.GetValue("BL base Surface ID option") == "False" ){
-        laymesh.useBLbaseSrfID = 0;
-    }
-    else if ( (string)inp.GetValue("BL base Surface ID option") == "True" ){
-        laymesh.useBLbaseSrfID = 1;
-		laymesh.BLbaseSrfID = inp.GetValue("BL base Surface ID");
-    }
-    else {
-      cout << " BL base Surface ID option: Only Legal Values (False, True) ";
-      cout << endl;
-      exit(1);
-    }
-
     laymesh.blfactor = inp.GetValue("Wedge Stiffness Factor");
 
     if ( (string)inp.GetValue("Snap back to surface option") == "False" ){

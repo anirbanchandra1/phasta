@@ -54,12 +54,12 @@ c
 c
 c.... ------------------->   layer base elements   <-------------------
 c
+      gcnormal = zero
       if (numgc .gt. 0) then
 c
 c.... calculate the normal of each growth curve based on new boundary positions
 c
         xtmp = x + disp
-        gcnormal = zero
 c
 c.... loop over the boundary elements
 c
@@ -81,10 +81,6 @@ c
 c
           if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
           ngaussb = nintb(lcsyst)
-c
-c.... collect wedge_tri or surfID option is on
-c
-          if((lcsyst.ne.itp_wedge_tri) .and. (useBLbaseSrfID.eq.0)) cycle
 c
 c.... compute and assemble non-unit normal
 c
@@ -121,11 +117,6 @@ c
 c          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
           ngaussb = nintb(lcsyst)
 c
-c.... collect wedge_tri or surfID option is on
-c
-c          if((lcsyst.ne.itp_wedge_tri) .and. (useBLbaseSrfID.eq.0)) cycle
-          if((lcsyst.ne.itp_wedge_tri) ) cycle ! DG interface cannot be applied surf ID yet
-c
 c.... compute and assemble non-unit normal
 c
           call calc_gc_normal (xtmp,            shpif(lcsyst,1:nshl,:),
@@ -144,11 +135,6 @@ c
 c          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
           ngaussb = nintb(lcsyst)
 c
-c.... collect wedge_tri or surfID option is on
-c
-c          if((lcsyst.ne.itp_wedge_tri) .and. (useBLbaseSrfID.eq.0)) cycle
-          if((lcsyst.ne.itp_wedge_tri) ) cycle ! DG interface cannot be applied surf ID yet
-c
 c.... compute and assemble non-unit normal
 c
           call calc_gc_normal (xtmp,            shpif(lcsyst,1:nshl,:),
@@ -159,29 +145,30 @@ c.... end of the 1 side
 c
         enddo interface_blocks ! end loop the interface elements
 c
-c.... communication
-c
-        if (numpe > 1) then
-          call commu (gcnormal  , ilwork, nsd  , 'in ')
-          call MPI_BARRIER (MPI_COMM_WORLD,ierr)
-          call commu (gcnormal  , ilwork, nsd  , 'out ')
-        endif
-c
 c.... end calculation of growth curve normal
 c
       endif ! end if numgc greater than 0
+c
+c.... communication
+c
+      if (numpe > 1) then
+        call commu (gcnormal  , ilwork, nsd  , 'in ')
+        call MPI_BARRIER (MPI_COMM_WORLD,ierr)
+        call commu (gcnormal  , ilwork, nsd  , 'out')
+        call MPI_BARRIER (MPI_COMM_WORLD,ierr)
+      endif
 c
 c.... ---------------->   Re-position layered mesh   <-----------------
 c
 c.... if no growth curve, skip whole re-positioning method
 c
+      do i = 1, numnp
+        call iBCelas_to_dbl(iBC(i), flag(i))
+      enddo
       if (numgc .gt. 0) then
 c
 c.... loop over growth curves
 c
-        do i = 1, numnp
-          call iBCelas_to_dbl(iBC(i), flag(i))
-        enddo
         listcounter = 0
         ioffset = 1 ! the ID starts from 1 in phasta
         do ngc = 1, numgc
@@ -228,43 +215,43 @@ c.... end loop growth curves
 c
         enddo
 c
+c.... end if growth curve
+c
+      endif ! end if numgc greater than 0
+c
 c.... -------------------->     communication     <--------------------
 c
 c.... combine disp + flag into dispCommu
 c
-        do i = 1, numnp
-          dispCommu(i,1:3) = disp(i,:)
-          dispCommu(i,4)   = flag(i)
-        enddo
+      do i = 1, numnp
+        dispCommu(i,1:3) = disp(i,:)
+        dispCommu(i,4)   = flag(i)
+      enddo
 c
 c.... turn on commu flag
 c
-        layerCommuFlag = 1
+      layerCommuFlag = 1
 c
 c.... commu
 c
-        if (numpe > 1) then
-          call commu (dispCommu  , ilwork, 4  , 'in ')
-          call MPI_BARRIER (MPI_COMM_WORLD,ierr)
-          call commu (dispCommu  , ilwork, 4  , 'out ')
-        endif
+      if (numpe > 1) then
+        call commu (dispCommu  , ilwork, 4  , 'in ')
+        call MPI_BARRIER (MPI_COMM_WORLD,ierr)
+        call commu (dispCommu  , ilwork, 4  , 'out')
+      endif
 c
 c.... turn off commu flag
 c
-        layerCommuFlag = 0
+      layerCommuFlag = 0
 c
 c.... separate dispCommu into disp and iBC; update BC
 c
-        do i = 1, numnp
-          disp(i,:) = dispCommu(i,1:3)
-          flag(i)   = dispCommu(i,4)
-          call dbl_to_iBCelas(flag(i), iBC(i))
-          call setBLbc(disp(i,:), iBC(i), BC(i, ndof+2:ndof+5))
-        enddo
-c
-c.... end if growth curve
-c
-      endif ! end if numgc greater than 0
+      do i = 1, numnp
+        disp(i,:) = dispCommu(i,1:3)
+        flag(i)   = dispCommu(i,4)
+        call dbl_to_iBCelas(flag(i), iBC(i))
+        call setBLbc(disp(i,:), iBC(i), BC(i, ndof+2:ndof+5))
+      enddo
 c
 c.... end re-position layered mesh
 c

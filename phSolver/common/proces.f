@@ -284,6 +284,7 @@ c
         deallocate(BLgr)
         deallocate(BLtnv)
         deallocate(BLlist)
+        deallocate(BLflag)
 c
         deallocate(m2gClsfcn)
         deallocate(m2gParCoord)
