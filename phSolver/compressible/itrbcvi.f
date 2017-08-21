@@ -1,29 +1,29 @@
-        subroutine itrBCvi (actual_vi, iBC, BC)
-c--apply flow BCs on sum_vi_area
-c
 c----------------------------------------------------------------------
 c
-c This program satisfies the flow BCs on the actual_vi variables
+c This subroutine satisfies the flow BCs on the actual_vi array. 
+c actual_vi contatins the nodal values of the interface velocity. The 
+c structure `of this code is derived from itrbc.f. This subroutine is 
+c called from if_velocity.f. After the modification in this subroutine, 
+c the actual_vi  array is used to set the mesh velocity at the interface 
+c in if_velocity.f.
+c 
+c INPUT:
+c  actual_vi	(nshg,nsd)   : Nodal velocity at the DG interface 
+c  iBC	(nshg)        : Boundary Condition Code
+c  BC	(nshg,ndofBC) : boundary condition constraint parameters
 c
-c input:
-c  y      (nshg,nflow)   : y variables 
-c  iBC    (nshg)        : Boundary Condition Code
-c  BC     (nshg,ndofBC) : boundary condition constraint parameters
-c  ylimit (3,nflow)     : (1,:) limiting flag
-c                         (2,:) lower bound
-c                         (3,:) upper bound
-c output:
-c  y      (nshg,nflow)   : Adjusted V value(s) corresponding to a 
-c                           constraint d.o.f.
-c  umesh  (numnp,nsd)    : mesh velocity. FOR ALE 
+c
+c OUTPUT:
+c  actual_vi	(nshg,nsd)   : Adjusted actual_vi values based on flow BCs 
 c
 c Farzin Shakib, Winter 1987.
 c Zdenek Johan,  Winter 1991.  (Fortran 90)
 c----------------------------------------------------------------------
+        subroutine itrBCvi (actual_vi, iBC, BC)
 c
         include "common.h"
 c
-        dimension actual_vi(nshg,3),             iBC(nshg),
+        dimension actual_vi(nshg,nsd),             iBC(nshg),
      &            BC(nshg,ndofBC)
           
 c.... ------------------------->  Velocity  <--------------------------
@@ -79,7 +79,6 @@ c
             actual_vi(:,3) =  BC(:,5) 
           endwhere
 c
-c       endif
 c
 c.... end of velocity
 c
