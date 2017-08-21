@@ -439,26 +439,25 @@ c
      & c_char_'DG interface flag' // char(0),
      & c_loc(intfromfile), ione, dataInt, iotype)
 
+      allocate( ifFlag(nshg) )
       if ( intfromfile(1) .gt. 0 ) then
         if ( intfromfile(1) .ne. nshg ) then
-          call error ('readnblk  ', 'size of interface flag ', nshgtmp)
+          call error ('readnblk  ', 'size of interface flag ', intfromfile(1))
         endif
-        allocate( ifFlag(nshg) )
         allocate( tmpifFlag(nshg) )
       else
-        allocate( ifFlag(1) )
         allocate( tmpifFlag(1) )
       endif
 
       call phio_readdatablock(fhandle,
      & c_char_'DG interface flag' // char(0),
-     & c_loc(tmpifFlag), nshg, dataInt, iotype)
+     & c_loc(tmpifFlag), intfromfile(1), dataInt, iotype)
 
-      if ( nshgtmp .gt. 0 ) then
+      if ( intfromfile(1) .gt. 0 ) then
          ifFlag = tmpifFlag
          deallocate( tmpifFlag )
       else  ! sometimes a partition has no interface
-         ifFlag = 0
+         ifFlag = zero
          deallocate( tmpifFlag )
       endif
 c

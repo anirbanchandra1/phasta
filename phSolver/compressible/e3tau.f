@@ -171,7 +171,7 @@ c... ALE
      &        +fff*rmu**2*(gijd(:,1)**2 + gijd(:,3)**2 + gijd(:,6)**2 +
      &        two*(gijd(:,2)**2 + gijd(:,4)**2 + gijd(:,5)**2))
          fact=sqrt(tau(:,2))
-         tau(:,1)=pt125*fact/(gijd(:,1)+gijd(:,3)+gijd(:,6))*taucfct
+         tau(:,1)=pt125*fact/(gijd(:,1)+gijd(:,3)+gijd(:,6))*taucfct/rho
          tau(:,2)=one/fact
 c     
 c.... energy tau   cv=cp/gamma  assumed

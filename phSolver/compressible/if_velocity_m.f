@@ -8,6 +8,8 @@ c----------------------------------------
         use number_def_m
         use pointer_data
         use blkdat_m
+        use interfaceflag
+c	use bc_on_vi_m
 c
         implicit none
 c
@@ -32,65 +34,52 @@ c
       subroutine set_if_velocity 
      & (
      &  BC, iBC, umesh, disp, x, dt, ilwork,
-     &  nshg, ndofBC, nsd, nelblif, nlwork
+     &  nshg, ndofBC, nsd, nelblif, nlwork, ndof
      & )
 c
         include "mpif.h"
 c
-        real*8,  intent(inout) ::  BC(nshg,3)
+        real*8,  intent(inout) ::  BC(nshg,ndofBC)
         integer, intent(inout) :: iBC(nshg)
         real*8,  dimension(nshg,nsd), intent(inout)    :: umesh, disp
         real*8,  dimension(nshg,nsd), intent(in)    :: x
         real*8, intent(in) :: dt
         integer, intent(in)    :: ilwork(nlwork)
-        integer, intent(in) :: nshg, ndofBC, nsd, nelblif, nlwork
+        integer, intent(in) :: nshg, ndofBC, nsd, nelblif, nlwork, ndof
 c
         integer :: iblk, iel, npro,inode, i0, i1, n, ierr
         integer, pointer :: ienif0(:,:), ienif1(:,:)
+	real*8, dimension(nshg,3) :: actual_vi
 
         if (numpe > 1) then
           call commu (sum_vi_area(:,1:3), ilwork, nsd, 'in ')
           call commu (sum_vi_area(:,4), ilwork, 1, 'in ')
           call MPI_BARRIER (MPI_COMM_WORLD,ierr)
         endif
-c 
+c
         if (numpe > 1) then
           call commu (sum_vi_area(:,1:3), ilwork, nsd, 'out')
           call commu (sum_vi_area(:,4), ilwork, 1, 'out')
           call MPI_BARRIER (MPI_COMM_WORLD,ierr)
         endif
 c
-c        do inode = 1,nshg
-c
-c ... NOT SURE IF THIS IS THE BEST IF :
-c
-c          if (abs(sum_vi_area(inode,nsd+1)) > zero) then
-c            umesh(inode,:) = sum_vi_area(inode,:) / sum_vi_area(inode,nsd+1)
-c            BC(inode,:) = umesh(inode,:)
-c      write(*,100) 'AFTER: ', myrank,inode, x(inode,:), sum_vi_area(inode,:),umesh(inode,:)
-c      write(*,200) 'AFTER: ', myrank,inode, umesh(inode,:)
-c          endif
-c        enddo
-c
-        do iblk = 1,nelblif
-          npro  = lcblkif(1,iblk+1) - lcblkif(1,iblk)
-          ienif0 => mienif0(iblk)%p
-          ienif1 => mienif1(iblk)%p
-          do iel = 1,npro
-            do n = 1,3  ! only triangles on the surface
-              i0 = ienif0(iel,n)
-              i1 = ienif1(iel,n)
-              umesh(i0,:) = sum_vi_area(i0,:) / sum_vi_area(i0,nsd+1)
-              umesh(i1,:) = sum_vi_area(i1,:) / sum_vi_area(i1,nsd+1)
-c              BC(i0,:) = sum_vi_area(i0,:) / sum_vi_area(i0,nsd+1)
-c              BC(i1,:) = sum_vi_area(i1,:) / sum_vi_area(i1,nsd+1)
-              BC(i0,:) = umesh(i0,:) * dt
-              BC(i1,:) = umesh(i1,:) * dt
-c      write(*,200) 'AFTER: ', myrank,i0, umesh(i0,:)
-c      write(*,200) 'AFTER: ', myrank,i1, umesh(i1,:)
-            enddo
-          enddo
+        actual_vi = zero
+        do inode = 1, nshg
+          if ( ifFlag(inode) .eq. 1 ) then
+c            write(*,*) "rank",myrank,"i",inode,"x=",x(inode,:)
+            actual_vi(inode,:) = sum_vi_area(inode,:) / sum_vi_area(inode,nsd+1)
+          endif
         enddo
+c
+        call itrBCvi ( actual_vi ,iBC ,BC )
+c
+        do inode = 1, nshg
+          if ( ifFlag(inode) .eq. 1 ) then
+            umesh(inode,:) = actual_vi(inode,:)
+            BC(inode,ndof+2:ndof+4) = umesh(inode,:) * dt
+          endif
+        enddo
+c
 c
 100   format(a,'[',i2,'] ',i6,3f7.3,x,7e14.6)
 200   format(a,'[',i2,'] ',i6,3e14.6)
