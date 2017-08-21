@@ -71,7 +71,7 @@ c            write(*,*) "rank",myrank,"i",inode,"x=",x(inode,:)
           endif
         enddo
 c
-        call itrBCvi ( actual_vi ,iBC ,BC ,ilwork )
+        call itrBCvi ( actual_vi ,iBC ,BC )
 c
         do inode = 1, nshg
           if ( ifFlag(inode) .eq. 1 ) then

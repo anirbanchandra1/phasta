@@ -1,15 +1,9 @@
-c       module bc_on_vi_m
-c
-c       	implicit none
-c
-c	contains
-c
-        subroutine itrBCvi (actual_vi, iBC, BC, ilwork)
+        subroutine itrBCvi (actual_vi, iBC, BC)
 c--apply flow BCs on sum_vi_area
 c
 c----------------------------------------------------------------------
 c
-c This program satisfies the boundary conditions on the Y-variables.
+c This program satisfies the flow BCs on the actual_vi variables
 c
 c input:
 c  y      (nshg,nflow)   : y variables 
@@ -30,18 +24,8 @@ c
         include "common.h"
 c
         dimension actual_vi(nshg,3),             iBC(nshg),
-     &            ac(nshg,nflow),            BC(nshg,ndofBC)
-
-        dimension ilwork(nlwork)           
-     
-        dimension umesh(numnp,nsd)    !FOR ALE   
-        integer   istp
-
-        real*8 tmp(nshg), y1(nshg),q1(nshg)
-        dimension rn1(nshg), rmagn1(nshg)
-        real*8 limitcount(nflow)
-        integer locmax(1),locmin(1)
-c
+     &            BC(nshg,ndofBC)
+          
 c.... ------------------------->  Velocity  <--------------------------
 c.... 3D
 c
@@ -99,24 +83,6 @@ c       endif
 c
 c.... end of velocity
 c
-
-c.... communications
-c 
-c        if (numpe > 1) then
-c           call commu (actual_vi, ilwork, nsd, 'out')
-c           if(ires.ne.2) call commu (ac, ilwork, nflow, 'out')
-c        endif
-c
-c       slave has masters value, for abc we need to rotate it
-c
-c        if(iabc==1) then        !are there any axisym bc's
-c           call rotabc(y, iBC, 'out')
-c           if(ires.ne.2) call rotabc(ac, iBC, 'out')
-c        endif
-c     
-c
-c.... return
-c
         return
         end subroutine itrBCvi
-c       end module bc_on_vi_m
+
