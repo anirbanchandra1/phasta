@@ -1,47 +1,31 @@
-c       module bc_on_vi_m
-c
-c       	implicit none
-c
-c	contains
-c
-        subroutine itrBCvi (actual_vi, iBC, BC, ilwork)
-c--apply flow BCs on sum_vi_area
-c
 c----------------------------------------------------------------------
 c
-c This program satisfies the boundary conditions on the Y-variables.
+c This subroutine satisfies the flow BCs on the actual_vi array. 
+c actual_vi contatins the nodal values of the interface velocity. The 
+c structure `of this code is derived from itrbc.f. This subroutine is 
+c called from if_velocity.f. After the modification in this subroutine, 
+c the actual_vi  array is used to set the mesh velocity at the interface 
+c in if_velocity.f.
+c 
+c INPUT:
+c  actual_vi	(nshg,nsd)   : Nodal velocity at the DG interface 
+c  iBC	(nshg)        : Boundary Condition Code
+c  BC	(nshg,ndofBC) : boundary condition constraint parameters
 c
-c input:
-c  y      (nshg,nflow)   : y variables 
-c  iBC    (nshg)        : Boundary Condition Code
-c  BC     (nshg,ndofBC) : boundary condition constraint parameters
-c  ylimit (3,nflow)     : (1,:) limiting flag
-c                         (2,:) lower bound
-c                         (3,:) upper bound
-c output:
-c  y      (nshg,nflow)   : Adjusted V value(s) corresponding to a 
-c                           constraint d.o.f.
-c  umesh  (numnp,nsd)    : mesh velocity. FOR ALE 
+c
+c OUTPUT:
+c  actual_vi	(nshg,nsd)   : Adjusted actual_vi values based on flow BCs 
 c
 c Farzin Shakib, Winter 1987.
 c Zdenek Johan,  Winter 1991.  (Fortran 90)
 c----------------------------------------------------------------------
+        subroutine itrBCvi (actual_vi, iBC, BC)
 c
         include "common.h"
 c
-        dimension actual_vi(nshg,3),             iBC(nshg),
-     &            ac(nshg,nflow),            BC(nshg,ndofBC)
-
-        dimension ilwork(nlwork)           
-     
-        dimension umesh(numnp,nsd)    !FOR ALE   
-        integer   istp
-
-        real*8 tmp(nshg), y1(nshg),q1(nshg)
-        dimension rn1(nshg), rmagn1(nshg)
-        real*8 limitcount(nflow)
-        integer locmax(1),locmin(1)
-c
+        dimension actual_vi(nshg,nsd),             iBC(nshg),
+     &            BC(nshg,ndofBC)
+          
 c.... ------------------------->  Velocity  <--------------------------
 c.... 3D
 c
@@ -95,28 +79,9 @@ c
             actual_vi(:,3) =  BC(:,5) 
           endwhere
 c
-c       endif
 c
 c.... end of velocity
 c
-
-c.... communications
-c 
-c        if (numpe > 1) then
-c           call commu (actual_vi, ilwork, nsd, 'out')
-c           if(ires.ne.2) call commu (ac, ilwork, nflow, 'out')
-c        endif
-c
-c       slave has masters value, for abc we need to rotate it
-c
-c        if(iabc==1) then        !are there any axisym bc's
-c           call rotabc(y, iBC, 'out')
-c           if(ires.ne.2) call rotabc(ac, iBC, 'out')
-c        endif
-c     
-c
-c.... return
-c
         return
         end subroutine itrBCvi
-c       end module bc_on_vi_m
+
