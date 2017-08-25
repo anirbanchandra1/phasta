@@ -101,6 +101,7 @@ c
           ipord   = lcblkif(5, iblk)    ! polynomial order
           nenl0   = lcblkif(6, iblk)    ! number of vertices per element0
           nenl1   = lcblkif(7, iblk)    ! number of vertices per element1
+          nenbl   = lcblkif(8, iblk)    ! number of vertices on boundary
           mater0  = lcblkif(9, iblk)
           mater1  = lcblkif(10,iblk)
           nshl0   = lcblkif(iblkif_nshl0,iblk)
@@ -114,7 +115,7 @@ c
           nenl = nenl0
           nshl = nshl0
 
-c          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
+          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
           ngaussb = nintb(lcsyst)
 c
 c.... compute and assemble non-unit normal
@@ -132,7 +133,7 @@ c
           nenl = nenl1
           nshl = nshl1
 
-c          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
+          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
           ngaussb = nintb(lcsyst)
 c
 c.... compute and assemble non-unit normal
