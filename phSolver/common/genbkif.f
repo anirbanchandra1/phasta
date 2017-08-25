@@ -201,10 +201,10 @@ c
 c
             do
               npro = npro + 1
-              if     (mattypeif(1,1) == mat_tag(1,1)) then
+              if     (mattypeif(iptr,1) == mat_tag(1,1)) then
                 ienif0tmp(npro,1:nshl0) = ientp(iptr,1:nshl0)
                 ienif1tmp(npro,1:nshl1) = ientp(iptr,nshl0+1:nshl0+nshl1)
-              elseif (mattypeif(1,2) == mat_tag(1,1)) then
+              elseif (mattypeif(iptr,2) == mat_tag(1,1)) then
                 ienif0tmp(npro,1:nshl0) = ientp(iptr,nshl1+1:nshl1+nshl0)
                 ienif1tmp(npro,1:nshl1) = ientp(iptr,1:nshl1)
               endif
