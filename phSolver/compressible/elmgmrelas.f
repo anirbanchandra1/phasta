@@ -109,6 +109,15 @@ c
           itpid   = lcblkif(iblkif_topology,iblk)
           ngaussif = nintif(itpid)
 c
+c.... hack; DG interface doesn't support 2nd and higher order
+c
+          if(ipord .eq. 1) then
+            nshlb   = nenbl;
+          else if(ipord .gt. 1) then
+            write(*,*) "need to implement for higher order"
+            call error('elmgmrelas  ','higher order', ipord)
+          endif
+c
 c.... the 0 side
 c
           lcsyst = lcsyst0
