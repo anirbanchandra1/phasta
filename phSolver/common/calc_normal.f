@@ -19,7 +19,7 @@ c
 c
         integer   calc_factor(npro) ! one or zero for each boundary face
 c
-        dimension normal(nshg, nsd)
+        real*8, dimension(nshg, nsd) :: normal
 c
         dimension x(numnp,nsd),
      &            shpb(nshl,ngaussb),      shglb(nsd,nshl,ngaussb),
@@ -88,11 +88,10 @@ c
 c
 c mag is area for quads, twice area for tris
 c
-       temp       = one / sqrt ( temp1**2 + temp2**2 + temp3**2 )
+       temp       = one / sqrt (temp1*temp1 + temp2*temp2 + temp3*temp3)
        bnorm(:,1) = temp1 * temp
        bnorm(:,2) = temp2 * temp
        bnorm(:,3) = temp3 * temp
-c
 c
        if (lcsyst .eq. 1) then
          Wfactor(:) = one / (four*temp(:)) * calc_factor(:)

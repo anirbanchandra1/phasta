@@ -114,7 +114,7 @@ c
           lcsyst = lcsyst0
           nenl = nenl0
           nshl = nshl0
-
+c
           if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
           ngaussb = nintb(lcsyst)
 c
@@ -132,7 +132,7 @@ c
           lcsyst = lcsyst1
           nenl = nenl1
           nshl = nshl1
-
+c
           if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
           ngaussb = nintb(lcsyst)
 c
