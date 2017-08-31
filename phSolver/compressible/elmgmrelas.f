@@ -101,6 +101,7 @@ c
           ipord   = lcblkif(5, iblk)    ! polynomial order
           nenl0   = lcblkif(6, iblk)    ! number of vertices per element0
           nenl1   = lcblkif(7, iblk)    ! number of vertices per element1
+          nenbl   = lcblkif(8, iblk)    ! number of vertices on boundary
           mater0  = lcblkif(9, iblk)
           mater1  = lcblkif(10,iblk)
           nshl0   = lcblkif(iblkif_nshl0,iblk)
@@ -108,13 +109,22 @@ c
           itpid   = lcblkif(iblkif_topology,iblk)
           ngaussif = nintif(itpid)
 c
+c.... hack; DG interface doesn't support 2nd and higher order
+c
+          if(ipord .eq. 1) then
+            nshlb   = nenbl;
+          else if(ipord .gt. 1) then
+            write(*,*) "need to implement for higher order"
+            call error('elmgmrelas  ','higher order', ipord)
+          endif
+c
 c.... the 0 side
 c
           lcsyst = lcsyst0
           nenl = nenl0
           nshl = nshl0
-
-c          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
+c
+          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
           ngaussb = nintb(lcsyst)
 c
 c.... compute and assemble non-unit normal
@@ -131,8 +141,8 @@ c
           lcsyst = lcsyst1
           nenl = nenl1
           nshl = nshl1
-
-c          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
+c
+          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
           ngaussb = nintb(lcsyst)
 c
 c.... compute and assemble non-unit normal
