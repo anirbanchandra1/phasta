@@ -160,10 +160,10 @@ c
       end select
 c
       mu(:,1) = zero
-      mu(:,2) = max(tmpmu0(:,2),tmpmu1(:,2))/100.0
-      mu(:,3) = max(tmpmu0(:,3),tmpmu1(:,3))/100.0
-      mu(:,4) = max(tmpmu0(:,4),tmpmu1(:,4))/100.0
-      mu(:,5) = max(tmpmu0(:,5),tmpmu1(:,5))*100.0
+      mu(:,2) = max(tmpmu0(:,2),tmpmu1(:,2))*emu
+      mu(:,3) = max(tmpmu0(:,3),tmpmu1(:,3))*emu
+      mu(:,4) = max(tmpmu0(:,4),tmpmu1(:,4))*emu
+      mu(:,5) = max(tmpmu0(:,5),tmpmu1(:,5))*ek
 c
       deallocate(tmpmu0,tmpmu1)
 c

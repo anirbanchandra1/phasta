@@ -56,6 +56,8 @@ c
 c
           s = dgif_s
           e = dgif_e
+	  emu = dgif_emu
+	  ek = dgif_ek
           length_h = dgif_h
 c
           

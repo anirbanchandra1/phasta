@@ -71,7 +71,7 @@ c
 c
         integer :: istep
         real*8 :: time,deltat
-        real*8 :: s, e, length_h  
+        real*8 :: s, e, length_h, emu, ek  
         real*8, pointer :: mu(:,:)
 c
         integer :: lhs_dg

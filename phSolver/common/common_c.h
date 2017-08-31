@@ -547,6 +547,8 @@ extern "C" {
     double vi_mag;
     double s;
     double e;
+    double emu;
+    double ek;
     double h;
     double hfg_liquid, mw_liquid, T_boil_liquid;
     double burn_rate_exp, burn_rate_coeff, burn_rate_pref;

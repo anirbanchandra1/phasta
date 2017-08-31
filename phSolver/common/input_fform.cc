@@ -617,6 +617,8 @@ int input_fform(phSolver::Input& inp)
 
     dgifinp.s = (double)inp.GetValue("DG Interface Kinematic Condition S");
     dgifinp.e = (double)inp.GetValue("DG Interface Penalty Factor epsilon");
+    dgifinp.emu = (double)inp.GetValue("DG Interface Penalty Factor epsilon mu");
+    dgifinp.ek = (double)inp.GetValue("DG Interface Penalty Factor epsilon k");
     dgifinp.h = (double)inp.GetValue("DG Interface Penalty Factor h");
 
 //for mesh-elastic--------------------------------------------
