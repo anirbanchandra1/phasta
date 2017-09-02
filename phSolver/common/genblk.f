@@ -24,6 +24,7 @@ c
         integer ::  numparts, writeLock
         integer :: ierr_io, numprocs
         integer, target :: itpblktot,ierr,iseven
+        integer :: numel_ct
         character*255 fname2
         character(len=30) :: dataInt
         dataInt = c_char_'integer'//c_null_char
@@ -78,6 +79,8 @@ C
         mattyp = 0
         ndofl = ndof
         nsymdl = nsymdf
+        numel_ct = 0
+        allocate(mattype_interior(numel))
 
         iblk_loop: do iblk = 1, itpblktot
 c        iblk_loop: do iblk = 1, maxtop
@@ -149,6 +152,12 @@ c
 
            if(writeLock==0) then
 c
+c.... mattype_interior is the global material type for each element
+c     it is used for visualization
+c
+           mattype_interior(numel_ct+1:numel_ct+intfromfile(1)) = mattype(:)
+           numel_ct = numel_ct + intfromfile(1)
+
 c ... count elements with the same mattype
 c
              call count_elem_mattype(mattype,neltp,mat_tag(1:nummat,1),nummat)
@@ -213,7 +222,10 @@ c     &                       mmat(nelblk)%p)
            deallocate(ientp,ientmp)
            deallocate(mattype,neltp_mattype)
         enddo iblk_loop
-
+c
+        if (numel_ct .ne. numel)
+     &    call error ('genblk global material type  ','numel_ct  ',numel_ct)
+c
         lcblk(1,nelblk+1) = iel
         return
 1000    format(a80,//,
