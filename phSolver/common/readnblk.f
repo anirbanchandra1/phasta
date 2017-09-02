@@ -180,21 +180,26 @@ c
      & c_char_'number of shape functions' // char(0),
      & c_loc(ntopsh),ione, dataInt, iotype)
 c
-c.... read material type for all elements
+c.... we have assumption here that the ordering of mesh region
+c     always groups the same topology together. So the following
+c     concatenation is valid.
 c
-        intfromfile=0
-        call phio_readheader(fhandle,
-     &   c_char_'material type of all elements' // char(0),
-     &   c_loc(intfromfile(1)), ione, dataInt, iotype)
-        if ((intfromfile(1) .gt. 0) .and. (intfromfile(1) .ne. numel))
-     &    call error ('readnblk  ','size of mattype  ',intfromfile(1))
-        allocate(mattype_interior(intfromfile(1)))
+      numel_ct = 0
+      allocate(mattype_interior(numel))
+      do i = 1,nelblk
+        write (fname2,"('material type interior?')")
+        call phio_readheader(fhandle, fname2 // char(0),
+     &   c_loc(intfromfile(1)), 1, dataInt, iotype)
         allocate(itemp(intfromfile(1)))
-        call phio_readdatablock(fhandle,
-     &   c_char_'material type of all elements' // char(0),
+        call phio_readdatablock(fhandle,fname2 // char(0),
      &   c_loc(itemp), intfromfile(1), dataInt, iotype)
-        mattype_interior(:) = itemp(:)
+        mattype_interior(numel_ct+1:numel_ct+intfromfile(1)) = itemp(:)
+        numel_ct = numel_ct + intfromfile(1)
         deallocate(itemp)
+      enddo
+c
+      if (numel_ct .ne. numel)
+     &  call error ('readnblk material type   ','numel_ct  ',numel_ct)
 c
 c.... calculate the maximum number of boundary element nodes
 c     
