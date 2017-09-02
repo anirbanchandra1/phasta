@@ -180,9 +180,8 @@ c
      & c_char_'number of shape functions' // char(0),
      & c_loc(ntopsh),ione, dataInt, iotype)
 c
-c.... we have assumption here that the ordering of mesh region
-c     always groups the same topology together. So the following
-c     concatenation is valid.
+c.... mattype_interior is only used for visualization
+c     see genblk for material type for interior blocks
 c
       numel_ct = 0
       allocate(mattype_interior(numel))
