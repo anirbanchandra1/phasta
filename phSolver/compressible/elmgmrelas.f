@@ -204,13 +204,13 @@ c
 c.... if the first and second vertex on boundary, use current normal
 c     this assumes that the growth curve is exposed to a flat boundary
 c
-          secondvID = BLlist(listcounter + 2) + ioffset
+          if (mesh2geom .eq. 1) then
+            secondvID = BLlist(listcounter + 2) + ioffset
 c
-          if (( (m2gClsfcn(basevID,1).eq.1)
-     &      .or.(m2gClsfcn(basevID,1).eq.2) ) .and.
-     &          (m2gClsfcn(secondvID,1).eq.1)
-     &      .or.(m2gClsfcn(secondvID,1).eq.2) ) then
-            gcnormal(basevID,:) = x(secondvID,:) - x(basevID,:)
+            if (( (m2gClsfcn(basevID,1).ne.3) .and.
+     &            (m2gClsfcn(secondvID,1).ne.3) ) then
+              gcnormal(basevID,:) = x(secondvID,:) - x(basevID,:)
+            endif
           endif
 c
           tmp  = sqrt( gcnormal(basevID,1) * gcnormal(basevID,1)
