@@ -207,8 +207,8 @@ c
           if (mesh2geom .eq. 1) then
             secondvID = BLlist(listcounter + 2) + ioffset
 c
-            if (( (m2gClsfcn(basevID,1).ne.3) .and.
-     &            (m2gClsfcn(secondvID,1).ne.3) ) then
+            if ( (m2gClsfcn(basevID,1).ne.3) .and.
+     &           (m2gClsfcn(secondvID,1).ne.3) ) then
               gcnormal(basevID,:) = x(secondvID,:) - x(basevID,:)
             endif
           endif
