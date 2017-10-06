@@ -295,14 +295,14 @@ c
      &   c_char_'m2g classification' // char(0),
      &   c_loc(intfromfile),itwo, dataInt, iotype)
         numm2g = intfromfile(1)
-        ixsiz=numnp*2 ! dim and tag
+        ixsiz=numnp*3 ! dim and tag and discrete
         if (numm2g > 0) then
           if (numm2g .ne. numnp) then
             write(*,*) "size of m2g field is not consistent with numnp"
             call error ('readnblk  ', 'numnp   ', numnp)
           endif
-          allocate( tmpm2gClsfcn(numnp,2) )
-          allocate( m2gClsfcn(numnp,2) )
+          allocate( tmpm2gClsfcn(numnp,3) )
+          allocate( m2gClsfcn(numnp,3) )
           mesh2geom = 1
           call phio_readdatablock(fhandle,
      &     c_char_'m2g classification' // char(0),
