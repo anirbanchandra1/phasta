@@ -3,7 +3,7 @@
 c
          use m2gfields ! read m2g fields
          use pointer_data
-         use simmetrix_snap
+         use core_snap
 c
         include "common.h"
 c
@@ -32,7 +32,7 @@ c
             else if (m2gClsfcn(i,1) .eq. 1) then ! edge
               answer = zero
               do j = 1, snapNumFaceTags
-                call sim_is_in_closure(m2gClsfcn(i,1), m2gClsfcn(i,2),
+                call core_is_in_closure(m2gClsfcn(i,1), m2gClsfcn(i,2),
      &                                 2,              snapFaceTags(j),
      &                                 answer)
                 if (answer .ne. 0) then
@@ -66,7 +66,7 @@ c
      &                           iBC,     BC,        face_snap)
 c
         use iso_c_binding
-        use simmetrix_snap
+        use core_snap
 c
         include "common.h"
 c
@@ -81,7 +81,7 @@ c
         x_tmp_1 = x(:,1) + disp_snap(:,1)
         x_tmp_2 = x(:,2) + disp_snap(:,2)
         x_tmp_3 = x(:,3) + disp_snap(:,3)
-        call sim_get_pos_on_surf (x_tmp_1, x_tmp_2, x_tmp_3, numnp,
+        call core_get_pos_on_surf (x_tmp_1, x_tmp_2, x_tmp_3, numnp,
      &                            x_crt_1, x_crt_2, x_crt_3)
 c
         do i = 1, nshg

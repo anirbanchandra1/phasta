@@ -896,7 +896,13 @@ c... compute err
             endif
 
 c.... -----------------> end error calculation  <----------------
-
+c
+c.... ----------------->   measure mesh quality   <----------------
+c
+     
+c
+c.... -----------------> end measure mesh quality <----------------
+c
             !here is where we save our averaged field.  In some cases we want to
             !write it less frequently
             if( (irs >= 1) .and. (
