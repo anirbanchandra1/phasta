@@ -41,6 +41,7 @@ c
       use solid_m
       use probe_m
       use ifbc_m
+      use core_mesh_quality ! to call core_measure_mesh
 c
         include "common.h"
         include "mpif.h"
@@ -102,6 +103,11 @@ c.... For surface mesh snapping
 c
        dimension iBC_snap(nshg),  BC_snap(nshg,ndofBC)
        real*8    disp_snap(numnp, nsd)
+c
+c.... For mesh quality measure
+c
+       real*8  x1(numnp), x2(numnp), x3(numnp)
+       real*8  minq
 c
        logical alive
 
@@ -899,7 +905,10 @@ c.... -----------------> end error calculation  <----------------
 c
 c.... ----------------->   measure mesh quality   <----------------
 c
-     
+            x1 = x(:,1)
+            x2 = x(:,2)
+            x3 = x(:,3)
+            call core_measure_mesh(x1, x2, x3, numnp, minq)
 c
 c.... -----------------> end measure mesh quality <----------------
 c
