@@ -737,7 +737,6 @@ c
                         y(:,7)  = yold(:,7)
                         ac(:,7) = zero 
                         if (ivconstraint .eq. 1) then
-     &                       
 c ... applying the volume constraint
 c
                            call solvecon (y,    x,      iBC,  BC, 
@@ -823,7 +822,7 @@ c
             if (conservation_probe == 1)
      &       call probe_conservation(y,x,shp,shgl)
 c
-            
+
             !dump TIME SERIES
             if (exts) then
               !Write the probe data to disc. Note that IO to disc only
@@ -833,7 +832,7 @@ c
               call TD_bufferData()
               call TD_writeData(fvarts, .false.)
             endif
-            
+
             !Update the Mach Control
             if(exts .and. exMC) then
               !Note: the function MC_updateState must be called after
@@ -842,7 +841,7 @@ c
               call MC_updateState()
               call MC_applyBC(BC)
               call MC_printState()
-                 
+
               !Write the state if a restart is also being written. 
               if(mod(lstep,ntout).eq.0 ) call MC_writeState(lstep)
             endif
@@ -857,7 +856,7 @@ c
               !restart is also being written. 
               if(mod(lstep, ntout) == 0) call BC_writePhase(lstep)
             endif
-            
+
             !.... Yi Chen Duct geometry8
             if(isetBlowing_Duct.gt.0)then
               if(ifixBlowingVel_Duct.eq.0)then
@@ -895,11 +894,11 @@ c... compute err
                rerr(:, 9)=rerr(:, 9)+(yold(:,3)-ybar(:,3))**2
                rerr(:,10)=rerr(:,10)+(yold(:,4)-ybar(:,4))**2
             endif
-           
-c.. writing ybar field if requested in each restart file		
-            
+
+c.... -----------------> end error calculation  <----------------
+
             !here is where we save our averaged field.  In some cases we want to
-            !write it less frequently		
+            !write it less frequently
             if( (irs >= 1) .and. (
      &          mod(lstep, ntout) == 0 .or. !Checkpoint
      &          istep == nstp) )then        !End of simulation
@@ -915,7 +914,7 @@ c.. writing ybar field if requested in each restart file
 !              call Bflux  (yold,          acold,     x,  compute boundary fluxes and print out
 !    &              shp,           shgl,      shpb,
 !    &              shglb,         nodflx,    ilwork)
-                  
+
                call timer ('Output  ')      !set up the timer
 c... write file even when it is at stream fashion       
                if (output_mode .eq. -1) then 
@@ -979,21 +978,22 @@ c
                  call write_field(myrank,'a'//char(0),'dwal'//char(0),4,
      &                            d2wall,'d'//char(0), nshg, 1, lstep)
                endif 
-           
+
+c.. writing ybar field if requested in each restart file
                !Write the time average in each restart. 
                if(ioybar.eq.1)then
                  call write_field(myrank,'a'//char(0),'ybar'//char(0),4,
      &                              ybar,'d'//char(0),nshg,ndof+8,lstep)
                endif
-                 
+
                !Write the error feild at the end of each step sequence
                if(ierrcalc.eq.1 .and. istep == nstp) then 
                  !smooth the error indicators
-             
+
                 do i=1,ierrsmooth
                   call errsmooth( rerr, x, iper, ilwork, shp, shgl, iBC )
                 enddo
-                   
+
 !                call write_error(myrank, lstep, nshg, 10, rerr )
                  call write_field(
      &                      myrank, 'a'//char(0), 'errors'//char(0), 6, 
@@ -1005,10 +1005,10 @@ c
 c              call write_field2(myrank,'a'//char(0),'ybar'//char(0),
 c     &                          4,ybar,'d'//char(0),nshg,ndof+8,
 c     &                         lstep,istep)
-            endif   
+            endif  ! end write fields to restart files
 
  2000    continue  !end of NSTEP loop
- 2001    continue  
+ 2001    continue
 
          ttim(1) = REAL(secs(0.0)) / 100. - ttim(1)
          ttim(2) = secs(0.0)              - ttim(2)
@@ -1020,21 +1020,24 @@ c         tcorewc2 = secs(0.0)
             tcorecp2 = TMRC()
             write(6,*) 'T(core) cpu = ',tcorecp2-tcorecp1
          endif
-        
+
       call wtime
 
       call destroyfncorp
 
  3000 continue !end of NTSEQ loop
 c
-      print*, "DONE"
+      if(myrank.eq.master)  then
+        print*, "DONE"
+      endif
+
         call destruct_sum_vi_area
         call ifbc_mfree
-c     
+c
 c.... ---------------------->  Post Processing  <----------------------
-c     
+c
 c.... print out the last step
-c     
+c
 !      if ( (irs .ge. 1) .and. ((mod(lstep, ntout) .ne. 0) .or.
 !     &    (nstp .eq. 0))) then
 !          if( (mod(lstep, ntoutv) .eq. 0) .and.
@@ -1069,12 +1072,12 @@ c
          close (ihist)
          close (iforce)
          close (iconserv)
-             
+
          if(exMC) then 
            call MC_writeState(lstep) 
            call MC_finalize
          endif
-             
+
          if(exts) then 
            call TD_writeData(fvarts, .true.)    !force the flush of the buffer. 
            call TD_finalize
