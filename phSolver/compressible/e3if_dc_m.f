@@ -4,7 +4,7 @@ c------------------------------------------------------------------------------
 c  calculating the discontinuity capturing (DC) operator for the interface
 c  macro-elements
 c------------------------------------------------------------------------------
-        inplicit none
+        implicit none
 c
 c
       contains
