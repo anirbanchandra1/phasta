@@ -105,6 +105,8 @@ c
 c
         procedure(getthm2), pointer :: getthmif0_ptr, getthmif1_ptr
         procedure(calc_vi2), pointer :: calc_vi_cavitation
+c... added for interface DC operator
+        real*8, dimension(:,:), pointer :: f_jump ! flux jump        
 c
       contains
 c
@@ -135,6 +137,7 @@ c
 c
           allocate(y0(npro,nflow),y1(npro,nflow))
           allocate(y_jump(npro,nflow,nsd))
+          allocate(f_jump(npro,nflow))
           allocate(ri0(npro,nflow*(nsd+1)))
           allocate(ri1(npro,nflow*(nsd+1)))
           allocate(rho0(npro),u0(npro,nsd),pres0(npro),T0(npro),ei0(npro),um0(npro,nsd))
@@ -196,6 +199,7 @@ c
           deallocate(dxdxi0,dxdxi1)
           deallocate(y0,y1)
           deallocate(y_jump)
+          deallocate(f_jump)
           deallocate(rl0,rl1)
           deallocate(ri0,ri1)
           deallocate(rho0,u0,pres0,T0,ei0,um0)

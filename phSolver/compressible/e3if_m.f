@@ -348,6 +348,8 @@ c        write(*,11) 'f1n0:',iel,f1n0
 c        write(*,11) 'f1n1:',iel,f1n1
 c        write(*,11) 'f0n1:',iel,f0n1
 c      endif
+c... calculating the flux jump
+            f_jump(iel,1:5) =  f1n1(1:5) + f0n0(1:5)
 c
             ri0(iel,16:20) = ri0(iel,16:20) + pt50 * ( f0n0(1:5) + f1n0(1:5) )
             ri1(iel,16:20) = ri1(iel,16:20) + pt50 * ( f1n1(1:5) + f0n1(1:5) )
