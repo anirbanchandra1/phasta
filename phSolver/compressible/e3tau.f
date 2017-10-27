@@ -38,6 +38,7 @@ c Zdenek Johan, Summer 1990.  (Modified from e2tau.f)
 c Zdenek Johan, Winter 1991.  (Fortran 90)
 c----------------------------------------------------------------------
 c
+      use e3gij_m, only:e3gijd
       include "common.h"
 c
       dimension rho(npro),                 con(npro), 
@@ -56,7 +57,7 @@ c
      &		  fact(npro),	 h2o2u(npro),   giju(npro,6),
      &            A0inv(npro,15),gijdu(npro,6)
 c
-      call e3gijd( dxidx, gijd )
+      call e3gijd( dxidx, npro, nsd, lcsyst, gijd )
 c
 c  next form the diffusive length scale |u| h_1 = 2 ( ui (gijd)-1 uj)^{1/2}
 c
@@ -324,6 +325,7 @@ c Zdenek Johan, Summer 1990.  (Modified from e2tau.f)
 c Zdenek Johan, Winter 1991.  (Fortran 90)
 c----------------------------------------------------------------------
 c
+      use e3gij_m, only:e3gijd
       include "common.h"
 c
       dimension rho(npro),                 con(npro), 
@@ -693,7 +695,7 @@ c.....****************calculation of giju for DC term***************
 c     
 c.... for the notation of different numbering
 c     
-           call e3gijd( dxidx, gijd )
+           call e3gijd( dxidx, npro, nsd, lcsyst, gijd )
 
            gijdu(:,1)=gijd(:,1)
            gijdu(:,2)=gijd(:,3)
@@ -1250,6 +1252,7 @@ c Zdenek Johan, Winter 1991.  (Fortran 90)
 c----------------------------------------------------------------------
 c
       use turbSA
+      use e3gij_m, only:e3gijd
       include "common.h"
 c
       dimension rho(npro),                 T(npro),
@@ -1267,7 +1270,7 @@ c
      &            giju(npro,6),              detgijI(npro)
 c
 c      
-      call e3gijd( dxidx, gijd )
+      call e3gijd( dxidx, npro, nsd, lcsyst, gijd )
 
 c
 c  next form the diffusive length scale |u| h_1 = 2 ( ui (gijd)-1 uj)^{1/2}
@@ -1396,118 +1399,120 @@ c
       return
       end
 
-c-----------------------------------------------------------------------
-c get the metric tensor g_{ij}=xi_{k,i} xi_{k,j}.  
-c-----------------------------------------------------------------------
-      subroutine e3gijd( dxidx,  gijd )
+cc-----------------------------------------------------------------------
+cc get the metric tensor g_{ij}=xi_{k,i} xi_{k,j}.  
+cc-----------------------------------------------------------------------
+c      subroutine e3gijd( dxidx, npro, nsd, lcsyst, gijd )
       
-      include "common.h"
-      
-      real*8  dxidx(npro,nsd,nsd),  gijd(npro,6),
-     &        tmp1(npro),           tmp2(npro),
-     &        tmp3(npro)
-c  form metric tensor g_{ij}=xi_{k,i} xi_{k,j}.  It is a symmetric
-c  tensor so we only form 6 components and use symmetric matrix numbering.
-c  (d for down since giju=[gijd]^{-1})
-c  (Note FARZIN and others use numbering of 1,2,3 being diagonal 456 off)
-      if (lcsyst .ge. 2) then
+c      implicit none
+cc
+c      real*8  dxidx(npro,nsd,nsd),  gijd(npro,6),
+c     &        tmp1(npro),           tmp2(npro),
+c     &        tmp3(npro)
+c      integer :: npro,nsd,lcsyst    
+c      real*8 :: c1, c2     
+cc  form metric tensor g_{ij}=xi_{k,i} xi_{k,j}.  It is a symmetric
+cc  tensor so we only form 6 components and use symmetric matrix numbering.
+cc  (d for down since giju=[gijd]^{-1})
+cc  (Note FARZIN and others use numbering of 1,2,3 being diagonal 456 off)
+c      if (lcsyst .ge. 2) then
 
-         gijd(:,1) = dxidx(:,1,1) * dxidx(:,1,1)
-     &            + dxidx(:,2,1) * dxidx(:,2,1)
-     &            + dxidx(:,3,1) * dxidx(:,3,1)
-c
-         gijd(:,2) = dxidx(:,1,1) * dxidx(:,1,2)
-     &            + dxidx(:,2,1) * dxidx(:,2,2)
-     &            + dxidx(:,3,1) * dxidx(:,3,2)
-c
-         gijd(:,3) = dxidx(:,1,2) * dxidx(:,1,2)
-     &            + dxidx(:,2,2) * dxidx(:,2,2)
-     &            + dxidx(:,3,2) * dxidx(:,3,2)
-c
-         gijd(:,4) = dxidx(:,1,1) * dxidx(:,1,3)
-     &            + dxidx(:,2,1) * dxidx(:,2,3)
-     &            + dxidx(:,3,1) * dxidx(:,3,3)
-c
-         gijd(:,5) = dxidx(:,1,2) * dxidx(:,1,3)
-     &            + dxidx(:,2,2) * dxidx(:,2,3)
-     &            + dxidx(:,3,2) * dxidx(:,3,3)
-c
-         gijd(:,6) = dxidx(:,1,3) * dxidx(:,1,3)
-     &            + dxidx(:,2,3) * dxidx(:,2,3)
-     &        + dxidx(:,3,3) * dxidx(:,3,3)
-c
-      else   if (lcsyst .eq. 1) then   
-c
-c  There is an invariance problem with tets 
-c  It is fixed by the following modifications to gijd 
-c
+c         gijd(:,1) = dxidx(:,1,1) * dxidx(:,1,1)
+c     &            + dxidx(:,2,1) * dxidx(:,2,1)
+c     &            + dxidx(:,3,1) * dxidx(:,3,1)
+cc
+c         gijd(:,2) = dxidx(:,1,1) * dxidx(:,1,2)
+c     &            + dxidx(:,2,1) * dxidx(:,2,2)
+c     &            + dxidx(:,3,1) * dxidx(:,3,2)
+cc
+c         gijd(:,3) = dxidx(:,1,2) * dxidx(:,1,2)
+c     &            + dxidx(:,2,2) * dxidx(:,2,2)
+c     &            + dxidx(:,3,2) * dxidx(:,3,2)
+cc
+c         gijd(:,4) = dxidx(:,1,1) * dxidx(:,1,3)
+c     &            + dxidx(:,2,1) * dxidx(:,2,3)
+c     &            + dxidx(:,3,1) * dxidx(:,3,3)
+cc
+c         gijd(:,5) = dxidx(:,1,2) * dxidx(:,1,3)
+c     &            + dxidx(:,2,2) * dxidx(:,2,3)
+c     &            + dxidx(:,3,2) * dxidx(:,3,3)
+cc
+c         gijd(:,6) = dxidx(:,1,3) * dxidx(:,1,3)
+c     &            + dxidx(:,2,3) * dxidx(:,2,3)
+c     &        + dxidx(:,3,3) * dxidx(:,3,3)
+cc
+c      else   if (lcsyst .eq. 1) then   
+cc
+cc  There is an invariance problem with tets 
+cc  It is fixed by the following modifications to gijd 
+cc
 
-         c1 = 1.259921049894873D+00
-         c2 = 6.299605249474365D-01
-c
-         tmp1(:) = c1 * dxidx(:,1,1) + c2 *(dxidx(:,2,1)+dxidx(:,3,1))
-         tmp2(:) = c1 * dxidx(:,2,1) + c2 *(dxidx(:,1,1)+dxidx(:,3,1))
-         tmp3(:) = c1 * dxidx(:,3,1) + c2 *(dxidx(:,1,1)+dxidx(:,2,1))
-         gijd(:,1) = dxidx(:,1,1) * tmp1
-     1             + dxidx(:,2,1) * tmp2
-     2             + dxidx(:,3,1) * tmp3
-c
-         tmp1(:) = c1 * dxidx(:,1,2) + c2 *(dxidx(:,2,2)+dxidx(:,3,2))
-         tmp2(:) = c1 * dxidx(:,2,2) + c2 *(dxidx(:,1,2)+dxidx(:,3,2))
-         tmp3(:) = c1 * dxidx(:,3,2) + c2 *(dxidx(:,1,2)+dxidx(:,2,2))
-         gijd(:,2) = dxidx(:,1,1) * tmp1
-     1             + dxidx(:,2,1) * tmp2
-     2             + dxidx(:,3,1) * tmp3
-c
-         gijd(:,3) = dxidx(:,1,2) * tmp1
-     1             + dxidx(:,2,2) * tmp2
-     2             + dxidx(:,3,2) * tmp3
-c
-         tmp1(:) = c1 * dxidx(:,1,3) + c2 *(dxidx(:,2,3)+dxidx(:,3,3))
-         tmp2(:) = c1 * dxidx(:,2,3) + c2 *(dxidx(:,1,3)+dxidx(:,3,3))
-         tmp3(:) = c1 * dxidx(:,3,3) + c2 *(dxidx(:,1,3)+dxidx(:,2,3))
-         gijd(:,4) = dxidx(:,1,1) * tmp1
-     1             + dxidx(:,2,1) * tmp2
-     2             + dxidx(:,3,1) * tmp3
-c
-         gijd(:,5) = dxidx(:,1,2) * tmp1
-     1             + dxidx(:,2,2) * tmp2
-     2             + dxidx(:,3,2) * tmp3
-c
-         gijd(:,6) = dxidx(:,1,3) * tmp1
-     1             + dxidx(:,2,3) * tmp2
-     2             + dxidx(:,3,3) * tmp3
-c
-      else  
-c  This is just the hex copied from above.  I have
-c  to find my notes on invariance factors for wedges
-c         
+c         c1 = 1.259921049894873D+00
+c         c2 = 6.299605249474365D-01
+cc
+c         tmp1(:) = c1 * dxidx(:,1,1) + c2 *(dxidx(:,2,1)+dxidx(:,3,1))
+c         tmp2(:) = c1 * dxidx(:,2,1) + c2 *(dxidx(:,1,1)+dxidx(:,3,1))
+c         tmp3(:) = c1 * dxidx(:,3,1) + c2 *(dxidx(:,1,1)+dxidx(:,2,1))
+c         gijd(:,1) = dxidx(:,1,1) * tmp1
+c     1             + dxidx(:,2,1) * tmp2
+c     2             + dxidx(:,3,1) * tmp3
+cc
+c         tmp1(:) = c1 * dxidx(:,1,2) + c2 *(dxidx(:,2,2)+dxidx(:,3,2))
+c         tmp2(:) = c1 * dxidx(:,2,2) + c2 *(dxidx(:,1,2)+dxidx(:,3,2))
+c         tmp3(:) = c1 * dxidx(:,3,2) + c2 *(dxidx(:,1,2)+dxidx(:,2,2))
+c         gijd(:,2) = dxidx(:,1,1) * tmp1
+c     1             + dxidx(:,2,1) * tmp2
+c     2             + dxidx(:,3,1) * tmp3
+cc
+c         gijd(:,3) = dxidx(:,1,2) * tmp1
+c     1             + dxidx(:,2,2) * tmp2
+c     2             + dxidx(:,3,2) * tmp3
+cc
+c         tmp1(:) = c1 * dxidx(:,1,3) + c2 *(dxidx(:,2,3)+dxidx(:,3,3))
+c         tmp2(:) = c1 * dxidx(:,2,3) + c2 *(dxidx(:,1,3)+dxidx(:,3,3))
+c         tmp3(:) = c1 * dxidx(:,3,3) + c2 *(dxidx(:,1,3)+dxidx(:,2,3))
+c         gijd(:,4) = dxidx(:,1,1) * tmp1
+c     1             + dxidx(:,2,1) * tmp2
+c     2             + dxidx(:,3,1) * tmp3
+cc
+c         gijd(:,5) = dxidx(:,1,2) * tmp1
+c     1             + dxidx(:,2,2) * tmp2
+c     2             + dxidx(:,3,2) * tmp3
+cc
+c         gijd(:,6) = dxidx(:,1,3) * tmp1
+c     1             + dxidx(:,2,3) * tmp2
+c     2             + dxidx(:,3,3) * tmp3
+cc
+c      else  
+cc  This is just the hex copied from above.  I have
+cc  to find my notes on invariance factors for wedges
+cc         
 
-         gijd(:,1) = dxidx(:,1,1) * dxidx(:,1,1)
-     &            + dxidx(:,2,1) * dxidx(:,2,1)
-     &            + dxidx(:,3,1) * dxidx(:,3,1)
-c
-         gijd(:,2) = dxidx(:,1,1) * dxidx(:,1,2)
-     &            + dxidx(:,2,1) * dxidx(:,2,2)
-     &            + dxidx(:,3,1) * dxidx(:,3,2)
-c
-         gijd(:,3) = dxidx(:,1,2) * dxidx(:,1,2)
-     &            + dxidx(:,2,2) * dxidx(:,2,2)
-     &            + dxidx(:,3,2) * dxidx(:,3,2)
-c
-         gijd(:,4) = dxidx(:,1,1) * dxidx(:,1,3)
-     &            + dxidx(:,2,1) * dxidx(:,2,3)
-     &            + dxidx(:,3,1) * dxidx(:,3,3)
-c
-         gijd(:,5) = dxidx(:,1,2) * dxidx(:,1,3)
-     &            + dxidx(:,2,2) * dxidx(:,2,3)
-     &            + dxidx(:,3,2) * dxidx(:,3,3)
-c
-         gijd(:,6) = dxidx(:,1,3) * dxidx(:,1,3)
-     &            + dxidx(:,2,3) * dxidx(:,2,3)
-     &            + dxidx(:,3,3) * dxidx(:,3,3)
-      endif
-c
-      return
-      end
+c         gijd(:,1) = dxidx(:,1,1) * dxidx(:,1,1)
+c     &            + dxidx(:,2,1) * dxidx(:,2,1)
+c     &            + dxidx(:,3,1) * dxidx(:,3,1)
+cc
+c         gijd(:,2) = dxidx(:,1,1) * dxidx(:,1,2)
+c     &            + dxidx(:,2,1) * dxidx(:,2,2)
+c     &            + dxidx(:,3,1) * dxidx(:,3,2)
+cc
+c         gijd(:,3) = dxidx(:,1,2) * dxidx(:,1,2)
+c     &            + dxidx(:,2,2) * dxidx(:,2,2)
+c     &            + dxidx(:,3,2) * dxidx(:,3,2)
+cc
+c         gijd(:,4) = dxidx(:,1,1) * dxidx(:,1,3)
+c     &            + dxidx(:,2,1) * dxidx(:,2,3)
+c     &            + dxidx(:,3,1) * dxidx(:,3,3)
+cc
+c         gijd(:,5) = dxidx(:,1,2) * dxidx(:,1,3)
+c     &            + dxidx(:,2,2) * dxidx(:,2,3)
+c     &            + dxidx(:,3,2) * dxidx(:,3,3)
+cc
+c         gijd(:,6) = dxidx(:,1,3) * dxidx(:,1,3)
+c     &            + dxidx(:,2,3) * dxidx(:,2,3)
+c     &            + dxidx(:,3,3) * dxidx(:,3,3)
+c      endif
+cc
+c      return
+c      end
         
