@@ -106,7 +106,8 @@ c
         procedure(getthm2), pointer :: getthmif0_ptr, getthmif1_ptr
         procedure(calc_vi2), pointer :: calc_vi_cavitation
 c... added for interface DC operator
-        real*8, dimension(:,:), pointer :: f_jump ! flux jump        
+        real*8, dimension(:,:), pointer :: f_jump ! flux jump
+        real*8, dimension(:,:,:), pointer :: proj  ! tangential projector       
 c
       contains
 c
@@ -125,6 +126,7 @@ c
           allocate(ifbc_l1(npro,nshl1,nifbc+1))
           allocate(cmtrx(npro,nflow,nflow))
           allocate(ctc(npro,nflow,nflow))
+          allocate(proj(npro,nsd,nsd))
           allocate(acl0(npro,nshl0,ndof))
           allocate(acl1(npro,nshl1,ndof))
 c
@@ -194,6 +196,7 @@ c
           deallocate(ifbc_l0,ifbc_l1)
           deallocate(cmtrx)
           deallocate(ctc)
+          deallocate(proj)
           deallocate(acl0,acl1)
           deallocate(shg0,shg1)
           deallocate(dxdxi0,dxdxi1)
