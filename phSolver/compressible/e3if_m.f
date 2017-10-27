@@ -18,6 +18,7 @@ c----------------------------------------
         use e3if_lhs_m
         use e3if_vi_m
         use if_global_m
+        use e3if_dc_m ! DC operator for interface
 c
         implicit none
 c
@@ -85,8 +86,8 @@ c      call getshp_if(shp0,shp1,shgl0,shgl1,shpif0,shpif1,shgif0,shgif1,xl0,xl1,
 c
 c... Element Metrics
 c
-            call e3metric(shg0,shgl0,xl0)
-            call e3metric(shg1,shgl1,xl1)
+            call e3metric(shg0,dxidx0,shgl0,xl0)
+            call e3metric(shg1,dxidx1,shgl1,xl1)
 c      print*, 'shg0: ',shg0(1,:,1)
 c      print*, 'shg1: ',shg1(1,:,1)
 c

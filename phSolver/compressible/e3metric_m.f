@@ -12,19 +12,20 @@ c----------------------------------------
 c
       contains
 c
-      subroutine e3metric(shg,shgl,xl)
+      subroutine e3metric(shg,dxidx,shgl,xl)
 c
         implicit none
 c
         real*8, dimension(:,:,:), pointer, intent(out) :: shg
+        real*8, dimension(:,:,:), pointer, intent(out) :: dxidx ! added
         real*8, dimension(:,:,:), pointer, intent(in)  :: xl, shgl
 c
-        real*8, dimension(:,:,:), allocatable  :: dxdxi, dxidx
+        real*8, dimension(:,:,:), allocatable  :: dxdxi
         real*8, dimension(npro)  :: tmp
 c
         integer :: n, nshl, err0,err1,nenl
 c
-        allocate(dxdxi(npro,nsd,nsd),dxidx(npro,nsd,nsd))
+        allocate(dxdxi(npro,nsd,nsd))
 c
 c
 c.... compute the deformation gradient
@@ -92,7 +93,6 @@ c
        enddo
 c
        deallocate(dxdxi,stat=err0)
-       deallocate(dxidx,stat=err1)
 c      print*, myrank,npro,nsd,err0,err1
 c
        return

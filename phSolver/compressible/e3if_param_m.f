@@ -107,7 +107,8 @@ c
         procedure(calc_vi2), pointer :: calc_vi_cavitation
 c... added for interface DC operator
         real*8, dimension(:,:), pointer :: f_jump ! flux jump
-        real*8, dimension(:,:,:), pointer :: proj  ! tangential projector       
+        real*8, dimension(:,:,:), pointer :: proj  ! tangential projector
+        real*8, dimension(:,:,:), pointer :: dxidx0, dxidx1  ! inverse of element deformation tensor       
 c
       contains
 c
@@ -133,6 +134,7 @@ c
           allocate(shg0(npro,nshl0,nsd))
           allocate(shg1(npro,nshl1,nsd))
           allocate(dxdxi0(npro,nsd,nsd),dxdxi1(npro,nsd,nsd))
+          allocate(dxidx0(npro,nsd,nsd),dxidx1(npro,nsd,nsd))
 c
           allocate(rl0(npro,nshl0,nflow))
           allocate(rl1(npro,nshl1,nflow))
@@ -200,6 +202,7 @@ c
           deallocate(acl0,acl1)
           deallocate(shg0,shg1)
           deallocate(dxdxi0,dxdxi1)
+          deallocate(dxidx0,dxidx1)
           deallocate(y0,y1)
           deallocate(y_jump)
           deallocate(f_jump)

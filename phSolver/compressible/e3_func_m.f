@@ -30,13 +30,15 @@ c
         integer :: iflow
         real*8 :: shp_qpt(npro,nshl)
         real*8 :: dui(npro,nflow)
-        real*8 :: dxidx(npro,nsd,nsd)
+c        real*8 :: dxidx(npro,nsd,nsd)
         real*8, dimension(:), pointer :: WdetJ
         real*8, dimension(:,:,:), pointer :: shg_qpt, shgl_qpt
+        real*8, dimension(:,:,:), pointer :: dxidx ! added
 c
         allocate(WdetJ(npro))
         allocate(shg_qpt(npro,nshl,nsd))
         allocate(shgl_qpt(npro,nsd,nshl))
+        allocate(dxidx(npro,nsd,nsd)) !added
 c
         s = zero
 c
@@ -46,7 +48,7 @@ c
           call calc_primitive(dui,shp_qpt)
           call getthm6_ptr
           call calc_conservative(dui)
-          call e3metric(shg_qpt,shgl_qpt,xl)
+          call e3metric(shg_qpt,dxidx,shgl_qpt,xl)
 c
 c... multiply by weight
 c
