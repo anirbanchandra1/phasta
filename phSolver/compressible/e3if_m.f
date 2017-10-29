@@ -170,7 +170,8 @@ c
 c
             call dg_penalty(ri0,y0,y1)
             call dg_penalty(ri1,y1,y0)
-c
+c... test
+            call e3if_dc
 c...LHS calculations...
 c
             if (lhs_dg .eq. 1) then

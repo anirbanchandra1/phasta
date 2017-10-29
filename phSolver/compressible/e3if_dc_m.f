@@ -94,5 +94,72 @@ c... c^h for each phase
 c          
         end subroutine calc_ch
 c
+        subroutine e3if_dc_res
+c...To be filled        
+        end subroutine e3if_dc_res
+c
+        subroutine e3if_dc_egmass
+c...To be filled
+        end subroutine e3if_dc_egmass
+        
+        subroutine e3if_dc
+c..............................................................................
+c  calculating the discontinuity capturing (DC) operator
+c..............................................................................        
+          use e3if_param_m
+          use e3gij_m, only: e3giju
+          implicit none
+c
+c
+          real*8, dimension(npro,6) :: giju0, giju1 ! g^{ij} vector form
+          real*8, dimension(npro,nsd,nsd) :: giju_f0, giju_f1 ! g^{ij} full
+          real*8, dimension(npro,nsd,nsd) :: pt_g0, pt_g1 ! proj_{ik} g^ij
+                                                          ! proj is symetric
+          real*8, dimension(npro,nsd,nsd) :: pt_g_p0, pt_g_p1 ! proj_{ik} g^ij proj_{jm}
+          integer :: iel
+c          
+          call calc_projector(proj, nv0) ! get the tangential projector
+          call e3giju (giju0, dxidx0, npro, nsd, lcsyst) ! get g^{ij}, 0 side
+          call e3giju (giju1, dxidx1, npro, nsd, lcsyst) ! get g^{ij}, 0 side
+c.... get the full g^ij matrix
+          giju_f0(:,1,1) = giju0(:,1)
+          giju_f0(:,1,2) = giju0(:,4)
+          giju_f0(:,1,3) = giju0(:,5)
+          giju_f0(:,2,1) = giju0(:,4)
+          giju_f0(:,2,2) = giju0(:,2)
+          giju_f0(:,2,3) = giju0(:,6)
+          giju_f0(:,3,1) = giju0(:,5)
+          giju_f0(:,3,2) = giju0(:,6)
+          giju_f0(:,3,3) = giju0(:,3) 
+c
+          giju_f1(:,1,1) = giju1(:,1)
+          giju_f1(:,1,2) = giju1(:,4)
+          giju_f1(:,1,3) = giju1(:,5)
+          giju_f1(:,2,1) = giju1(:,4)
+          giju_f1(:,2,2) = giju1(:,2)
+          giju_f1(:,2,3) = giju1(:,6)
+          giju_f1(:,3,1) = giju1(:,5)
+          giju_f1(:,3,2) = giju1(:,6)
+          giju_f1(:,3,3) = giju1(:,3)
+c... calculate proj_{ik} g^ij, notice proj is symetric
+          do iel = 1,npro
+            pt_g0(iel,:,:) = matmul(proj(iel,:,:), giju_f0(iel,:,:))
+            pt_g1(iel,:,:) = matmul(proj(iel,:,:), giju_f1(iel,:,:))
+          enddo 
+c... calculate proj_{ik} g^ij proj_{jm}
+          do iel = 1,npro
+            pt_g_p0(iel,:,:) = matmul(pt_g0(iel,:,:),proj(iel,:,:))
+            pt_g_p1(iel,:,:) = matmul(pt_g1(iel,:,:),proj(iel,:,:))             
+          enddo
+c... calculate the local residual
+          call e3if_dc_res()
+          call e3if_dc_res()
+c... calculate the local stiffness matrix
+          call e3if_dc_egmass()
+          call e3if_dc_egmass()          
+c                                                
+          
+c
+        end subroutine e3if_dc  
 c
       end module e3if_dc_m
