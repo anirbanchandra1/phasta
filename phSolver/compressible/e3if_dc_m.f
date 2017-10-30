@@ -59,7 +59,7 @@ c
           real*8, dimension(npro,nflow) :: temp0, temp1 ! local temporary array
           integer :: iel                                                  
 c
-          factor = one
+          factor = zero
 c
           u_ref_0(:,1) = 1.0d0 ! hacking, rho_ref, gas phase
           u_ref_0(:,2) = 1.0d0 * 1.0d2 ! hacking, rho_ref*v_ref
@@ -94,12 +94,44 @@ c... c^h for each phase
 c          
         end subroutine calc_ch
 c
-        subroutine e3if_dc_res
-c...To be filled        
+        subroutine e3if_dc_res(ri, var, A0, ch, pt_g_p)
+c..............................................................................
+c  calculation of the contribution of DC operator to the integrand of residual
+c  for both phases
+c..............................................................................
+          use propar_m, only: npro
+          use conpar_m, only: nflow
+          use global_const_m, only: nsd
+          use e3if_param_m, only: var_t 
+          implicit none
+c
+          real*8, dimension(npro,nflow*(nsd+1)), intent(inout) :: ri
+          real*8, dimension(npro,nflow,nflow), intent(in) :: A0
+          type(var_t), dimension(npro), intent(in) :: var
+          real*8, dimension(npro), intent(in) :: ch
+          real*8, dimension(npro,nsd,nsd),intent(in) :: pt_g_p
+c
+          real*8, dimension(npro,nflow,nsd) :: A0_grad_y
+          integer :: iel, k, k0
+c
+          do iel = 1,npro
+c... A0 Y_{,m}          
+            A0_grad_y(iel,:,:) = matmul( A0(iel,:,:),
+     &                                   transpose(var(iel)%grad_y(:,:)))
+c... c^h g^{km}_{I} A0 Y_{,m}
+            do k = 1,nsd
+              k0 = (k-1)*nflow !k0+1, starting index in ri for kth direction
+                               !k0+nflow, ending index in ri for kth direction
+              ri(iel,k0+1:k0+nflow) = ri(iel,k0+1:k0+nflow)
+     &        + ch(iel) 
+     &        * matmul( A0_grad_y(iel,:,:), pt_g_p(iel,k,:) )
+            enddo
+          enddo 
+c                
         end subroutine e3if_dc_res
 c
         subroutine e3if_dc_egmass
-c...To be filled
+c... To be filled
         end subroutine e3if_dc_egmass
         
         subroutine e3if_dc
@@ -117,8 +149,11 @@ c
                                                           ! proj is symetric
           real*8, dimension(npro,nsd,nsd) :: pt_g_p0, pt_g_p1 ! proj_{ik} g^ij proj_{jm}
           integer :: iel
-c          
+c... get the tangential projector          
           call calc_projector(proj, nv0) ! get the tangential projector
+c... get the c^h
+          call calc_ch(ch0, ch1, f_jump)
+c          
           call e3giju (giju0, dxidx0, npro, nsd, lcsyst) ! get g^{ij}, 0 side
           call e3giju (giju1, dxidx1, npro, nsd, lcsyst) ! get g^{ij}, 0 side
 c.... get the full g^ij matrix
@@ -150,10 +185,10 @@ c... calculate proj_{ik} g^ij proj_{jm}
           do iel = 1,npro
             pt_g_p0(iel,:,:) = matmul(pt_g0(iel,:,:),proj(iel,:,:))
             pt_g_p1(iel,:,:) = matmul(pt_g1(iel,:,:),proj(iel,:,:))             
-          enddo
+          enddo         
 c... calculate the local residual
-          call e3if_dc_res()
-          call e3if_dc_res()
+          call e3if_dc_res(ri0, var0, A0_0, ch0,pt_g_p0)
+          call e3if_dc_res(ri1, var1, A0_1, ch1,pt_g_p1)
 c... calculate the local stiffness matrix
           call e3if_dc_egmass()
           call e3if_dc_egmass()          
