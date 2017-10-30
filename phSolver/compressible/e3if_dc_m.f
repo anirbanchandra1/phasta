@@ -59,19 +59,19 @@ c
           real*8, dimension(npro,nflow) :: temp0, temp1 ! local temporary array
           integer :: iel                                                  
 c
-          factor = zero
+          factor = one
 c
-          u_ref_0(:,1) = 1.0d0 ! hacking, rho_ref, gas phase
-          u_ref_0(:,2) = 1.0d0 * 1.0d2 ! hacking, rho_ref*v_ref
-          u_ref_0(:,3) = 1.0d0 * 1.0d2 ! hacking, rho_ref*v_ref
-          u_ref_0(:,4) = 1.0d0 * 1.0d2 ! hacking, rho_ref*v_ref
-          u_ref_0(:,5) = 1.0d0 * (1.0d2)**two ! hacking, rho_ref*v_ref^2
+          u_ref_0(:,1) = 1.000000000000000d0 ! hacking, rho_ref, gas phase
+          u_ref_0(:,2) = 1.000000000000000d2 ! hacking, rho_ref*v_ref
+          u_ref_0(:,3) = 1.000000000000000d2 ! hacking, rho_ref*v_ref
+          u_ref_0(:,4) = 1.000000000000000d2 ! hacking, rho_ref*v_ref
+          u_ref_0(:,5) = 2.114165517241379d5 ! hacking, rho_ref*v_ref^2
 c
-          u_ref_1(:,1) = 1.0d2 ! hacking, rho_ref, gas phase
-          u_ref_1(:,2) = 1.0d2 * 1.0d0 ! hacking, rho_ref*v_ref
-          u_ref_1(:,3) = 1.0d2 * 1.0d0 ! hacking, rho_ref*v_ref
-          u_ref_1(:,4) = 1.0d2 * 1.0d0 ! hacking, rho_ref*v_ref
-          u_ref_1(:,5) = 1.0d2 * (1.0d0)**two ! hacking, rho_ref*v_ref^2
+          u_ref_1(:,1) = 1.000000000000000d2 ! hacking, rho_ref, gas phase
+          u_ref_1(:,2) = 1.000000000000000d2  ! hacking, rho_ref*v_ref
+          u_ref_1(:,3) = 1.000000000000000d2 ! hacking, rho_ref*v_ref
+          u_ref_1(:,4) = 1.000000000000000d2 ! hacking, rho_ref*v_ref
+          u_ref_1(:,5) = 4.204805000000000d7! hacking, rho_ref*v_ref^2
 c... diag(U1_ref ... U5_ref) * flux_jump          
           temp0(:,1) = ( one/u_ref_0 (:,1) )*f_jump(:,1)
           temp0(:,2) = ( one/u_ref_0 (:,2) )*f_jump(:,2)
@@ -98,6 +98,7 @@ c
 c..............................................................................
 c  calculation of the contribution of DC operator to the integrand of residual
 c  for both phases
+c  G_b = c^h g^{km}_{I} N_{a,k} A0 Y_{,m} d \Gama
 c..............................................................................
           use propar_m, only: npro
           use conpar_m, only: nflow
@@ -130,8 +131,49 @@ c... c^h g^{km}_{I} A0 Y_{,m}
 c                
         end subroutine e3if_dc_res
 c
-        subroutine e3if_dc_egmass
-c... To be filled
+        subroutine e3if_dc_egmass(egmass,nshl, shg,A0, ch,gI)      
+c..............................................................................
+c  calculation of the contribution of DC operator to the local stiffness matrix
+c  for both phases
+c  \partial G_b / \partial Y_{a} = 
+c  c^h g^{km}_{I} N_{a,k} A0 N_{b,m} d \Gama
+c..............................................................................
+          use propar_m, only: npro
+          use conpar_m, only: nflow
+          use global_const_m, only: nsd
+          implicit none
+c
+          real*8, dimension(:,:,:),   intent(inout) :: egmass
+          real*8, dimension(:,:,:),   intent(in) :: shg
+          real*8, dimension(npro,nflow,nflow), intent(in) :: A0
+          real*8, dimension(npro), intent(in) :: ch
+          real*8, dimension(npro,nsd,nsd),intent(in) :: gI !g^{ij}_{I} = 
+                                                           ! proj^T g^{ij} proj
+          integer, intent(in)  :: nshl
+c
+          real*8, dimension(npro,nsd) :: shga_g
+          real*8, dimension(npro) :: shga_g_shgb
+          integer :: iel, ia, ib, a_row, b_col
+c
+          do iel = 1,npro
+            do ia = 1,nshl
+              a_row = (ia -1)*nflow ! a_row+1: starting row# for dof ia
+                                    ! a_row+nflow: ending row# for dof ia
+c... g^{km}_{I} N_{ia,k}                                    
+              shga_g(iel,:) = matmul( shg(iel,ia,:), gI(iel,:,:) )
+              do ib = 1,nshl
+                b_col = (ib -1)*nflow ! b_col+1: starting column# for dof ib
+                                      ! b_col+nflow: ending column# for dof ib
+c... g^{km}_{I} N_{ia,k} N_{ib,m}                                                    
+                shga_g_shgb(iel) = dot_product( shga_g(iel,:),shg(iel,ib,:))
+c
+                egmass(iel, a_row+1:a_row+nflow, b_col+1:b_col+nflow) = 
+     &          egmass(iel, a_row+1:a_row+nflow, b_col+1:b_col+nflow)
+     &        + ch(iel) * shga_g_shgb(iel) * A0(iel,:, :)                  
+              enddo
+            enddo 
+          enddo
+c         
         end subroutine e3if_dc_egmass
         
         subroutine e3if_dc
@@ -180,9 +222,7 @@ c... calculate proj_{ik} g^ij, notice proj is symetric
           do iel = 1,npro
             pt_g0(iel,:,:) = matmul(proj(iel,:,:), giju_f0(iel,:,:))
             pt_g1(iel,:,:) = matmul(proj(iel,:,:), giju_f1(iel,:,:))
-          enddo 
 c... calculate proj_{ik} g^ij proj_{jm}
-          do iel = 1,npro
             pt_g_p0(iel,:,:) = matmul(pt_g0(iel,:,:),proj(iel,:,:))
             pt_g_p1(iel,:,:) = matmul(pt_g1(iel,:,:),proj(iel,:,:))             
           enddo         
@@ -190,8 +230,10 @@ c... calculate the local residual
           call e3if_dc_res(ri0, var0, A0_0, ch0,pt_g_p0)
           call e3if_dc_res(ri1, var1, A0_1, ch1,pt_g_p1)
 c... calculate the local stiffness matrix
-          call e3if_dc_egmass()
-          call e3if_dc_egmass()          
+          if (lhs_dg .eq. 1) then
+            call e3if_dc_egmass(egmass00, nshl0, shg0,A0_0, ch0, pt_g_p0)
+            call e3if_dc_egmass(egmass11, nshl1, shg1,A0_1, ch1, pt_g_p1)       
+          endif          
 c                                                
           
 c
