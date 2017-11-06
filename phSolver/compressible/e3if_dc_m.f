@@ -67,7 +67,7 @@ c
           u_ref_0(:,4) = 1.000000000000000d2 ! hacking, rho_ref*v_ref
           u_ref_0(:,5) = 2.114165517241379d5 ! hacking, rho_ref*v_ref^2
 c
-          u_ref_1(:,1) = 1.000000000000000d2 ! hacking, rho_ref, gas phase
+          u_ref_1(:,1) = 1.000000000000000d2 ! hacking, rho_ref, liquid phase
           u_ref_1(:,2) = 1.000000000000000d2  ! hacking, rho_ref*v_ref
           u_ref_1(:,3) = 1.000000000000000d2 ! hacking, rho_ref*v_ref
           u_ref_1(:,4) = 1.000000000000000d2 ! hacking, rho_ref*v_ref
@@ -131,7 +131,7 @@ c... c^h g^{km}_{I} A0 Y_{,m}
 c                
         end subroutine e3if_dc_res
 c
-        subroutine e3if_dc_egmass(egmass,nshl, shg,A0, ch,gI)      
+        subroutine e3if_dc_egmass(egmass,nshl, shg,A0, ch,gI, WdetJ)  
 c..............................................................................
 c  calculation of the contribution of DC operator to the local stiffness matrix
 c  for both phases
@@ -149,6 +149,7 @@ c
           real*8, dimension(npro), intent(in) :: ch
           real*8, dimension(npro,nsd,nsd),intent(in) :: gI !g^{ij}_{I} = 
                                                            ! proj^T g^{ij} proj
+          real*8, dimension(npro),intent(in) :: WdetJ
           integer, intent(in)  :: nshl
 c
           real*8, dimension(npro,nsd) :: shga_g
@@ -169,7 +170,7 @@ c... g^{km}_{I} N_{ia,k} N_{ib,m}
 c
                 egmass(iel, a_row+1:a_row+nflow, b_col+1:b_col+nflow) = 
      &          egmass(iel, a_row+1:a_row+nflow, b_col+1:b_col+nflow)
-     &        + ch(iel) * shga_g_shgb(iel) * A0(iel,:, :)                  
+     &        + ch(iel) * shga_g_shgb(iel) * A0(iel,:, :) * WdetJ(iel)
               enddo
             enddo 
           enddo
@@ -231,8 +232,10 @@ c... calculate the local residual
           call e3if_dc_res(ri1, var1, A0_1, ch1,pt_g_p1)
 c... calculate the local stiffness matrix
           if (lhs_dg .eq. 1) then
-            call e3if_dc_egmass(egmass00, nshl0, shg0,A0_0, ch0, pt_g_p0)
-            call e3if_dc_egmass(egmass11, nshl1, shg1,A0_1, ch1, pt_g_p1)       
+            call e3if_dc_egmass(egmass00, nshl0, shg0,A0_0, ch0, pt_g_p0,
+     &                          WdetJif0)
+            call e3if_dc_egmass(egmass11, nshl1, shg1,A0_1, ch1, pt_g_p1,
+     &                          WdetJif1)       
           endif          
 c                                                
           
