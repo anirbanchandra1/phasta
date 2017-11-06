@@ -65,13 +65,13 @@ c
           u_ref_0(:,2) = 1.000000000000000d2 ! hacking, rho_ref*v_ref
           u_ref_0(:,3) = 1.000000000000000d2 ! hacking, rho_ref*v_ref
           u_ref_0(:,4) = 1.000000000000000d2 ! hacking, rho_ref*v_ref
-          u_ref_0(:,5) = 2.114165517241379d5 ! hacking, rho_ref*v_ref^2
+          u_ref_0(:,5) = 2.114165517241379d5 ! hacking, rho_ref*(ei + 0.5*v_ref^2)
 c
           u_ref_1(:,1) = 1.000000000000000d2 ! hacking, rho_ref, liquid phase
           u_ref_1(:,2) = 1.000000000000000d2  ! hacking, rho_ref*v_ref
           u_ref_1(:,3) = 1.000000000000000d2 ! hacking, rho_ref*v_ref
           u_ref_1(:,4) = 1.000000000000000d2 ! hacking, rho_ref*v_ref
-          u_ref_1(:,5) = 4.204805000000000d7! hacking, rho_ref*v_ref^2
+          u_ref_1(:,5) = 4.204805000000000d7! hacking, rho_ref*(ei + 0.5*v_ref^2)
 c... diag(U1_ref ... U5_ref) * flux_jump          
           temp0(:,1) = ( one/u_ref_0 (:,1) )*f_jump(:,1)
           temp0(:,2) = ( one/u_ref_0 (:,2) )*f_jump(:,2)
@@ -198,7 +198,7 @@ c... get the c^h
           call calc_ch(ch0, ch1, f_jump)
 c          
           call e3giju (giju0, dxidx0, npro, nsd, lcsyst) ! get g^{ij}, 0 side
-          call e3giju (giju1, dxidx1, npro, nsd, lcsyst) ! get g^{ij}, 0 side
+          call e3giju (giju1, dxidx1, npro, nsd, lcsyst) ! get g^{ij}, 1 side
 c.... get the full g^ij matrix
           giju_f0(:,1,1) = giju0(:,1)
           giju_f0(:,1,2) = giju0(:,4)
