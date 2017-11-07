@@ -641,6 +641,15 @@ c
                       lhs = 1  
                       iprec=lhs
 c
+c.... update interface mesh bc based on umesh
+c.... we should have correct umesh at this point
+c
+                    do inode = 1, nshg
+                      if ( ifFlag(inode) .eq. 1 ) then
+                        BC(inode,ndof+2:ndof+4) = umesh(inode,:) * Delt(1)
+                      endif
+                    enddo
+c
 c.... time depended comp1_elas BC
 c
                    if (timeDepComp1Flag .eq. 1) then
@@ -905,10 +914,10 @@ c.... -----------------> end error calculation  <----------------
 c
 c.... ----------------->   measure mesh quality   <----------------
 c
-            x1 = x(:,1)
-            x2 = x(:,2)
-            x3 = x(:,3)
-            call core_measure_mesh(x1, x2, x3, numnp, minq)
+c            x1 = x(:,1)
+c            x2 = x(:,2)
+c            x3 = x(:,3)
+c            call core_measure_mesh(x1, x2, x3, numnp, minq)
 c
 c.... -----------------> end measure mesh quality <----------------
 c
