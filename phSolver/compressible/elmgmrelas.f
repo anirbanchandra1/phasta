@@ -14,6 +14,7 @@ c
          use pointer_data
          use timedataC
          use readarrays ! read BLflt, BLgr, BLtnv, BLlist
+         use m2gfields ! read m2g fields
 c
         include "common.h"
         include "mpif.h"
@@ -45,7 +46,8 @@ c
 c
         integer errorcount(2)
 c
-        integer listcounter, ngc, itnv, basevID, nv, vID, vID2, ioffset
+        integer listcounter, ngc, itnv, nv, vID, vID2,
+     &          ioffset, basevID, secondvID
         real*8  iflt, igr, igrexp, tmp
         real*8  inormal(nsd)
 c
@@ -198,6 +200,18 @@ c.... prepare other paramteres
 c
           iflt = BLflt(ngc) ! first layer thickness of this growth curve
           igr  = BLgr(ngc)  ! growth ratio of this growth curve
+c
+c.... if the first and second vertex on boundary, use current normal
+c     this assumes that the growth curve is exposed to a flat boundary
+c
+          if (mesh2geom .eq. 1) then
+            secondvID = BLlist(listcounter + 2) + ioffset
+c
+            if ( (m2gClsfcn(basevID,1).ne.3) .and.
+     &           (m2gClsfcn(secondvID,1).ne.3) ) then
+              gcnormal(basevID,:) = x(secondvID,:) - x(basevID,:)
+            endif
+          endif
 c
           tmp  = sqrt( gcnormal(basevID,1) * gcnormal(basevID,1)
      &               + gcnormal(basevID,2) * gcnormal(basevID,2)

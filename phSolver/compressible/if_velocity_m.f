@@ -76,7 +76,11 @@ c
         do inode = 1, nshg
           if ( ifFlag(inode) .eq. 1 ) then
             umesh(inode,:) = actual_vi(inode,:)
-            BC(inode,ndof+2:ndof+4) = umesh(inode,:) * dt
+c
+c.... the following line is moved to solve mesh part
+c.... since in restart case, we should update interface mesh BC
+c.... before we solve the mesh
+c            BC(inode,ndof+2:ndof+4) = umesh(inode,:) * dt
           endif
         enddo
 c
