@@ -218,11 +218,10 @@ c
 
 c
 c ... allocate mesh-elastic solve related arrays only if mesh-elastic solve flag/option is ON
-c.... we may not need this anymore, since we have them in readnblk. 
         if ( iALE .gt. 0 ) then 
           meshq = one
           x     = xn
-c          umesh = zero
+          xold  = xn
         endif
         call init_sum_vi_area(nshg,nsd)
         call ifbc_malloc
