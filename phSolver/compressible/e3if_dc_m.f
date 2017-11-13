@@ -59,7 +59,7 @@ c
           real*8, dimension(npro,nflow) :: temp0, temp1 ! local temporary array
           integer :: iel                                                  
 c
-          factor = one
+          factor = 1.000000000000000d2 ! hacking
 c
           u_ref_0(:,1) = 1.000000000000000d0 ! hacking, rho_ref, gas phase
           u_ref_0(:,2) = 1.000000000000000d2 ! hacking, rho_ref*v_ref
