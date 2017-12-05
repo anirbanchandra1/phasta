@@ -620,6 +620,8 @@ int input_fform(phSolver::Input& inp)
     dgifinp.emu = (double)inp.GetValue("DG Interface Penalty Factor epsilon mu");
     dgifinp.ek = (double)inp.GetValue("DG Interface Penalty Factor epsilon k");
     dgifinp.h = (double)inp.GetValue("DG Interface Penalty Factor h");
+    // DG interface DISCONTINUITY CAPTURING input parameters
+    dgifinp.if_e_dc = (double)inp.GetValue("DG Interface DC Factor");
 
 //for mesh-elastic--------------------------------------------
     if((string)inp.GetValue("Mesh Elastic Youngs Modulus Volume Option") == "True"){
