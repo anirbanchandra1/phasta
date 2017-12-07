@@ -48,6 +48,7 @@ c..............................................................................
           use number_def_m
           use propar_m, only: npro
           use conpar_m, only: nflow
+          use dgifinp_m, only: if_e_dc
           implicit none
 c
           real*8, dimension(npro),intent(out) :: ch0, ch1 
@@ -55,11 +56,8 @@ c
 c
           real*8, dimension(npro,nflow) :: u_ref_0, u_ref_1 ! reference conservative
                                                             ! variables
-          real*8, dimension(npro) :: factor ! non-dimensional parameter
           real*8, dimension(npro,nflow) :: temp0, temp1 ! local temporary array
           integer :: iel                                                  
-c
-          factor = 1.000000000000000d2 ! hacking
 c
           u_ref_0(:,1) = 1.000000000000000d0 ! hacking, rho_ref, gas phase
           u_ref_0(:,2) = 1.000000000000000d2 ! hacking, rho_ref*v_ref
@@ -86,9 +84,9 @@ c
           temp1(:,5) = ( one/u_ref_1 (:,5) )*f_jump(:,5)
 c... c^h for each phase
           do iel = 1,npro
-            ch0(iel) = factor(iel) 
+            ch0(iel) = if_e_dc 
      &               * sqrt(dot_product(temp0(iel,:),temp0(iel,:)))
-            ch1(iel) = factor(iel) 
+            ch1(iel) = if_e_dc 
      &               * sqrt(dot_product(temp1(iel,:),temp1(iel,:)))
           enddo
 c          
