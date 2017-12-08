@@ -162,6 +162,7 @@ c
         use iso_c_binding
         use global_const_m
         implicit none
+        integer(c_int), target :: auto_trigger
         real(c_double), target :: vol_mesh_q_tol, face_mesh_q_tol
         common /meshquality/ vol_mesh_q_tol, face_mesh_q_tol
       end module meshquality_m

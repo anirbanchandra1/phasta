@@ -21,6 +21,7 @@
 #define aerfrc FortranCInterface_GLOBAL_(aerfrc,AERFRC)
 #define laymesh FortranCInterface_GLOBAL_(laymesh,LAYMESH)
 #define snapmesh FortranCInterface_GLOBAL_(snapmesh,SNAPMESH)
+#define meshquality FortranCInterface_GLOBAL_(meshquality,MESHQUALITY)
 #define astore FortranCInterface_GLOBAL_(astore,ASTORE)
 #define conpar FortranCInterface_GLOBAL_(conpar,CONPAR)
 #define ctrlvari FortranCInterface_GLOBAL_(ctrlvari,CTRLVARI)
@@ -263,6 +264,12 @@ extern "C" {
     int timeDepComp1Flag;
     int timeDepComp1ID;
   } snapmesh ;
+
+  extern struct {
+    int auto_trigger;
+    double vol_mesh_q_tol;
+    double face_mesh_q_tol;
+  } meshquality;
 
   extern struct { 
     double a[100000];

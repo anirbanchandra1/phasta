@@ -645,6 +645,16 @@ int input_fform(phSolver::Input& inp)
     vec.erase(vec.begin(),vec.end());
 //for mesh-elastic--------------------------------------------
 
+
+//for auto trigger mesh adaptation----------------------------
+    meshquality.auto_trigger = 0;
+    if((string)inp.GetValue("Auto Trigger Option") == "True")
+      meshquality.auto_trigger = 1;
+    meshquality.vol_mesh_q_tol = inp.GetValue("Threshold for Volume Mesh Quality");
+    meshquality.face_mesh_q_tol = inp.GetValue("Threshold for Volume Mesh Quality");
+//for auto trigger mesh adaptation----------------------------
+
+
     if((string)inp.GetValue("Zero Mean Pressure") == "True")
       turbvar.pzero=1;
 
