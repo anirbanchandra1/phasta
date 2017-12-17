@@ -647,11 +647,16 @@ int input_fform(phSolver::Input& inp)
 
 
 //for auto trigger mesh adaptation----------------------------
-    meshquality.auto_trigger = 0;
-    if((string)inp.GetValue("Auto Trigger Option") == "True")
-      meshquality.auto_trigger = 1;
-    meshquality.vol_mesh_q_tol = inp.GetValue("Threshold for Volume Mesh Quality");
-    meshquality.face_mesh_q_tol = inp.GetValue("Threshold for Volume Mesh Quality");
+    if ((string)inp.GetValue("Auto Trigger Option") == "False" ) {
+      meshquality.autoTrigger = 0;
+    } else if ((string)inp.GetValue("Auto Trigger Option") == "True" ) {
+      meshquality.autoTrigger = 1;
+    } else {
+      cout << " Auto Trigger Option: Only Legal Values ( False, True)" << endl;
+      exit(1);
+    }
+    meshquality.volMeshqTol = inp.GetValue("Threshold for Volume Mesh Quality");
+    meshquality.faceMeshqTol = inp.GetValue("Threshold for Face Mesh Quality in BL");
 //for auto trigger mesh adaptation----------------------------
 
 

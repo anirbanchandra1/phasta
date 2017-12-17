@@ -266,10 +266,10 @@ extern "C" {
   } snapmesh ;
 
   extern struct {
-    int auto_trigger;
-    double vol_mesh_q_tol;
-    double face_mesh_q_tol;
-  } meshquality;
+    double volMeshqTol;
+    double faceMeshqTol;
+    int autoTrigger;
+  } meshquality ;
 
   extern struct { 
     double a[100000];
@@ -531,6 +531,7 @@ extern "C" {
     int iKss;
     int ntotGM;
     int ntotGMs;
+    int ntotGMelas;
   } itrpar ;
 
   extern struct { 
@@ -544,7 +545,7 @@ extern "C" {
     double datelas[2][1];
     double surface_tension_coeff;
     int surface_tension_flag;
-	int datelas_volume_YM;
+    int datelas_volume_YM;
   } matdat ;
 
   extern struct {

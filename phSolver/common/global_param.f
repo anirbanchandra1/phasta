@@ -154,17 +154,18 @@ c----------------------------------------------------------------------
 c
 c.... common /meshquality/   : mesh quality and auto adaptation trigger
 c
-c vol_mesh_q_tol  : threshold for volume mesh quality
-c face_mesh_q_tol : threshold for mesh quality of triangle face
+c autoTrigger  : flag used to turn on/off auto mesh adaptation trigger
+c volMeshqTol  : threshold for volume mesh quality
+c faceMeshqTol : threshold for mesh quality of triangle face
 c                   in boundary layered mesh
 c
       module meshquality_m
         use iso_c_binding
-        use global_const_m
         implicit none
-        integer(c_int), target :: auto_trigger
-        real(c_double), target :: vol_mesh_q_tol, face_mesh_q_tol
-        common /meshquality/ vol_mesh_q_tol, face_mesh_q_tol
+        real(c_double), target :: volMeshqTol, faceMeshqTol
+        integer(c_int), target :: autoTrigger
+        common /meshquality/  volMeshqTol, faceMeshqTol,
+     &                        autoTrigger
       end module meshquality_m
 c
 c----------------------------------------------------------------------
@@ -225,7 +226,7 @@ c
         use iso_c_binding
         use global_const_m
         implicit none
-	      integer, target ::  nelblk, nelblb, nelblif
+        integer, target ::  nelblk, nelblb, nelblif
         integer :: lelCat, lcsyst, iorder, nenb,   
      &                  ndofl,  nsymdl, nenl,   nfacel,
      &                  nenl0,  nenl1,  lcsyst0, lcsyst1,

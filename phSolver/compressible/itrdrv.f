@@ -913,15 +913,17 @@ c.... -----------------> end error calculation  <----------------
 c
 c.... ----------------->   measure mesh quality   <----------------
 c
-            x1 = x(:,1)
-            x2 = x(:,2)
-            x3 = x(:,3)
-            call core_measure_mesh(x1, x2, x3, numnp, minvq, minfq)
-            if ( (minvq .lt. vol_mesh_q_tol) .or.
-     &           (minfq .lt. face_mesh_q_tol) ) then
-              write(*,*) "we need to trigger mesh adaptation!"
-              call error('itrdrv  ','trigger adapt ',0)
-            endif
+            if (autoTrigger .eq. 1) then
+              x1 = x(:,1)
+              x2 = x(:,2)
+              x3 = x(:,3)
+              call core_measure_mesh(x1, x2, x3, numnp, minvq, minfq)
+              if ( (minvq .lt. volMeshqTol) .or.
+     &             (minfq .lt. faceMeshqTol) ) then
+                write(*,*) "we need to trigger mesh adaptation!"
+                call error('itrdrv  ','trigger adapt ',0)
+              endif ! end check if less than tolerance
+            endif ! end auto_trigger option
 c
 c.... -----------------> end measure mesh quality <----------------
 c
