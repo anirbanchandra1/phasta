@@ -466,7 +466,21 @@ c
 c output:
 c  The time step, cpu-time and entropy-norm of the residual
 c     are printed in the file HISTOR.DAT.
-c  
+c
+c printout:
+c  lstep:      current time step
+c  cputme:     accumulated cputime
+c  totres:     RMS of the preconditioned residual
+c  jtotrs:     logarithmic difference between the current
+c              and initial preconditioned residual
+c  nrsmax:     the vertex index who has the max residual
+c              (on the master rank)
+c  jresmx:     logarithmic difference between the maximum
+c              and RMS of the preconditioned residual
+c  lGMRES:     number of outer loops used in linear solver
+c  iKs:        number of inner loops used in the last outer loop
+c  ntotGMelas: accumulated number of inner loops used for mesh elas
+c
 c----------------------------------------------------------------------
 c
         include "common.h"
@@ -503,6 +517,7 @@ c
           resmax=resmaxl
         endif
         nrsmax = maxloc(rtmp)
+c        write(*,*) '[',myrank,'] nrsmax: ',nrsmax
 c
 c.... approximate the number of entries
 c
@@ -522,9 +537,9 @@ c.... output the result
 c
         if (myrank .eq. master) then
           print 2000,        lstep+1, cputme, totres, jtotrs, nrsmax,
-     &                     jresmx, lGMRES,  iKs, ntotGM
+     &                     jresmx, lGMRES,  iKs, ntotGMelas
           write (ihist,2000) lstep+1, cputme, totres, jtotrs, nrsmax,
-     &                     jresmx, lGMRES,  iKs, ntotGM
+     &                     jresmx, lGMRES,  iKs, ntotGMelas
           call flush(ihist)
         endif
 

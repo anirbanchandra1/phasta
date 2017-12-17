@@ -170,7 +170,8 @@ c
      &                  intmax
 c /*         common /andres/ fwr1,ngaussf,idim,nlist */
 
-        common /itrpar/ eGMRES, lGMRES, lGMRESs, iKs, iKss,    ntotGM, ntotGMs
+        common /itrpar/ eGMRES, lGMRES, lGMRESs, iKs, iKss,    ntotGM,
+     &                  ntotGMs, ntotGMelas
 c
         common /point / mbeg,   mend,   mprec
 c

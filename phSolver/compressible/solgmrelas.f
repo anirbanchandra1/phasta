@@ -247,7 +247,7 @@ c
 c     
 c.... check for convergence
 c     
-            ntotGM = ntotGM + 1
+            ntotGMelas = ntotGMelas + 1
             echeck=abs(eBrg(iKs+1))
             if (echeck .le. epsnrm.and. iKs .ge. minIters) exit
 c     
