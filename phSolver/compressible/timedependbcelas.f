@@ -4,6 +4,9 @@ c-----------------------------------------------------------------
 c
 c-----------------------------------------------------------------
 c
+      use m2gfields ! read m2g fields
+      use core_snap
+c
       include "common.h"
       include "mpif.h"
 c
@@ -20,6 +23,7 @@ c
 c.... dynamic origin, x translation, rotation frequence
       real*8    dyn_org,   xtsl,  rotf
       real*8    dyn_lnt,   shrk,  shrkfactor
+      integer   answer
 c
       if (elasFDC .gt. 0) then
         write(*,*) "use Force-driven case:", elasFDC
@@ -445,6 +449,32 @@ c
       endif ! end if case 8
 c
 c.... end test case 8
+c
+c.... test case 9
+c.... Update mesh2geom to identify vertex
+c.... twist one end of a cylinder
+c
+      if ( casenumber .eq. 9 ) then
+        do i = 1,numnp
+c
+          call core_is_in_closure(m2gClsfcn(i,1), m2gClsfcn(i,2),
+     &                            3,              108,
+     &                            answer)
+c
+          if (answer .ne. 0) then
+c            disp(i,1) = 0.0015
+c            disp(i,2) = 0.0
+c            disp(i,3) = 0.0
+            disp(i,1) = 0.0015
+            disp(i,2) = x(i,2) * (cos(pi/100) - 1.0)
+     &                - x(i,3) *  sin(pi/100)
+            disp(i,3) = x(i,3) * (cos(pi/100) - 1.0)
+     &                + x(i,2) *  sin(pi/100)
+c
+            BC(i,:)   = disp(i,:)
+          endif ! end if inside box
+        enddo ! end loop numnp
+      endif  ! end case 9
 c
       return
       end
