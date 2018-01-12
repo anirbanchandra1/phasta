@@ -99,6 +99,9 @@ c
      &         disp(numnp, nsd),    elasDy(nshg,nelas),
      &         umeshold(numnp, nsd), xold(numnp,nsd)
 c
+c.... hardcoding
+       real*8  Y_modulus(numel)
+c
 c.... For surface mesh snapping
 c
        dimension iBC_snap(nshg),  BC_snap(nshg,ndofBC)
@@ -108,6 +111,8 @@ c.... For mesh quality measure
 c
        real*8  x1(numnp), x2(numnp), x3(numnp)
        real*8  minvq, minfq
+c.... hardcoding for the sphere case. constant interface velocity
+       real*8  radius
 c
        logical alive
 
@@ -645,6 +650,13 @@ c.... we should have correct umesh at this point
 c
                     do inode = 1, nshg
                       if ( ifFlag(inode) .eq. 1 ) then
+c.... hardcoding for the sphere case. constant interface velocity
+                        radius = sqrt( x(inode,1)*x(inode,1) +
+     &                                 x(inode,2)*x(inode,2) +
+     &                                 x(inode,3)*x(inode,3) )
+                        umesh(inode,1) = -x(inode,1) / radius
+                        umesh(inode,2) = -x(inode,2) / radius
+                        umesh(inode,3) = -x(inode,3) / radius
                         BC(inode,ndof+2:ndof+4) = umesh(inode,:) * Delt(1)
                       endif
                     enddo
@@ -674,7 +686,7 @@ c
 c.... call to SolGMRElas ... For mesh-elastic solve
 c
                      call SolGMRElas (x,        disp,    iBC,    BC,
-     &                                colm,     rowp,    meshq,
+     &                                colm,     rowp,    meshq,  Y_modulus,
      &                                hBrg,     eBrg,    yBrg,
      &                                Rcos,     Rsin,    iper,   ilwork,
      &                                shp,      shgl,    shpb,   shglb,
@@ -701,7 +713,7 @@ c... update disp based on new iBC and BC array
      &                                iper,   ilwork)
 c... solve the system based on new disp, iBC and BC array
                        call SolGMRElas (x,        disp,    iBC_snap, BC_snap,
-     &                                  colm,     rowp,    meshq,
+     &                                  colm,     rowp,    meshq,    Y_modulus,
      &                                  hBrg,     eBrg,    yBrg,
      &                                  Rcos,     Rsin,    iper,   ilwork,
      &                                  shp,      shgl,    shpb,   shglb,
@@ -995,6 +1007,12 @@ c     &                xdot,  'd'//char(0), numnp, nsd, lstep)
      &                myrank,'a'//char(0),'meshQ'//char(0), 5, 
      &                meshq, 'd'//char(0), numel, 1,   lstep)
                endif
+c
+c.... hardcoding, print out Young's modulus
+c
+                  call write_field(
+     &              myrank,'a'//char(0),'Y_modulus'//char(0), 9,
+     &              Y_modulus, 'd'//char(0), numel, 1, lstep)
 c
                   call write_field(
      &              myrank,'a'//char(0),'material_type'//char(0),13,

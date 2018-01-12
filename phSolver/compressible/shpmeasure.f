@@ -1,3 +1,50 @@
+      subroutine volMeasure (x, ien, shp, shgl, tempVolume)
+c---------------------------------------------------------
+c This subroutine calculate the element volume.
+c
+c---------------------------------------------------------
+c
+        include "common.h"
+c
+        dimension x(numnp, nsd),        ien(npro, nshl),
+     &            xl(npro, nenl, nsd)
+c
+        dimension shp(nshl, ngauss),      sgn(npro,nshl),
+     &            shgl(nsd,nshl,ngauss),  shg(npro,nshl,nsd),
+     &            shdrv(npro,nsd,nshl),   shape(npro,nshl),
+     &            tempVolume(npro)
+c
+        real*8, dimension(:),     pointer :: WdetJ
+        real*8, dimension(:,:,:), pointer :: dxidx
+c
+c---------------------------------------------------------
+c
+       call localx(x,      xl,     ien,    nsd,    'gather  ')
+c
+c... use Jacobian determinant to calculate volume
+c
+       allocate (dxidx(npro,nsd,nsd))
+       allocate (WdetJ(npro))
+       tempVolume = zero
+       if (ipord .gt. 1) then
+         call getsgn(ien,sgn)
+       endif
+       do intp = 1, ngauss
+         if (Qwt(lcsyst,intp) .eq. zero) cycle    ! precaution
+         call getshp(shp, shgl, sgn, shape, shdrv)
+         call e3metric(xl, shdrv, dxidx, shg, WdetJ)
+         tempVolume = tempVolume + WdetJ
+       enddo
+       deallocate ( dxidx )
+       deallocate ( WdetJ )
+c
+c.... return
+c
+       return
+       end
+c---------------------------------------------------------
+c
+c---------------------------------------------------------
       subroutine shpMeasure (x,     ien,        shp, shgl,
      &                       meshq, tempVolume, errorcount)
 c---------------------------------------------------------
