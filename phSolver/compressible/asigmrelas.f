@@ -1,6 +1,6 @@
         subroutine AsIGMRElas (x,     disp,    shp,       shgl, 
      &                         ien,   elasres, elasBDiag, Estiff,
-     &                         meshq, meshV,   Y_modulus )
+     &                         meshq, meshV )
 c
 c----------------------------------------------------------------------
 c
@@ -18,14 +18,12 @@ c
      &            elasBDiag(nshg,nelas,nelas)
 c
         dimension xl(npro,nenl,nsd),        displ(npro,nenl,nsd),
-     &            Eforce(npro,nshl,nelas),
+     &            Eforce(npro,nshl,nelas),      
      &            elasBDiagl(npro,nshl,nelas,nelas),
      &            Estiff(npro,ndofelas,ndofelas)
-c
+c   
         real*8    meshq(npro),              meshV(npro)
-c.... hardcoding
-        real*8    Y_modulus(npro)
-c
+c       
 c.... create the matrix of mode signs for the hierarchic basis 
 c     function
 c
@@ -44,8 +42,8 @@ c
         elasBDiagl = zero
         elasCo     = zero
 c
-        call e3Elas  (xl,     displ,  meshq,     meshV,
-     &                shp,    shgl,   sgn,       Y_modulus,
+        call e3Elas  (xl,     displ,  meshq,     meshV,  
+     &                shp,    shgl,   sgn,
      &                Estiff, Eforce, elasBDiagl ) 
 c
 c.... assemble the residual and modified residual

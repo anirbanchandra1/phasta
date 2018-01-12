@@ -2,7 +2,7 @@
      &                         iBC,     BC,      shpb,    shglb,
      &                         shpif,   elasres, elasBDiag,
      &                         iper,    ilwork,  elaslhsK,
-     &                         col,     row,     meshq,   Y_modulus)
+     &                         col,     row,     meshq)
 c
 c----------------------------------------------------------------------
 c
@@ -23,12 +23,6 @@ c
         real*8  elaslhsK(nelas*nelas,nnz_tot),
      &          meshq(numel),
      &          meshV(numel)
-c.... hardcoding
-        real*8  Y_modulus(numel)
-        real*8  tmp_minMeshV,   tmp_maxMeshV,
-     &          minMeshV,       maxMeshV,
-     &          minY_modulus,   maxY_modulus
-        integer ini_flag
 c
         real*8  gcnormal(nshg, nsd)
 c
@@ -285,89 +279,11 @@ c.... end re-position layered mesh
 c
 c.... -------------------->   interior elements   <--------------------
 c
-c.... loop over element blocks to compute min and max of tet meshv
-c
-c       if (Y_modulus option is on)
-c
-c.... loop over the element-blocks
-c
-        init_flag = 0
-        do iblk = 1, nelblk
-c
-c.... set up the parameters
-c
-          iblkts = iblk            ! used in timeseries
-          iel    = lcblk(1,iblk)
-          lelCat = lcblk(2,iblk)
-          lcsyst = lcblk(3,iblk)
-          iorder = lcblk(4,iblk)
-          nenl   = lcblk(5,iblk)   ! no. of vertices per element
-          nshl   = lcblk(10,iblk)
-          mattyp = lcblk(7,iblk)
-          ndofl  = lcblk(8,iblk)
-          nsymdl = lcblk(9,iblk)
-          npro   = lcblk(1,iblk+1) - iel
-          inum   = iel + npro - 1
-          ngauss = nint(lcsyst)
-c
-c.... compute and assemble the residual and tangent matrix
-c
-          allocate (tmpshp(nshl,MAXQPT))
-          allocate (tmpshgl(nsd,nshl,MAXQPT))
-c
-          tmpshp(1:nshl,:) = shp(lcsyst,1:nshl,:)
-          tmpshgl(:,1:nshl,:) = shgl(lcsyst,:,1:nshl,:)
-c
-c.... Shape measure. Calculate the shape quality
-c
-c          call volMeasure(x, mien(iblk)%p, tmpshp, tmpshgl,
-c     &                    meshV(iel:iel+npro-1))
-c
-          call shpMeasure(x, mien(iblk)%p, tmpshp, tmpshgl,
-     &                    meshq(iel:iel+npro-1),
-     &                    meshV(iel:iel+npro-1), errorcount )
-c
-          deallocate ( tmpshp )
-          deallocate ( tmpshgl )
-c
-          if ( lcsyst .eq. itp_tet ) then
-            tmp_minMeshV = minval(meshV(iel:iel+npro-1))
-            tmp_maxMeshV = maxval(meshV(iel:iel+npro-1))
-            if ( ini_flag .eq. 0 ) then
-              minMeshV = tmp_minMeshV
-              maxMeshV = tmp_maxMeshV
-              ini_flag = 1
-            endif
-c
-            if (tmp_minMeshV .lt. minMeshV) then
-              minMeshV = tmp_minMeshV
-            endif
-c
-            if (tmp_maxMeshV .gt. maxMeshV) then
-              maxMeshV = tmp_maxMeshV
-            endif
-c
-          endif ! end if tet element
-c
-c.... end of interior element loop
-c
-       enddo
-c
-c     commu minMeshV and maxMeshV
-c
-       minY_modulus = 1.0 / maxMeshV
-       maxY_modulus = 1.0 / minMeshV
-       write(*,*) "min modulus = ", minY_modulus
-       write(*,*) "max modulus = ", maxY_modulus
-c
-c.... end of computing min and max of meshv
-c
-c
-c
 c.... loop over element blocks to compute element residuals
 c
 c
 c.... initialize the arrays
+c
         elasres = zero
         errorcount = zero
         if (lhs. eq. 1)    elaslhsK  = zero
@@ -410,16 +326,12 @@ c
      &                    meshq(iel:iel+npro-1),
      &                    meshV(iel:iel+npro-1), errorcount )
 c
-          Y_modulus(iel:iel+npro-1) = 0.2+0.8*(1.0/meshV(iel:iel+npro-1)
-     &               -minY_modulus) / (maxY_modulus-minY_modulus)
-c
           call AsIGMRElas (x,             disp,
      &                     tmpshp,        tmpshgl,
      &                     mien(iblk)%p,  elasres,
      &                     elasBDiag,     Estiff,
      &                     meshq(iel:iel+npro-1),
-     &                     meshV(iel:iel+npro-1),
-     &                     Y_modulus(iel:iel+npro-1) )
+     &                     meshV(iel:iel+npro-1)   )
 c
 c.... satisfy the BCs on the implicit LHS
 c

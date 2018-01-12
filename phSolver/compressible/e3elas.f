@@ -1,5 +1,5 @@
         subroutine e3Elas (xl,        displ,   meshq,    meshV,
-     &                     shp,       shgl,    sgn,      Y_modulus,
+     &                     shp,       shgl,    sgn,
      &                     Estiff,    Eforce,  elasBDiagl )
 c
 c----------------------------------------------------------------------
@@ -37,8 +37,6 @@ c
         real*8, dimension(:),     pointer :: WdetJelas
         real*8, dimension(:,:,:), pointer :: Kelas, dxidxelas
         real*8  lamda(npro),  mu(npro), meshq(npro), meshV(npro)
-c.... hardcoding
-        real*8  Y_modulus(npro)
         real*8  youngMod(npro), poisnRat(npro)
 c
 c
@@ -54,8 +52,7 @@ c
 c.... modify Young's Modulus and Poisson Ratio
 c
         if(datelas_volume_YM .eq. 1) then
-c          youngMod(:) = datelas(1,1) / meshV(:)
-          youngMod(:) = Y_modulus(:)
+          youngMod(:) = datelas(1,1) / meshV(:)
         else
           youngMod(:) = datelas(1,1)
         endif

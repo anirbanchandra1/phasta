@@ -1,5 +1,5 @@
       subroutine SolGMRElas (x,       disp,    iBC,     BC,
-     &                       col,     row,     meshq,   Y_modulus,
+     &                       col,     row,     meshq,
      &                       HBrg,    eBrg,    yBrg,
      &                       Rcos,    Rsin,    iper,    ilwork,
      &                       shp,     shgl,    shpb,    shglb,
@@ -61,7 +61,7 @@ c
      &                 iBC,     BC,      shpb,    shglb,
      &                 shpif,   elasres, elasBDiag,
      &                 iper,    ilwork,  elaslhsK,
-     &                 col,     row,     meshq,   Y_modulus)
+     &                 col,     row,     meshq)
 c
 c.... **********************>>    EBE - GMRES    <<********************
 c
