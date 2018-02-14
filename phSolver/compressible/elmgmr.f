@@ -968,6 +968,10 @@ c
 c
           call e3if_geom_malloc
           call e3if_malloc
+c... hacking. allocation of w_normal_l0 and w_normal_l1
+          allocate(w_normal_l0(npro,nshl0,nsd))
+          allocate(w_normal_l1(npro,nshl1,nsd))
+c... end of hacking          
 c
 c      do i=1,nshg
 c        print*, i,res(i,:)
@@ -1002,6 +1006,9 @@ c
           deallocate (egmassif01)
           deallocate (egmassif10)
           deallocate (egmassif11)
+c... hacking
+          deallocate(w_normal_l0, w_normal_l1)
+c... end of hacking          
 c
         enddo if_blocks
 c
@@ -1016,7 +1023,6 @@ c
 c... hacking, deallocation of the arrays used
         deallocate(w_normal_global)
         deallocate(length_temp)
-        deallocate(w_normal_l0, w_normal_l1)
 c... end of hacking        
 c
 c before the commu we need to rotate the residual vector for axisymmetric
