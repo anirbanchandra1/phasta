@@ -309,6 +309,8 @@ c
         use e3_solid_m
         use probe_m
         use ifbc_def_m
+        use weighted_normal_m !hacking for weighted normal
+        use interfaceflag ! hacking for weighted normal        
 c
         include "common.h"
         include "mpif.h"
@@ -710,6 +712,13 @@ c
 c
         if_normal = zero
 c
+c... hacking, allocation and initialization of the weighted normal
+           allocate(w_normal_global(nshg,nsd))
+           allocate(length_temp(nshg))
+c
+           w_normal_global = zero
+           length_temp = zero
+c... end of hacking           
         if_blocks1: do iblk = 1, nelblif
 c
           iel     = lcblkif(1, iblk)
@@ -749,9 +758,88 @@ c
      &    ienif0, ienif1
      & )
 c
+c... hacking
+c... preparation of getting weighted normal starts, major part of codes are copied
+c    from the way to calculate gcnorml in elmgmrelas
+c
+c... allocation and initialization of the factor
+           allocate(calc_factor_temp(npro))
+c
+           calc_factor_temp(:) = 1 
+c... copy from elmgmrelas, defining some global parameters:
+c.... hack; DG interface doesn't support 2nd and higher order
+c
+          if(ipord .eq. 1) then
+            nshlb   = nenbl;
+          else if(ipord .gt. 1) then
+            write(*,*) "need to implement for higher order"
+            call error('elmgmrelas  ','higher order', ipord)
+          endif
+c
+c.... the 0 side
+c
+          lcsyst = lcsyst0
+          nenl = nenl0
+          nshl = nshl0
+c
+          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
+          ngaussb = nintb(lcsyst)
+c... calculate and assemble non-unit normal for side 0
+          call calc_normal(x, shpif(lcsyst0,1:nshl0,:), calc_factor_temp,
+     &                     mienif0(iblk)%p, miBCB(iblk)%p, w_normal_global)
+c.... end of the 0 side
+c
+c.... the 1 side
+c
+          lcsyst = lcsyst1
+          nenl = nenl1
+          nshl = nshl1
+c
+          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
+          ngaussb = nintb(lcsyst)
+c
+c.... compute and assemble non-unit normal for side 1
+c
+          call calc_normal(x, shpif(lcsyst1,1:nshl1,:), calc_factor_temp,
+     &                     mienif1(iblk)%p, miBCB(iblk)%p, w_normal_global)
+c
+c.... end of the 1 side              
+c... ends of getting weighted normal
+c... end of hacking 
+c
           call e3if_geom_mfree
 c
+c... hacking, deallocation
+          deallocate(calc_factor_temp)
+c... end of hacking 
+c
         enddo if_blocks1
+c... hacking
+c...communication of the weighted normal
+        if (numpe > 1) then
+          call commu (w_normal_global, ilwork, nsd  , 'in ')
+          call MPI_BARRIER (MPI_COMM_WORLD,ierr)
+          call commu (w_normal_global, ilwork, nsd  , 'out')
+          call MPI_BARRIER (MPI_COMM_WORLD,ierr)
+        endif
+c...normalize the weighted normal
+        do inode = 1, nshg
+          if ( ifFlag(inode) .eq. 1 ) then
+            length_temp(inode) = sqrt( w_normal_global(inode,1)
+     &                         * w_normal_global(inode,1)
+     &                         + w_normal_global(inode,2)
+     &                         * w_normal_global(inode,2)
+     &                         + w_normal_global(inode,3)
+     &                         * w_normal_global(inode,3) )
+            do isd = 1, nsd
+              w_normal_global(inode,isd) = w_normal_global(inode,isd) 
+     &                                   / length_temp(inode)
+            enddo
+          endif
+        enddo
+c... changing from inward normal to outward normal
+        w_normal_global = - w_normal_global                      
+c... endo of hacking        
 c
         if (numpe > 1) then
           call commu (if_normal(:,1:3), ilwork, nsd, 'in ')
@@ -782,7 +870,7 @@ c
 c        call calc_kappa_error(x,lcblkif(1,:),nelblif,nsd,nshg)
 c
         sum_vi_area = zero
-        ifbc = zero
+        ifbc = zero    
 c
         if_blocks: do iblk = 1, nelblif
 c
@@ -925,6 +1013,11 @@ c
           deallocate (if_kappa)
           nullify(if_kappa)
         endif
+c... hacking, deallocation of the arrays used
+        deallocate(w_normal_global)
+        deallocate(length_temp)
+        deallocate(w_normal_l0, w_normal_l1)
+c... end of hacking        
 c
 c before the commu we need to rotate the residual vector for axisymmetric
 c boundary conditions (so that off processor periodicity is a dof add instead
