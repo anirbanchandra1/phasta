@@ -19,6 +19,8 @@ c----------------------------------------
         use e3if_vi_m
         use if_global_m
         use e3if_dc_m ! DC operator for interface
+        use hack_weighted_normal_m ! hacking
+        use weighted_normal_m ! hacking
 c
         implicit none
 c
@@ -96,6 +98,12 @@ c
             call calc_normal_vectors(nv0,area,WdetJif0,xl0,qwtif0,itpid,lcsyst0,intp0,npro)
             call calc_normal_vectors(nv1,area,WdetJif1,xl1,qwtif1,itpid,lcsyst1,intp1,npro)
 c
+c... Hacking to use the weighted normal
+            call hack_weighted_normal(nv0, w_normal_l0, shp0, nshl0)
+c                        
+            call hack_weighted_normal(nv1, w_normal_l1, shp1, nshl1)
+c
+
 c... calculate the integration varibles
 c
             call e3if_var
