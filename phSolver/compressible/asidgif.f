@@ -17,6 +17,7 @@ c----------------------------------------
           use e3if_geom_m
           use if_global_m
           use conpar_m
+          use weighted_normal_m, only:w_normal_l0, w_normal_l1, w_normal_global !hacking
 c
           implicit none
 c
@@ -61,6 +62,10 @@ c
           call localx(if_kappa, if_kappa_l0,  ienif0, nsd, 'gather  ', nshg, nenl0, npro)
           call localx(if_kappa, if_kappa_l1,  ienif1, nsd, 'gather  ', nshg, nenl1, npro)
         endif
+c... hacking, localize the weighted normal
+        call localx(w_normal_global, w_normal_l0,  ienif0, nsd, 'gather  ', nshg, nenl0, npro)
+        call localx(w_normal_global, w_normal_l1,  ienif1, nsd, 'gather  ', nshg, nenl1, npro)
+c... end of hacking        
 c
         call e3if(shpif0,shpif1,shgif0,shgif1,qwtif0,qwtif1)
 c
