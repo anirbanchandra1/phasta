@@ -914,15 +914,26 @@ c.... -----------------> end error calculation  <----------------
 c
 c.... ----------------->   measure mesh quality   <----------------
 c
+            triggerNow = 0
             if (autoTrigger .eq. 1) then
               x1 = x(:,1)
               x2 = x(:,2)
               x3 = x(:,3)
               call core_measure_mesh(x1, x2, x3, numnp, minvq, minfq)
+              ! allreduce to minimum
+              call MPI_ALLREDUCE(MPI_IN_Place, minvq, 1,
+     &          MPI_REAL8, MPI_MIN, MPI_COMM_WORLD, ierr )
+              call MPI_ALLREDUCE(MPI_IN_Place, minfq, 1,
+     &          MPI_REAL8, MPI_MIN, MPI_COMM_WORLD, ierr )
+              if(myrank .eq. master) then
+                write(*,*) "minvq = ", minvq, "minfq = ", minfq
+              endif
               if ( (minvq .lt. volMeshqTol) .or.
      &             (minfq .lt. faceMeshqTol) ) then
-                write(*,*) "we need to trigger mesh adaptation!"
-                call error('itrdrv  ','trigger adapt ',0)
+                if(myrank .eq. master) then
+                  write(*,*) "we need to trigger mesh adaptation!"
+                endif
+                triggerNow = 1
               endif ! end check if less than tolerance
             endif ! end auto_trigger option
 c
@@ -932,6 +943,7 @@ c
             !write it less frequently
             if( (irs >= 1) .and. (
      &          mod(lstep, ntout) == 0 .or. !Checkpoint
+     &          triggerNow == 1 .or.        !Trigger mesh adaptation
      &          istep == nstp) )then        !End of simulation
 
                if( (mod(lstep, ntoutv) .eq. 0) .and.
@@ -1037,7 +1049,9 @@ c              call write_field2(myrank,'a'//char(0),'ybar'//char(0),
 c     &                          4,ybar,'d'//char(0),nshg,ndof+8,
 c     &                         lstep,istep)
             endif  ! end write fields to restart files
-
+c
+            if (triggerNow .eq. 1) goto 2001
+c
  2000    continue  !end of NSTEP loop
  2001    continue
 
