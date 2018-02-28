@@ -782,7 +782,7 @@ c
           nenl = nenl0
           nshl = nshl0
 c
-          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
+c          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
           ngaussb = nintb(lcsyst)
 c... calculate and assemble non-unit normal for side 0
           call calc_normal(x, shpif(lcsyst0,1:nshl0,:), calc_factor_temp,
@@ -795,7 +795,7 @@ c
           nenl = nenl1
           nshl = nshl1
 c
-          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
+c          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
           ngaussb = nintb(lcsyst)
 c
 c.... compute and assemble non-unit normal for side 1
