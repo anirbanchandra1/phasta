@@ -728,6 +728,7 @@ c
           ipord   = lcblkif(5, iblk)    ! polynomial order
           nenl0   = lcblkif(6, iblk)    ! number of vertices per element0
           nenl1   = lcblkif(7, iblk)    ! number of vertices per element1
+          nenbl_if= lcblkif(8, iblk)    ! number of vertices on the interface
           mater0  = lcblkif(9, iblk)
           mater1  = lcblkif(10,iblk)
           nshl0   = lcblkif(iblkif_nshl0,iblk)
@@ -770,7 +771,7 @@ c... copy from elmgmrelas, defining some global parameters:
 c.... hack; DG interface doesn't support 2nd and higher order
 c
           if(ipord .eq. 1) then
-            nshlb   = nenbl;
+            nshlb   = nenbl_if ! only work with linear element
           else if(ipord .gt. 1) then
             write(*,*) "need to implement for higher order"
             call error('elmgmrelas  ','higher order', ipord)
@@ -778,12 +779,12 @@ c
 c
 c.... the 0 side
 c
-          lcsyst = lcsyst0
-          nenl = nenl0
-          nshl = nshl0
+          lcsyst = lcsyst0 ! passing to the global variable, could be improved
+          nenl = nenl0 ! same as above
+          nshl = nshl0 ! same as above
 c
-c          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
-          ngaussb = nintb(lcsyst)
+          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl_if ! may not be necessary
+          ngaussb = ngaussif ! passing to the global variable, could be improved
 c... calculate and assemble non-unit normal for side 0
           call calc_normal(x, shpif(lcsyst0,1:nshl0,:), calc_factor_temp,
      &                     mienif0(iblk)%p, miBCB(iblk)%p, w_normal_global)
@@ -791,12 +792,12 @@ c.... end of the 0 side
 c
 c.... the 1 side
 c
-          lcsyst = lcsyst1
-          nenl = nenl1
-          nshl = nshl1
+          lcsyst = lcsyst1 ! passing to the global variable, could be improved
+          nenl = nenl1 ! same as above
+          nshl = nshl1 ! same as above
 c
-c          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl ! may not be necessary
-          ngaussb = nintb(lcsyst)
+          if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl_if ! may not be necessary
+          ngaussb = ngaussif ! passing to the global variable, could be improved
 c
 c.... compute and assemble non-unit normal for side 1
 c
