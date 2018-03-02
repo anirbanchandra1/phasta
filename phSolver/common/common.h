@@ -14,8 +14,9 @@ c
       use dgifinp_m
       use global_const_m
       use conpar_m
-	  use laymesh_m
-	  use snapmesh_m
+      use laymesh_m
+      use snapmesh_m
+      use meshquality_m
       use timdat_m
       use elmpar_m
       use blkdat_m
@@ -169,7 +170,8 @@ c
      &                  intmax
 c /*         common /andres/ fwr1,ngaussf,idim,nlist */
 
-        common /itrpar/ eGMRES, lGMRES, lGMRESs, iKs, iKss,    ntotGM, ntotGMs
+        common /itrpar/ eGMRES, lGMRES, lGMRESs, iKs, iKss,    ntotGM,
+     &                  ntotGMs, ntotGMelas
 c
         common /point / mbeg,   mend,   mprec
 c

@@ -21,6 +21,7 @@
 #define aerfrc FortranCInterface_GLOBAL_(aerfrc,AERFRC)
 #define laymesh FortranCInterface_GLOBAL_(laymesh,LAYMESH)
 #define snapmesh FortranCInterface_GLOBAL_(snapmesh,SNAPMESH)
+#define meshquality FortranCInterface_GLOBAL_(meshquality,MESHQUALITY)
 #define astore FortranCInterface_GLOBAL_(astore,ASTORE)
 #define conpar FortranCInterface_GLOBAL_(conpar,CONPAR)
 #define ctrlvari FortranCInterface_GLOBAL_(ctrlvari,CTRLVARI)
@@ -263,6 +264,12 @@ extern "C" {
     int timeDepComp1Flag;
     int timeDepComp1ID;
   } snapmesh ;
+
+  extern struct {
+    double volMeshqTol;
+    double faceMeshqTol;
+    int autoTrigger;
+  } meshquality ;
 
   extern struct { 
     double a[100000];
@@ -524,6 +531,7 @@ extern "C" {
     int iKss;
     int ntotGM;
     int ntotGMs;
+    int ntotGMelas;
   } itrpar ;
 
   extern struct { 
@@ -537,7 +545,7 @@ extern "C" {
     double datelas[2][1];
     double surface_tension_coeff;
     int surface_tension_flag;
-	int datelas_volume_YM;
+    int datelas_volume_YM;
   } matdat ;
 
   extern struct {

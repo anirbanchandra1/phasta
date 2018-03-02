@@ -14,7 +14,7 @@ void core_is_in_closure (int e_dim, int e_tag, int t_dim, int t_tag, int answer)
 }
 
 void core_measure_mesh (double x1[], double x2[], double x3[], int numnp,
-                        double minq) {
+                        double minvq, double minfq) {
   printf("This is a dummy function. Please compile with core at phastaChef level.\n");
 }
 

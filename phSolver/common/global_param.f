@@ -152,6 +152,24 @@ c
 c
 c----------------------------------------------------------------------
 c
+c.... common /meshquality/   : mesh quality and auto adaptation trigger
+c
+c autoTrigger  : flag used to turn on/off auto mesh adaptation trigger
+c volMeshqTol  : threshold for volume mesh quality
+c faceMeshqTol : threshold for mesh quality of triangle face
+c                   in boundary layered mesh
+c
+      module meshquality_m
+        use iso_c_binding
+        implicit none
+        real(c_double), target :: volMeshqTol, faceMeshqTol
+        integer(c_int), target :: autoTrigger
+        common /meshquality/  volMeshqTol, faceMeshqTol,
+     &                        autoTrigger
+      end module meshquality_m
+c
+c----------------------------------------------------------------------
+c
 c.... common /timdat/   : time data
 c
 c time          : current run time
@@ -208,7 +226,7 @@ c
         use iso_c_binding
         use global_const_m
         implicit none
-	      integer, target ::  nelblk, nelblb, nelblif
+        integer, target ::  nelblk, nelblb, nelblif
         integer :: lelCat, lcsyst, iorder, nenb,   
      &                  ndofl,  nsymdl, nenl,   nfacel,
      &                  nenl0,  nenl1,  lcsyst0, lcsyst1,

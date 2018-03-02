@@ -42,6 +42,7 @@ c
       use probe_m
       use ifbc_m
       use core_mesh_quality ! to call core_measure_mesh
+      use interfaceflag
 c
         include "common.h"
         include "mpif.h"
@@ -107,7 +108,7 @@ c
 c.... For mesh quality measure
 c
        real*8  x1(numnp), x2(numnp), x3(numnp)
-       real*8  minq
+       real*8  minvq, minfq
 c
        logical alive
 
@@ -913,10 +914,17 @@ c.... -----------------> end error calculation  <----------------
 c
 c.... ----------------->   measure mesh quality   <----------------
 c
-c            x1 = x(:,1)
-c            x2 = x(:,2)
-c            x3 = x(:,3)
-c            call core_measure_mesh(x1, x2, x3, numnp, minq)
+            if (autoTrigger .eq. 1) then
+              x1 = x(:,1)
+              x2 = x(:,2)
+              x3 = x(:,3)
+              call core_measure_mesh(x1, x2, x3, numnp, minvq, minfq)
+              if ( (minvq .lt. volMeshqTol) .or.
+     &             (minfq .lt. faceMeshqTol) ) then
+                write(*,*) "we need to trigger mesh adaptation!"
+                call error('itrdrv  ','trigger adapt ',0)
+              endif ! end check if less than tolerance
+            endif ! end auto_trigger option
 c
 c.... -----------------> end measure mesh quality <----------------
 c
