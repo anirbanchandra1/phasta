@@ -30,6 +30,7 @@ c... Clausius-Clapeyron:
      &,                            mw_mix      ! mixture molecular weight
      &,                            vap_rate
      &,                            un0,un1     ! velocity in normal direction
+     &,                            rho_sat0,rho0,constt,vi_mag,Psat0
 c
 #define debug 0
         select case (vi_ramping)
@@ -52,7 +53,13 @@ c
         case (no_vi)
           vi = zero
         case (const_vi)
-          vi(:,1) = c1 * (vi_mag * nv0(:,1) + u1(:,1))
+	!--- HARDCODED VALUES-----
+        Psat0 = 133.322*(10**(8.07131 - 1.73063E+03/(2.33426E+02+T0)))  
+	rho_sat0 = Psat0 / (Ru/18.0*1.d3*T0) 
+	rho0 = pres0 / (Ru/18.0*1.d3*T0)
+         constt=(2*(8.314/2/3.14/0.018)**0.5)*0.018/1000
+	  vi_mag= constt*(rho_sat0-rho0)*(T0**0.5)
+	  vi(:,1) = c1 * (vi_mag * nv0(:,1) + u1(:,1))
           vi(:,2) = c1 * (vi_mag * nv0(:,2) + u1(:,2))
           vi(:,3) = c1 * (vi_mag * nv0(:,3) + u1(:,3))
 c          vi(:,1) = vi_mag * nv0(:,1)
