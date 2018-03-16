@@ -184,8 +184,9 @@ c lstep         : current time step
 c ifunc         : func. eval. counter (=niter*(lstep-lstep0) + iter)
 c itseq         : sequence number
 c istep         : step number (reseted at the beginning of the run)
-c iter          : iteration number
-c nitr          : number of multi-corrector iterations for this sequence
+c iter          : current iteration number
+c nitr          : number of multi-corrector iterations of flow solve
+c                 for the current stagger
 c
       module timdat_m
         use iso_c_binding

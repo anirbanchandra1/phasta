@@ -281,7 +281,6 @@ c
 c.... set up the current parameters
 c
         nstp   = nstep(itseq)
-        nitr   = niter(itseq)
         LCtime = loctim(itseq)
 c
         call itrSetup ( y,  acold)
@@ -292,7 +291,8 @@ c
         do i=1,seqsize
            if(stepseq(i).eq.0) niter(itseq)=niter(itseq)+1
         enddo
-        nitr = niter(itseq)
+c.... nitr is set to be the total number of flow solve in a sequence
+c        nitr = niter(itseq)
 c
 c.... determine how many scalar equations we are going to need to solve
 c
@@ -466,6 +466,14 @@ c
 9876   continue
 c
             do istepc=iseqStart,seqsize
+c
+c.... nitr is set to be the accumulated number of flow solves in the current stagger
+              nitr = 0
+              do i=1,seqsize
+                if((stepseq(i).gt.1).and.(i.ge.istepc)) exit
+                if(stepseq(i).eq.0) nitr = nitr + 1
+              enddo
+c
                icode=stepseq(istepc)
                if(mod(icode,10).eq.0) then ! this is a solve
                   isolve=icode/10
