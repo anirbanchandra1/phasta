@@ -55,9 +55,13 @@ c
      &            BC(nshg,ndofBC),         ilwork(nlwork),
      &            iper(nshg),              uold(nshg,nsd)
 c
-        dimension res(nshg,nflow),         
+        dimension res(nshg,nflow),
      &            rest(nshg),              solinc(nshg,ndof)
-c     
+c
+c... debug {
+        dimension resNodeSum(nshg)
+c... debug }
+c
         dimension shp(MAXTOP,maxsh,MAXQPT),  
      &            shgl(MAXTOP,nsd,maxsh,MAXQPT), 
      &            shpb(MAXTOP,maxsh,MAXQPT),
@@ -985,6 +989,17 @@ c     &                  xdot,  'd'//char(0), numnp, nsd, lstep)
                    call write_field(
      &                  myrank,'a'//char(0),'meshQ'//char(0), 5, 
      &                  meshq, 'd'//char(0), numel, 1,   lstep)
+c
+c... debug {
+                   resNodeSum = 0.0
+                   do i = 1,nflow
+                     resNodeSum = resNodeSum + res(:,i)*res(:,i)
+                   enddo
+                   call write_field(
+     &                  myrank,'a'//char(0),'local_res'//char(0), 9,
+     &                  resNodeSum,  'd'//char(0), numnp, 1, lstep)
+c... debug }
+c
                  endif
 c
       if (solid_p%is_active) call write_restart_solid
@@ -1015,6 +1030,17 @@ c     &                xdot,  'd'//char(0), numnp, nsd, lstep)
                  call write_field(
      &                myrank,'a'//char(0),'meshQ'//char(0), 5, 
      &                meshq, 'd'//char(0), numel, 1,   lstep)
+c
+c... debug {
+                 resNodeSum = 0.0
+                 do i = 1,nflow
+                   resNodeSum = resNodeSum + res(:,i)*res(:,i)
+                 enddo
+                 call write_field(
+     &                myrank,'a'//char(0),'local_res'//char(0), 9,
+     &                resNodeSum,  'd'//char(0), numnp, 1, lstep)
+c... debug }
+c
                endif
 c
                   call write_field(
