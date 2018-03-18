@@ -795,7 +795,6 @@ c
                      x = xold + disp
 c
                      umesh = disp / Delt(1)
-                     umeshold = umesh
 c
                   endif ! end of switch for flow or scalar or mesh-elastic update
                endif            !end of switch between solve or update
@@ -820,6 +819,7 @@ c
 c
             call itrUpdate( yold,  acold,   y,    ac)
             call itrUpdateElas ( xold, x)
+            umeshold = umesh
 c
             call itrBC (y,ac, iBC, BC, iper, ilwork, umesh)
 c
