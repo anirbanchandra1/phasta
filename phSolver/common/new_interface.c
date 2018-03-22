@@ -190,6 +190,10 @@ void countfieldstowriterestart()
 {
   int nfields = 4; /*magic number, solution, time derivatives, material type*/
 
+  if(outpar.write_residual == 1){
+    nfields++; /* non-linear residual */
+  }
+
   if(outpar.ivort == 1){
     nfields++; /*vorticity*/
   }
@@ -228,9 +232,8 @@ void countfieldstowriterestart()
   }
 
   if (conpar.iALE == 2) {
-//HARDCODED BY FAN, 3 fields: mesh_vel, mesh_coord, meshQ, resNodeSum
-// resNodeSum is used for debugging
-    nfields = nfields + 4;
+//HARDCODED BY FAN, 3 fields: mesh_vel, mesh_coord, meshQ
+    nfields = nfields + 3;
   }
 
   if (conpar.iSOLID == 1) {

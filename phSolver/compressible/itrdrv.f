@@ -58,10 +58,6 @@ c
         dimension res(nshg,nflow),
      &            rest(nshg),              solinc(nshg,ndof)
 c
-c... debug {
-        dimension resNodeSum(nshg)
-c... debug }
-c
         dimension shp(MAXTOP,maxsh,MAXQPT),  
      &            shgl(MAXTOP,nsd,maxsh,MAXQPT), 
      &            shpb(MAXTOP,maxsh,MAXQPT),
@@ -990,15 +986,9 @@ c     &                  xdot,  'd'//char(0), numnp, nsd, lstep)
      &                  myrank,'a'//char(0),'meshQ'//char(0), 5, 
      &                  meshq, 'd'//char(0), numel, 1,   lstep)
 c
-c... debug {
-                   resNodeSum = 0.0
-                   do i = 1,nflow
-                     resNodeSum = resNodeSum + res(:,i)*res(:,i)
-                   enddo
                    call write_field(
-     &                  myrank,'a'//char(0),'local_res'//char(0), 9,
-     &                  resNodeSum,  'd'//char(0), numnp, 1, lstep)
-c... debug }
+     &                  myrank,'a'//char(0),'residual'//char(0), 8,
+     &                  res,  'd'//char(0), nshg, 5, lstep)
 c
                  endif
 c
@@ -1031,15 +1021,9 @@ c     &                xdot,  'd'//char(0), numnp, nsd, lstep)
      &                myrank,'a'//char(0),'meshQ'//char(0), 5, 
      &                meshq, 'd'//char(0), numel, 1,   lstep)
 c
-c... debug {
-                 resNodeSum = 0.0
-                 do i = 1,nflow
-                   resNodeSum = resNodeSum + res(:,i)*res(:,i)
-                 enddo
                  call write_field(
-     &                myrank,'a'//char(0),'local_res'//char(0), 9,
-     &                resNodeSum,  'd'//char(0), numnp, 1, lstep)
-c... debug }
+     &                myrank,'a'//char(0),'residual'//char(0), 8,
+     &                res,  'd'//char(0), nshg, 5, lstep)
 c
                endif
 c
