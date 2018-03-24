@@ -985,12 +985,13 @@ c     &                  xdot,  'd'//char(0), numnp, nsd, lstep)
                    call write_field(
      &                  myrank,'a'//char(0),'meshQ'//char(0), 5, 
      &                  meshq, 'd'//char(0), numel, 1,   lstep)
-c
+		 endif
+		 if (write_residual.eq.1) then
                    call write_field(
      &                  myrank,'a'//char(0),'residual'//char(0), 8,
      &                  res,  'd'//char(0), nshg, 5, lstep)
-c
                  endif
+c
 c
       if (solid_p%is_active) call write_restart_solid
 c
@@ -1020,11 +1021,11 @@ c     &                xdot,  'd'//char(0), numnp, nsd, lstep)
                  call write_field(
      &                myrank,'a'//char(0),'meshQ'//char(0), 5, 
      &                meshq, 'd'//char(0), numel, 1,   lstep)
-c
+	       endif
+	       if (write_residual.eq.1) then
                  call write_field(
      &                myrank,'a'//char(0),'residual'//char(0), 8,
      &                res,  'd'//char(0), nshg, 5, lstep)
-c
                endif
 c
                   call write_field(
