@@ -782,6 +782,7 @@ c
           lcsyst = lcsyst0 ! passing to the global variable, could be improved
           nenl = nenl0 ! same as above
           nshl = nshl0 ! same as above
+          nenbl = nenbl_if ! same as above
 c
           if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl_if ! may not be necessary
           ngaussb = ngaussif ! passing to the global variable, could be improved
@@ -795,6 +796,7 @@ c
           lcsyst = lcsyst1 ! passing to the global variable, could be improved
           nenl = nenl1 ! same as above
           nshl = nshl1 ! same as above
+          nenbl = nenbl_if ! same as above
 c
           if(lcsyst.eq.itp_wedge_tri) lcsyst=nenbl_if ! may not be necessary
           ngaussb = ngaussif ! passing to the global variable, could be improved
