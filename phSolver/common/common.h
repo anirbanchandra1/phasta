@@ -104,10 +104,11 @@ c numfluxes = area, mass, fx, fy, fz, heat, scalar_flux_{1,2,3,4}
 c nIDs currently set to MAXSURF, each surface has its own
 c
         common /aerfrc/ flxID(10,0:MAXSURF), flxIDsclr(4,MAXSURF),
-     &                  Force(3,MAXSURF), 
+     &                  Force(3,MAXSURF),
      &                  HFlux(MAXSURF),    nsrfCM,
-     &                  nsrflist(0:MAXSURF), isrfIM,
-     &                  irankfilesforce(0:MAXSURF)
+     &                  nsrflist(0:MAXSURF),
+     &                  ntagRB,  ntaglist(0:MAXSURF),
+     &                  isrfIM,  irankfilesforce(0:MAXSURF)
 c
         common /astore/ a(100000)
 c

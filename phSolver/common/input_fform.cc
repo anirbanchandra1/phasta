@@ -401,6 +401,17 @@ int input_fform(phSolver::Input& inp)
       ivec.erase(ivec.begin(),ivec.end());
     }
 
+    for(i=0;i<MAXSURF+1; i++) aerfrc.ntaglist[i] = 0;
+    aerfrc.ntagRB = inp.GetValue("Number of rigid bodies");
+    if (aerfrc.ntagRB > 0) {
+      ivec = inp.GetValue("Model region tags for rigid bodies");
+      for(i=0; i< aerfrc.ntagRB; i++){
+        aerfrc.ntaglist[i] = ivec[i];
+        //        cout <<"tag list "<< ivec[i] << endl;
+      }
+      ivec.erase(ivec.begin(),ivec.end());
+    }
+
     aerfrc.isrfIM = inp.GetValue("Surface ID for Integrated Mass");
 
     laymesh.blfactor = inp.GetValue("Wedge Stiffness Factor");

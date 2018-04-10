@@ -247,6 +247,8 @@ extern "C" {
     double HFlux[MAXSURF];
     int nsrfCM;
     int nsrflist[MAXSURF+1];
+    int ntagRB;
+    int ntaglist[MAXSURF+1];
     int isrfIM;
     int irankfilesforce[MAXSURF+1];
   } aerfrc ;
