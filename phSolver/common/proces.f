@@ -291,6 +291,9 @@ c
 c
         deallocate(ifFlag)
 c
+        deallocate(rbIDs)
+        deallocate(rbTags)
+c
         call finalizeDtN
         call clearper
         call finalizeNABI

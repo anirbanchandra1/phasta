@@ -4,6 +4,28 @@ c-----------------------------------------------------------------
 c
 c-----------------------------------------------------------------
 c
+      include "common.h"
+      include "mpif.h"
+
+      real*8    x(numnp,nsd)
+      real*8    umeshold(numnp,nsd)
+      dimension iBC(nshg),        BC(nshg,3), BC_flow(nshg,3)
+c
+      call prescribedBCElas(x, iBC, BC, BC_flow, umeshold)
+c
+      return
+      end
+c
+c-----------------------------------------------------------------
+c
+c-----------------------------------------------------------------
+c
+       subroutine prescribedBCElas(x, iBC, BC, BC_flow, umeshold)
+c
+c-----------------------------------------------------------------
+c
+c-----------------------------------------------------------------
+c
       use m2gfields ! read m2g fields
       use core_snap
       use interfaceflag

@@ -13,6 +13,11 @@ c
         real*8, allocatable :: m2gParCoord(:,:)
       end module
 
+      module rigidBody
+        integer, allocatable :: rbIDs(:)
+        integer, allocatable :: rbTags(:)
+      end module
+
       module interfaceflag
         integer, allocatable :: ifFlag(:)
       end module
@@ -29,6 +34,7 @@ c
 
       use m2gfields
       use interfaceflag
+      use rigidBody
       use BLparameters
 
       real*8, allocatable :: point2x(:,:)
@@ -76,6 +82,7 @@ c
       integer, target, allocatable :: tmpBLInt(:), tmpBLlist(:)
       integer, target, allocatable :: tmpm2gClsfcn(:,:)
       integer, target, allocatable :: tmpifFlag(:)
+      integer, target, allocatable :: tmprbIDs(:), tmprbTags(:)
       integer fncorpsize
       character*10 cname2, cname2nd
       character*8 mach2
@@ -451,6 +458,53 @@ c
          ifFlag = zero
          deallocate( tmpifFlag )
       endif
+c
+c--------------------- read rigid body tag ------------------
+c
+c.... read IDs
+        ione=1
+        intfromfile=0
+        call phio_readheader(fhandle,
+     &   c_char_'rigid body IDs' // char(0),
+     &   c_loc(intfromfile),ione, dataInt, iotype)
+        numrbs = intfromfile(1)
+        if (numrbs > 0) then
+          allocate( tmprbIDs(numrbs) )
+          allocate( rbIDs(numrbs) )
+          call phio_readdatablock(fhandle,
+     &     c_char_'rigid body IDs' // char(0),
+     &     c_loc(tmprbIDs),numrbs, dataInt, iotype)
+          rbIDs = tmprbIDs
+          deallocate( tmprbIDs )
+        else
+          allocate( rbIDs(1) )
+          rbIDs = -1
+          numrbs = 0
+        endif
+c
+c.... read tag for each vertex
+      intfromfile=0
+      call phio_readheader(fhandle,
+     & c_char_'rigid body tag' // char(0),
+     & c_loc(intfromfile), ione, dataInt, iotype)
+
+      if ( intfromfile(1) .gt. 0 ) then
+        if ( intfromfile(1) .ne. numnp ) then
+          call error ('readnblk  ', 'size of rigid body tag ', intfromfile(1))
+        endif
+        allocate( tmprbTags(numnp) )
+        allocate( rbTags(numnp) )
+        call phio_readdatablock(fhandle,
+     &   c_char_'rigid body tag' // char(0),
+     &   c_loc(tmprbTags), intfromfile(1), dataInt, iotype)
+         rbTags = tmprbTags
+         deallocate( tmprbTags )
+      else
+        allocate( rbTags(1) )
+        rbTags = 0
+      endif
+c
+c--------------------- end read rigid body tag --------------
 c
 c--------------------- read the layered mesh parameters ------------------
 c
