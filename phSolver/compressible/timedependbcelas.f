@@ -48,7 +48,7 @@ c.... dynamic origin, x translation, rotation frequence
       real*8    dyn_org,   xtsl,  rotf
       real*8    dyn_lnt,   shrk,  shrkfactor
       integer   answer
-      real*8    cent(ntagRB, 3)
+      real*8    cent(numrbs, 3)
 c
       if (elasFDC .gt. 0) then
         if (myrank .eq. master) then
@@ -81,8 +81,8 @@ c.... Update BC value based on total force on the object
 c
       if ( casenumber .eq. 2 ) then
 c.... debugging {
-        do j = 1,ntagRB
-          call core_get_centroid(ntaglist(j), cent(j,:))
+        do j = 1,numrbs
+          call core_get_centroid(rbsTags(j), cent(j,:))
         enddo
 c.... debugging }
         totalForce(:) = zero

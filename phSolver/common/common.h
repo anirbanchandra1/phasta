@@ -17,6 +17,7 @@ c
       use laymesh_m
       use snapmesh_m
       use meshquality_m
+      use rigidbody_m
       use timdat_m
       use elmpar_m
       use blkdat_m
@@ -107,7 +108,6 @@ c
      &                  Force(3,MAXSURF),
      &                  HFlux(MAXSURF),    nsrfCM,
      &                  nsrflist(0:MAXSURF),
-     &                  ntagRB,  ntaglist(0:MAXSURF),
      &                  isrfIM,  irankfilesforce(0:MAXSURF)
 c
         common /astore/ a(100000)

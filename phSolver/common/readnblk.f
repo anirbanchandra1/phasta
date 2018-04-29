@@ -13,9 +13,9 @@ c
         real*8, allocatable :: m2gParCoord(:,:)
       end module
 
-      module rigidBody
+      module rigidBodyFlag
         integer, allocatable :: rbIDs(:)
-        integer, allocatable :: rbTags(:)
+        integer, allocatable :: rbFlags(:)
       end module
 
       module interfaceflag
@@ -34,7 +34,7 @@ c
 
       use m2gfields
       use interfaceflag
-      use rigidBody
+      use rigidBodyFlag
       use BLparameters
 
       real*8, allocatable :: point2x(:,:)
@@ -82,7 +82,7 @@ c
       integer, target, allocatable :: tmpBLInt(:), tmpBLlist(:)
       integer, target, allocatable :: tmpm2gClsfcn(:,:)
       integer, target, allocatable :: tmpifFlag(:)
-      integer, target, allocatable :: tmprbIDs(:), tmprbTags(:)
+      integer, target, allocatable :: tmprbIDs(:), tmprbFlags(:)
       integer fncorpsize
       character*10 cname2, cname2nd
       character*8 mach2
@@ -467,7 +467,10 @@ c.... read IDs
         call phio_readheader(fhandle,
      &   c_char_'rigid body IDs' // char(0),
      &   c_loc(intfromfile),ione, dataInt, iotype)
-        numrbs = intfromfile(1)
+        if(intfromfile(1) .ne. numrbs) then
+          call error ('readnblk  ', 'num of rigid body not equal input'
+     &                , intfromfile(1))
+        endif
         if (numrbs > 0) then
           allocate( tmprbIDs(numrbs) )
           allocate( rbIDs(numrbs) )
@@ -479,7 +482,7 @@ c.... read IDs
         else
           allocate( rbIDs(1) )
           rbIDs = -1
-          numrbs = 0
+          numrbs = 0 ! make sure it is not negative
         endif
 c
 c.... read tag for each vertex
@@ -492,16 +495,16 @@ c.... read tag for each vertex
         if ( intfromfile(1) .ne. numnp ) then
           call error ('readnblk  ', 'size of rigid body tag ', intfromfile(1))
         endif
-        allocate( tmprbTags(numnp) )
-        allocate( rbTags(numnp) )
+        allocate( tmprbFlags(numnp) )
+        allocate( rbFlags(numnp) )
         call phio_readdatablock(fhandle,
      &   c_char_'rigid body tag' // char(0),
-     &   c_loc(tmprbTags), intfromfile(1), dataInt, iotype)
-         rbTags = tmprbTags
-         deallocate( tmprbTags )
+     &   c_loc(tmprbFlags), intfromfile(1), dataInt, iotype)
+         rbFlags = tmprbFlags
+         deallocate( tmprbFlags )
       else
-        allocate( rbTags(1) )
-        rbTags = 0
+        allocate( rbFlags(1) )
+        rbFlags = 0
       endif
 c
 c--------------------- end read rigid body tag --------------

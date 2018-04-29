@@ -401,17 +401,6 @@ int input_fform(phSolver::Input& inp)
       ivec.erase(ivec.begin(),ivec.end());
     }
 
-    for(i=0;i<MAXSURF+1; i++) aerfrc.ntaglist[i] = 0;
-    aerfrc.ntagRB = inp.GetValue("Number of rigid bodies");
-    if (aerfrc.ntagRB > 0) {
-      ivec = inp.GetValue("Model region tags for rigid bodies");
-      for(i=0; i< aerfrc.ntagRB; i++){
-        aerfrc.ntaglist[i] = ivec[i];
-        //        cout <<"tag list "<< ivec[i] << endl;
-      }
-      ivec.erase(ivec.begin(),ivec.end());
-    }
-
     aerfrc.isrfIM = inp.GetValue("Surface ID for Integrated Mass");
 
     laymesh.blfactor = inp.GetValue("Wedge Stiffness Factor");
@@ -583,7 +572,42 @@ int input_fform(phSolver::Input& inp)
       }
       vec.erase(vec.begin(),vec.end());
     }
-    
+
+// read rigid body parameters, properties and constraints ---------------
+    rigidbody.numrbs = inp.GetValue("Number of Rigid Bodies");
+    if (rigidbody.numrbs > MAXTS) {
+      cout << "ERROR in Input: increase MAXTS and recompile\n";
+      exit(1);
+    }
+
+    ivec = inp.GetValue("Rigid Body Tags");
+    for (i = 0; i < rigidbody.numrbs; ++i)
+      rigidbody.rbsTags[i] = ivec[i];
+    ivec.erase(ivec.begin(),ivec.end());
+
+    int num_of_rb_properties = 4;
+    str0.assign("Properties of Rigid Body ");
+    for (i = 0; i < rigidbody.numrbs; ++i) {
+      string str;
+      stringstream ss;
+      ss << rigidbody.rbsTags[i];
+      str = str0 + ss.str();
+      vec = inp.GetValue(str);
+      if (vec.size() != num_of_rb_properties) {
+        cout << "WARNING: set properties of Rigid Body " << ss.str() << " to be default !" << endl;
+        vec = inp.GetValue("Properties of Rigid Body Default");
+      }
+      /* fill rb_prop here... */
+      int j = 0;
+      vector<double>::iterator it = vec.begin();
+      while (it++ < vec.end()) {
+        rigidbody.rb_prop[i][j] = vec[j];
+        j++;
+      }
+      vec.erase(vec.begin(),vec.end());
+    }
+// end read rigid body --------------------------------------------------
+
     vec = inp.GetValue("Density");
     for(i=0; i< levlset.iLSet +1 ; i++){
       matdat.datmat[i][0][0] = vec[i];

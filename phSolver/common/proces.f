@@ -292,7 +292,7 @@ c
         deallocate(ifFlag)
 c
         deallocate(rbIDs)
-        deallocate(rbTags)
+        deallocate(rbFlags)
 c
         call finalizeDtN
         call clearper
