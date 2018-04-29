@@ -277,6 +277,7 @@ extern "C" {
     double rb_prop[MAXTS][MAXTS];
     int numrbs;
     int rbsTags[MAXTS];
+    int rbsMM[MAXTS];
   } rigidbody ;
 
   extern struct { 

@@ -585,6 +585,32 @@ int input_fform(phSolver::Input& inp)
       rigidbody.rbsTags[i] = ivec[i];
     ivec.erase(ivec.begin(),ivec.end());
 
+    string RBsbuf = (string)inp.GetValue("Rigid Body Motion Mode");
+    stringstream RBss(RBsbuf);
+    for (i = 0; i < rigidbody.numrbs; ++i){
+      if (!RBss.good()) {
+        cout << "Error: while reading Rigid Body Motion Mode!\n";
+        exit(1);
+      }
+      string RBstr;
+      RBss >> RBstr;
+      if (RBstr == "Translation-only") {
+        rigidbody.rbsMM[i] = 1;
+      }
+      else if (RBstr == "Rotation-only") {
+        cout << "Not support rotation yet\n";
+        exit(1);
+      }
+      else if (RBstr == "Translation-Rotation") {
+        cout << "Not support rotation yet\n";
+        exit(1);
+      }
+      else {
+        cout << "Rigid Body Motion Mode: " << RBstr << " is not a legal value\n";
+        exit(1);
+      }
+    }
+
     int num_of_rb_properties = 4;
     str0.assign("Properties of Rigid Body ");
     for (i = 0; i < rigidbody.numrbs; ++i) {

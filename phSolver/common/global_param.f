@@ -175,6 +175,7 @@ c.... common /rigidbody/   : rigid body parameters, properties, constraints
 c
 c numrbs     : number of rigid bodies
 c rbsTags    : tags of rigid bodies
+c rbsMM      : rigid body motion mode for each rigid body
 c rb_prop    : properties and constraints of rigid bodies
 c
       module rigidbody_m
@@ -183,8 +184,9 @@ c
         implicit none
         real(c_double), target :: rb_prop(MAXTS, MAXTS)
         integer(c_int), target :: rbsTags(MAXTS)
+        integer(c_int), target :: rbsMM(MAXTS)
         integer(c_int)         :: numrbs
-        common /rigidbody/     rb_prop,   numrbs,   rbsTags
+        common /rigidbody/     rb_prop,   numrbs,   rbsTags,   rbsMM
       end module rigidbody_m
 c
 c----------------------------------------------------------------------
