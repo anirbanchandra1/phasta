@@ -627,7 +627,7 @@ int input_fform(phSolver::Input& inp)
       int j = 0;
       vector<double>::iterator it = vec.begin();
       while (it++ < vec.end()) {
-        rigidbody.rb_prop[i][j] = vec[j];
+        rigidbody.rb_prop[j][i] = vec[j];
         j++;
       }
       vec.erase(vec.begin(),vec.end());

@@ -955,6 +955,8 @@ c
         call MPI_BARRIER (MPI_COMM_WORLD,ierr)
 
         if(iprec .ne. 0) call commu (BDiag, ilwork, nflow*nflow, 'in ')
+
+        call commu_rbForce ()
       endif
 c
 c------> BEGIN DEBUG <---------

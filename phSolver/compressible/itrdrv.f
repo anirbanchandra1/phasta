@@ -224,6 +224,9 @@ c ... allocate mesh-elastic solve related arrays only if mesh-elastic solve flag
           x     = xn
           xold  = xn
         endif
+c
+        if (numrbs .gt. 0) call malloc_rbForce ()
+c
         call init_sum_vi_area(nshg,nsd)
         call ifbc_malloc
 c
@@ -489,7 +492,11 @@ c
                      Force(2,:) = zero
                      Force(3,:) = zero
                      HFlux(:)   = zero
-c     
+c
+c.... reset rigid body force
+c
+                     call init_rbForce ()
+c
 c.... form the element data and solve the matrix problem
 c     
 c.... explicit solver
@@ -1160,7 +1167,9 @@ c.... deallocate comp1_elas magnitude if time-depended option is on
       if((timeDepComp1Flag .eq. 1) .and. (iALE .eq. 2)) then
         deallocate( timeDepComp1Mag )
       endif
-
+c
+      if (numrbs .gt. 0) call release_rbForce ()
+c
 c      close (iecho)
       if(iabc==1) deallocate(acs)
 c

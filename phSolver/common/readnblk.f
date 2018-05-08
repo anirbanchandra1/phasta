@@ -500,8 +500,12 @@ c.... read tag for each vertex
         call phio_readdatablock(fhandle,
      &   c_char_'rigid body tag' // char(0),
      &   c_loc(tmprbFlags), intfromfile(1), dataInt, iotype)
-         rbFlags = tmprbFlags
-         deallocate( tmprbFlags )
+        do i = 1, numnp
+          do j = 1, numrbs
+            if(tmprbFlags(i) .eq. rbIDs(j)) rbFlags(i) = j
+          enddo
+        enddo
+        deallocate( tmprbFlags )
       else
         allocate( rbFlags(1) )
         rbFlags = 0
