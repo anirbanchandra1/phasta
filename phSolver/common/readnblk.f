@@ -15,6 +15,7 @@ c
 
       module rigidBodyFlag
         integer, allocatable :: rbIDs(:)
+        integer, allocatable :: rbMTs(:)
         integer, allocatable :: rbFlags(:)
       end module
 
@@ -82,7 +83,7 @@ c
       integer, target, allocatable :: tmpBLInt(:), tmpBLlist(:)
       integer, target, allocatable :: tmpm2gClsfcn(:,:)
       integer, target, allocatable :: tmpifFlag(:)
-      integer, target, allocatable :: tmprbIDs(:), tmprbFlags(:)
+      integer, target, allocatable :: tmprbIDs(:), tmprbMTs(:), tmprbFlags(:)
       integer fncorpsize
       character*10 cname2, cname2nd
       character*8 mach2
@@ -461,7 +462,7 @@ c
 c
 c--------------------- read rigid body tag ------------------
 c
-c.... read IDs
+c.... read IDs and model tags
         ione=1
         intfromfile=0
         call phio_readheader(fhandle,
@@ -473,15 +474,30 @@ c.... read IDs
         endif
         if (numrbs > 0) then
           allocate( tmprbIDs(numrbs) )
+          allocate( tmprbMTs(numrbs) )
           allocate( rbIDs(numrbs) )
+          allocate( rbMTs(numrbs) )
           call phio_readdatablock(fhandle,
      &     c_char_'rigid body IDs' // char(0),
      &     c_loc(tmprbIDs),numrbs, dataInt, iotype)
-          rbIDs = tmprbIDs
+          call phio_readdatablock(fhandle,
+     &     c_char_'rigid body MTs' // char(0),
+     &     c_loc(tmprbMTs),numrbs, dataInt, iotype)
+          do i = 1, numrbs
+            do j = 1, numrbs
+              if(tmprbIDs(i) .eq. rbsTags(j)) then
+                rbIDs(j) = tmprbIDs(i)
+                rbMTs(j) = tmprbMTs(i)
+              endif
+            enddo
+          enddo
           deallocate( tmprbIDs )
+          deallocate( tmprbMTs )
         else
           allocate( rbIDs(1) )
+          allocate( rbMTs(1) )
           rbIDs = -1
+          rbMTs = -1
           numrbs = 0 ! make sure it is not negative
         endif
 c
@@ -502,7 +518,7 @@ c.... read tag for each vertex
      &   c_loc(tmprbFlags), intfromfile(1), dataInt, iotype)
         do i = 1, numnp
           do j = 1, numrbs
-            if(tmprbFlags(i) .eq. rbIDs(j)) rbFlags(i) = j
+            if(tmprbFlags(i) .eq. rbsTags(j)) rbFlags(i) = j
           enddo
         enddo
         deallocate( tmprbFlags )

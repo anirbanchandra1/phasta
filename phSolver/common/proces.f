@@ -292,6 +292,7 @@ c
         deallocate(ifFlag)
 c
         deallocate(rbIDs)
+        deallocate(rbMTs)
         deallocate(rbFlags)
 c
         call finalizeDtN
