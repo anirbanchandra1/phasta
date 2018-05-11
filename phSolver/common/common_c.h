@@ -485,6 +485,7 @@ extern "C" {
     double rhoinf[MAXTS];
     double rhoinfS[MAXTS];
     double rhoinf_B[MAXTS];//for solid
+    double rhoinf_rb[MAXTS];//for rigid body motion
     int LHSupd[6];
     int loctim[MAXTS];
     double deltol[2][MAXTS];

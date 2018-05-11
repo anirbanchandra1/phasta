@@ -34,39 +34,17 @@ c
         real*8    x(numnp,nsd)
         real*8    umeshold(numnp,nsd)
         dimension iBC(nshg), BC(nshg,3), BC_flow(nshg,3)
-        real*8                           t_mag
-        real*8, dimension(nsd)        :: t_dir
-        real*8, dimension(numrbs,nsd) :: t_acc
 c
-c.... loop over rigid body
-        do j = 1,numrbs
-c.... debugging {
-c          call core_get_centroid(rbsTags(j), cent(j,:))
-c.... debugging }
-          if (rbsMM(j) .ne. 1)
-     &      call error('rigidBodyBCElas','not support mode',rbsMM(j))
-          t_dir(:) = rb_prop(j,2:4) ! translation direction
-          t_mag = sqrt( t_dir(1)*t_dir(1)
-     &                + t_dir(2)*t_dir(2)
-     &                + t_dir(3)*t_dir(3) )
-          if (t_mag .lt. 1e-12) then ! no constraint
-            t_dir(1:3) = 1.0
-          else
-            t_dir(1:3) = t_dir(1:3) / t_mag
-          endif
-c.... get acceleration
-          t_acc(j,1:3) = rbForce(j,1:3) / rb_prop(j,1) * t_dir(1:3)
-        enddo
-
+        call calc_rbMotion( )
+c
 c.... loop over mesh vertices
         do i = 1,numnp
           if ( (ibits(iBC(i),14,3) .eq. 7) .and.
      &         (rbFlags(i) .gt. 0) ) then
 c.... set corresponding mesh elas BC
-            BC(i,1:3)=( umeshold(i,1:3) +
-     &                  t_acc(rbFlags(i),1:3)*Delt(1) ) *Delt(1)
+            BC(i,1:3) = rbDisp(rbFlags(i), 1:3)
 c.... update flow BC
-            BC_flow(i,1:3) = BC(i,1:3) / Delt(1)
+            BC_flow(i,1:3) = rbVelOld(rbFlags(i), 1:3)
           endif
         enddo ! end loop numnp
 c

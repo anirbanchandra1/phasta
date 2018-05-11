@@ -947,6 +947,8 @@ int input_fform(phSolver::Input& inp)
       inpdat.rhoinf_B[0] = -1 ;
     else inpdat.rhoinf_B[0] = (double)inp.GetValue("Time Integration Rho Infinity_B");
 
+    inpdat.rhoinf_rb[0] = (double)inp.GetValue("Time Integration Rho Infinity for Rigid Body Motion");
+
     if((string)inp.GetValue("Predictor at Start of Step")=="Same Velocity")
       genpar.ipred = 1;
     if((string)inp.GetValue("Predictor at Start of Step")=="Zero Acceleration")

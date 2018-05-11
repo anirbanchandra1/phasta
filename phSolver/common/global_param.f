@@ -397,12 +397,13 @@ c
         integer, dimension(6) :: LHSupd
         real*8, dimension(6) :: epstol
         real*8  :: etolelas
-        real*8, dimension(MAXTS) :: Delt, CFLfl, CFLsl, rhoinf, rhoinfS, rhoinf_B
+        real*8, dimension(MAXTS) :: Delt, CFLfl, CFLsl, rhoinf, rhoinfS,
+     &                              rhoinf_B,    rhoinf_rb
         real*8, dimension(MAXTS,2) :: deltol
         common /inpdat/ epstol,  etolelas, Delt,    CFLfl,
      &                  CFLsl,   nstep,    niter,
      &                  impl,    rhoinf,   rhoinfS,
-     &                  rhoinf_B,
+     &                  rhoinf_B,          rhoinf_rb,
      &                  LHSupd,  loctim,  deltol, 
      &                  leslib,     svLSFlag,   svLSType
       end module inpdat_m
