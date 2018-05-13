@@ -57,7 +57,9 @@ c
 c
         use rigidBodyFlag
         use rigidBodyForce
+c
         include "common.h"
+        include "mpif.h"
 c
         real*8, dimension(3) :: Forin, Forout
 c
@@ -68,7 +70,7 @@ c.... XXX need to add rotation force
           if (iter .eq. nitr) then
             Forin  = (/ rbForce(i,1), rbForce(i,2), rbForce(i,3) /)
             if (numpe > 1) then
-              call MPI_ALLREDUCE ( Forin(1),  Forout(1), 3,
+              call MPI_ALLREDUCE ( Forin,  Forout, 3,
      &                             MPI_DOUBLE_PRECISION,
      &                             MPI_SUM, MPI_COMM_WORLD, ierr)
               Force(i,1:3) = Forout(1:3)
