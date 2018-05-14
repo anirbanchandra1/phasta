@@ -73,7 +73,7 @@ c.... XXX need to add rotation force
               call MPI_ALLREDUCE ( Forin,  Forout, 3,
      &                             MPI_DOUBLE_PRECISION,
      &                             MPI_SUM, MPI_COMM_WORLD, ierr)
-              Force(i,1:3) = Forout(1:3)
+              rbForce(i,1:3) = Forout(1:3)
             endif
           endif
         enddo
@@ -199,6 +199,17 @@ c
           endif
 c
           rbForce(j,1:3) = rbForce(j,1:3) * t_dir(1:3)
+c.... debugging {
+c          write(*,*) "rank:", myrank,
+c     &               "index and force: ", j, rbForce(j,1),
+c     &                         rbForce(j,2), rbForce(j,3)
+c.... debugging }
+c
+c.... set initial acceleration
+c
+c          if (istep .eq. 0) then
+c            rbAccOld(j,1:3) = rbForce(j,1:3) / rb_prop(j,1)
+c          endif
 c
 c.... prepare variable
 c
@@ -221,6 +232,12 @@ c
 c.... get acceleration
 c
           rbAccOld(j,1:3) = tmpAcc(1:3) - (1.0-am)/am * rbAccOld(j,1:3)
+c
+c.... debugging {
+c          write(*,*) "rank:", myrank,
+c     &               "disp:", rbDisp(j,1),rbDisp(j,2),rbDisp(j,3),
+c     &               "Velo:", rbVelOld(j,1),rbVelOld(j,2),rbVelOld(j,3)
+c.... debugging }
 c
 c.... update force of the previous time step
 c

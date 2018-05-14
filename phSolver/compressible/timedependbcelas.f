@@ -112,9 +112,9 @@ c.... Update BC value based on total force on the object
 c
       if ( casenumber .eq. 2 ) then
 c.... debugging {
-        do j = 1,numrbs
-          call core_get_centroid(rbsTags(j), cent(j,:))
-        enddo
+c        do j = 1,numrbs
+c          call core_get_centroid(rbsTags(j), cent(j,:))
+c        enddo
 c.... debugging }
         totalForce(:) = zero
         objMass = 15.0 ! kg
