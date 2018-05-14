@@ -4,8 +4,8 @@ c
           integer, allocatable :: rbIndex(:)
           real*8, allocatable  :: rbForce(:,:)
           real*8, allocatable  :: rbTorque(:,:)
-          real*8, allocatable  :: rbDisp(:,:)
 c
+          real*8, allocatable  :: rbDisp(:,:)
           real*8, allocatable  :: rbForceOld(:,:)
           real*8, allocatable  :: rbTorqueOld(:,:)
           real*8, allocatable  :: rbVelOld(:,:)
@@ -23,12 +23,21 @@ c
 c
         allocate( rbForce(numrbs, 3)  )
         allocate( rbTorque(numrbs, 3) )
-        allocate( rbDisp(numrbs, 3) )
 c
+        allocate( rbDisp(numrbs, 3) )
         allocate( rbForceOld(numrbs, 3)  )
         allocate( rbTorqueOld(numrbs, 3)  )
         allocate( rbVelOld(numrbs, 3)  )
         allocate( rbAccOld(numrbs, 3)  )
+c
+        rbForce  = 0.0
+        rbTorque = 0.0
+c
+        rbDisp = 0.0
+        rbForceOld = 0.0
+        rbTorqueOld = 0.0
+        rbVelOld = 0.0
+        rbAccOld = 0.0
 c
         return
         end
@@ -41,12 +50,6 @@ c
 c
         rbForce  = 0.0
         rbTorque = 0.0
-        rbDisp = 0.0
-c
-        rbForceOld = 0.0
-        rbTorqueOld = 0.0
-        rbVelOld = 0.0
-        rbAccOld = 0.0
 c
         return
         end
@@ -89,8 +92,8 @@ c
 c
         deallocate( rbForce )
         deallocate( rbTorque )
-        deallocate( rbDisp )
 c
+        deallocate( rbDisp )
         deallocate( rbForceOld )
         deallocate( rbTorqueOld )
         deallocate( rbVelOld )
