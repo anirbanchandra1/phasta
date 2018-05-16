@@ -468,8 +468,8 @@ c.... read IDs and model tags
         call phio_readheader(fhandle,
      &   c_char_'rigid body IDs' // char(0),
      &   c_loc(intfromfile),ione, dataInt, iotype)
-        if(intfromfile(1) .ne. numrbs) then
-          call error ('readnblk  ', 'num of rigid body not equal input'
+        if(intfromfile(1) .lt. numrbs) then
+          call error ('readnblk  ', 'num of rigid body less than input'
      &                , intfromfile(1))
         endif
         if (numrbs > 0) then

@@ -495,7 +495,7 @@ c
 c
 c.... reset rigid body force
 c
-                     call init_rbForce ()
+                     if (numrbs .gt. 0) call init_rbForce ()
 c
 c.... form the element data and solve the matrix problem
 c     
