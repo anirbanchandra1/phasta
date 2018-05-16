@@ -6,6 +6,7 @@ c
           real*8, allocatable  :: rbTorque(:,:)
 c
           real*8, allocatable  :: rbDisp(:,:)
+          real*8, allocatable  :: rbTotalDisp(:,:)
           real*8, allocatable  :: rbForceOld(:,:)
           real*8, allocatable  :: rbTorqueOld(:,:)
           real*8, allocatable  :: rbVelOld(:,:)
@@ -25,6 +26,7 @@ c
         allocate( rbTorque(numrbs, 3) )
 c
         allocate( rbDisp(numrbs, 3) )
+        allocate( rbTotalDisp(numrbs, 3) )
         allocate( rbForceOld(numrbs, 3)  )
         allocate( rbTorqueOld(numrbs, 3)  )
         allocate( rbVelOld(numrbs, 3)  )
@@ -34,6 +36,7 @@ c
         rbTorque = 0.0
 c
         rbDisp = 0.0
+        rbTotalDisp = 0.0
         rbForceOld = 0.0
         rbTorqueOld = 0.0
         rbVelOld = 0.0
@@ -94,6 +97,7 @@ c
         deallocate( rbTorque )
 c
         deallocate( rbDisp )
+        deallocate( rbTotalDisp )
         deallocate( rbForceOld )
         deallocate( rbTorqueOld )
         deallocate( rbVelOld )
@@ -203,16 +207,15 @@ c
 c
           rbForce(j,1:3) = rbForce(j,1:3) * t_dir(1:3)
 c.... debugging {
-c          write(*,*) "rank:", myrank,
-c     &               "index and force: ", j, rbForce(j,1),
-c     &                         rbForce(j,2), rbForce(j,3)
+c          rbForce(j,1) = 3.0 + 2.0 * Delt(1) * (lstep + 1.0)
 c.... debugging }
 c
 c.... set initial acceleration
 c
-c          if (istep .eq. 0) then
-c            rbAccOld(j,1:3) = rbForce(j,1:3) / rb_prop(j,1)
-c          endif
+          if (istep .eq. 0) then
+            rbAccOld(j,1:3) = rbForce(j,1:3) / rb_prop(j,1)
+            rbForceOld(j,1:3) = rbForce(j,1:3)
+          endif
 c
 c.... prepare variable
 c
@@ -226,6 +229,10 @@ c
      &                    (0.5 + bt/am) * rbAccOld(j,1:3)
      &                  - bt * tmpAcc(1:3)    )
 c
+c.... get total displacement
+c
+          rbTotalDisp(j,1:3) = rbTotalDisp(j,1:3) + rbDisp(j,1:3)
+c
 c.... get velocity
 c
           rbVelOld(j,1:3) = rbVelOld(j,1:3)
@@ -237,9 +244,10 @@ c
           rbAccOld(j,1:3) = tmpAcc(1:3) - (1.0-am)/am * rbAccOld(j,1:3)
 c
 c.... debugging {
-c          write(*,*) "rank:", myrank,
-c     &               "disp:", rbDisp(j,1),rbDisp(j,2),rbDisp(j,3),
-c     &               "Velo:", rbVelOld(j,1),rbVelOld(j,2),rbVelOld(j,3)
+c          if (myrank .eq. master)
+c     &      write(*,*) "rbForce", rbForce(j,1)
+c     &                ,"disp:", rbDisp(j,1)
+c     &                ,"Velo:", rbVelOld(j,1)
 c.... debugging }
 c
 c.... update force of the previous time step
@@ -253,7 +261,42 @@ c
 c
 c----------------------------------------------------------------------
 c
-
+        subroutine synchronize_rbForce ( )
+c
+        use rigidBodyFlag
+        use rigidBodyForce
+        use core_rigid_body
+c
+        include "common.h"
+c
+        real*8, dimension(numrbs) :: ax, ay, az, px, py, pz, ag, sc
+c
+c.... XXX need to add rotation motion here
+        do j = 1,numrbs
+          if (rbsMM(j) .ne. 1)
+     &      call error('rigidBodyBCElas','not support mode',rbsMM(j))
+        enddo
+c
+        ax = 1.0
+        ay = 0.0
+        az = 0.0
+        px = 0.0
+        py = 0.0
+        pz = 0.0
+        ag = 0.0
+        sc = 0.0
+c
+        call core_update_rbms(rbTotalDisp(:,1),
+     &                        rbTotalDisp(:,2),
+     &                        rbTotalDisp(:,3),
+     &                        ax, ay, az,
+     &                        px, py, pz,
+     &                        ag, sc,
+     &                        rbsTags(:), numrbs)
+c
+        return
+        end
+c
 c
 c----------------------------------------------------------------------
 c
