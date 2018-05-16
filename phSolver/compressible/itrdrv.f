@@ -1168,7 +1168,7 @@ c.... deallocate comp1_elas magnitude if time-depended option is on
         deallocate( timeDepComp1Mag )
       endif
 c
-      if (numrbs .gt. 0) call release_rbForce ()
+c      if (numrbs .gt. 0) call release_rbForce ()
 c
 c      close (iecho)
       if(iabc==1) deallocate(acs)

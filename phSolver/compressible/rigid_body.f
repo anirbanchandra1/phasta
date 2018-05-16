@@ -93,9 +93,10 @@ c
 c
         use rigidBodyForce
 c
+        include "common.h"
+c
         deallocate( rbForce )
         deallocate( rbTorque )
-c
         deallocate( rbDisp )
         deallocate( rbTotalDisp )
         deallocate( rbForceOld )
@@ -246,8 +247,8 @@ c
 c.... debugging {
 c          if (myrank .eq. master)
 c     &      write(*,*) "rbForce", rbForce(j,1)
-c     &                ,"disp:", rbDisp(j,1)
-c     &                ,"Velo:", rbVelOld(j,1)
+            write(*,*) "rank", myrank, "rbForce", rbForce(j,1)
+     &                ,"disp:", rbDisp(j,1), "Velo:", rbVelOld(j,1)
 c.... debugging }
 c
 c.... update force of the previous time step
