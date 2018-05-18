@@ -225,7 +225,7 @@ c ... allocate mesh-elastic solve related arrays only if mesh-elastic solve flag
           xold  = xn
         endif
 c
-        if (numrbs .gt. 0) call malloc_rbForce ()
+        if (numrbs .gt. 0) call malloc_rbForce
 c
         call init_sum_vi_area(nshg,nsd)
         call ifbc_malloc
@@ -495,7 +495,7 @@ c
 c
 c.... reset rigid body force
 c
-                     if (numrbs .gt. 0) call init_rbForce ()
+                     if (numrbs .gt. 0) call init_rbForce
 c
 c.... form the element data and solve the matrix problem
 c     
@@ -677,8 +677,8 @@ c.... comp3_elas and DG interface share the same iBC, thus, this
 c     call will replace the interface vel with prescribed value
 c     when using Force-driven as Mesh Elas Model in solver.inp
                    if (elasModel .eq. 1) then
-                     call timeDependBCElas(x, iBC, BC(:,ndof+2:ndof+4), BC(:,3:5),
-     &                                     umeshold)
+                     call timeDependBCElas(x, iBC, BC(:,ndof+2:ndof+4),
+     &                                             BC(:,3:5), umeshold)
                    endif
 c
 c... update displacement and umesh based on iBC and BC
@@ -1101,7 +1101,17 @@ c
       if(myrank.eq.master)  then
         print*, "DONE"
       endif
-
+c
+      if ((output_mode .eq. -1) .and. (numrbs .gt. 0)) then
+        call synchronize_rbForce
+      endif
+c
+      if (numrbs .gt. 0) then
+        call release_rbForce
+        if (numpe > 1) call MPI_BARRIER(MPI_COMM_WORLD, ierr)
+        write(*,*) "rank",myrank,"finish releasing; numrbs = ", numrbs
+      endif
+c
         call destruct_sum_vi_area
         call ifbc_mfree
 c
@@ -1167,8 +1177,6 @@ c.... deallocate comp1_elas magnitude if time-depended option is on
       if((timeDepComp1Flag .eq. 1) .and. (iALE .eq. 2)) then
         deallocate( timeDepComp1Mag )
       endif
-c
-c      if (numrbs .gt. 0) call release_rbForce ()
 c
 c      close (iecho)
       if(iabc==1) deallocate(acs)

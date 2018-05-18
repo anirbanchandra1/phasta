@@ -17,7 +17,7 @@ c----------------------------------------------------------------------
 c
 c----------------------------------------------------------------------
 c
-        subroutine malloc_rbForce ( )
+        subroutine malloc_rbForce
 c
         use rigidbody_m
         use rigidBodyForce
@@ -47,7 +47,7 @@ c
 c
 c----------------------------------------------------------------------
 c
-        subroutine init_rbForce ( )
+        subroutine init_rbForce
 c
         use rigidBodyForce
 c
@@ -59,13 +59,14 @@ c
 c
 c----------------------------------------------------------------------
 c
-        subroutine commu_rbForce ( )
+        subroutine commu_rbForce
 c
         use rigidBodyFlag
         use rigidBodyForce
 c
         include "common.h"
         include "mpif.h"
+        include "auxmpi.h"
 c
         real*8, dimension(3) :: Forin, Forout
 c
@@ -89,20 +90,28 @@ c
 c
 c----------------------------------------------------------------------
 c
-        subroutine release_rbForce ( )
+        subroutine release_rbForce
 c
         use rigidBodyForce
 c
         include "common.h"
 c
-        deallocate( rbForce )
-        deallocate( rbTorque )
-        deallocate( rbDisp )
-        deallocate( rbTotalDisp )
-        deallocate( rbForceOld )
-        deallocate( rbTorqueOld )
-        deallocate( rbVelOld )
-        deallocate( rbAccOld )
+        if (allocated(rbForce))
+     &    deallocate( rbForce )
+        if (allocated(rbTorque))
+     &    deallocate( rbTorque )
+        if (allocated(rbDisp))
+     &    deallocate( rbDisp )
+        if (allocated(rbTotalDisp))
+     &    deallocate( rbTotalDisp )
+        if (allocated(rbForceOld))
+     &    deallocate( rbForceOld )
+        if (allocated(rbTorqueOld))
+     &    deallocate( rbTorqueOld )
+        if (allocated(rbVelOld))
+     &    deallocate( rbVelOld )
+        if (allocated(rbAccOld))
+     &    deallocate( rbAccOld )
 c
         return
         end
@@ -156,18 +165,19 @@ c
 c
 c----------------------------------------------------------------------
 c
-        subroutine release_rbIndex ( )
+        subroutine release_rbIndex
 c
         use rigidBodyForce
 c
-        deallocate( rbIndex )
+        if (allocated(rbIndex))
+     &    deallocate( rbIndex )
 c
         return
         end
 c
 c----------------------------------------------------------------------
 c
-        subroutine calc_rbMotion ( )
+        subroutine calc_rbMotion
 c
         use rigidBodyFlag
         use rigidBodyForce
@@ -245,10 +255,8 @@ c
           rbAccOld(j,1:3) = tmpAcc(1:3) - (1.0-am)/am * rbAccOld(j,1:3)
 c
 c.... debugging {
-c          if (myrank .eq. master)
-c     &      write(*,*) "rbForce", rbForce(j,1)
             write(*,*) "rank", myrank, "rbForce", rbForce(j,1)
-     &                ,"disp:", rbDisp(j,1), "Velo:", rbVelOld(j,1)
+     &                ,"disp:", rbTotalDisp(j,1), "Velo:", rbVelOld(j,1)
 c.... debugging }
 c
 c.... update force of the previous time step
@@ -262,7 +270,7 @@ c
 c
 c----------------------------------------------------------------------
 c
-        subroutine synchronize_rbForce ( )
+        subroutine synchronize_rbForce
 c
         use rigidBodyFlag
         use rigidBodyForce
@@ -293,7 +301,7 @@ c
      &                        ax, ay, az,
      &                        px, py, pz,
      &                        ag, sc,
-     &                        rbsTags(:), numrbs)
+     &                        rbMTs(:), numrbs)
 c
         return
         end

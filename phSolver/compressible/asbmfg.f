@@ -80,7 +80,7 @@ c
      &    call local(rmes,   rml,    ienb,   nflow,  'scatter ')
 c
         if (numrbs .gt. 0) then
-          call release_rbIndex ()
+          call release_rbIndex
         endif
 c
         !end

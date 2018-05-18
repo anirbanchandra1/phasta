@@ -950,13 +950,13 @@ c          BDiag(:,5,5)=Bdiagvec(:,5)
 c.... -------------------->   communications <-------------------------
 c
       if (numpe > 1) then
+        call commu_rbForce
+
         call commu (res  , ilwork, nflow  , 'in ')
 
         call MPI_BARRIER (MPI_COMM_WORLD,ierr)
 
         if(iprec .ne. 0) call commu (BDiag, ilwork, nflow*nflow, 'in ')
-
-        call commu_rbForce ()
       endif
 c
 c------> BEGIN DEBUG <---------

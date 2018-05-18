@@ -12,7 +12,7 @@ c
       dimension iBC(nshg),        BC(nshg,3), BC_flow(nshg,3)
 c
       if (numrbs .gt. 0) then
-        call rigidBodyBCElas(x, iBC, BC, BC_flow, umeshold)
+        call rigidBodyBCElas(x, iBC, BC, BC_flow)
       endif
 c
       call prescribedBCElas(x, iBC, BC, BC_flow, umeshold)
@@ -24,18 +24,19 @@ c-----------------------------------------------------------------
 c
 c-----------------------------------------------------------------
 c
-      subroutine rigidBodyBCElas(x,  iBC,  BC,  BC_flow,  umeshold)
+      subroutine rigidBodyBCElas(x,  iBC,  BC,  BC_flow)
 c
         use rigidBodyFlag
         use rigidBodyForce
 c
         include "common.h"
+        include "mpif.h"
 c
         real*8    x(numnp,nsd)
-        real*8    umeshold(numnp,nsd)
+c        real*8    umeshold(numnp,nsd)
         dimension iBC(nshg), BC(nshg,3), BC_flow(nshg,3)
 c
-        call calc_rbMotion( )
+        call calc_rbMotion
 c
 c.... loop over mesh vertices
         do i = 1,numnp
