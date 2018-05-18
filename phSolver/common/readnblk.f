@@ -477,6 +477,8 @@ c.... read IDs and model tags
           allocate( tmprbMTs(numrbs) )
           allocate( rbIDs(numrbs) )
           allocate( rbMTs(numrbs) )
+          rbIDs = -1
+          rbMTs = -1
           call phio_readdatablock(fhandle,
      &     c_char_'rigid body IDs' // char(0),
      &     c_loc(tmprbIDs),numrbs, dataInt, iotype)
@@ -513,6 +515,7 @@ c.... read tag for each vertex
         endif
         allocate( tmprbFlags(numnp) )
         allocate( rbFlags(numnp) )
+        rbFlags = 0
         call phio_readdatablock(fhandle,
      &   c_char_'rigid body tag' // char(0),
      &   c_loc(tmprbFlags), intfromfile(1), dataInt, iotype)
