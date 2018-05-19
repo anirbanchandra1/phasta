@@ -465,13 +465,6 @@ c
 c.... read IDs and model tags
         ione=1
         intfromfile=0
-        call phio_readheader(fhandle,
-     &   c_char_'rigid body IDs' // char(0),
-     &   c_loc(intfromfile),ione, dataInt, iotype)
-        if(intfromfile(1) .lt. numrbs) then
-          call error ('readnblk  ', 'num of rigid body less than input'
-     &                , intfromfile(1))
-        endif
         if (numrbs > 0) then
           allocate( tmprbIDs(numrbs) )
           allocate( tmprbMTs(numrbs) )
@@ -479,12 +472,33 @@ c.... read IDs and model tags
           allocate( rbMTs(numrbs) )
           rbIDs = -1
           rbMTs = -1
+c
+          call phio_readheader(fhandle,
+     &     c_char_'rigid body IDs' // char(0),
+     &     c_loc(intfromfile),ione, dataInt, iotype)
+          if(intfromfile(1) .ne. numrbs) then
+            call error ('readnblk  ', 'num of rbs not equal input'
+     &                  , intfromfile(1))
+          endif
           call phio_readdatablock(fhandle,
      &     c_char_'rigid body IDs' // char(0),
      &     c_loc(tmprbIDs),numrbs, dataInt, iotype)
+c
+          call phio_readheader(fhandle,
+     &     c_char_'rigid body MTs' // char(0),
+     &     c_loc(intfromfile),ione, dataInt, iotype)
+          if(intfromfile(1) .ne. numrbs) then
+            call error ('readnblk  ', 'num of rbs not equal input'
+     &                  , intfromfile(1))
+          endif
           call phio_readdatablock(fhandle,
      &     c_char_'rigid body MTs' // char(0),
      &     c_loc(tmprbMTs),numrbs, dataInt, iotype)
+c
+c.... debugging {
+          write(*,*) "rank",myrank,"MT",tmprbMTs(1),"ID",tmprbIDs(1)
+c.... debugging }
+c
           do i = 1, numrbs
             do j = 1, numrbs
               if(tmprbIDs(i) .eq. rbsTags(j)) then
