@@ -495,10 +495,6 @@ c
      &     c_char_'rigid body MTs' // char(0),
      &     c_loc(tmprbMTs),numrbs, dataInt, iotype)
 c
-c.... debugging {
-          write(*,*) "rank",myrank,"MT",tmprbMTs(1),"ID",tmprbIDs(1)
-c.... debugging }
-c
           do i = 1, numrbs
             do j = 1, numrbs
               if(tmprbIDs(i) .eq. rbsTags(j)) then

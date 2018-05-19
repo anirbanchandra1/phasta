@@ -256,7 +256,7 @@ c
 c
 c.... debugging {
 c            write(*,*) "rank", myrank, "rbForce", rbForce(j,1)
-c     &                ,"disp:", rbTotalDisp(j,1), "Velo:", rbVelOld(j,1)
+c     &                ,"disp:", rbTotalDisp(j,1), "istep:", istep
 c.... debugging }
 c
 c.... update force of the previous time step
@@ -294,10 +294,6 @@ c
         pz = 0.0
         ag = 0.0
         sc = 0.0
-c
-c.... debugging {
-            write(*,*) "rank",myrank,"model tag",rbMTs(1)
-c.... debugging }
 c
         call core_update_rbms(rbTotalDisp(:,1),
      &                        rbTotalDisp(:,2),
