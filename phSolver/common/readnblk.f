@@ -13,10 +13,12 @@ c
         real*8, allocatable :: m2gParCoord(:,:)
       end module
 
-      module rigidBodyFlag
+      module rigidBodyReadData
+        integer              :: rbUseReadData
         integer, allocatable :: rbIDs(:)
         integer, allocatable :: rbMTs(:)
         integer, allocatable :: rbFlags(:)
+        real*8,  allocatable :: rbParamRead(:,:)
       end module
 
       module interfaceflag
@@ -35,7 +37,7 @@ c
 
       use m2gfields
       use interfaceflag
-      use rigidBodyFlag
+      use rigidBodyReadData
       use BLparameters
 
       real*8, allocatable :: point2x(:,:)
@@ -84,6 +86,7 @@ c
       integer, target, allocatable :: tmpm2gClsfcn(:,:)
       integer, target, allocatable :: tmpifFlag(:)
       integer, target, allocatable :: tmprbIDs(:), tmprbMTs(:), tmprbFlags(:)
+      real*8, target, allocatable  :: tmprbParamRead(:,:)
       integer fncorpsize
       character*10 cname2, cname2nd
       character*8 mach2
@@ -960,6 +963,45 @@ c read in umesh
        endif
 c
 c.... end read ALE stuff
+c
+c
+c.... read in rigid body data
+c
+       rbUseReadData = 0
+       if (numrbs .gt. 0) then
+         intfromfile=0
+         call phio_readheader(fhandle,
+     &   c_char_'rbParams' //char(0),
+     &   c_loc(intfromfile), itwo, dataInt, iotype)
+c
+         allocate( rbParamRead(numrbs, rbParamSize) )
+         rbParamRead = zero
+c
+         if(intfromfile(1).ne.0) then
+           if (intfromfile(1) .ne. numrbs)
+     &       call error ('restar  ', 'rbParams size 1', numrbs)
+           if (intfromfile(2) .ne. rbParamSize)
+     &       call error ('restar  ', 'rbParams size 2', rbParamSize)
+c
+           rbUseReadData = 1 ! turn on use read data flag
+           allocate( tmprbParamRead(numrbs, rbParamSize) )
+           tmprbParamRead = zero
+c
+           iacsiz=numrbs * rbParamSize
+           call phio_readdatablock(fhandle,
+     &     c_char_'rbParams' // char(0),
+     &     c_loc(tmprbParamRead), iacsiz, dataDbl, iotype)
+c
+           rbParamRead(:,:) = tmprbParamRead(:,:)
+         else
+           if (myrank.eq.master) then
+             warning='Rigid body data is set to zero (SAFE)'
+             write(*,*) warning
+           endif
+         endif
+       endif ! end if numrbs greater than 0
+c
+c.... end read rigid body data
 c
 cc
 cc.... read the header and check it against the run data

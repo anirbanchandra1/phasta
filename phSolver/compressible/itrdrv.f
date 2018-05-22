@@ -992,8 +992,11 @@ c     &                  xdot,  'd'//char(0), numnp, nsd, lstep)
                    call write_field(
      &                  myrank,'a'//char(0),'meshQ'//char(0), 5, 
      &                  meshq, 'd'//char(0), numel, 1,   lstep)
-		 endif
-		 if (write_residual.eq.1) then
+                 endif
+                 if (numrbs .gt. 0) then
+                   call write_rbParam
+                 endif
+                 if (write_residual.eq.1) then
                    call write_field(
      &                  myrank,'a'//char(0),'residual'//char(0), 8,
      &                  res,  'd'//char(0), nshg, 5, lstep)
@@ -1028,8 +1031,11 @@ c     &                xdot,  'd'//char(0), numnp, nsd, lstep)
                  call write_field(
      &                myrank,'a'//char(0),'meshQ'//char(0), 5, 
      &                meshq, 'd'//char(0), numel, 1,   lstep)
-	       endif
-	       if (write_residual.eq.1) then
+               endif
+               if (numrbs .gt. 0) then
+                 call write_rbParam
+               endif
+               if (write_residual.eq.1) then
                  call write_field(
      &                myrank,'a'//char(0),'residual'//char(0), 8,
      &                res,  'd'//char(0), nshg, 5, lstep)

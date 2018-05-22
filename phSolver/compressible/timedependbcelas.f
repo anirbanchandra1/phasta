@@ -26,7 +26,7 @@ c-----------------------------------------------------------------
 c
       subroutine rigidBodyBCElas(x,  iBC,  BC,  BC_flow)
 c
-        use rigidBodyFlag
+        use rigidBodyReadData
         use rigidBodyForce
 c
         include "common.h"

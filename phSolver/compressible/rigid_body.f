@@ -20,6 +20,7 @@ c
         subroutine malloc_rbForce
 c
         use rigidbody_m
+        use rigidBodyReadData
         use rigidBodyForce
 c
         allocate( rbForce(numrbs, 3)  )
@@ -34,13 +35,30 @@ c
 c
         rbForce  = 0.0
         rbTorque = 0.0
-c
         rbDisp = 0.0
-        rbTotalDisp = 0.0
-        rbForceOld = 0.0
+c
         rbTorqueOld = 0.0
-        rbVelOld = 0.0
-        rbAccOld = 0.0
+c
+c.... rbParam = rbTotalDisp + rbVelOld + rbAccOld + rbForceOld
+c
+        if (rbUseReadData .eq. 1) then
+c
+          if (rbParamSize .ne. 12) then
+            if(myrank .eq. master)
+     &        write(*,*) "change rigid body parameter size rbParamSize"
+          endif
+c
+          rbTotalDisp(:,1:3) = rbParamRead(:,1:3)
+          rbVelOld(:,1:3) = rbParamRead(:,4:6)
+          rbAccOld(:,1:3) = rbParamRead(:,7:9)
+          rbForceOld(:,1:3) = rbParamRead(:,10:12)
+          deallocate( rbParamRead )
+        else
+          rbTotalDisp = 0.0
+          rbVelOld = 0.0
+          rbAccOld = 0.0
+          rbForceOld = 0.0
+        endif
 c
         return
         end
@@ -61,7 +79,7 @@ c----------------------------------------------------------------------
 c
         subroutine commu_rbForce
 c
-        use rigidBodyFlag
+        use rigidBodyReadData
         use rigidBodyForce
 c
         include "common.h"
@@ -122,7 +140,7 @@ c----------------------------------------------------------------------
 c
         subroutine local_rbIndex ( ien )
 c
-        use rigidBodyFlag
+        use rigidBodyReadData
         use rigidBodyForce
 c
         include "common.h"
@@ -179,7 +197,7 @@ c----------------------------------------------------------------------
 c
         subroutine calc_rbMotion
 c
-        use rigidBodyFlag
+        use rigidBodyReadData
         use rigidBodyForce
 c
         include "common.h"
@@ -223,7 +241,7 @@ c.... debugging }
 c
 c.... set initial acceleration
 c
-          if (istep .eq. 0) then
+          if ( (istep .eq. 0) .and. (rbUseReadData .eq. 0) ) then
             rbAccOld(j,1:3) = rbForce(j,1:3) / rb_prop(j,1)
             rbForceOld(j,1:3) = rbForce(j,1:3)
           endif
@@ -256,7 +274,8 @@ c
 c
 c.... debugging {
 c            write(*,*) "rank", myrank, "rbForce", rbForce(j,1)
-c     &                ,"disp:", rbTotalDisp(j,1), "istep:", istep
+c     &                ,"disp:", rbTotalDisp(j,1)
+c     &                ,"rbUseReadData:", rbUseReadData
 c.... debugging }
 c
 c.... update force of the previous time step
@@ -272,7 +291,7 @@ c----------------------------------------------------------------------
 c
         subroutine synchronize_rbForce
 c
-        use rigidBodyFlag
+        use rigidBodyReadData
         use rigidBodyForce
         use core_rigid_body
 c
@@ -309,7 +328,33 @@ c
 c
 c----------------------------------------------------------------------
 c
-
+        subroutine write_rbParam
+c
+c        use rigidBodyReadData
+        use rigidBodyForce
+c
+        include "common.h"
+c
+c.... rbParam = rbTotalDisp + rbVelOld + rbAccOld + rbForceOld
+c
+        real*8, dimension(numrbs, rbParamSize) :: rbParam
+c
+        if (rbParamSize .ne. 12) then
+          if(myrank .eq. master)
+     &      write(*,*) "change rigid body parameter size rbParamSize"
+        endif
+c
+        rbParam(:,1:3)   = rbTotalDisp(:,1:3)
+        rbParam(:,4:6)   = rbVelOld(:,1:3)
+        rbParam(:,7:9)   = rbAccOld(:,1:3)
+        rbParam(:,10:12) = rbForceOld(:,1:3)
+c
+        call write_field(
+     &       myrank,  'a'//char(0),'rbParams'//char(0), 8,
+     &       rbParam, 'd'//char(0), numrbs, rbParamSize, lstep)
+c
+        return
+        end
 c
 c----------------------------------------------------------------------
 c
