@@ -1108,8 +1108,6 @@ c
 c
       if (numrbs .gt. 0) then
         call release_rbForce
-        if (numpe > 1) call MPI_BARRIER(MPI_COMM_WORLD, ierr)
-        write(*,*) "rank",myrank,"finish releasing; numrbs = ", numrbs
       endif
 c
         call destruct_sum_vi_area

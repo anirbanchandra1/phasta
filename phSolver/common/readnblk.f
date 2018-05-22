@@ -762,8 +762,11 @@ c
       if (myrank.eq.master) then
         write(*,*) 'time to read geombc (seconds)', iotime
       endif
-
-c.... Read restart files
+c
+c-------------------------------------------------------------------------
+c------------------------- Read restart files ----------------------------
+c-------------------------------------------------------------------------
+c
       iotime = TMRC()
       if( input_mode .eq. -1 ) then
         call streamio_setup_read(fhandle, geomRestartStream)
