@@ -26,7 +26,7 @@ c
         gamma1 = gamma - one
 c
         rho = pres / (Rgas*T)
-        ei  = T * Rgas / gamma1
+        ei  = T * Rgas / gamma1 
 c
       end subroutine getthm6_ideal_gas
 c
@@ -114,7 +114,10 @@ c
         beta_T  = mat_prop(mater,iprop_liquid_1_betaT,  1)
 c
         rho = rho_ref * (one - alpha_P*(T-T_ref) + beta_T*(pres-P_ref))
-        ei  = cv_liq*T
+        !ei  = cv_liq*T - 2557000
+        !ei  = cv_liq*T - 163000
+	ei   = cv_liq*T
+
 c
       end subroutine getthm6_liquid_1
 c
@@ -122,7 +125,7 @@ c
 c
         call getthm6_liquid_1
 c
-        h   = ei + pres/rho
+        h   = ei + pres/rho 
         cp  = cv_liq
         alphaP = alpha_P
         betaT  = beta_T
