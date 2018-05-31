@@ -46,19 +46,22 @@ c
           if (rbParamSize .ne. 12) then
             if(myrank .eq. master)
      &        write(*,*) "change rigid body parameter size rbParamSize"
+            call error('rbParamSize','change size',rbParamSize)
           endif
 c
           rbTotalDisp(:,1:3) = rbParamRead(:,1:3)
           rbVelOld(:,1:3) = rbParamRead(:,4:6)
           rbAccOld(:,1:3) = rbParamRead(:,7:9)
           rbForceOld(:,1:3) = rbParamRead(:,10:12)
-          deallocate( rbParamRead )
         else
           rbTotalDisp = 0.0
           rbVelOld = 0.0
           rbAccOld = 0.0
           rbForceOld = 0.0
         endif
+c
+        if (allocated(rbParamRead))
+     &    deallocate( rbParamRead )
 c
         return
         end
@@ -273,9 +276,9 @@ c
           rbAccOld(j,1:3) = tmpAcc(1:3) - (1.0-am)/am * rbAccOld(j,1:3)
 c
 c.... debugging {
-c            write(*,*) "rank", myrank, "rbForce", rbForce(j,1)
-c     &                ,"disp:", rbTotalDisp(j,1)
-c     &                ,"rbUseReadData:", rbUseReadData
+            write(*,*) "rank", myrank, "rbForce", rbForce(j,1)
+     &                ,"disp:", rbTotalDisp(j,1)
+     &                ,"rbUseReadData:", rbUseReadData
 c.... debugging }
 c
 c.... update force of the previous time step

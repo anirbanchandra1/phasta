@@ -993,12 +993,16 @@ c
      &     c_loc(tmprbParamRead), iacsiz, dataDbl, iotype)
 c
            rbParamRead(:,:) = tmprbParamRead(:,:)
+c
+           deallocate( tmprbParamRead )
+c
          else
            if (myrank.eq.master) then
              warning='Rigid body data is set to zero (SAFE)'
              write(*,*) warning
            endif
          endif
+c
        endif ! end if numrbs greater than 0
 c
 c.... end read rigid body data
