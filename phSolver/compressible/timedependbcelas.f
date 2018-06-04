@@ -15,7 +15,9 @@ c
         call rigidBodyBCElas(x, iBC, BC, BC_flow)
       endif
 c
-      call prescribedBCElas(x, iBC, BC, BC_flow, umeshold)
+      if (elasFDC .gt. 0) then
+        call prescribedBCElas(x, iBC, BC, BC_flow, umeshold)
+      endif
 c
       return
       end
@@ -86,6 +88,7 @@ c.... dynamic origin, x translation, rotation frequence
       integer   answer
       real*8    cent(numrbs, 3)
 c
+      casenumber = 0
       if (elasFDC .gt. 0) then
         if (myrank .eq. master) then
           write(*,*) "use Force-driven case:", elasFDC
