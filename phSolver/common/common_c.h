@@ -278,6 +278,7 @@ extern "C" {
     int numrbs;
     int rbsTags[MAXTS];
     int rbsMM[MAXTS];
+    int rb_commuMotion;
   } rigidbody ;
 
   extern struct { 

@@ -204,10 +204,13 @@ c
         use rigidBodyForce
 c
         include "common.h"
+        include "mpif.h"
+        include "auxmpi.h"
 c
         real*8                           t_mag
         real*8, dimension(nsd)        :: t_dir,  tmpAcc
         real*8, dimension(numrbs,nsd) :: t_acc
+        real*8, dimension(3)          :: Forin1, Forin2
 c.... generalized-alpha parameters
         real*8  am, af, gm, bt
 c
@@ -284,6 +287,19 @@ c
 c.... update force of the previous time step
 c
           rbForceOld(j,1:3) = rbForce(j,1:3)
+c
+c.... broadcast rb velocity and displacement
+          if ((rb_commuMotion .eq. 1) .and. (numpe .gt. 1)) then
+            Forin1  = (/ rbVelOld(j,1), rbVelOld(j,2), rbVelOld(j,3) /)
+            call MPI_BCAST ( Forin1(1),  3,  MPI_DOUBLE_PRECISION,
+     &                       master,     MPI_COMM_WORLD,  ierr)
+            rbVelOld(i,1:3) = Forin1(1:3)
+c
+            Forin2  = (/ rbDisp(j,1),   rbDisp(j,2),   rbDisp(j,3) /)
+            call MPI_BCAST ( Forin2(1),  3,  MPI_DOUBLE_PRECISION,
+     &                       master,     MPI_COMM_WORLD,  ierr)
+            rbDisp(i,1:3) = Forin2(1:3)
+          endif
 c
         enddo
 c

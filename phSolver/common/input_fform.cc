@@ -632,6 +632,18 @@ int input_fform(phSolver::Input& inp)
       }
       vec.erase(vec.begin(),vec.end());
     }
+
+    if((string)inp.GetValue("Rigid Body Communicate Motion Option") == "True"){
+      rigidbody.rb_commuMotion = 1;
+    }
+    else if((string)inp.GetValue("Rigid Body Communicate Motion Option") == "False"){
+      rigidbody.rb_commuMotion = 0;
+    }
+    else {
+      cout << " Rigid Body Communicate Motion Option: Only Legal Values (True, False) ";
+      cout << endl;
+      exit(1);
+    }
 // end read rigid body --------------------------------------------------
 
     vec = inp.GetValue("Density");
@@ -699,8 +711,8 @@ int input_fform(phSolver::Input& inp)
 //for mesh-elastic--------------------------------------------
     if((string)inp.GetValue("Mesh Elastic Youngs Modulus Volume Option") == "True"){
       matdat.datelas_volume_YM = 1;
-	}
-	else if((string)inp.GetValue("Mesh Elastic Youngs Modulus Volume Option") == "False"){
+    }
+    else if((string)inp.GetValue("Mesh Elastic Youngs Modulus Volume Option") == "False"){
       matdat.datelas_volume_YM = 0;
     }
     else {

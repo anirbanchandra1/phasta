@@ -173,10 +173,11 @@ c----------------------------------------------------------------------
 c
 c.... common /rigidbody/   : rigid body parameters, properties, constraints
 c
-c numrbs     : number of rigid bodies
-c rbsTags    : tags of rigid bodies
-c rbsMM      : rigid body motion mode for each rigid body
-c rb_prop    : properties and constraints of rigid bodies
+c numrbs         : number of rigid bodies
+c rbsTags        : tags of rigid bodies
+c rbsMM          : rigid body motion mode for each rigid body
+c rb_prop        : properties and constraints of rigid bodies
+c rb_commuMotion : communicate motion option flag
 c
       module rigidbody_m
         use iso_c_binding
@@ -186,8 +187,10 @@ c
         integer(c_int), target :: rbsTags(MAXTS)
         integer(c_int), target :: rbsMM(MAXTS)
         integer(c_int)         :: numrbs
+        integer(c_int)         :: rb_commuMotion
         integer                :: rbParamSize = 12
-        common /rigidbody/     rb_prop,   numrbs,   rbsTags,   rbsMM
+        common /rigidbody/     rb_prop,   numrbs,   rbsTags,
+     &                         rbsMM,     rb_commuMotion
       end module rigidbody_m
 c
 c----------------------------------------------------------------------
