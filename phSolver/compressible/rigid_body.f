@@ -3,13 +3,15 @@ c
         module rigidBodyForce
           integer, allocatable :: rbIndex(:)
           real*8, allocatable  :: rbForce(:,:)
+          real*8, allocatable  :: rbForceOld(:,:)
           real*8, allocatable  :: rbTorque(:,:)
+          real*8, allocatable  :: rbTorqueOld(:,:)
 c
           real*8, allocatable  :: rbDisp(:,:)
           real*8, allocatable  :: rbTotalDisp(:,:)
-          real*8, allocatable  :: rbForceOld(:,:)
-          real*8, allocatable  :: rbTorqueOld(:,:)
+          real*8, allocatable  :: rbVel(:,:)
           real*8, allocatable  :: rbVelOld(:,:)
+          real*8, allocatable  :: rbAcc(:,:)
           real*8, allocatable  :: rbAccOld(:,:)
         end module
 c
@@ -22,22 +24,27 @@ c
         use rigidbody_m
         use rigidBodyReadData
         use rigidBodyForce
+        use number_def_m
 c
         allocate( rbForce(numrbs, 3)  )
+        allocate( rbForceOld(numrbs, 3)  )
         allocate( rbTorque(numrbs, 3) )
+        allocate( rbTorqueOld(numrbs, 3)  )
 c
         allocate( rbDisp(numrbs, 3) )
         allocate( rbTotalDisp(numrbs, 3) )
-        allocate( rbForceOld(numrbs, 3)  )
-        allocate( rbTorqueOld(numrbs, 3)  )
+        allocate( rbVel(numrbs, 3)  )
         allocate( rbVelOld(numrbs, 3)  )
+        allocate( rbAcc(numrbs, 3)  )
         allocate( rbAccOld(numrbs, 3)  )
 c
-        rbForce  = 0.0
-        rbTorque = 0.0
-        rbDisp = 0.0
+        rbForce  = zero
+        rbTorque = zero
+        rbDisp = zero
+        rbVel = zero
+        rbAcc = zero
 c
-        rbTorqueOld = 0.0
+        rbTorqueOld = zero
 c
 c.... rbParam = rbTotalDisp + rbVelOld + rbAccOld + rbForceOld
 c
@@ -54,10 +61,10 @@ c
           rbAccOld(:,1:3) = rbParamRead(:,7:9)
           rbForceOld(:,1:3) = rbParamRead(:,10:12)
         else
-          rbTotalDisp = 0.0
-          rbVelOld = 0.0
-          rbAccOld = 0.0
-          rbForceOld = 0.0
+          rbTotalDisp = zero
+          rbVelOld = zero
+          rbAccOld = zero
+          rbForceOld = zero
         endif
 c
         if (allocated(rbParamRead))
@@ -68,15 +75,20 @@ c
 c
 c----------------------------------------------------------------------
 c
+c----------------------------------------------------------------------
+c
         subroutine init_rbForce
 c
         use rigidBodyForce
+        use number_def_m
 c
-        rbForce  = 0.0
-        rbTorque = 0.0
+        rbForce  = zero
+        rbTorque = zero
 c
         return
         end
+c
+c----------------------------------------------------------------------
 c
 c----------------------------------------------------------------------
 c
@@ -111,6 +123,8 @@ c
 c
 c----------------------------------------------------------------------
 c
+c----------------------------------------------------------------------
+c
         subroutine release_rbForce
 c
         use rigidBodyForce
@@ -129,8 +143,12 @@ c
      &    deallocate( rbForceOld )
         if (allocated(rbTorqueOld))
      &    deallocate( rbTorqueOld )
+        if (allocated(rbVel))
+     &    deallocate( rbVel )
         if (allocated(rbVelOld))
      &    deallocate( rbVelOld )
+        if (allocated(rbAcc))
+     &    deallocate( rbAcc )
         if (allocated(rbAccOld))
      &    deallocate( rbAccOld )
 c
@@ -186,6 +204,8 @@ c
 c
 c----------------------------------------------------------------------
 c
+c----------------------------------------------------------------------
+c
         subroutine release_rbIndex
 c
         use rigidBodyForce
@@ -195,6 +215,8 @@ c
 c
         return
         end
+c
+c----------------------------------------------------------------------
 c
 c----------------------------------------------------------------------
 c
@@ -241,9 +263,6 @@ c
           endif
 c
           rbForce(j,1:3) = rbForce(j,1:3) * t_dir(1:3)
-c.... debugging {
-c          rbForce(j,1) = 3.0 + 2.0 * Delt(1) * (lstep + 1.0)
-c.... debugging }
 c
 c.... set initial acceleration
 c
@@ -264,42 +283,34 @@ c
      &                    (0.5 + bt/am) * rbAccOld(j,1:3)
      &                  - bt * tmpAcc(1:3)    )
 c
-c.... get total displacement
-c
-          rbTotalDisp(j,1:3) = rbTotalDisp(j,1:3) + rbDisp(j,1:3)
-c
 c.... get velocity
 c
-          rbVelOld(j,1:3) = rbVelOld(j,1:3)
-     &                    + Delt(1) * (1.0 - gm/am) * rbAccOld(j,1:3)
-     &                    + Delt(1) * gm * tmpAcc(1:3)
+          rbVel(j,1:3) = rbVelOld(j,1:3)
+     &                 + Delt(1) * (1.0 - gm/am) * rbAccOld(j,1:3)
+     &                 + Delt(1) * gm * tmpAcc(1:3)
 c
 c.... get acceleration
 c
-          rbAccOld(j,1:3) = tmpAcc(1:3) - (1.0-am)/am * rbAccOld(j,1:3)
-c
-c.... debugging {
-            write(*,*) "rank", myrank, "rbForce", rbForce(j,1)
-     &                ,"disp:", rbTotalDisp(j,1)
-     &                ,"rbUseReadData:", rbUseReadData
-c.... debugging }
-c
-c.... update force of the previous time step
-c
-          rbForceOld(j,1:3) = rbForce(j,1:3)
+          rbAcc(j,1:3) = tmpAcc(1:3) - (1.0-am)/am * rbAccOld(j,1:3)
 c
 c.... broadcast rb velocity and displacement
+c
           if ((rb_commuMotion .eq. 1) .and. (numpe .gt. 1)) then
-            Forin1  = (/ rbVelOld(j,1), rbVelOld(j,2), rbVelOld(j,3) /)
+            Forin1  = (/ rbVel(j,1), rbVel(j,2), rbVel(j,3) /)
             call MPI_BCAST ( Forin1(1),  3,  MPI_DOUBLE_PRECISION,
      &                       master,     MPI_COMM_WORLD,  ierr)
-            rbVelOld(i,1:3) = Forin1(1:3)
+            rbVel(i,1:3) = Forin1(1:3)
 c
             Forin2  = (/ rbDisp(j,1),   rbDisp(j,2),   rbDisp(j,3) /)
             call MPI_BCAST ( Forin2(1),  3,  MPI_DOUBLE_PRECISION,
      &                       master,     MPI_COMM_WORLD,  ierr)
             rbDisp(i,1:3) = Forin2(1:3)
           endif
+c
+c.... debugging {
+            write(*,*) "rank", myrank, "rbForce", rbForce(j,1)
+     &                ,"disp:", rbTotalDisp(j,1)
+c.... debugging }
 c
         enddo
 c
@@ -308,7 +319,35 @@ c
 c
 c----------------------------------------------------------------------
 c
-        subroutine synchronize_rbForce
+c----------------------------------------------------------------------
+c
+        subroutine update_rbParam
+c
+        use rigidBodyForce
+c
+        include "common.h"
+c
+        do j = 1,numrbs
+          rbTotalDisp(j,1:3) = rbTotalDisp(j,1:3) + rbDisp(j,1:3)
+          rbAccOld(j,1:3) = rbAcc(j,1:3)
+          rbVelOld(j,1:3) = rbVel(j,1:3)
+          rbForceOld(j,1:3) = rbForce(j,1:3)
+c
+c.... debugging {
+            write(*,*) "rank", myrank, "rbForce", rbForce(j,1)
+     &                ,"disp:", rbTotalDisp(j,1)
+c.... debugging }
+c
+        enddo
+c
+        return
+        end
+c
+c----------------------------------------------------------------------
+c
+c----------------------------------------------------------------------
+c
+        subroutine synchronize_rbParam
 c
         use rigidBodyReadData
         use rigidBodyForce
@@ -344,6 +383,7 @@ c
         return
         end
 c
+c----------------------------------------------------------------------
 c
 c----------------------------------------------------------------------
 c

@@ -823,6 +823,9 @@ c
             call itrUpdate( yold,  acold,   y,    ac)
             call itrUpdateElas ( xold, x)
             umeshold = umesh
+            if (numrbs .gt. 0) then
+              call update_rbParam
+            endif
 c
             call itrBC (y,ac, iBC, BC, iper, ilwork, umesh)
 c
@@ -1109,7 +1112,7 @@ c
       endif
 c
       if ((output_mode .eq. -1) .and. (numrbs .gt. 0)) then
-        call synchronize_rbForce
+        call synchronize_rbParam
       endif
 c
       if (numrbs .gt. 0) then

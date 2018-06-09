@@ -47,7 +47,7 @@ c.... loop over mesh vertices
 c.... set corresponding mesh elas BC
             BC(i,1:3) = rbDisp(rbFlags(i), 1:3)
 c.... update flow BC
-            BC_flow(i,1:3) = rbVelOld(rbFlags(i), 1:3)
+            BC_flow(i,1:3) = rbVel(rbFlags(i), 1:3)
           endif
         enddo ! end loop numnp
 c
