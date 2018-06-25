@@ -77,6 +77,32 @@ c----------------------------------------------------------------------
 c
 c----------------------------------------------------------------------
 c
+      subroutine set_rbBC (x,  iBC,  BC,  BC_flow)
+c
+        use rigidBodyReadData
+        use rigidBodyForce
+c
+        include "common.h"
+c
+        real*8    x(numnp,nsd)
+        dimension iBC(nshg), BC(nshg,3), BC_flow(nshg,3)
+c
+c.... loop over mesh vertices
+        do i = 1,numnp
+          if ( (ibits(iBC(i),14,3) .eq. 7) .and.
+     &         (rbFlags(i) .gt. 0) ) then
+c.... update flow BC
+            BC_flow(i,1:3) = rbVelOld(rbFlags(i), 1:3)
+          endif
+        enddo ! end loop numnp
+c
+      return
+      end
+c
+c----------------------------------------------------------------------
+c
+c----------------------------------------------------------------------
+c
         subroutine init_rbForce
 c
         use rigidBodyForce

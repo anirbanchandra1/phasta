@@ -342,7 +342,34 @@ c        tcorewc1 = secs(0.0)
                 isclr=1 ! fix scalar
                 call itrBCsclr(yold,ac,iBC,BC,iper,ilwork)
         endif   
-                                                       
+c
+c.... only used for prescribing time-depended mesh-elastic BC
+c.... at this point, we need to set BC based on old data from restart.
+c     flow vel BC is changed by time-depended BC and rigid body motion.
+c     mesh vel BC is changed by time-depended BC and interface velocity.
+c
+        if (elasModel .eq. 1) then
+          if (numrbs .gt. 0) then
+            call set_rbBC (x, iBC, BC(:,ndof+2:ndof+4), BC(:,3:5))
+          endif
+c
+          if (elasFDC .gt. 0) then
+            call prescribedBCElas(x,   iBC,  BC(:,ndof+2:ndof+4),
+     &                            BC(:,3:5), umeshold)
+          endif
+        endif
+c
+        do inode = 1, nshg
+          if ( ifFlag(inode) .eq. 1 ) then
+            BC(inode,ndof+2:ndof+4) = umesh(inode,:) * Delt(1)
+          endif
+        enddo
+c
+        call itrBC (yold,  ac,  iBC,  BC,  iper, ilwork, umesh)
+c
+c.... end of reset BC based on old data from restart
+c
+
 867     continue
 
 
@@ -828,6 +855,8 @@ c
             endif
 c
             call itrBC (y,ac, iBC, BC, iper, ilwork, umesh)
+c
+            call itrBC (yold,  ac,  iBC,  BC,  iper, ilwork, umesh)
 c
 c... update B array for solid blocks...
 c
