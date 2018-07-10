@@ -365,23 +365,25 @@ c
      &     y,        x,       umesh,
      &     shpif0,   shpif1,  shgif0,  shgif1,
      &     qwtif, qwtif0,   qwtif1,
-     &     ienif0,   ienif1
-     &    )
+     &     ienif0,   ienif1,
+     &     BDiag)
             use hierarchic_m
             use local_m
             use e3if_m
             use e3if_geom_m
             use conpar_m
+            use genpar_m, only: iprec
             implicit none
             real*8, dimension(nshg,nflow), intent(inout) :: res
             real*8, dimension(nshg,ndof),  intent(in)    :: y
             real*8, dimension(nshg,nsd),   intent(in)    :: x
+            real*8, dimension(nshg, nsd), intent(inout) :: umesh
             real*8, dimension(nshl0,nqpt),intent(in)   :: shpif0
             real*8, dimension(nshl1,nqpt),intent(in)   :: shpif1
             real*8, dimension(nsd,nshl0,nqpt), intent(in)  :: shgif0
             real*8, dimension(nsd,nshl1,nqpt), intent(in)  :: shgif1
             real*8, dimension(nqpt), intent(in) :: qwtif, qwtif0, qwtif1
-            real*8, dimension(nshg, nsd), intent(inout) :: umesh
+            real*8, dimension(nshg,nflow,nflow), intent(inout) :: BDiag
             integer, dimension(:,:), pointer, intent(in)   :: ienif0, ienif1
           end subroutine asidgif
           subroutine fillsparse_if
@@ -893,8 +895,8 @@ c      enddo
      &      shgif(lcsyst0,1:nsd,1:nshl0,:),
      &      shgif(lcsyst1,1:nsd,1:nshl1,:),
      &      qwtif(itpid,:), qwtif(lcsyst0,:), qwtif(lcsyst1,:),
-     &      ienif0, ienif1
-     &    )
+     &      ienif0, ienif1,
+     &      BDiag)
 c
           if (lhs .eq. 1) then
 c
