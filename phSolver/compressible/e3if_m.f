@@ -305,8 +305,8 @@ c
 c
           element_loop: do iel = 1,npro
 c
-            call calc_conv_flux(fconv0,rho0(iel),u0(iel,:),um0(iel,:),pres0(iel),ei0(iel))
-            call calc_conv_flux(fconv1,rho1(iel),u1(iel,:),um1(iel,:),pres1(iel),ei1(iel))
+            call calc_conv_flux(fconv0,rho0(iel),u0(iel,:),um0(iel,:),pres0(iel),ei0(iel),h0(iel))
+            call calc_conv_flux(fconv1,rho1(iel),u1(iel,:),um1(iel,:),pres1(iel),ei1(iel),h1(iel))
 c
             call calc_diff_flux(fdiff0,var0(iel),prop0(iel))
             call calc_diff_flux(fdiff1,var1(iel),prop1(iel))
@@ -570,17 +570,17 @@ c
 c
         end subroutine calc_cmtrx
 c
-        subroutine calc_conv_flux(flux,rho,u,um,p,ei)
+        subroutine calc_conv_flux(flux,rho,u,um,p,ei,h)
 c
           real*8, dimension(nsd,nflow), intent(out) :: flux
-          real*8, intent(in) :: rho,p,ei,u(nsd),um(nsd)
+          real*8, intent(in) :: rho,p,ei,u(nsd),um(nsd),h
           real*8 :: delta(3,3)
           data delta /1.d0,0.d0,0.d0,0.d0,1.d0,0.d0,0.d0,0.d0,1.d0/
 c
           integer :: i
           real*8  :: etot
 c
-          etot = ei + pt50 * dot_product(u,u)
+          etot = h + pt50 * dot_product(u,u)
 c
           do i = 1,nsd
 c
@@ -588,7 +588,7 @@ c
             flux(i,2) = rho*(u(i)-um(i))*u(1) + p*delta(1,i)
             flux(i,3) = rho*(u(i)-um(i))*u(2) + p*delta(2,i)
             flux(i,4) = rho*(u(i)-um(i))*u(3) + p*delta(3,i)
-            flux(i,5) = rho*(u(i)-um(i))*etot + p*u(i)
+            flux(i,5) = rho*(u(i)-um(i))*etot !+ p*u(i)
 c
           enddo
 c
