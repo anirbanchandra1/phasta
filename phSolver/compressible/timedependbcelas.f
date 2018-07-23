@@ -566,7 +566,6 @@ c
         enddo ! end loop numnp
       endif  ! end case 10
 c
-c
 c.... test case 11
 c.... prescribe 6-grain displacement
 c     mimic real simulation deformation
@@ -636,6 +635,180 @@ c
           endif
         enddo ! end loop numnp
       endif  ! end case 11
+c
+c.... test case 12
+c.... shrink non-uniformly
+c
+      if ( casenumber .eq. 12 ) then
+        xtsl     = 2.0000000000000e-4
+        dyn_org  = 2.6250000000000e-3 ! + DBLE(lstep) * xtsl
+        dyn_lnt  = 2.0000000000000e-3 * 0.9**lstep
+        if (myrank .eq. master) then
+          write(*,*) "current lstep:", lstep, "dyn_org:", dyn_org
+        endif
+        rotf     = 90.0
+        shrkfactor = 2.0
+        do i = 1,numnp
+          if ( (ibits(iBC(i),14,3) .eq. 7) .and.
+     &         (x(i,1) .lt. 6.65e-3) .and. (x(i,1) .gt. -1.4e-3) .and.
+     &         ((x(i,2)*x(i,2) + x(i,3)*x(i,3)) .lt. 2.89e-6) ) then
+            if( x(i,2) .ge. 0.6e-3 ) then ! top
+              if ( x(i,1) .le. (dyn_org-1.025e-3) ) then ! top tail
+                shrk = 0.5 - abs(x(i,1)-dyn_org+2.125e-3)/dyn_lnt
+                shrk = shrkfactor * shrk
+c
+                disp(i,1) = -0.1 * (x(i,1)-dyn_org+2.125e-3) !+ xtsl
+                disp(i,2) = -0.1 * (1.0 + shrk) * (x(i,2)-1.125e-3) !+ 0.01
+                disp(i,3) = -0.1 * (1.0 + shrk) * x(i,3)
+
+              else if ( x(i,1) .ge. (dyn_org+1.025e-3) ) then ! top head
+                shrk = 0.5 - abs(x(i,1)-dyn_org-2.125e-3)/dyn_lnt
+                shrk = shrkfactor * shrk
+c
+                disp(i,1) = -0.1 * (x(i,1)-dyn_org-2.125e-3) !+ xtsl
+                disp(i,2) = -0.1 * (1.0 + shrk) * (x(i,2)-1.125e-3) !+ 0.01
+                disp(i,3) = -0.1 * (1.0 + shrk) * x(i,3)
+
+              else ! top middle
+                shrk = 0.5 - abs(x(i,1)-dyn_org)/dyn_lnt
+                shrk = shrkfactor * shrk
+c
+                disp(i,1) = -0.1 * (x(i,1)-dyn_org) !+ xtsl
+                disp(i,2) = -0.1 * (1.0 + shrk) * (x(i,2)-1.125e-3) !+ 0.01
+                disp(i,3) = -0.1 * (1.0 + shrk) * x(i,3)
+
+              endif ! end top--switch head middle tail
+
+            else if( x(i,2) .le. -0.6e-3 ) then ! bottom
+              if ( x(i,1) .le. (dyn_org-1.025e-3) ) then ! bottom tail
+                shrk = 0.5 - abs(x(i,1)-dyn_org+2.125e-3)/dyn_lnt
+                shrk = shrkfactor * shrk
+c
+                disp(i,1) = -0.1 * (x(i,1)-dyn_org+2.125e-3) !+ xtsl
+                disp(i,2) = -0.1 * (1.0 + shrk) * (x(i,2)+1.125e-3) !- 0.01
+                disp(i,3) = -0.1 * (1.0 + shrk) * x(i,3)
+
+              else if ( x(i,1) .ge. (dyn_org+1.025e-3) ) then ! bottom head
+                shrk = 0.5 - abs(x(i,1)-dyn_org-2.125e-3)/dyn_lnt
+                shrk = shrkfactor * shrk
+c
+                disp(i,1) = -0.1 * (x(i,1)-dyn_org-2.125e-3) !+ xtsl
+                disp(i,2) = -0.1 * (1.0 + shrk) * (x(i,2)+1.125e-3) !- 0.01
+                disp(i,3) = -0.1 * (1.0 + shrk) * x(i,3)
+
+              else ! bottom middle
+                shrk = 0.5 - abs(x(i,1)-dyn_org)/dyn_lnt
+                shrk = shrkfactor * shrk
+c
+                disp(i,1) = -0.1 * (x(i,1)-dyn_org) !+ xtsl
+                disp(i,2) = -0.1 * (1.0 + shrk) * (x(i,2)+1.125e-3) !- 0.01
+                disp(i,3) = -0.1 * (1.0 + shrk) * x(i,3)
+
+              endif ! end bottom--switch head middle tail
+
+            else ! middle
+              if ( x(i,1) .le. (dyn_org-1.025e-3) ) then ! middle tail
+                shrk = 0.5 - abs(x(i,1)-dyn_org+2.125e-3)/dyn_lnt
+                shrk = shrkfactor * shrk
+c
+                disp(i,1) = -0.1 * (x(i,1)-dyn_org+2.125e-3) !+ xtsl
+                disp(i,2) = -0.1 * (1.0 + shrk) * (x(i,2)) ! + 0.01
+                disp(i,3) = -0.1 * (1.0 + shrk) * x(i,3)
+
+              else if ( x(i,1) .ge. (dyn_org+1.025e-3) ) then ! middle head
+                shrk = 0.5 - abs(x(i,1)-dyn_org-2.125e-3)/dyn_lnt
+                shrk = shrkfactor * shrk
+c
+                disp(i,1) = -0.1 * (x(i,1)-dyn_org-2.125e-3) !+ xtsl
+                disp(i,2) = -0.1 * (1.0 + shrk) * (x(i,2)) ! + 0.01
+                disp(i,3) = -0.1 * (1.0 + shrk) * x(i,3)
+
+              else ! middle middle
+                shrk = 0.5 - abs(x(i,1)-dyn_org)/dyn_lnt
+                shrk = shrkfactor * shrk
+c
+                disp(i,1) = -0.1 * (x(i,1)-dyn_org) !+ xtsl
+                disp(i,2) = -0.1 * (1.0 + shrk) * (x(i,2)) ! + 0.01
+                disp(i,3) = -0.1 * (1.0 + shrk) * x(i,3)
+
+              endif ! end middle--switch head middle tail
+
+            endif ! end if switch top middle bottom
+            BC(i,1:3)   = disp(i,1:3)
+          endif ! end if inside cylinder
+        enddo ! end loop numnp
+      endif ! end if case 12
+c
+c.... end test case 12
+c
+c.... test case 13
+c.... prescribe 6-grain displacement
+c     non-uniformly shrink; no rotation
+c
+      if ( casenumber .eq. 13 ) then
+        xtsl    = 5.3333333333333e-3 * 0.98**lstep
+        dyn_org = (5.3333333333333e-3 - 5.3333333333333e-3*0.98**lstep)/
+     &            (1.0-0.98)
+        dyn_lnt = 2.0000000000000e1 * 0.85**lstep
+        shrkfactor = 2.0
+c
+        if (myrank .eq. master) then
+          write(*,*) "current lstep:", lstep, "xtsl:", xtsl
+        endif
+c
+        do i = 1,numnp
+          if ( ifFlag(i) .eq. 1 ) then ! interface node
+            if( x(i,2) .gt. 0.0 ) then ! top
+              if ( x(i,1) .le. -1.25 ) then ! top tail
+                shrk = 0.5 - abs(x(i,1)+2.5+dyn_org)/dyn_lnt
+                shrk = shrkfactor * shrk
+c
+                disp(i,1) = -0.02 * (x(i,1)+2.5+dyn_org) - xtsl
+                disp(i,2) = -0.02 * (1.0 + shrk) * (x(i,2)-0.75) !+ 0.01
+                disp(i,3) = -0.02 * (1.0 + shrk) * x(i,3)
+              else if ( x(i,1) .ge. 1.25 ) then ! top head
+                shrk = 0.5 - abs(x(i,1)-2.5-dyn_org)/dyn_lnt
+                shrk = shrkfactor * shrk
+c
+                disp(i,1) = -0.02 * (x(i,1)-2.5-dyn_org) + xtsl
+                disp(i,2) = -0.02 * (1.0 + shrk) * (x(i,2)-0.75) !+ 0.01
+                disp(i,3) = -0.02 * (1.0 + shrk) * x(i,3)
+              else ! top middle
+                shrk = 0.5 - abs(x(i,1))/dyn_lnt
+                shrk = shrkfactor * shrk
+c
+                disp(i,1) = -0.02 * (x(i,1))
+                disp(i,2) = -0.02 * (1.0 + shrk) * (x(i,2)-0.75) !+ 0.01
+                disp(i,3) = -0.02 * (1.0 + shrk) * x(i,3)
+              endif ! end top--switch head middle tail
+            else ! bottom
+              if ( x(i,1) .le. -1.25 ) then ! bottom tail
+                shrk = 0.5 - abs(x(i,1)+2.5+dyn_org)/dyn_lnt
+                shrk = shrkfactor * shrk
+c
+                disp(i,1) = -0.02 * (x(i,1)+2.5+dyn_org) - xtsl
+                disp(i,2) = -0.02 * (1.0 + shrk) * (x(i,2)+0.75) !- 0.01
+                disp(i,3) = -0.02 * (1.0 + shrk) * x(i,3)
+              else if ( x(i,1) .ge. 1.25 ) then ! bottom head
+                shrk = 0.5 - abs(x(i,1)-2.5-dyn_org)/dyn_lnt
+                shrk = shrkfactor * shrk
+c
+                disp(i,1) = -0.02 * (x(i,1)-2.5-dyn_org) + xtsl
+                disp(i,2) = -0.02 * (1.0 + shrk) * (x(i,2)+0.75) !- 0.01
+                disp(i,3) = -0.02 * (1.0 + shrk) * x(i,3)
+              else ! bottom middle
+                shrk = 0.5 - abs(x(i,1))/dyn_lnt
+                shrk = shrkfactor * shrk
+c
+                disp(i,1) = -0.02 * (x(i,1))
+                disp(i,2) = -0.02 * (1.0 + shrk) * (x(i,2)+0.75) !- 0.01
+                disp(i,3) = -0.02 * (1.0 + shrk) * x(i,3)
+              endif ! end bottom--switch head middle tail
+            endif ! end if switch top bottom
+            BC(i,1:3)   = disp(i,1:3)
+          endif
+        enddo ! end loop numnp
+      endif  ! end case 13
 c
       return
       end
