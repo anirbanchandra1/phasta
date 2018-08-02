@@ -334,8 +334,12 @@ c
           endif
 c
 c.... debugging {
-            write(*,*) "rank", myrank, "rbForce", rbForce(j,1)
+          if (myrank .eq. master) then
+            write(*,*) "rbForce", rbForce(j,1)
      &                ,"disp:", rbTotalDisp(j,1)
+     &                ,"vel:",rbVel(j,1)
+     &                ,"acc:",rbAcc(j,1)
+          endif
 c.... debugging }
 c
         enddo
@@ -360,8 +364,12 @@ c
           rbForceOld(j,1:3) = rbForce(j,1:3)
 c
 c.... debugging {
-            write(*,*) "rank", myrank, "rbForce", rbForce(j,1)
+          if (myrank .eq. master) then
+            write(*,*) "rbForce", rbForce(j,1)
      &                ,"disp:", rbTotalDisp(j,1)
+     &                ,"vel:",rbVel(j,1)
+     &                ,"acc:",rbAcc(j,1)
+          endif
 c.... debugging }
 c
         enddo
