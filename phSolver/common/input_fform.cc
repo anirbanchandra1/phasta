@@ -424,11 +424,11 @@ int input_fform(phSolver::Input& inp)
     ivec.erase(ivec.begin(),ivec.end());
 
     if ( (string)inp.GetValue("Time depended comp1_elas option") == "False" ){
-	  snapmesh.timeDepComp1Flag = 0;
-	}
-	else if ( (string)inp.GetValue("Time depended comp1_elas option") == "True" ){
-	  snapmesh.timeDepComp1Flag = 1;
-	}
+      snapmesh.timeDepComp1Flag = 0;
+    }
+    else if ( (string)inp.GetValue("Time depended comp1_elas option") == "True" ){
+      snapmesh.timeDepComp1Flag = 1;
+    }
     else {
       cout << " Time depended comp1_elas option: Only Legal Values (True, False) ";
       cout << endl;
@@ -436,6 +436,18 @@ int input_fform(phSolver::Input& inp)
     }
 
     snapmesh.timeDepComp1ID = inp.GetValue("Time depended comp1_elas surf ID");
+
+    if ( (string)inp.GetValue("Mesh repositioning base face option") == "All-Boundary" ) {
+      laymesh.gcBaseOpt = 0;
+    }
+    else if ( (string)inp.GetValue("Mesh repositioning base face option") == "Interface-Only" ) {
+      laymesh.gcBaseOpt = 1;
+    }
+    else {
+      cout << "Mesh repositioning base face option: Only Legal Values (All-Boundary, Interface-Only)";
+      cout << endl;
+      exit(1);
+    }
 
     outpar.iv_rankpercore = inp.GetValue("Ranks per core");
     outpar.iv_corepernode = inp.GetValue("Cores per node");

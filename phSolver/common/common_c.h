@@ -256,6 +256,7 @@ extern "C" {
     double blfactor;
     int numgc;
     int numgcnp;
+    int gcBaseOpt;
   } laymesh ;
 
   extern struct {

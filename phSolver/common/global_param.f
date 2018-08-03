@@ -117,6 +117,7 @@ c.... common /laymesh/   : layered mesh
 c
 c numgc           : number of growth curves
 c numgcnp         : total number of nodal points of all growth curves
+c gcBaseOpt       : input base face option for repositioning method
 c layerCommuFlag  : the flag used for layer mesh master assembly in commu
 c blfactor        : multiplied with stiffness of wedge element in elas solver
 c
@@ -124,9 +125,9 @@ c
         use iso_c_binding
         implicit none
         real(c_double), target :: blfactor
-        integer(c_int), target :: numgc,          numgcnp
+        integer(c_int), target :: numgc,   numgcnp,   gcBaseOpt
         integer :: layerCommuFlag = 0
-        common /laymesh/ blfactor,  numgc,   numgcnp,
+        common /laymesh/ blfactor,  numgc,   numgcnp,   gcBaseOpt,
      &                   layerCommuFlag
       end module laymesh_m
 c
