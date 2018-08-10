@@ -270,6 +270,7 @@ extern "C" {
     double volMeshqTol;
     double faceMeshqTol;
     int autoTrigger;
+    int triggerNow;
   } meshquality ;
 
   extern struct { 
@@ -598,6 +599,7 @@ extern "C" {
     int input_mode; //FIXME -1:streams, 0:posix, >0:syncio
     int output_mode; //FIXME -1:streams, 0:posix, >0:syncio
     int conservation_probe;
+    int write_residual;
     /*  int iostats; */
 /*      int ipresref; */
   } outpar ;
