@@ -49,6 +49,7 @@ void populate_dg_phaseChange_model
   this_map.insert(map<string,int>::value_type("Vieille's-Burning", idg_vieilles_burning));
   this_map.insert(map<string,int>::value_type("Clausius-Clapeyron", idg_clausius_clapeyron));
   this_map.insert(map<string,int>::value_type("Cavitation", idg_cavitation));
+  this_map.insert(map<string,int>::value_type("Other Laws", idg_other_laws));
 }
 
 int input_fform(phSolver::Input& inp)

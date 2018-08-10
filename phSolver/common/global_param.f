@@ -440,7 +440,8 @@ c
      &                        const_vi = 2, 
      &                        vieilles_burning=3, 
      &                        clausius_clapeyron=4,
-     &                        cavitation=5
+     &                        cavitation=5,
+     &                        other_laws=6
         integer(c_int) :: phase_change_model, vi_ramping
         real(c_double) :: ramp_time, vi_mag, dgif_alpha, dgif_beta, dgif_s, dgif_e, dgif_h,
      &                    dgif_emu, dgif_ek, if_e_dc  

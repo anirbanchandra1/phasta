@@ -105,6 +105,7 @@
 #define idg_vieilles_burning 3
 #define idg_clausius_clapeyron 4
 #define idg_cavitation 5
+#define idg_other_laws 6
 
 #define idg_no_ramp 1
 #define idg_linear_ramp 2

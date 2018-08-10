@@ -30,8 +30,11 @@ c... Clausius-Clapeyron:
      &,                            mw_mix      ! mixture molecular weight
      &,                            vap_rate
      &,                            un0,un1     ! velocity in normal direction
-     &,                            rho_sat1,rho0,constt,vi_mag,Psat0,acco_coeff
 c
+!------------ Variable for "other_laws" -------------------------------
+	real*8, dimension(npro) :: rho_sat1, rho0, vi_mag, Psat0
+     &,                            acco_coeff, constt
+! ---------------------------------------------------------------------
 #define debug 0
         select case (vi_ramping)
         case (no_ramp)
@@ -64,26 +67,54 @@ c
 	!  vi_mag = constt*(rho_sat0-rho0)*(T0**0.5)
 c
         ! Argon MW = 39.948 ; rho = 1400
-        rho_sat1 = 2.2673e-5*T1**4 - 7.1952e-3*T1**3 + 8.7323e-1*T1**2 - 4.7522e1*T1 + 9.7275e2
-	acco_coeff =  -5.1482e-6*T1**3 + 1.1798e-3*T1**2 - 9.4340e-2*T1 + 3.5633e0
-        rho0 = pres0 / (Ru/39.948*1.d3*T0)
-         constt=2*acco_coeff/(2-acco_coeff)*(8.314/2/3.1415/0.039948)**0.5*0.039948/1400
+!        rho_sat1 = 2.2673e-5*T1**4 - 7.1952e-3*T1**3 + 8.7323e-1*T1**2 - 4.7522e1*T1 + 9.7275e2
+!	acco_coeff =  -5.1482e-6*T1**3 + 1.1798e-3*T1**2 - 9.4340e-2*T1 + 3.5633e0
+!        rho0 = pres0 / (Ru/39.948*1.d3*T0)
+!         constt=2*acco_coeff/(2-acco_coeff)*(8.314/2/3.1415/0.039948)**0.5*0.039948/1400
 !       write (*,*) 'rho_sat0, Psat0, rho0m,T0,Ru', rho_sat0, Psat0, rho0, T0, Ru
 	
-         vi_mag = constt*(rho_sat1*(T1**0.5) - rho0*(T0**0.5))
+!         vi_mag = constt*(rho_sat1*(T1**0.5) - rho0*(T0**0.5))
 c
-	  vi(:,1) = c1 * (vi_mag * nv0(:,1) + u1(:,1))
-          vi(:,2) = c1 * (vi_mag * nv0(:,2) + u1(:,2))
-          vi(:,3) = c1 * (vi_mag * nv0(:,3) + u1(:,3))
-c          vi(:,1) = vi_mag * nv0(:,1)
-c          vi(:,2) = vi_mag * nv0(:,2)
-c          vi(:,3) = vi_mag * nv0(:,3)
+c	  vi(:,1) = c1 * (vi_mag * nv0(:,1) + u1(:,1))
+c          vi(:,2) = c1 * (vi_mag * nv0(:,2) + u1(:,2))
+c          vi(:,3) = c1 * (vi_mag * nv0(:,3) + u1(:,3))
+          vi(:,1) = vi_mag * nv0(:,1)
+          vi(:,2) = vi_mag * nv0(:,2)
+          vi(:,3) = vi_mag * nv0(:,3)
 c      write(*,100) 'vi_mag: ',vi_mag
 c      write(*,100) 'vi    : ',vi(:,1)
 c      write(*,100) 'nv0   : ',nv0(:,1)
 c      write(*,100) 'u1    : ',u1(:,1)
 100   format(a,8e16.5)
           return
+	case (other_laws)
+! =============== WATER ===================================
+	 !Psat0 = 133.322*(10**(8.07131 - 1.73063E+03/(2.33426E+02+(T0-273.15))))
+	 !Psat0 = 133.322*(10**(8.14019 - 1810.94/(244.485+(T0-273.15))))
+	 !rho_sat0 = Psat0 / (Ru/18.0*1.d3*T0)
+	 !rho0 = pres0 / (Ru/18.0*1.d3*T0)
+	 ! constt=(2*(8.314/2/3.14/0.018)**0.5)*0.018/1000
+	 !       write (*,*) 'rho_sat0, Psat0, rho0m,T0,Ru',rho_sat0, Psat0, rho0, T0, Ru
+	 !  vi_mag = constt*(rho_sat0-rho0)*(T0**0.5)
+! ----------------------------------------------------------
+! =============== ARGON ===============================	 
+	 ! Argon MW = 39.948 ; rho = 1400
+	 rho_sat1 = 2.2673e-5*T1**4 - 7.1952e-3*T1**3 + 8.7323e-1*T1**2 - 4.7522e1*T1 + 9.7275e2
+	 acco_coeff =  -5.1482e-6*T1**3 + 1.1798e-3*T1**2 - 9.4340e-2*T1 + 3.5633e0
+	 rho0 = pres0 / (Ru/39.948*1.d3*T0)
+	 
+	 constt = 2*acco_coeff/(2-acco_coeff)*(8.314/2/3.1415/0.039948)**0.5*0.039948/1400
+	!write (*,*) 'rho_sat0, Psat0, rho0m,T0,Ru', rho_sat0, Psat0, rho0, T0, Ru
+	  vi_mag = constt*(rho_sat1*(T1**0.5) - rho0*(T0**0.5))
+! ---------------------------------------------------------------	
+	  !vi(:,1) = c1 * (vi_mag * nv0(:,1) + u1(:,1))
+	  !vi(:,2) = c1 * (vi_mag * nv0(:,2) + u1(:,2))
+	  !vi(:,3) = c1 * (vi_mag * nv0(:,3) + u1(:,3))
+
+	  vi(:,1) = vi_mag * nv0(:,1)
+	  vi(:,2) = vi_mag * nv0(:,2)
+	  vi(:,3) = vi_mag * nv0(:,3)
+	return
         case (vieilles_burning)
 c
           vi(:,1) = burn_rate_coeff*(p/burn_rate_pref)**burn_rate_exp * nv0(:,1)
