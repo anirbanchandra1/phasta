@@ -588,7 +588,7 @@ c
           integer :: i
           real*8  :: etot
 c
-          etot = h + pt50 * dot_product(u,u)
+          etot = ei + pt50 * dot_product(u,u)
 c
           do i = 1,nsd
 c
@@ -596,7 +596,7 @@ c
             flux(i,2) = rho*(u(i)-um(i))*u(1) + p*delta(1,i)
             flux(i,3) = rho*(u(i)-um(i))*u(2) + p*delta(2,i)
             flux(i,4) = rho*(u(i)-um(i))*u(3) + p*delta(3,i)
-            flux(i,5) = rho*(u(i)-um(i))*etot !+ p*u(i)
+            flux(i,5) = rho*(u(i)-um(i))*etot + p*u(i)
 c
           enddo
 c

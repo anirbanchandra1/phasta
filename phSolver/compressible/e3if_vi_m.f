@@ -103,17 +103,19 @@ c      write(*,100) 'u1    : ',u1(:,1)
 	 acco_coeff =  -5.1482e-6*T1**3 + 1.1798e-3*T1**2 - 9.4340e-2*T1 + 3.5633e0
 	 rho0 = pres0 / (Ru/39.948*1.d3*T0)
 	 
-	 constt = 2*acco_coeff/(2-acco_coeff)*(8.314/2/3.1415/0.039948)**0.5*0.039948/1400
-	!write (*,*) 'rho_sat0, Psat0, rho0m,T0,Ru', rho_sat0, Psat0, rho0, T0, Ru
-	  vi_mag = constt*(rho_sat1*(T1**0.5) - rho0*(T0**0.5))
-! ---------------------------------------------------------------	
-	  !vi(:,1) = c1 * (vi_mag * nv0(:,1) + u1(:,1))
-	  !vi(:,2) = c1 * (vi_mag * nv0(:,2) + u1(:,2))
-	  !vi(:,3) = c1 * (vi_mag * nv0(:,3) + u1(:,3))
+	 constt = 2*acco_coeff/(2-acco_coeff)*(8.314/2/3.1415/0.039948)**0.5/1.40 !*0.039948/1.40
+!	write (*,*) 'rho_sat0, Psat0, rho0m,T0,Ru', rho_sat0, Psat0, rho0, T0, Ru
+	  vi_mag = constt*(rho_sat1/1000.0*(T1**0.5) - rho0*(T0**0.5))
+!         write (*,*) 'vi_mag', vi_mag
 
-	  vi(:,1) = vi_mag * nv0(:,1)
-	  vi(:,2) = vi_mag * nv0(:,2)
-	  vi(:,3) = vi_mag * nv0(:,3)
+! ---------------------------------------------------------------	
+	  vi(:,1) = c1 * (vi_mag * nv0(:,1)) + u1(:,1)
+	  vi(:,2) = c1 * (vi_mag * nv0(:,2)) + u1(:,2)
+	  vi(:,3) = c1 * (vi_mag * nv0(:,3)) + u1(:,3)
+
+!	  vi(:,1) = vi_mag * nv0(:,1)
+!	  vi(:,2) = vi_mag * nv0(:,2)
+!	  vi(:,3) = vi_mag * nv0(:,3)
 	return
         case (vieilles_burning)
 c
