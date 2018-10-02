@@ -130,7 +130,7 @@ c
             call mapArray( mxmudmi(iblk)%p, xmu2,    map,
      &                     maxsh,           nprold)
 c
-c.... allocate the element matrices (though they're not needed)
+c.... allocate the element matrices (though theyre not needed)
 c
             allocate ( xKebe(npro,9,nshl,nshl) )
             allocate ( xGoC (npro,4,nshl,nshl) )
