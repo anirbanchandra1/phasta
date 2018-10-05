@@ -43,6 +43,8 @@ c
       use ifbc_m
       use core_mesh_quality ! to call core_measure_mesh
       use interfaceflag
+      use dc_lag_func_m
+      use dc_lag_data_m
 c
         include "common.h"
         include "mpif.h"
@@ -229,6 +231,10 @@ c
 c
         call init_sum_vi_area(nshg,nsd)
         call ifbc_malloc
+c ... allocation and initialization for DC lag if need
+        if ( i_dc_lag .eq.1) then
+          call alloc_init_dc_lag
+        endif
 c
 c..........................................
         rerr = zero
@@ -451,6 +457,14 @@ c
      &                      iper,   ilwork,  ifath,  velbar)
             endif
 c
+c... update the global DC lagging value by the volume avg numerical viscousity introduced in DC
+c... from the last flow solve in last time step at each node.  
+c... Then it would be used in the current time step.
+            if ( i_dc_lag .eq.1) then
+              if( (istp .ne.1) ) then ! if not the first time step, then update
+                dc_lag_g(:) = dc_lag_itr(:)                
+              endif
+            endif
 c.... -----------------------> predictor phase <-----------------------
 c
             call itrBC (y,ac, iBC, BC, iper, ilwork, umesh)
@@ -1148,8 +1162,12 @@ c
         call release_rbForce
       endif
 c
-        call destruct_sum_vi_area
-        call ifbc_mfree
+      call destruct_sum_vi_area
+      call ifbc_mfree
+c... for DC lag if needed
+      if ( i_dc_lag .eq.1) then
+        call dealloc_dc_lag
+      endif
 c
 c.... ---------------------->  Post Processing  <----------------------
 c

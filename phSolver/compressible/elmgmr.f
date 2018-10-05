@@ -311,7 +311,8 @@ c
         use ifbc_def_m
         use weighted_normal_data_m !for weighted normal
         use interfaceflag ! for weighted normal
-        use dgifinp_m, only: i_w_normal     
+        use dgifinp_m, only: i_w_normal 
+        use dc_lag_data_m    
 c
         include "common.h"
         include "mpif.h"
@@ -442,6 +443,7 @@ c
         real*8 :: length
 c
         integer :: nedof0,nedof1
+        integer :: inode
         integer, pointer, dimension(:,:) :: ienif0,ienif1
 c
         ttim(80) = ttim(80) - secs(0.0)
@@ -519,6 +521,12 @@ c
         if (iprec .ne. 0) BDiag = zero
         flxID = zero
 c
+c... for lagging DC, initialize the sum for every Newton iteration
+        if ( i_dc_lag .eq.1) then
+          sum_dc_lag_vol = zero
+          sum_vol = zero
+        endif          
+c
 c.... loop over the element-blocks
 c
         do iblk = 1, nelblk
@@ -556,6 +564,16 @@ c
 c
           e3_malloc_ptr => e3_malloc
           e3_mfree_ptr => e3_mfree
+c... for DC lag
+          if ( i_dc_lag .eq.1) then
+            allocate(sum_dc_lag_l(npro,nshl))
+            allocate(sum_vol_l(npro,nshl))
+            allocate(dc_lag_l(npro,nshl))
+c
+            sum_dc_lag_l = zero
+            sum_vol_l = zero
+            dc_lag_l = zero
+          endif          
 c
           select case (mat_eos(mater,1))
           case (ieos_ideal_gas,ieos_ideal_gas_2)
@@ -599,9 +617,15 @@ c.... Fill-up the global sparse LHS mass matrix
 c
              call fillsparseC( mien(iblk)%p, EGmass,
      1                        lhsK, row, col)
-          endif
+          endif         
 c
           if (associated(e3_mfree_ptr)) call e3_mfree_ptr
+c... for DC lag
+          if ( i_dc_lag .eq.1) then
+            deallocate(sum_dc_lag_l)
+            deallocate(sum_vol_l)
+            deallocate(dc_lag_l)
+          endif          
 c
           deallocate ( EGmass )
           deallocate ( tmpshp )
@@ -611,6 +635,33 @@ c.... end of interior element loop
 c
        enddo
 c
+c... For DC lag if needed
+          if (i_dc_lag .eq. 1) then
+c... communication for DC lag
+            if (numpe > 1) then
+              call commu (sum_dc_lag_vol, ilwork, 1, 'in ')
+              call commu (sum_vol, ilwork, 1, 'in ')
+              call MPI_BARRIER (MPI_COMM_WORLD,ierr)
+            endif
+c
+            if (numpe > 1) then
+              call commu (sum_dc_lag_vol, ilwork, 1, 'out')
+              call commu (sum_vol, ilwork, 1, 'out')
+              call MPI_BARRIER (MPI_COMM_WORLD,ierr)
+            endif
+c... calculate the volume avg numerical viscousity introduced in DC and
+c... store it globally for every node for each Newton iteration, and the
+c... result from last iteration would be used to update the global dc lagging
+c... value
+            do inode = 1, nshg
+              if (sum_vol(inode) .ne. zero) then
+                dc_lag_itr(inode) = sum_dc_lag_vol(inode)/sum_vol(inode)
+              else
+                call error('elmgmrs  ','zero volume', sum_vol)
+              endif
+            enddo
+c                        
+          endif 
 c
 c.... -------------------->   boundary elements   <--------------------
 c
