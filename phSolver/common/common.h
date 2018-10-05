@@ -180,8 +180,8 @@ c
 c
         common /resdat/ resfrt, resfrts
 c
-        common /solpar/ imap,   ivart,  iDC,    iPcond, Kspace, nGMRES,
-     &                  iconvflow, iconvsclr, idcsclr(2)
+        common /solpar/ imap,   ivart,  iDC, i_dc_lag, iPcond, Kspace,
+     &                  nGMRES, iconvflow, iconvsclr, idcsclr(2)
 c
         common /msympar/ indsym(5,5)
 c
