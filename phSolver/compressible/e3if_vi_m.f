@@ -32,7 +32,7 @@ c... Clausius-Clapeyron:
      &,                            un0,un1     ! velocity in normal direction
 c
 !------------ Variable for "other_laws" -------------------------------
-	real*8, dimension(npro) :: rho_sat1, rho0, vi_mag, Psat0
+	real*8, dimension(npro) :: rho_sat1, vi_mag, Psat0 !, rho0
      &,                            acco_coeff, constt
 ! ---------------------------------------------------------------------
 #define debug 0
@@ -101,7 +101,7 @@ c      write(*,100) 'u1    : ',u1(:,1)
 	 ! Argon MW = 39.948 ; rho = 1400
 	 rho_sat1 = 2.2673e-5*T1**4 - 7.1952e-3*T1**3 + 8.7323e-1*T1**2 - 4.7522e1*T1 + 9.7275e2
 	 acco_coeff =  -5.1482e-6*T1**3 + 1.1798e-3*T1**2 - 9.4340e-2*T1 + 3.5633e0
-	 rho0 = pres0 / (Ru/39.948*1.d3*T0)
+	 !rho0 = pres0 / (Ru/39.948*1.d3*T0)
 	 
 	 constt = 2*acco_coeff/(2-acco_coeff)*(8.314/2/3.1415/0.039948)**0.5/1.40 !*0.039948/1.40
 !	write (*,*) 'rho_sat0, Psat0, rho0m,T0,Ru', rho_sat0, Psat0, rho0, T0, Ru
