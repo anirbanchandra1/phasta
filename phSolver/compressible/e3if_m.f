@@ -33,11 +33,12 @@ c
           real*8, dimension(nsd,nshl0,nqpt), intent(in) :: shgif0
           real*8, dimension(nsd,nshl1,nqpt), intent(in) :: shgif1
           real*8, dimension(nqpt), intent(in) :: qwtif0, qwtif1
-c
+c	 
           integer :: intp, intp0, intp1
       integer :: iel,isd,n
       real*8 ::sum0,sumg0
       real*8, allocatable :: tmpmu0(:,:),tmpmu1(:,:)
+      real*8, dimension(npro,nflow) :: PenFact
 #define debug 0
 c
 c      write(*,*) 'In e3if...'
@@ -176,8 +177,10 @@ c
 c
       deallocate(tmpmu0,tmpmu1)
 c
-            call dg_penalty(ri0,y0,y1)
-            call dg_penalty(ri1,y1,y0)
+      	    Penfact = - one
+            call dg_penalty(ri0,y0,y1,PenFact)
+	    Penfact = one 
+            call dg_penalty(ri1,y1,y0,PenFact)
 c... test
             call e3if_dc
 c...LHS calculations...
@@ -488,15 +491,21 @@ c
            real*8 :: this_kcy(npro)
            real*8, dimension(npro,nflow,nflow,nsd,nsd) :: CKij
            real*8,dimension(npro,nflow,nsd) :: cy_jump, kcy
-c
+	   real*8, dimension (npro, nflow) :: penConst
+c	
+	   penConst = zero
+	   penConst(:,nflow) = 1.0d0
            do iflow = 1,nflow
 c
              cy_jump(:,iflow,:) = zero
 c
              do jflow = 1,nflow
-               cy_jump(:,iflow,1) = cy_jump(:,iflow,1) + cmtrx(:,iflow,jflow)*y_jump(:,jflow,1)
-               cy_jump(:,iflow,2) = cy_jump(:,iflow,2) + cmtrx(:,iflow,jflow)*y_jump(:,jflow,2)
-               cy_jump(:,iflow,3) = cy_jump(:,iflow,3) + cmtrx(:,iflow,jflow)*y_jump(:,jflow,3)
+               cy_jump(:,iflow,1) = cy_jump(:,iflow,1) + cmtrx(:,iflow,jflow)*y_jump(:,jflow,1) 
+     &                                     - penConst(:,iflow)*nv1(:,1)  
+		cy_jump(:,iflow,2) = cy_jump(:,iflow,2) + cmtrx(:,iflow,jflow)*y_jump(:,jflow,2)
+     &                                     - penConst(:,iflow)*nv1(:,2)
+		cy_jump(:,iflow,3) = cy_jump(:,iflow,3) + cmtrx(:,iflow,jflow)*y_jump(:,jflow,3)
+     &                                     - penConst(:,iflow)*nv1(:,3)
              enddo
 c
            enddo
@@ -521,20 +530,24 @@ c
 c
         end subroutine kinematic_condition
 c
-        subroutine dg_penalty(ri,y0,y1)
+        subroutine dg_penalty(ri,y0,y1,PenFact)
 c
            real*8, dimension(:,:), intent(inout) :: ri
            real*8, dimension(:,:), intent(in) :: y0,y1
+	   real*8, dimension(npro,nflow) :: PenConst
 c
            integer :: iflow,jflow,isd
-           real*8 :: this_sum(npro)
-c
+           real*8 :: this_sum(npro) , PenFact(npro)
+c		
+	   PenConst = zero
+	   PenConst(:,nflow) = 1.0d0
            do iflow = 1,nflow
 c
                this_sum = zero
 c
                do jflow = 1,nflow
                  this_sum = this_sum + ctc(:,iflow,jflow)*(y0(:,jflow)-y1(:,jflow))
+     &                         - cmtrx(:,iflow,jflow)*penConst(:,jflow)*PenFact
                enddo
 c
                ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*mu(:,iflow)/length_h * this_sum
