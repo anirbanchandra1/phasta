@@ -457,14 +457,6 @@ c
      &                      iper,   ilwork,  ifath,  velbar)
             endif
 c
-c... update the global DC lagging value by the volume avg numerical viscousity introduced in DC
-c... from the last flow solve in last time step at each node.  
-c... Then it would be used in the current time step.
-            if ( i_dc_lag .eq.1) then
-              if( (istp .ne.1) ) then ! if not the first time step, then update
-                dc_lag_g(:) = dc_lag_itr(:)                
-              endif
-            endif
 c.... -----------------------> predictor phase <-----------------------
 c
             call itrBC (y,ac, iBC, BC, iper, ilwork, umesh)
@@ -867,6 +859,14 @@ c
             if (numrbs .gt. 0) then
               call update_rbParam
             endif
+c... update the global DC lagging value by the volume avg numerical viscousity introduced in DC
+c... from the last flow solve in the current time step at each node. Then it would be used in 
+c... the next time step.
+c... The initial value of global DC lagging is zero
+            if ( i_dc_lag .eq.1) then
+                dc_lag_g(:) = dc_lag_itr(:)                
+            endif
+c                        
 c
             call itrBC (y,ac, iBC, BC, iper, ilwork, umesh)
 c
@@ -1049,11 +1049,20 @@ c     &                  xdot,  'd'//char(0), numnp, nsd, lstep)
                  endif
 c
 c
-      if (solid_p%is_active) call write_restart_solid
+                 if (solid_p%is_active) then
+                   call write_restart_solid
+                 endif
 c
                  call write_field(
      &               myrank,'a'//char(0),'material_type'//char(0),13,
-     &               mattype_interior, 'd',numel, 1, lstep)   
+     &               mattype_interior, 'd',numel, 1, lstep)
+c     
+c... write the numerical viscousity for DC lagging
+                 if ( i_dc_lag .eq.1) then
+                   call write_field(
+     &                  myrank,'a'//char(0),'dc_lag'//char(0),  6,
+     &                  dc_lag_g, 'd'//char(0), nshg, 1, lstep)
+                 endif                         
 c... end writing
                  output_mode = -1
                endif
@@ -1093,7 +1102,14 @@ c
 c
                if (solid_p%is_active)
      &           call write_restart_solid
-
+c     
+c... write the numerical viscousity for DC lagging
+               if ( i_dc_lag .eq.1) then
+                 call write_field(
+     &                myrank,'a'//char(0),'dc_lag'//char(0),  6,
+     &                dc_lag_g, 'd'//char(0), nshg, 1, lstep)
+               endif
+c                                             
                !Write the distance to wall field in each restart
                if((istep==nstp) .and. (irans < 0 )) then !d2wall is allocated
                  call write_field(myrank,'a'//char(0),'dwal'//char(0),4,

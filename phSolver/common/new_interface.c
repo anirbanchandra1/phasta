@@ -244,6 +244,11 @@ void countfieldstowriterestart()
 //HARDCODED BY Yu, 3 fields added: elmB1, elmB2, disp_solid
     nfields = nfields + 3; 
   }
+  
+  if (solpar.i_dc_lag == 1) {
+//HARDCODED BY Yu, 1 field added: dc_lag
+    nfields = nfields + 1; 
+  }  
 
   outpar.nsynciofieldswriterestart = nfields;
 
