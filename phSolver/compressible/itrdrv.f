@@ -661,6 +661,15 @@ c
 
 
 c
+
+
+                    call set_if_velocity (BC,  iBC,
+     &                                umesh, disp, x,  Delt(1),   ilwork,
+     &                                nshg, ndofBC,
+     &                                nsd, nelblif, nlwork, ndof )
+
+
+
 c.... update interface mesh bc based on umesh
 c.... we should have correct umesh at this point
 c
