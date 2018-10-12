@@ -70,6 +70,7 @@ c
       use posixio
       use streamio
       use solid_m
+      use dc_lag_data_m, only:dc_lag_g 
       include "common.h"
 
       real*8, target, allocatable :: xread(:,:), qread(:,:), acread(:,:)
@@ -87,6 +88,7 @@ c
       integer, target, allocatable :: tmpifFlag(:)
       integer, target, allocatable :: tmprbIDs(:), tmprbMTs(:), tmprbFlags(:)
       real*8, target, allocatable  :: tmprbParamRead(:,:)
+      real*8, target, allocatable  :: tmp_dc_lag(:) ! for DC lagging
       integer fncorpsize
       character*10 cname2, cname2nd
       character*8 mach2
@@ -1007,6 +1009,44 @@ c
 c
 c.... end read rigid body data
 c
+c... read in the DC lagging data
+      ithree = 3 ! redundent
+c      
+      if ( i_dc_lag .eq.1) then
+        allocate(dc_lag_g(nshg)) ! allocation the global numerical viscousity
+                                 ! from discontinuious capturing lagging
+c                                 
+        intfromfile=0
+        call phio_readheader(fhandle, 
+     &       c_char_'dc_lag' //char(0), 
+     &       c_loc(intfromfile), ithree, dataInt, iotype)
+c     
+         if(intfromfile(1).ne.0) then 
+           nshg2 =intfromfile(1)
+           nsd2  =intfromfile(2) !should be 1 in this case
+           lstep =intfromfile(3)
+c... recheck the data has been read          
+           if (nshg2 .ne. nshg) 
+     &        call error ('restar  ', 'nshg   ', nshg)
+c      
+           allocate( tmp_dc_lag(nshg) )
+           tmp_dc_lag = zero 
+           iacsiz = nshg*nsd2          
+           call phio_readdatablock(fhandle,
+     &     c_char_'dc_lag' // char(0),
+     &     c_loc(tmp_dc_lag), iacsiz, dataDbl,iotype)
+c     
+           dc_lag_g(:) = tmp_dc_lag(:)
+           deallocate(tmp_dc_lag)
+         else
+           if (myrank.eq.master) then
+             warning='DC Lagging is on and numerical viscousity is set to zero (SAFE)'
+             write(*,*) warning
+           endif
+           dc_lag_g = zero ! initialize the global dc_lag if not read from restart
+         endif
+       endif
+c... end of read in the DC lagging data
 cc
 cc.... read the header and check it against the run data
 cc

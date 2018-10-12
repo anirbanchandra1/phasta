@@ -18,10 +18,8 @@ c.......................................................................
 c
           allocate(sum_dc_lag_vol(nshg))
           allocate(sum_vol(nshg))
-          allocate(dc_lag_g(nshg))
           allocate(dc_lag_itr(nshg))
 c
-          dc_lag_g = zero ! only initialize the global dc_lag
           dc_lag_itr = zero
 c        
         end subroutine alloc_init_dc_lag
