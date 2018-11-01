@@ -538,23 +538,29 @@ c
 c
            integer :: iflow,jflow,isd
            real*8 :: this_sum(npro) , PenFact(npro)
-	   real*8 , dimension(npro) :: rho_sat1, acco_coeff, constt,vi_mag, umeshNorm
+	   real*8 , dimension(npro) :: rho_sat1, acco_coeff, constt, constt1, vi_mag
+	   real*8 , dimension(npro) :: rho_sat1Diff, T01 , rho_sat01
 c
 c
+	   T01 = (T0 + T1)/two
            rho_sat1 = 2.2673e-5*T1**4 - 7.1952e-3*T1**3 + 8.7323e-1*T1**2 - 4.7522e1*T1 + 9.7275e2
-           acco_coeff =  -5.1482e-6*T1**3 + 1.1798e-3*T1**2 - 9.4340e-2*T1 + 3.5633e0
-	   constt = 2*acco_coeff/(2-acco_coeff)*(8.314/2/3.1415/0.039948)**0.5/1.40 !*0.039948/1.40
+           rho_sat01 = 2.2673e-5*T01**4 - 7.1952e-3*T01**3 + 8.7323e-1*T01**2 - 4.7522e1*T01 + 9.7275e2
+           rho_sat1Diff = 4*2.2673e-5*T01**3 - 3*7.1952e-3*T01**2 + 2*8.7323e-1*T01**1 - 4.7522e1
+           !acco_coeff =  -5.1482e-6*T1**3 + 1.1798e-3*T1**2 - 9.4340e-2*T1 + 3.5633e0
+	   !constt = 2*acco_coeff/(2-acco_coeff)*(8.314/2/3.1415/0.039948)**0.5/1.40 
+	   constt1 = sqrt(T01)*(rho_sat1/1000.0*(T1**0.5) - rho0*(T0**0.5))
+     &                             /(T01*rho_sat1Diff/1000.0 + pt50*rho_sat01/1000)
 !	   vi_mag = constt*(rho_sat1/1000.0*(T1**0.5) - rho0*(T0**0.5))
-           vi_mag = um0(:,1)*nv0(:,1) + um0(:,2)*nv0(:,2) + um0(:,3)*nv0(:,3)
+!           vi_mag = um0(:,1)*nv0(:,1) + um0(:,2)*nv0(:,2) + um0(:,3)*nv0(:,3)
 	   PenConst = zero
-	   PenConst(:,nflow) = + 1.0d1*vi_mag
+	   PenConst(:,nflow) = constt1 !1.0d1*vi_mag
            do iflow = 1,nflow
 c
                this_sum = zero
 c
                do jflow = 1,nflow
                  this_sum = this_sum + ctc(:,iflow,jflow)*(y0(:,jflow)-y1(:,jflow))
-     &                         - cmtrx(:,iflow,jflow)*penConst(:,jflow)*PenFact
+     &                         - cmtrx(:,iflow,jflow)*PenConst(:,jflow)*PenFact
                enddo
 c
                ri(:,3*nflow+iflow) = ri(:,3*nflow+iflow) + e*mu(:,iflow)/length_h * this_sum
