@@ -114,8 +114,8 @@ c
         beta_T  = mat_prop(mater,iprop_liquid_1_betaT,  1)
 c
         rho = rho_ref * (one - alpha_P*(T-T_ref) + beta_T*(pres-P_ref))
-        !ei  = cv_liq*T - 2557000
-        ei  = cv_liq*(T) - 163000               !- 163000
+        ei  = cv_liq*(T-273) - 2557000   ! WATER
+        !ei  = cv_liq*(T) - 163000  ! ARGON
 	!ei   = cv_liq*T 
 
 c

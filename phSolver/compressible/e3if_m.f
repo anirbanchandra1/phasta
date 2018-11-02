@@ -536,24 +536,36 @@ c
            real*8, dimension(:,:), intent(in) :: y0,y1
 	   real*8, dimension(npro,nflow) :: PenConst
 c
-           integer :: iflow,jflow,isd
+           integer :: iflow,jflow,isd,iel
            real*8 :: this_sum(npro) , PenFact(npro)
 	   real*8 , dimension(npro) :: rho_sat1, acco_coeff, constt, constt1, vi_mag
 	   real*8 , dimension(npro) :: rho_sat1Diff, T01 , rho_sat01
+	   real*8 , dimension(nsd,nflow) :: fdiff0
 c
 c
-	   T01 = (T0 + T1)/two
-           rho_sat1 = 2.2673e-5*T1**4 - 7.1952e-3*T1**3 + 8.7323e-1*T1**2 - 4.7522e1*T1 + 9.7275e2
-           rho_sat01 = 2.2673e-5*T01**4 - 7.1952e-3*T01**3 + 8.7323e-1*T01**2 - 4.7522e1*T01 + 9.7275e2
-           rho_sat1Diff = 4*2.2673e-5*T01**3 - 3*7.1952e-3*T01**2 + 2*8.7323e-1*T01**1 - 4.7522e1
+!------------ FOR ARGON ----------------------------------
+	   !T01 = (T0 + T1)/two
+           !rho_sat1 = 2.2673e-5*T1**4 - 7.1952e-3*T1**3 + 8.7323e-1*T1**2 - 4.7522e1*T1 + 9.7275e2
+           !rho_sat01 = 2.2673e-5*T01**4 - 7.1952e-3*T01**3 + 8.7323e-1*T01**2 - 4.7522e1*T01 + 9.7275e2
+           !rho_sat1Diff = 4*2.2673e-5*T01**3 - 3*7.1952e-3*T01**2 + 2*8.7323e-1*T01**1 - 4.7522e1
            !acco_coeff =  -5.1482e-6*T1**3 + 1.1798e-3*T1**2 - 9.4340e-2*T1 + 3.5633e0
-	   !constt = 2*acco_coeff/(2-acco_coeff)*(8.314/2/3.1415/0.039948)**0.5/1.40 
-	   constt1 = sqrt(T01)*(rho_sat1/1000.0*(T1**0.5) - rho0*(T0**0.5))
-     &                             /(T01*rho_sat1Diff/1000.0 + pt50*rho_sat01/1000)
-!	   vi_mag = constt*(rho_sat1/1000.0*(T1**0.5) - rho0*(T0**0.5))
-!           vi_mag = um0(:,1)*nv0(:,1) + um0(:,2)*nv0(:,2) + um0(:,3)*nv0(:,3)
+	   !!!!!!!constt = 2*acco_coeff/(2-acco_coeff)*(8.314/2/3.1415/0.039948)**0.5/1.40 
+	   !constt1 = sqrt(T01)*(rho_sat1/1000.0*(T1**0.5) - rho0*(T0**0.5))
+!     &                             /(T01*rho_sat1Diff/1000.0 + pt50*rho_sat01/1000)
+	   !!!!vi_mag = constt*(rho_sat1/1000.0*(T1**0.5) - rho0*(T0**0.5))
+           !!!!vi_mag = um0(:,1)*nv0(:,1) + um0(:,2)*nv0(:,2) + um0(:,3)*nv0(:,3)
+	   !PenConst = zero
+	   !PenConst(:,nflow) = constt1 !1.0d1*vi_mag
+!--------------------------------------------------------
+!
+!-------------------------- WATER -----------------------
 	   PenConst = zero
-	   PenConst(:,nflow) = constt1 !1.0d1*vi_mag
+	   element_loop: do iel = 1,npro
+	   	call calc_diff_flux(fdiff0,var0(iel),prop0(iel))
+	   	PenConst(iel,5)=-1.0*dot_product(fdiff0(:,5),nv0(iel,:))!*T0(iel)
+	   enddo element_loop
+	   write (*,*) '', PenConst
+!--------------------------------------------------------
            do iflow = 1,nflow
 c
                this_sum = zero
