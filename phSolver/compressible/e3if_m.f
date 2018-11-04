@@ -39,6 +39,7 @@ c
       real*8 ::sum0,sumg0
       real*8, allocatable :: tmpmu0(:,:),tmpmu1(:,:)
       real*8, dimension(npro,nflow) :: PenFact
+      real*8, dimension(npro) :: PenFact1
 #define debug 0
 c
 c      write(*,*) 'In e3if...'
@@ -205,10 +206,14 @@ c               call calc_egmass_(egmass00,shp0,shp0,shg0,shg0,Ai0,Kij0,Kij0,nv0
 c               call calc_egmass_(egmass01,shp0,shp1,shg0,shg1,Ai1,Kij0,Kij1,nv0,nv1,WdetJif0,nshl0,nshl1)
 c               call calc_egmass_(egmass10,shp1,shp0,shg1,shg0,Ai0,Kij1,Kij0,nv1,nv0,WdetJif1,nshl1,nshl0)
 c               call calc_egmass_(egmass11,shp1,shp1,shg1,shg1,Ai1,Kij1,Kij1,nv1,nv1,WdetJif1,nshl1,nshl1)
-               call calc_egmass_fix_sign(egmass00,shp0,shp0,shg0,shg0,Ai0,Kij0,Kij0,nv0,nv0,WdetJif0,nshl0,nshl0,'same')
-               call calc_egmass_fix_sign(egmass01,shp0,shp1,shg0,shg1,Ai1,Kij0,Kij1,nv0,nv1,WdetJif0,nshl0,nshl1,'diff')
-               call calc_egmass_fix_sign(egmass10,shp1,shp0,shg1,shg0,Ai0,Kij1,Kij0,nv1,nv0,WdetJif1,nshl1,nshl0,'diff')
-               call calc_egmass_fix_sign(egmass11,shp1,shp1,shg1,shg1,Ai1,Kij1,Kij1,nv1,nv1,WdetJif1,nshl1,nshl1,'same')
+	PenFact1 = - one
+	call calc_egmass_fix_sign(egmass00,shp0,shp0,shg0,shg0,Ai0,Kij0,Kij0,nv0,nv0,WdetJif0,nshl0,nshl0,'same',PenFact1)
+	PenFact1 = zero
+	call calc_egmass_fix_sign(egmass01,shp0,shp1,shg0,shg1,Ai1,Kij0,Kij1,nv0,nv1,WdetJif0,nshl0,nshl1,'diff',PenFact1)
+	PenFact1 = one
+	call calc_egmass_fix_sign(egmass10,shp1,shp0,shg1,shg0,Ai0,Kij1,Kij0,nv1,nv0,WdetJif1,nshl1,nshl0,'diff',PenFact1) 
+	PenFact1 = zero
+	call calc_egmass_fix_sign(egmass11,shp1,shp1,shg1,shg1,Ai1,Kij1,Kij1,nv1,nv1,WdetJif1,nshl1,nshl1,'same',PenFact1)
 c
             endif
 c
@@ -562,9 +567,8 @@ c
 	   PenConst = zero
 	   element_loop: do iel = 1,npro
 	   	call calc_diff_flux(fdiff0,var0(iel),prop0(iel))
-	   	PenConst(iel,5)=-1.0*dot_product(fdiff0(:,5),nv0(iel,:))!*T0(iel)
+	   	PenConst(iel,5)=0.1*dot_product(fdiff0(:,5),nv0(iel,:))*T0(iel)
 	   enddo element_loop
-	   write (*,*) '', PenConst
 !--------------------------------------------------------
            do iflow = 1,nflow
 c

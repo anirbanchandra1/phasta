@@ -166,7 +166,7 @@ c
      &,                       Kij0, Kij1
      &,                       ni0, ni1, WdetJ0
      &,                       nshl0, nshl1
-     &,                       code )
+     &,                       code,code1 )
         real*8, dimension(:,:,:),   intent(inout) :: egmass
         real*8, dimension(:,:),     intent(in)    :: shp0, shp1
         real*8, dimension(:,:,:),   intent(in)    :: shg0, shg1
@@ -178,8 +178,9 @@ c
 c
         integer :: i,j,i0,j0,il,jl,iflow,jflow,kflow,isd,jsd
         real*8 :: this_mu(npro,nflow,nflow)
-        real*8, dimension(npro) :: Ai1Na1ni0,Kij1Naj1ni0,Kij0Nbj0CNa1ni1,CNb0ni0CNa1ni1
-        real*8 :: factor
+        real*8, dimension(npro) :: Ai1Na1ni0,Kij1Naj1ni0,Kij0Nbj0CNa1ni1,CNb0ni0CNa1ni1,Kij1Naj1ni1
+        real*8, dimension(npro) :: code1
+	real*8 :: factor
         character*4 code
 c------------------------------------------------------------------------------
 c  calculation the linearization of RHS w.r.t primitive variables
@@ -224,11 +225,15 @@ c
                 Kij1Naj1ni0     = zero
                 Kij0Nbj0CNa1ni1 = zero
                 CNb0ni0CNa1ni1  = zero
+		Kij1Naj1ni1     = zero 
 c
                 do isd = 1,nsd
                   Ai1Na1ni0 = Ai1Na1ni0 + Ai1(:,isd,iflow,jflow)*shp1(:,j)*ni0(:,isd)
                   do jsd = 1,nsd
                     Kij1Naj1ni0 = Kij1Naj1ni0 + Kij1(:,isd,jsd,iflow,jflow)*shg1(:,j,jsd)*ni0(:,isd)
+		    ! Addition
+                    Kij1Naj1ni1 = Kij1Naj1ni1 + Kij1(:,isd,jsd,iflow,jflow)*shg1(:,j,jsd)*ni1(:,isd)
+		    !
                     do kflow = 1,nflow
                       Kij0Nbj0CNa1ni1 = Kij0Nbj0CNa1ni1 + Kij0(:,isd,jsd,iflow,kflow) 
      &                                                  * shg0(:,i,jsd)
@@ -251,6 +256,12 @@ c
      &          -   factor * pt50 * s * Kij0Nbj0CNa1ni1
      &          -   factor * e /length_h * CNb0ni0CNa1ni1
      &            ) * WdetJ0
+		if ( iflow == 5 ) then	
+                egmass(:,il,jl) = egmass(:,il,jl)
+     &          + ( 
+     &          - 0.1*code1(:)*mu(:,nflow)/length_h*shp0(:,i) *(Kij1Naj1ni1)*T0
+     &            ) * WdetJ0
+		endif
 c
               enddo
             enddo
