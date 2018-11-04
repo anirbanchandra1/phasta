@@ -1,4 +1,4 @@
-      module hack_weighted_normal_m
+      module weighted_normal_func_m
 c
 c------------------------------------------------------------------------------
 c  calculating the weighted normal at quadrature points
@@ -7,7 +7,7 @@ c------------------------------------------------------------------------------
 c
 c
       contains
-        subroutine hack_weighted_normal(nv, w_normal, shp, nshl)
+        subroutine get_weighted_normal(nv, w_normal, shp, nshl)
 c-------------------------------------------------------------------------------
           use e3if_func_m, only:sum_qpt
           use propar_m, only: npro
@@ -40,5 +40,5 @@ c... normalization of the weighted normal
             nv(iel,3)  = w_n_qpt(iel,3) / temp_len(iel)
           enddo
 c        
-        end subroutine hack_weighted_normal
-      end module hack_weighted_normal_m
+        end subroutine get_weighted_normal
+      end module weighted_normal_func_m

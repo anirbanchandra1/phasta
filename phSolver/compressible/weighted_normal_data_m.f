@@ -1,4 +1,4 @@
-      module weighted_normal_m
+      module weighted_normal_data_m
 c-------------------------------------------------------------------------------
 c  testing the weighted normal for the flow solver
 c-------------------------------------------------------------------------------
@@ -9,4 +9,4 @@ c... define the weighted normal for 0 and 1 phases
         integer, dimension(:), pointer :: calc_factor_temp
         real*8, dimension(:,:,:), pointer :: w_normal_l0, w_normal_l1 
 c                        
-      end module weighted_normal_m
+      end module weighted_normal_data_m
