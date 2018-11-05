@@ -15,6 +15,7 @@ c
         use rlssave     ! Use the resolved Leonard stresses at the nodes.
         use timedataC    ! time series
         use specialBC    ! get ytarget to localize and send down
+        use dc_lag_data_m ! for DC lag
         include "common.h"
 c
         dimension y(nshg,ndofl),            ac(nshg,ndofl),
@@ -59,6 +60,10 @@ c
         call localx(x,      xl,     ien,    nsd,    'gather  ')
         call local (qres,   ql,     ien,    idflx,  'gather  ')
         call local (umesh,  uml,    ien,    nsd,    'gather  ')
+c... localize the DC lag
+        if ( i_dc_lag .eq.1) then
+          call local (dc_lag_g,  dc_lag_l,    ien,    1,    'gather  ')
+        endif
 
         if(matflg(5,1).ge.4 )
      &   call localy (ytarget,   ytargetl,  ien,   nflow,  'gather  ')
@@ -104,6 +109,11 @@ c
 c.... assemble the residual and modified residual
 c
         call local (res,    rl,     ien,    nflow,  'scatter ')
+c... assemble the sum_dc_lag_vol and sum_vol
+        if ( i_dc_lag .eq.1) then
+          call local (sum_dc_lag_vol,    sum_dc_lag_l,     ien,    1,  'scatter ')
+          call local (sum_vol,    sum_vol_l,     ien,    1,  'scatter ')
+        endif
 c
 #if debug ==1
       do iel = 1,npro

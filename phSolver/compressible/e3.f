@@ -46,6 +46,8 @@ c Chris Whiting, Winter 1998.  (LHS matrix formation)
 c----------------------------------------------------------------------
 c
         use e3_param_m
+        use dc_lag_data_m
+        use dc_lag_func_m, only:get_dc_lag_qt
 c
         include "common.h"
 c
@@ -119,6 +121,11 @@ c (note: not currently included in mfg)
            call e3ql (ycl, shp, shgl, xl, ql, xmudmi, sgn)
         endif
 c
+c... allocation of the array for DC lag
+        if (i_dc_lag .eq. 1) then
+          allocate(vol_elm(npro))
+          allocate(dc_lag_qt(npro))
+        endif
 c.... loop through the integration points
 c
         do intp = 1, ngauss
@@ -241,10 +248,30 @@ c
 c....  Discontinuity capturing
 c
         if(iDC.ne.0) then
+          if (i_dc_lag .eq. 1) then
+            call get_dc_lag_qt(dc_lag_qt, dc_lag_l, shape, nshl)
+c... get the vol of each element, corrected by the element type
+            select case ( lcsyst )
+            case (1) ! tets            
+              vol_factor = one/six
+            case (2) ! hexes
+              vol_factor = eight
+            case (3) ! wedges
+              vol_factor = one
+            case (5) ! pyramids
+              vol_factor = eight/three
+            case default
+              call error ('e3 ', 'elem lcsyst', lcsyst)
+            end select
+c            
+            vol_elm(:) = vol_factor* WdetJ(:) / Qwt(lcsyst,intp)
+          endif
+c                    
           call e3dc  (g1yi,          g2yi,          g3yi,
      &                A0,            raLS,          rTLS,
      &                giju,          DC,            
-     &                ri,            rmi,           stiff, A0DC)
+     &                ri,            rmi,           stiff, 
+     &                A0DC,          shape)
         endif
 c
 c
@@ -307,7 +334,12 @@ c
 c.... end of integration loop
 c
       enddo
-
+c... deallocation for the DC lag after the qt loop
+      if (i_dc_lag .eq. 1) then
+          deallocate(vol_elm)
+          deallocate(dc_lag_qt)
+      endif
+c      
       ttim(6) = ttim(6) + secs(0.0)
 c
 c.... return

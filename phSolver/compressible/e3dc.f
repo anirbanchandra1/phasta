@@ -1,6 +1,6 @@
-	subroutine e3DC (g1yi,   g2yi,   g3yi,   A0,     raLS,
-     &			 rtLS,   giju,   DC,     ri,
-     &                   rmi,    stiff, A0DC)
+        subroutine e3DC (g1yi,   g2yi,   g3yi,   A0,     raLS,
+     &                   rtLS,   giju,   DC,     ri,
+     &                   rmi,    stiff,  A0DC,   shape)
 c
 c----------------------------------------------------------------------
 c
@@ -29,7 +29,8 @@ c Zdenek Johan, Winter 1991. (Recoded)
 c Zdenek Johan, Winter 1991. (Fortran 90)
 c----------------------------------------------------------------------
 c
-	include "common.h"
+        use dc_lag_data_m
+        include "common.h"
 c
         dimension g1yi(npro,nflow),          g2yi(npro,nflow),
      &            g3yi(npro,nflow),          A0(npro,5,5),
@@ -41,7 +42,10 @@ c
 
         dimension ggyi(npro,nflow),         gAgyi(npro,15),
      &            gnorm(npro),              A0gyi(npro,15),
-     &            yiA0DCyj(npro,6),         A0DC(npro,4)
+     &            yiA0DCyj(npro,6),         A0DC(npro,4),
+     &            shape(npro,nshl)
+c
+        integer :: n     
 c
 c ... -----------------------> initialize <----------------------------
 c
@@ -148,55 +152,54 @@ c
      &              + giju(:,4)*A0gyi( :,7)
      &              + giju(:,5)*A0gyi(:,12)
 
-	gAgyi( :,3) = giju(:,1)*A0gyi( :,3)
+        gAgyi( :,3) = giju(:,1)*A0gyi( :,3)
      &              + giju(:,4)*A0gyi( :,8)
      &              + giju(:,5)*A0gyi(:,13)
 
-	gAgyi( :,4) = giju(:,1)*A0gyi( :,4)
+        gAgyi( :,4) = giju(:,1)*A0gyi( :,4)
      &              + giju(:,4)*A0gyi( :,9)
      &              + giju(:,5)*A0gyi(:,14)
 
-	gAgyi( :,5) = giju(:,1)*A0gyi( :,5)
+        gAgyi( :,5) = giju(:,1)*A0gyi( :,5)
      &              + giju(:,4)*A0gyi(:,10)
      &              + giju(:,5)*A0gyi(:,15)
 
-	gAgyi( :,6) = giju(:,4)*A0gyi( :,1)
+        gAgyi( :,6) = giju(:,4)*A0gyi( :,1)
      &              + giju(:,2)*A0gyi( :,6)
      &              + giju(:,6)*A0gyi(:,11)
-
-	gAgyi( :,7) = giju(:,4)*A0gyi( :,2)
+     
+        gAgyi( :,7) = giju(:,4)*A0gyi( :,2)
      &              + giju(:,2)*A0gyi( :,7)
      &              + giju(:,6)*A0gyi(:,12)
-
-	gAgyi( :,8) = giju(:,4)*A0gyi( :,3)
+     
+        gAgyi( :,8) = giju(:,4)*A0gyi( :,3)
      &              + giju(:,2)*A0gyi( :,8)
      &              + giju(:,6)*A0gyi(:,13)
-
-	gAgyi( :,9) = giju(:,4)*A0gyi( :,4)
+        
+        gAgyi( :,9) = giju(:,4)*A0gyi( :,4)
      &              + giju(:,2)*A0gyi( :,9)
      &              + giju(:,6)*A0gyi(:,14)
-
-	gAgyi(:,10) = giju(:,4)*A0gyi( :,5)
+        
+        gAgyi(:,10) = giju(:,4)*A0gyi( :,5)
      &              + giju(:,2)*A0gyi(:,10)
      &              + giju(:,6)*A0gyi(:,15)
-
-	gAgyi(:,11) = giju(:,5)*A0gyi( :,1)
+        gAgyi(:,11) = giju(:,5)*A0gyi( :,1)
      &              + giju(:,6)*A0gyi( :,6)
      &              + giju(:,3)*A0gyi(:,11)
-
-	gAgyi(:,12) = giju(:,5)*A0gyi( :,2)
+        
+        gAgyi(:,12) = giju(:,5)*A0gyi( :,2)
      &              + giju(:,6)*A0gyi( :,7)
      &              + giju(:,3)*A0gyi(:,12)
-
-	gAgyi(:,13) = giju(:,5)*A0gyi( :,3)
+        
+        gAgyi(:,13) = giju(:,5)*A0gyi( :,3)
      &              + giju(:,6)*A0gyi( :,8)
      &              + giju(:,3)*A0gyi(:,13)
-
-	gAgyi(:,14) = giju(:,5)*A0gyi( :,4)
+        
+        gAgyi(:,14) = giju(:,5)*A0gyi( :,4)
      &              + giju(:,6)*A0gyi( :,9)
      &              + giju(:,3)*A0gyi(:,14)
-
-	gAgyi(:,15) = giju(:,5)*A0gyi( :,5)
+        
+        gAgyi(:,15) = giju(:,5)*A0gyi( :,5)
      &              + giju(:,6)*A0gyi(:,10)
      &              + giju(:,3)*A0gyi(:,15)
 c	
@@ -256,202 +259,211 @@ c.... calculate 2-norm of Grad-local-V with respect to A0
 c
 c.... DC-mallet
 c
-	  if (iDC .eq. 1) then
+        if (iDC .eq. 1) then
 c
-	    fact = one
-	    if (ipord .eq. 2)  fact = 0.9
-	    if (ipord .eq. 3) fact = 0.75
-	
+          fact = one
+          if (ipord .eq. 2) fact = 0.9
+          if (ipord .eq. 3) fact = 0.75	
 c
-            gnorm = one / (
-     &              giju(:,1)*yiA0DCyj(:,1)
-     &            + two*giju(:,4)*yiA0DCyj(:,4)
-     &            + two*giju(:,5)*yiA0DCyj(:,5)
-     &            + giju(:,2)*yiA0DCyj(:,2) 
-     &            + two*giju(:,6)*yiA0DCyj(:,6)
-     &            + giju(:,3)*yiA0DCyj(:,3) 
-     &            + epsM  )
+          gnorm = one / (
+     &            giju(:,1)*yiA0DCyj(:,1)
+     &          + two*giju(:,4)*yiA0DCyj(:,4)
+     &          + two*giju(:,5)*yiA0DCyj(:,5)
+     &          + giju(:,2)*yiA0DCyj(:,2) 
+     &          + two*giju(:,6)*yiA0DCyj(:,6)
+     &          + giju(:,3)*yiA0DCyj(:,3) 
+     &          + epsM  )
 c
-c	    DC(:,intp)=dim((fact*sqrt(raLS*gnorm)),(rtLS*gnorm))
-	    DC(:,intp)=max(zero,(fact*sqrt(raLS*gnorm))-(rtLS*gnorm))
+c	        DC(:,intp)=dim((fact*sqrt(raLS*gnorm)),(rtLS*gnorm))
+          DC(:,intp)=max(zero,(fact*sqrt(raLS*gnorm))-(rtLS*gnorm))
 c
 c.... flop count
 c
 !	    flops = flops + 46*npro
 c
-	  endif
+        endif
 c
 c.... DC-quadratic
 c
-	  if (iDC .eq. 2) then
+        if (iDC .eq. 2) then
 c
-            gnorm = one / (
-     &              giju(:,1)*yiA0DCyj(:,1)
-     &            + two*giju(:,4)*yiA0DCyj(:,4)
-     &            + two*giju(:,5)*yiA0DCyj(:,5)
-     &            + giju(:,2)*yiA0DCyj(:,2) 
-     &            + two*giju(:,6)*yiA0DCyj(:,6)
-     &            + giju(:,3)*yiA0DCyj(:,3) 
-     &            + epsM  )
+          gnorm = one / (
+     &            giju(:,1)*yiA0DCyj(:,1)
+     &          + two*giju(:,4)*yiA0DCyj(:,4)
+     &          + two*giju(:,5)*yiA0DCyj(:,5)
+     &          + giju(:,2)*yiA0DCyj(:,2) 
+     &          + two*giju(:,6)*yiA0DCyj(:,6)
+     &          + giju(:,3)*yiA0DCyj(:,3) 
+     &          + epsM  )
          
 c
-	    DC(:,intp) = two * rtLS * gnorm
+          DC(:,intp) = two * rtLS * gnorm
 c
 c.... flop count
 c
 !	    flops = flops + 36*npro
 c
-	  endif
+        endif
 c
 c.... DC-min
 c
-	  if (iDC .eq. 3) then
+        if (iDC .eq. 3) then
 c
-	    fact = one
-	    if (ipord .eq. 2)  fact = pt5
+          fact = one
+          if (ipord .eq. 2)  fact = pt5
 c
-            gnorm = one / (
-     &              giju(:,1)*yiA0DCyj(:,1)
-     &            + two*giju(:,4)*yiA0DCyj(:,4)
-     &            + two*giju(:,5)*yiA0DCyj(:,5)
-     &            + giju(:,2)*yiA0DCyj(:,2) 
-     &            + two*giju(:,6)*yiA0DCyj(:,6)
-     &            + giju(:,3)*yiA0DCyj(:,3) 
-     &            + epsM  )
+          gnorm = one / (
+     &            giju(:,1)*yiA0DCyj(:,1)
+     &          + two*giju(:,4)*yiA0DCyj(:,4)
+     &          + two*giju(:,5)*yiA0DCyj(:,5)
+     &          + giju(:,2)*yiA0DCyj(:,2) 
+     &          + two*giju(:,6)*yiA0DCyj(:,6)
+     &          + giju(:,3)*yiA0DCyj(:,3) 
+     &          + epsM  )
 
 c
-c	    DC(:,intp) = min( dim(fact * sqrt(raLS * gnorm),
-	    DC(:,intp) = min( max(zero,fact * sqrt(raLS * gnorm)-
-     &                       rtLS * gnorm), two * rtLS * gnorm )
+c	        DC(:,intp) = min( dim(fact * sqrt(raLS * gnorm),
+          DC(:,intp) = min( max(zero,fact * sqrt(raLS * gnorm)-
+     &                          rtLS * gnorm), two * rtLS * gnorm )
 c
 c.... flop count
 c
 !	    flops = flops + 48*npro
 c
-	  endif
+        endif
 c
 c	endif
 c
+c... for lagging DC operation
+        if (i_dc_lag .eq. 1) then
+c... sum up the numerical viscousity of the current time step
+          do n = 1,nshl
+            sum_dc_lag_l(:,n) = sum_dc_lag_l(:,n) 
+     &                        + shape(:,n)*DC(:,intp)*vol_elm(:)
+            sum_vol_l(:,n) = sum_vol_l(:,n) + shape(:,n)*vol_elm(:)          
+          enddo
+c... using the numerical viscousity from last time step to replace the
+c... the current numerical viscousity
+          DC(:,intp) = dc_lag_qt(:)
+        endif     
 c.... ---------------------------->  RHS  <----------------------------
 c
 c.... add the contribution of DC to ri and/or rmi
 c
 c.... ires = 1 or 3
 c
-	if ((ires .eq. 1) .or. (ires .eq. 3)) then
+        if ((ires .eq. 1) .or. (ires .eq. 3)) then
 c
-	  ri ( :,1) = ri ( :,1) + DC(:,intp) * gAgyi( :,1)
-	  rmi( :,1) = rmi( :,1) + DC(:,intp) * gAgyi( :,1)
-	  ri ( :,2) = ri ( :,2) + DC(:,intp) * gAgyi( :,2)
-	  rmi( :,2) = rmi( :,2) + DC(:,intp) * gAgyi( :,2)
-	  ri ( :,3) = ri ( :,3) + DC(:,intp) * gAgyi( :,3)
-	  rmi( :,3) = rmi( :,3) + DC(:,intp) * gAgyi( :,3)
-	  ri ( :,4) = ri ( :,4) + DC(:,intp) * gAgyi( :,4)
-	  rmi( :,4) = rmi( :,4) + DC(:,intp) * gAgyi( :,4)
-	  ri ( :,5) = ri ( :,5) + DC(:,intp) * gAgyi( :,5)
-	  rmi( :,5) = rmi( :,5) + DC(:,intp) * gAgyi( :,5)
+          ri ( :,1) = ri ( :,1) + DC(:,intp) * gAgyi( :,1)
+          rmi( :,1) = rmi( :,1) + DC(:,intp) * gAgyi( :,1)
+          ri ( :,2) = ri ( :,2) + DC(:,intp) * gAgyi( :,2)
+          rmi( :,2) = rmi( :,2) + DC(:,intp) * gAgyi( :,2)
+          ri ( :,3) = ri ( :,3) + DC(:,intp) * gAgyi( :,3)
+          rmi( :,3) = rmi( :,3) + DC(:,intp) * gAgyi( :,3)
+          ri ( :,4) = ri ( :,4) + DC(:,intp) * gAgyi( :,4)
+          rmi( :,4) = rmi( :,4) + DC(:,intp) * gAgyi( :,4)
+          ri ( :,5) = ri ( :,5) + DC(:,intp) * gAgyi( :,5)
+          rmi( :,5) = rmi( :,5) + DC(:,intp) * gAgyi( :,5)
 c
-	  ri ( :,6) = ri ( :,6) + DC(:,intp) * gAgyi( :,6)
-	  rmi( :,6) = rmi( :,6) + DC(:,intp) * gAgyi( :,6)
-	  ri ( :,7) = ri ( :,7) + DC(:,intp) * gAgyi( :,7)
-	  rmi( :,7) = rmi( :,7) + DC(:,intp) * gAgyi( :,7)
-	  ri ( :,8) = ri ( :,8) + DC(:,intp) * gAgyi( :,8)
-	  rmi( :,8) = rmi( :,8) + DC(:,intp) * gAgyi( :,8)
-	  ri ( :,9) = ri ( :,9) + DC(:,intp) * gAgyi( :,9)
-	  rmi( :,9) = rmi( :,9) + DC(:,intp) * gAgyi( :,9)
-	  ri (:,10) = ri (:,10) + DC(:,intp) * gAgyi(:,10)
-	  rmi(:,10) = rmi(:,10) + DC(:,intp) * gAgyi(:,10)
+          ri ( :,6) = ri ( :,6) + DC(:,intp) * gAgyi( :,6)
+          rmi( :,6) = rmi( :,6) + DC(:,intp) * gAgyi( :,6)
+          ri ( :,7) = ri ( :,7) + DC(:,intp) * gAgyi( :,7)
+          rmi( :,7) = rmi( :,7) + DC(:,intp) * gAgyi( :,7)
+          ri ( :,8) = ri ( :,8) + DC(:,intp) * gAgyi( :,8)
+          rmi( :,8) = rmi( :,8) + DC(:,intp) * gAgyi( :,8)
+          ri ( :,9) = ri ( :,9) + DC(:,intp) * gAgyi( :,9)
+          rmi( :,9) = rmi( :,9) + DC(:,intp) * gAgyi( :,9)
+          ri (:,10) = ri (:,10) + DC(:,intp) * gAgyi(:,10)
+          rmi(:,10) = rmi(:,10) + DC(:,intp) * gAgyi(:,10)
 c
-	  ri (:,11) = ri (:,11) + DC(:,intp) * gAgyi(:,11)
-	  rmi(:,11) = rmi(:,12) + DC(:,intp) * gAgyi(:,12)
-	  ri (:,12) = ri (:,12) + DC(:,intp) * gAgyi(:,12)
-	  rmi(:,12) = rmi(:,12) + DC(:,intp) * gAgyi(:,12)
-	  ri (:,13) = ri (:,13) + DC(:,intp) * gAgyi(:,13)
-	  rmi(:,13) = rmi(:,13) + DC(:,intp) * gAgyi(:,13)
-	  ri (:,14) = ri (:,14) + DC(:,intp) * gAgyi(:,14)
-	  rmi(:,14) = rmi(:,14) + DC(:,intp) * gAgyi(:,14)
-	  ri (:,15) = ri (:,15) + DC(:,intp) * gAgyi(:,15)
-	  rmi(:,15) = rmi(:,15) + DC(:,intp) * gAgyi(:,15)
+          ri (:,11) = ri (:,11) + DC(:,intp) * gAgyi(:,11)
+          rmi(:,11) = rmi(:,12) + DC(:,intp) * gAgyi(:,12)
+          ri (:,12) = ri (:,12) + DC(:,intp) * gAgyi(:,12)
+          rmi(:,12) = rmi(:,12) + DC(:,intp) * gAgyi(:,12)
+          ri (:,13) = ri (:,13) + DC(:,intp) * gAgyi(:,13)
+          rmi(:,13) = rmi(:,13) + DC(:,intp) * gAgyi(:,13)
+          ri (:,14) = ri (:,14) + DC(:,intp) * gAgyi(:,14)
+          rmi(:,14) = rmi(:,14) + DC(:,intp) * gAgyi(:,14)
+          ri (:,15) = ri (:,15) + DC(:,intp) * gAgyi(:,15)
+          rmi(:,15) = rmi(:,15) + DC(:,intp) * gAgyi(:,15)
 c
 !	  flops = flops + 45*npro
 c
-	endif
+        endif
 c
 c.... ires = 2
 c
-	if (ires .eq. 2) then
+        if (ires .eq. 2) then
 c
-	  rmi( :,1) = rmi( :,1) + DC(:,intp) * gAgyi( :,1)
-	  rmi( :,2) = rmi( :,2) + DC(:,intp) * gAgyi( :,2)
-	  rmi( :,3) = rmi( :,3) + DC(:,intp) * gAgyi( :,3)
-	  rmi( :,4) = rmi( :,4) + DC(:,intp) * gAgyi( :,4)
-	  rmi( :,5) = rmi( :,5) + DC(:,intp) * gAgyi( :,5)
+          rmi( :,1) = rmi( :,1) + DC(:,intp) * gAgyi( :,1)
+          rmi( :,2) = rmi( :,2) + DC(:,intp) * gAgyi( :,2)
+          rmi( :,3) = rmi( :,3) + DC(:,intp) * gAgyi( :,3)
+          rmi( :,4) = rmi( :,4) + DC(:,intp) * gAgyi( :,4)
+          rmi( :,5) = rmi( :,5) + DC(:,intp) * gAgyi( :,5)
 c
-	  rmi( :,6) = rmi( :,6) + DC(:,intp) * gAgyi( :,6)
-	  rmi( :,7) = rmi( :,7) + DC(:,intp) * gAgyi( :,7)
-	  rmi( :,8) = rmi( :,8) + DC(:,intp) * gAgyi( :,8)
-	  rmi( :,9) = rmi( :,9) + DC(:,intp) * gAgyi( :,9)
-	  rmi(:,10) = rmi(:,10) + DC(:,intp) * gAgyi(:,10)
+          rmi( :,6) = rmi( :,6) + DC(:,intp) * gAgyi( :,6)
+          rmi( :,7) = rmi( :,7) + DC(:,intp) * gAgyi( :,7)
+          rmi( :,8) = rmi( :,8) + DC(:,intp) * gAgyi( :,8)
+          rmi( :,9) = rmi( :,9) + DC(:,intp) * gAgyi( :,9)
+          rmi(:,10) = rmi(:,10) + DC(:,intp) * gAgyi(:,10)
 c
-	  rmi(:,11) = rmi(:,11) + DC(:,intp) * gAgyi(:,11)
-	  rmi(:,12) = rmi(:,12) + DC(:,intp) * gAgyi(:,12)
-	  rmi(:,13) = rmi(:,13) + DC(:,intp) * gAgyi(:,13)
-	  rmi(:,14) = rmi(:,14) + DC(:,intp) * gAgyi(:,14)
-	  rmi(:,15) = rmi(:,15) + DC(:,intp) * gAgyi(:,15)
+          rmi(:,11) = rmi(:,11) + DC(:,intp) * gAgyi(:,11)
+          rmi(:,12) = rmi(:,12) + DC(:,intp) * gAgyi(:,12)
+          rmi(:,13) = rmi(:,13) + DC(:,intp) * gAgyi(:,13)
+          rmi(:,14) = rmi(:,14) + DC(:,intp) * gAgyi(:,14)
+          rmi(:,15) = rmi(:,15) + DC(:,intp) * gAgyi(:,15)
 c
 !	  flops = flops + 30*npro
 c
-	endif
+        endif
 c
 c.... ------------------------->  Stiffness  <--------------------------
 c
 c.... add the contribution of DC to stiff
 c
-	if (iprec .eq. 1) then ! leave out of LHS, when called from itrres
-	     nflow2=two*nflow
-       do j = 1, nflow
-          do i = 1, nflow
-             dtmp(:)=A0(:,i,j)*DC(:,intp)
+          if (iprec .eq. 1) then ! leave out of LHS, when called from itrres
+c          
+          nflow2=two*nflow
+          do j = 1, nflow
+            do i = 1, nflow
+              dtmp(:)=A0(:,i,j)*DC(:,intp)
 c
 c.... add (DC g^1 A0) to stiff [1,1]
 c
-             stiff(:,i,j) = stiff(:,i,j) 
-     &                    + dtmp(:)*giju(:,1)
+              stiff(:,i,j) = stiff(:,i,j) 
+     &                     + dtmp(:)*giju(:,1)
 c
 c.... add (DC g^1 A0) to stiff [1,2]
 c
-
-             stiff(:,i,j+nflow) = stiff(:,i,j+nflow) 
-     &                    + dtmp(:)*giju(:,4)
+              stiff(:,i,j+nflow) = stiff(:,i,j+nflow) 
+     &                           + dtmp(:)*giju(:,4)
 c
 c.... add (DC g^1 A0) to stiff [1,3]
 c
-
-             stiff(:,i,j+nflow2) = stiff(:,i,j+nflow2) 
-     &                    + dtmp(:)*giju(:,5)
+              stiff(:,i,j+nflow2) = stiff(:,i,j+nflow2) 
+     &                            + dtmp(:)*giju(:,5)
 
 c.... add (DC g^1 A0) to stiff [2,1] (similarly below)
 c
+              stiff(:,i+nflow,j) = stiff(:,i+nflow,j) 
+     &                           + dtmp(:)*giju(:,4)
 
-             stiff(:,i+nflow,j) = stiff(:,i+nflow,j) 
-     &                    + dtmp(:)*giju(:,4)
+              stiff(:,i+nflow,j+nflow) = stiff(:,i+nflow,j+nflow) 
+     &                                 + dtmp(:)*giju(:,2)
 
-             stiff(:,i+nflow,j+nflow) = stiff(:,i+nflow,j+nflow) 
-     &                    + dtmp(:)*giju(:,2)
+              stiff(:,i+nflow,j+nflow2) = stiff(:,i+nflow,j+nflow2) 
+     &                                  + dtmp(:)*giju(:,6)
 
-             stiff(:,i+nflow,j+nflow2) = stiff(:,i+nflow,j+nflow2) 
-     &                    + dtmp(:)*giju(:,6)
+              stiff(:,i+nflow2,j) = stiff(:,i+nflow2,j) 
+     &                            + dtmp(:)*giju(:,5)
 
-             stiff(:,i+nflow2,j) = stiff(:,i+nflow2,j) 
-     &                    + dtmp(:)*giju(:,5)
+              stiff(:,i+nflow2,j+nflow) = stiff(:,i+nflow2,j+nflow) 
+     &                                  + dtmp(:)*giju(:,6)
 
-             stiff(:,i+nflow2,j+nflow) = stiff(:,i+nflow2,j+nflow) 
-     &                    + dtmp(:)*giju(:,6)
-
-             stiff(:,i+nflow2,j+nflow2) = stiff(:,i+nflow2,j+nflow2) 
-     &                    + dtmp(:)*giju(:,3)
+              stiff(:,i+nflow2,j+nflow2) = stiff(:,i+nflow2,j+nflow2) 
+     &                                   + dtmp(:)*giju(:,3)
+            enddo
           enddo
-       enddo
 c
 c.... flop count
 c
@@ -459,12 +471,12 @@ c
 c
 c.... end of stiffness
 c
-	endif
+          endif
 c
 c.... return
 c
-	return
-	end
+        return
+        end
 c
         subroutine e3dcSclr ( g1yti,    g2yti,       g3yti,
      &                        A0t,      raLSt,       rTLSt,

@@ -17,8 +17,9 @@ c----------------------------------------
           use e3if_geom_m
           use if_global_m
           use conpar_m
-          use weighted_normal_m, only:w_normal_l0, w_normal_l1, w_normal_global !hacking
+          use weighted_normal_data_m, only:w_normal_l0, w_normal_l1, w_normal_global !for weighted normal on the interface
           use genpar_m, only: iprec
+          use dgifinp_m, only: i_w_normal
 c
           implicit none
 c
@@ -66,10 +67,11 @@ c
           call localx(if_kappa, if_kappa_l0,  ienif0, nsd, 'gather  ', nshg, nenl0, npro)
           call localx(if_kappa, if_kappa_l1,  ienif1, nsd, 'gather  ', nshg, nenl1, npro)
         endif
-c... hacking, localize the weighted normal
-        call localx(w_normal_global, w_normal_l0,  ienif0, nsd, 'gather  ', nshg, nenl0, npro)
-        call localx(w_normal_global, w_normal_l1,  ienif1, nsd, 'gather  ', nshg, nenl1, npro)
-c... end of hacking        
+c... localize the weighted normal
+        if (i_w_normal .eq. 1) then
+          call localx(w_normal_global, w_normal_l0,  ienif0, nsd, 'gather  ', nshg, nenl0, npro)
+          call localx(w_normal_global, w_normal_l1,  ienif1, nsd, 'gather  ', nshg, nenl1, npro)
+        endif
 c
         call e3if(shpif0,shpif1,shgif0,shgif1,qwtif0,qwtif1)
 c
@@ -144,16 +146,16 @@ c... extract and assemble the Block-Diagonal (same as ASIGMR)
         BDiagl_11 = zero
 c        
         if (iprec .ne. 0) then 
-           do i = 1, nshl0
+          do i = 1, nshl0
               do j = 1, nflow
                  i0 = (i - 1) * nflow + j
                  do k = 1, nflow
                     j0 = (i - 1) * nflow + k
-                    loc = (k-1)*nflow + j
+                    loc = (k-1)*nflow + j ! the index number when converting 5 by 5 into 25 by 1 vector
                     BDiagl_00(:,i,loc) = egmass00(:,i0,j0)
                  enddo
               enddo
-           enddo
+          enddo
 c
            do i = 1, nshl1
               do j = 1, nflow

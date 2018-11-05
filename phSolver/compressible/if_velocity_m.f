@@ -49,7 +49,7 @@ c
 c
         integer :: iblk, iel, npro,inode, i0, i1, n, ierr
         integer, pointer :: ienif0(:,:), ienif1(:,:)
-	real*8, dimension(nshg,3) :: actual_vi
+	      real*8, dimension(nshg,3) :: actual_vi
 
         if (numpe > 1) then
           call commu (sum_vi_area(:,1:3), ilwork, nsd, 'in ')
