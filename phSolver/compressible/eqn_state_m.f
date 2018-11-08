@@ -26,7 +26,8 @@ c
         gamma1 = gamma - one
 c
         rho = pres / (Rgas*T)
-        ei  = (T) * Rgas / gamma1 
+	!AC hardcoded
+        ei  = (T-85.0) * Rgas / gamma1 
 c
       end subroutine getthm6_ideal_gas
 c
@@ -34,7 +35,8 @@ c
 c
         call getthm6_ideal_gas
 c
-        h   = (T) * Rgas / gamma1 * gamma
+	!AC hardcoded
+        h   = (T-85.0) * Rgas / gamma1 * gamma
         cp  = Rgas*gamma / gamma1
         alphaP = one / T
         betaT  = one / pres
@@ -115,7 +117,8 @@ c
 c
         rho = rho_ref * (one - alpha_P*(T-T_ref) + beta_T*(pres-P_ref))
         !ei  = cv_liq*T - 2557000
-        ei  = cv_liq*(T) - 163000               !- 163000
+	!AC hardcoded
+        ei  = cv_liq*(T-85.0) - 163000
 	!ei   = cv_liq*T 
 
 c

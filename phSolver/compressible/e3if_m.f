@@ -541,7 +541,7 @@ c
 c
            integer :: iflow,jflow,isd
            real*8 :: this_sum(npro) , PenFact(npro)
-	   real*8 , dimension(npro) :: rho_sat1, acco_coeff, constt, constt1, vi_mag
+	   real*8 , dimension(npro) :: rho_sat1, acco_coeff, constt,constt1, vi_magMOD
 	   real*8 , dimension(npro) :: rho_sat1Diff, T01 , rho_sat01
 c
 c
@@ -549,14 +549,18 @@ c
            rho_sat1 = 2.2673e-5*T1**4 - 7.1952e-3*T1**3 + 8.7323e-1*T1**2 - 4.7522e1*T1 + 9.7275e2
            rho_sat01 = 2.2673e-5*T01**4 - 7.1952e-3*T01**3 + 8.7323e-1*T01**2 - 4.7522e1*T01 + 9.7275e2
            rho_sat1Diff = 4*2.2673e-5*T01**3 - 3*7.1952e-3*T01**2 + 2*8.7323e-1*T01**1 - 4.7522e1
-           !acco_coeff =  -5.1482e-6*T1**3 + 1.1798e-3*T1**2 - 9.4340e-2*T1 + 3.5633e0
-	   !constt = 2*acco_coeff/(2-acco_coeff)*(8.314/2/3.1415/0.039948)**0.5/1.40 
-	   constt1 = sqrt(T01)*(rho_sat1/1000.0*(T1**0.5) - rho0*(T0**0.5))
-     &                             /(T01*rho_sat1Diff/1000.0 + pt50*rho_sat01/1000)
-!	   vi_mag = constt*(rho_sat1/1000.0*(T1**0.5) - rho0*(T0**0.5))
-!           vi_mag = um0(:,1)*nv0(:,1) + um0(:,2)*nv0(:,2) + um0(:,3)*nv0(:,3)
+           acco_coeff =  -5.1482e-6*T1**3 + 1.1798e-3*T1**2 - 9.4340e-2*T1 + 3.5633e0
+!!	   !constt = 2*acco_coeff/(2-acco_coeff)*(8.314/2/3.1415/0.039948)**0.5/1.40 
+!!	   constt1 = sqrt(T01)*(rho_sat1/1000.0*(T1**0.5) - rho0*(T0**0.5))
+!!     &                             /(T01*rho_sat1Diff/1000.0 + pt50*rho_sat01/1000)
+	   constt1 =2*acco_coeff/(2-acco_coeff)*(8.314/2/3.1415/0.039948)**0.5
+     &                     /sqrt(T01)*(T01*rho_sat1Diff/1000.0 + pt50*rho_sat01/1000)
+!!	   vi_mag = constt*(rho_sat1/1000.0*(T1**0.5) - rho0*(T0**0.5))
+           ! using mesh velocity to introduce some kind of stagger
+	   ! need to revisit this when using u_liquid in vi
+	   vi_magMOD = um0(:,1)*nv0(:,1) + um0(:,2)*nv0(:,2) + um0(:,3)*nv0(:,3)
 	   PenConst = zero
-	   PenConst(:,nflow) = constt1 !1.0d1*vi_mag
+	   PenConst(:,nflow) = rho1*vi_magMOD/constt1 !1.0d1*vi_mag
            do iflow = 1,nflow
 c
                this_sum = zero
