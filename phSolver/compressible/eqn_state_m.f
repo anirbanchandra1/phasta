@@ -26,7 +26,8 @@ c
         gamma1 = gamma - one
 c
         rho = pres / (Rgas*T)
-        ei  = (T) * Rgas / gamma1 
+	!AC hardcoded
+        ei  = (T-273.15) * Rgas / gamma1 
 c
       end subroutine getthm6_ideal_gas
 c
@@ -34,7 +35,8 @@ c
 c
         call getthm6_ideal_gas
 c
-        h   = (T) * Rgas / gamma1 * gamma
+	!AC hardcoded
+        h   = (T-273.15) * Rgas / gamma1 * gamma
         cp  = Rgas*gamma / gamma1
         alphaP = one / T
         betaT  = one / pres
@@ -114,7 +116,8 @@ c
         beta_T  = mat_prop(mater,iprop_liquid_1_betaT,  1)
 c
         rho = rho_ref * (one - alpha_P*(T-T_ref) + beta_T*(pres-P_ref))
-        ei  = cv_liq*(T-273) - 2557000   ! WATER
+	!AC hardcoded
+        ei  = cv_liq*(T-273.15) - 2557000   ! WATER
         !ei  = cv_liq*(T) - 163000  ! ARGON
 	!ei   = cv_liq*T 
 

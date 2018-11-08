@@ -32,7 +32,7 @@ c... Clausius-Clapeyron:
      &,                            un0,un1     ! velocity in normal direction
 c
 !------------ Variable for "other_laws" -------------------------------
-	real*8, dimension(npro) :: rho_sat1, vi_mag, Psat1
+	real*8, dimension(npro) :: rho_sat1, Psat1, vi_magMod
      &,                            acco_coeff, constt
 ! ---------------------------------------------------------------------
 #define debug 0
@@ -81,7 +81,7 @@ c          vi(:,3) = c1 * (vi_mag * nv0(:,3) + u1(:,3))
           vi(:,1) = vi_mag * nv0(:,1)
           vi(:,2) = vi_mag * nv0(:,2)
           vi(:,3) = vi_mag * nv0(:,3)
-c      write(*,100) 'vi_mag: ',vi_mag
+c      write(*,*) 'vi_mag: ',vi_mag
 c      write(*,100) 'vi    : ',vi(:,1)
 c      write(*,100) 'nv0   : ',nv0(:,1)
 c      write(*,100) 'u1    : ',u1(:,1)
@@ -94,14 +94,13 @@ c      write(*,100) 'u1    : ',u1(:,1)
 	 !Psat1 = 133.322*(10**(8.07131 - 1.73063E+03/(2.33426E+02 +(T1-273.15))))
 	 !Psat1 = 133.322*(10**(8.14019 - 1810.94    /(244.485     + (T1-273.15))))
 	 !------------
-	 !Buck
+	 !Buck for saturation Pressure
 	 Psat1 = 1000.0*0.61121*exp((18.678 - (T1-273.15)/234.5)
      &	                    *(T1-273.15)/(257.14 + (T1-273.15)))
-	 !rho_sat0 = Psat0 / (Ru/18.0*1.d3*T0)
-	 constt=2*(0.018/2/3.14/8.314)**0.5/1.0
-	 vi_mag = constt*(Psat1/1000.0/(T1**0.5) - pres0/(T0**0.5))
-	 !vi_mag = constt*(rho_sat0-rho0)*(T0**0.5)
-	!write (*,*) '', vi_mag
+	 ! Using Schrage but in the Pressure form and not density
+	 constt=2*(0.018/2/3.14/8.314)**0.5/rho1 ! Schrage Prefact
+	 vi_magMod = constt*(Psat1/1000.0/(T1**0.5) - pres0/(T0**0.5))
+	 ! assuming accommodation coeff = 1
 ! ----------------------------------------------------------
 
 ! =============== ARGON ===============================	 
@@ -120,9 +119,9 @@ c      write(*,100) 'u1    : ',u1(:,1)
 !	  vi(:,2) = c1 * (vi_mag * nv0(:,2)) + u1(:,2)
 !	  vi(:,3) = c1 * (vi_mag * nv0(:,3)) + u1(:,3)
 
-	  vi(:,1) = vi_mag * nv0(:,1)
-	  vi(:,2) = vi_mag * nv0(:,2)
-	  vi(:,3) = vi_mag * nv0(:,3)
+	  vi(:,1) = vi_magMod * nv0(:,1)
+	  vi(:,2) = vi_magMod * nv0(:,2)
+	  vi(:,3) = vi_magMod * nv0(:,3)
 	return
         case (vieilles_burning)
 c

@@ -545,7 +545,7 @@ c
 c
            integer :: iflow,jflow,isd,iel
            real*8 :: this_sum(npro) , PenFact(npro)
-	   real*8 , dimension(npro) :: rho_sat1, acco_coeff, constt, constt1, vi_mag
+	   real*8 , dimension(npro) :: rho_sat1, acco_coeff, constt, constt1
 	   real*8 , dimension(npro) :: rho_sat1Diff, T01 , rho_sat01
 	   real*8 , dimension(nsd,nflow) :: fdiff0
 c
@@ -569,6 +569,11 @@ c
 	   PenConst = zero
 	   element_loop: do iel = 1,npro
 	   	call calc_diff_flux(fdiff0,var0(iel),prop0(iel))
+	   	!AC hardcoded
+	   	! This 0.1 is actually -0.1*(-1). this is the non
+		! dimensional value (actual value is 1e-4, Badam+ )
+	   	! the diffusive contribution is addded to the LHS, but
+		! T0 is not linearized. 
 	   	PenConst(iel,5)=0.1*dot_product(fdiff0(:,5),nv0(iel,:))*T0(iel)
 	   enddo element_loop
 !--------------------------------------------------------
