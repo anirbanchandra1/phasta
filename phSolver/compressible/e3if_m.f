@@ -558,7 +558,7 @@ c
 !!	   vi_mag = constt*(rho_sat1/1000.0*(T1**0.5) - rho0*(T0**0.5))
            ! using mesh velocity to introduce some kind of stagger
 	   ! need to revisit this when using u_liquid in vi
-	   vi_magMOD = um1(:,1)*nv1(:,1) + um1(:,2)*nv1(:,2) + um1(:,3)*nv1(:,3)
+	   vi_magMOD = -(um1(:,1)*nv1(:,1) + um1(:,2)*nv1(:,2) + um1(:,3)*nv1(:,3))
 	   PenConst = zero
 	   PenConst(:,nflow) = rho1*vi_magMOD/constt1 !1.0d1*vi_mag
            do iflow = 1,nflow
