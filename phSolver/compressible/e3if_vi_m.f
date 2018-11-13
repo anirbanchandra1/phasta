@@ -111,9 +111,9 @@ c      write(*,100) 'u1    : ',u1(:,1)
 !	  vi(:,2) = c1 * (vi_mag * nv0(:,2)) + u1(:,2)
 !	  vi(:,3) = c1 * (vi_mag * nv0(:,3)) + u1(:,3)
 
-	  vi(:,1) = vi_magMOD * nv0(:,1)
-	  vi(:,2) = vi_magMOD * nv0(:,2)
-	  vi(:,3) = vi_magMOD * nv0(:,3)
+	  vi(:,1) = c1*vi_magMOD * nv0(:,1)
+	  vi(:,2) = c1*vi_magMOD * nv0(:,2)
+	  vi(:,3) = c1*vi_magMOD * nv0(:,3)
 	return
         case (vieilles_burning)
 c

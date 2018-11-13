@@ -118,9 +118,8 @@ c
         rho = rho_ref * (one - alpha_P*(T-T_ref) + beta_T*(pres-P_ref))
         !ei  = cv_liq*T - 2557000
 	!AC hardcoded
-        ei  = cv_liq*(T-85.0) - 163000
+        ei  = cv_liq*(T-85.0) - 144000!163000
 	!ei   = cv_liq*T 
-
 c
       end subroutine getthm6_liquid_1
 c
@@ -129,9 +128,11 @@ c
         call getthm6_liquid_1
 c
         h   = ei + pres/rho  !- p_ref/rho_ref
-        cp  = cv_liq
+        !cp  = cv_liq
         alphaP = alpha_P
         betaT  = beta_T
+	!AC updated cp calculation
+	cp = cv_liq + (alphaP**2 * T/rho/betaT)
         if (associated(cv)) cv  = cv_liq
         if (associated(gamb)) gamb = zero
 c        c =  sqrt(one/(rho_ref*betaT))
