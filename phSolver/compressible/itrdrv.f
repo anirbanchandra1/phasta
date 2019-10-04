@@ -459,6 +459,16 @@ c
 c
 c.... -----------------------> predictor phase <-----------------------
 c
+c	    !!AC hack 
+c            !	!write(*,*) Delt, lstep, x(1,1)
+c		do inode = 1,nshg
+c		  if (btest(iBC(inode),1)) then
+c		    if (x(inode,1).le.-0.589) then
+c        		BC(inode,2)=90*lstep*Delt(1)*10
+c		    endif
+c		  endif
+c		enddo
+
             call itrBC (y,ac, iBC, BC, iper, ilwork, umesh)
 c
             isclr = zero
@@ -688,28 +698,13 @@ c
 c
                       lhs = 1  
                       iprec=lhs
-
-                      call set_if_velocity (BC,  iBC,
-     &                  umesh,disp, x,  Delt(1),   ilwork,
-     &     		nshg,ndofBC,
-     &                  nsd, nelblif, nlwork, ndof )
-
-
-
-
-
-
-
 c
-
-
                     call set_if_velocity (BC,  iBC,
      &                                umesh, disp, x,  Delt(1),   ilwork,
      &                                nshg, ndofBC,
      &                                nsd, nelblif, nlwork, ndof )
-
-
-
+c
+c
 c.... update interface mesh bc based on umesh
 c.... we should have correct umesh at this point
 c

@@ -36,8 +36,9 @@ c
         call getthm6_ideal_gas
 c
 	!AC hardcoded
-        h   = (T-85.0) * Rgas / gamma1 * gamma
-        cp  = Rgas*gamma / gamma1
+        !h   = (T-85.0) * Rgas / gamma1 * gamma
+        h = ei + pres/rho
+	cp  = Rgas*gamma / gamma1
         alphaP = one / T
         betaT  = one / pres
         if (associated(cv)) cv  = Rgas / gamma1
@@ -118,7 +119,7 @@ c
         rho = rho_ref * (one - alpha_P*(T-T_ref) + beta_T*(pres-P_ref))
         !ei  = cv_liq*T - 2557000
 	!AC hardcoded
-        ei  = cv_liq*(T-85.0) - 144000!163000
+        ei  = cv_liq*(T-85.0) - 144000
 	!ei   = cv_liq*T 
 c
       end subroutine getthm6_liquid_1

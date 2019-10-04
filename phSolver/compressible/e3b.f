@@ -241,7 +241,20 @@ c
         heat =   con * ( bnorm(:,1) * g1yi(:,5) +
      &                   bnorm(:,2) * g2yi(:,5) +
      &                   bnorm(:,3) * g3yi(:,5) ) 
-
+        do iel=1,npro
+ 	  if (bnorm(iel,1).lt.zero)  then
+	    !!heat(iel) = 20*con(iel)*(T(iel) - 90)
+	    !!heat(iel) = 53210.2654*(T(iel) - 90)
+	    !!heat(iel) =  51821.23562*(T(iel) - 90)
+	    heat(iel) =  37061.81966*(T(iel) - 90)
+	  endif 
+ 	  if (bnorm(iel,1).gt.zero)  then
+	    !!heat(iel) = -20*con(iel)*(80.0 - T(iel))
+	    !!heat(iel) = -40280.8443*(80.0 - T(iel))
+	    heat(iel)  = -37061.81966*(80.0 - T(iel))
+	  endif
+	enddo
+	!write (*,*) lstep
         !Note that Fh5 already contains heat flux BCs from e3bvar
         where (.not.btest(iBCB(:,1),3) ) Fh5 = heat 
 
