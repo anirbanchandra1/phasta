@@ -461,37 +461,37 @@ c.... -----------------------> predictor phase <-----------------------
 c
 c	    !!AC hack 
             !	!write(*,*) Delt, lstep, x(1,1)c		do inode = 1,nshg
-		do inode = 1,nshg
-		  if (btest(iBC(inode),1)) then
-		    if (x(inode,1).le.-0.584) then
-		      if (lstep .lt. 54) then
-        		BC(inode,2)=(lstep+1)*(87.6598-80.0)/(54-0)+80.0
-		      else if (lstep .ge. 54 .AND. lstep .lt. 108) then
-        		BC(inode,2)=(lstep+1-54)*(88.7718 - 87.6598)/(108-54) + 87.6598
-		      else if (lstep .ge. 108 .AND. lstep .lt. 205) then
-        		BC(inode,2)=(lstep+1-108)*(89.0957 - 88.7718)/(205-108) + 88.7718
-		      else if (lstep .ge. 205 .AND. lstep .lt. 410) then
-        		BC(inode,2)=(lstep+1-205)*(89.2605 - 89.0957)/(410-205) + 89.0957
-		      else
-			BC(inode,2)=89.2719
-		      endif
-		    endif
-		    if (x(inode,1).ge.0.584) then
-		      if (lstep .lt. 54) then
-        		BC(inode,2)=(lstep+1)*(80.0529-80.0)/(54-0)+80.0
-		      else if (lstep .ge. 54 .AND. lstep .lt. 108) then
-        		BC(inode,2)=(lstep+1-54)*(80.161 - 80.0529)/(108-54) + 80.0529
-		      else if (lstep .ge. 108 .AND. lstep .lt. 205) then
-        		BC(inode,2)=(lstep+1-108)*(80.6609 - 80.161)/(205-108) + 80.161
-		      else if (lstep .ge. 205 .AND. lstep .lt. 410) then
-        		BC(inode,2)=(lstep+1-205)*(80.7472 - 80.6609)/(410-205) + 80.6609
-		      else
-			BC(inode,2)=80.8675
-		      endif
-		    endif
-	
-		  endif
-		enddo
+		!do inode = 1,nshg
+		!  if (btest(iBC(inode),1)) then
+		!    if (x(inode,1).le.-0.584) then
+		!      if (lstep .lt. 49) then
+        !		BC(inode,2)=(lstep+1)*(87.6598-80.0)/(49-0)+80.0
+	!	      else if (lstep .ge. 49 .AND. lstep .lt. 103) then
+        !		BC(inode,2)=(lstep+1-49)*(88.7718 - 87.6598)/(103-49) + 87.6598
+	!	      else if (lstep .ge. 103 .AND. lstep .lt. 200) then
+        !		BC(inode,2)=(lstep+1-103)*(89.0957 - 88.7718)/(200-103) + 88.7718
+	!	      else if (lstep .ge. 200 .AND. lstep .lt. 405) then
+        !		BC(inode,2)=(lstep+1-200)*(89.2605 - 89.0957)/(405-200) + 89.0957
+	!	      else
+	!		BC(inode,2)=89.2719
+	!	      endif
+	!	    endif
+	!	    if (x(inode,1).ge.0.584) then
+	!	      if (lstep .lt. 49) then
+        !		BC(inode,2)=(lstep+1)*(80.0529-80.0)/(49-0)+80.0
+	!	      else if (lstep .ge. 49 .AND. lstep .lt. 103) then
+        !		BC(inode,2)=(lstep+1-49)*(80.161 - 80.0529)/(103-49) + 80.0529
+	!	      else if (lstep .ge. 103 .AND. lstep .lt. 200) then
+        !		BC(inode,2)=(lstep+1-103)*(80.6609 - 80.161)/(200-103) + 80.161
+	!	      else if (lstep .ge. 200 .AND. lstep .lt. 405) then
+        !		BC(inode,2)=(lstep+1-200)*(80.7472 - 80.6609)/(405-200) + 80.6609
+	!	      else
+	!		BC(inode,2)=80.8675
+	!	      endif
+	!	    endif
+	!
+	!	  endif
+	!	enddo
 
             call itrBC (y,ac, iBC, BC, iper, ilwork, umesh)
 c
